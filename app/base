@@ -14,13 +14,25 @@ tim() {
   date +"%Y%m%d-%H:%M:%S $*"
 }
 
+# Truncates log file in case it is very big.
+truncate() {
+  [ -f "$LOG" ] || return
+  if [ "$(wc -c <"$LOG")" -lt 100000 ]; then
+    return
+  fi
+  : > "$LOG"
+  log "$LOG is truncated."
+}
+
 # Information logger.
 log() {
+  truncate
   tim "I $*" | tee -a "$LOG"
 }
 
 # Error logger.
 loge() {
+  truncate
   tim "E $*" | tee -a "$LOG" 1>&2
 }
 
