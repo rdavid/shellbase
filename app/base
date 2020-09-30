@@ -35,6 +35,11 @@ validate() {
   command -v "$1" >/dev/null 2>&1 || die "Install $1."
 }
 
+# Die if not root.
+be_root() {
+  [ "$(id -u)" -ne '0' ] && die "$IAM must be executed with root privileges."
+}
+
 # Calculates duration time for report. The first parameter is start time.
 duration() {
   dur="$(($(date +%s) - $1))"
