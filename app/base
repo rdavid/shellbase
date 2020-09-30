@@ -1,0 +1,50 @@
+# shellcheck shell=sh
+# vi:ts=2 sw=2 tw=79 et lbr wrap
+# Copyright 2020-current David Rabkin
+# General framework to run a shell script. Defines global variables and
+# functions. Prevents multiple instances.
+
+IAM=$(basename -- "$0")
+IAM="${IAM%.*}"
+LOG="/tmp/$IAM-log"
+LCK="/tmp/$IAM-lck"
+
+# Prints timestamp before arguments.
+tim() {
+  date +"%Y%m%d-%H:%M:%S $*"
+}
+
+# Information logger.
+log() {
+  tim "I $*" | tee -a "$LOG"
+}
+
+# Error logger.
+loge() {
+  tim "E $*" | tee -a "$LOG" 1>&2
+}
+
+# Prints error and exits.
+die() {
+  loge "$@"
+  exit 1
+}
+
+# Checks if the command exists.
+validate() {
+  command -v "$1" >/dev/null 2>&1 || die "Install $1."
+}
+
+# Start point.
+log "$IAM says hi."
+trap "log $IAM says bye." INT TERM EXIT
+
+# Prevents multiple instances.
+if [ -e "$LCK" ] && kill -0 "$(cat "$LCK")"; then
+  die "$IAM is already running."
+fi
+
+# Makes sure the lockfile is removed when we exit and then claim it.
+# shellcheck disable=SC2064
+trap "rm -f $LCK; log $IAM says bye." INT TERM EXIT
+echo $$ > "$LCK"
