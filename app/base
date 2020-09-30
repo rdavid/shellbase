@@ -35,9 +35,27 @@ validate() {
   command -v "$1" >/dev/null 2>&1 || die "Install $1."
 }
 
+# Calculates duration time for report. The first parameter is start time.
+duration() {
+  dur="$(($(date +%s) - $1))"
+  printf "%d:%02d:%02d" \
+    $((dur / 3600)) \
+    $((dur % 3600 / 60)) \
+    $((dur % 60))
+}
+
+hi() {
+  log "$IAM says hi."
+  BEG="$(date +%s)"
+}
+
+bye() {
+  log "$IAM says bye after $(duration $BEG)."
+}
+
 # Start point.
-log "$IAM says hi."
-trap "log $IAM says bye." INT TERM EXIT
+hi
+trap "bye" INT TERM EXIT
 
 # Prevents multiple instances.
 if [ -e "$LCK" ] && kill -0 "$(cat "$LCK")"; then
@@ -46,5 +64,5 @@ fi
 
 # Makes sure the lockfile is removed when we exit and then claim it.
 # shellcheck disable=SC2064
-trap "rm -f $LCK; log $IAM says bye." INT TERM EXIT
+trap "rm -f $LCK; bye" INT TERM EXIT
 echo $$ > "$LCK"
