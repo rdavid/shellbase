@@ -71,7 +71,7 @@ hi() {
 }
 
 bye() {
-  log "$IAM says bye after $(duration $BEG)."
+  log "$IAM says bye after $(duration "$BEG")."
 }
 
 # General exit handler, is called on EXIT.
