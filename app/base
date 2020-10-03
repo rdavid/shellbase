@@ -74,16 +74,32 @@ bye() {
   log "$IAM says bye after $(duration $BEG)."
 }
 
+# General exit handler, is called on EXIT.
+cleanup() {
+  err=$?
+  rm -f "$LCK"
+  bye
+  trap '' EXIT INT TERM
+  exit $err
+}
+
+# Prevents double cleanup, see more:
+#   https://unix.stackexchange.com/questions/57940/trap-int-term-exit-really-necessary
+sig_cleanup() {
+  # Some shells will call EXIT after the INT handler.
+  trap '' EXIT
+  # Sets $?.
+  false
+  cleanup
+}
+
 # Start point.
 hi
-trap "bye" INT TERM EXIT
+trap cleanup EXIT
+trap sig_cleanup INT QUIT TERM
 
 # Prevents multiple instances.
 if [ -e "$LCK" ] && kill -0 "$(cat "$LCK")"; then
   die "$IAM is already running."
 fi
-
-# Makes sure the lockfile is removed when we exit and then claim it.
-# shellcheck disable=SC2064
-trap "rm -f $LCK; bye" INT TERM EXIT
 echo $$ > "$LCK"
