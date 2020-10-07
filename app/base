@@ -56,6 +56,17 @@ be_root() {
   fi
 }
 
+# Ask a user permission to continue, exit if not 'y'.
+yes_to_continue() {
+  printf 'Do you want to continue? [y/N] '
+  keep=$(stty -g)
+  stty raw -echo; ans=$(head -c 1); stty "$keep"
+  printf '\n'
+  if ! printf '%s' "$ans" | grep -iq '^y'; then
+    exit 0
+  fi
+}
+
 # Calculates duration time for report. The first parameter is start time.
 duration() {
   dur="$(($(date +%s) - $1))"
