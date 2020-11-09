@@ -3,11 +3,17 @@
 # Copyright 2020-current David Rabkin
 # General framework to run a shell script. Defines global variables and
 # functions. Prevents multiple instances.
+# The script uses local variables which are not POSIX but supported by most
+# shells, see more:
+#  https://stackoverflow.com/questions/18597697/posix-compliant-way-to-scope-variables-to-a-function-in-a-shell-script
+# Disables shellcheck warning about using non POSIX features.
+# shellcheck disable=SC2039
 
 IAM=$(basename -- "$0")
 IAM="${IAM%.*}"
-LOG="/tmp/$IAM-log"
-LCK="/tmp/$IAM-lck"
+BASE_TMP='/tmp'
+LCK=$(mktemp -d "$BASE_TMP/$IAM.XXX")
+LOG="$LCK/log"
 
 # Prints timestamp before arguments.
 tim() {
@@ -59,7 +65,7 @@ be_root() {
 # Ask a user permission to continue, exit if not 'y'.
 yes_to_continue() {
   printf 'Do you want to continue? [y/N] '
-  keep=$(stty -g)
+  local keep=$(stty -g)
   stty raw -echo; ans=$(head -c 1); stty "$keep"
   printf '\n'
   if ! printf '%s' "$ans" | grep -iq '^y'; then
@@ -69,7 +75,7 @@ yes_to_continue() {
 
 # Calculates duration time for report. The first parameter is start time.
 duration() {
-  dur="$(($(date +%s) - $1))"
+  local dur="$(($(date +%s) - $1))"
   printf "%d:%02d:%02d" \
     $((dur / 3600)) \
     $((dur % 3600 / 60)) \
@@ -85,32 +91,63 @@ bye() {
   log "$IAM says bye after $(duration "$BEG")."
 }
 
-# General exit handler, is called on EXIT.
+# General exit handler, is called on EXIT. Any first parameter means no exit.
 cleanup() {
-  err=$?
-  rm -f "$LCK"
+  local err=$?
   bye
+  # Keeps logs of last finished instance. Could be a possible problem.
+  cp -f "$LCK/log" "$BASE_TMP/$IAM-log"
+  rm -rf "$LCK"
   trap '' EXIT INT TERM
-  exit $err
+  # Parameter expantion defines if the parameter is not set, which means exit.
+  if [ -z ${1+x} ]; then
+    exit $err
+  fi
 }
 
 # Prevents double cleanup, see more:
 #   https://unix.stackexchange.com/questions/57940/trap-int-term-exit-really-necessary
 sig_cleanup() {
+  local err=$?
   # Some shells will call EXIT after the INT handler.
   trap '' EXIT
-  # Sets $?.
-  false
-  cleanup
+  cleanup 1
+  exit $err
+}
+
+# Asks to continue if multiple instances.
+check_instances() {
+  local ins=0
+  # Finds process IDs of all possible instances in /tmp/<script-name.*>/pid and
+  # writes them to the pipe. Loop reads the PIDs from the pipe and counts only
+  # running processes.
+  local pipe="$LCK/pipe"
+  mkfifo "$pipe"
+  find "$BASE_TMP/$IAM".* -name "pid" -exec cat {} \; > "$pipe" &
+  while read -r p; do
+    kill -0 "$p" >/dev/null 2>&1 && ins=$((ins + 1))
+  done < "$pipe"
+  rm "$pipe"
+
+  # My instance is running!
+  local pid="$LCK/pid"
+  echo $$ > "$pid"
+
+  # Asks permission in case of multiple instances.
+  if [ $ins -ne 0 ]; then
+    local ending
+    if [ $ins -gt 1 ]; then
+      ending='es'
+    else
+      ending='e'
+    fi
+    printf "%d instanc%s of %s are running.\n" $ins $ending $IAM
+    yes_to_continue
+  fi
 }
 
 # Start point.
 hi
 trap cleanup EXIT
 trap sig_cleanup INT QUIT TERM
-
-# Prevents multiple instances.
-if [ -e "$LCK" ] && kill -0 "$(cat "$LCK")"; then
-  die "$IAM is already running."
-fi
-echo $$ > "$LCK"
+check_instances
