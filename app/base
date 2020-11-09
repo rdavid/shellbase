@@ -1,47 +1,54 @@
 # shellcheck shell=sh
 # vi:ts=2 sw=2 tw=79 et lbr wrap
 # Copyright 2020-current David Rabkin
-# General framework to run a shell script. Defines global variables and
-# functions. Prevents multiple instances.
+#
 # The script uses local variables which are not POSIX but supported by most
 # shells, see more:
 #  https://stackoverflow.com/questions/18597697/posix-compliant-way-to-scope-variables-to-a-function-in-a-shell-script
 # Disables shellcheck warning about using non POSIX features.
 # shellcheck disable=SC2039
+#
+# General framework to run a client shell script. Defines global variables and
+# functions. Handles multiple instances. All functions started with base_ are
+# internal and should not be used by clients. All functions without base_ are
+# API and should be used by clients. API functions are: log, loge, die,
+# validate, be_root, yes_to_continue. Global variables has BASE_ prefix and
+# clients could use them. Client should place all temporaly files under
+# $BASE_LCK.
 
-IAM=$(basename -- "$0")
-IAM="${IAM%.*}"
+BASE_IAM=$(basename -- "$0")
+BASE_IAM="${BASE_IAM%.*}"
 BASE_TMP='/tmp'
-LCK=$(mktemp -d "$BASE_TMP/$IAM.XXX")
-LOG="$LCK/log"
+BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXX")
+BASE_LOG="$BASE_LCK/log"
 
 # Prints timestamp before arguments.
-tim() {
+base_tim() {
   date +"%Y%m%d-%H:%M:%S $*"
 }
 
 # Truncates log file in case it is more than 10MB.
-truncate() {
-  if [ ! -f "$LOG" ]; then
+base_truncate() {
+  if [ ! -f "$BASE_LOG" ]; then
     return
   fi
-  if [ "$(wc -c <"$LOG")" -lt 10485760 ]; then
+  if [ "$(wc -c <"$BASE_LOG")" -lt 10485760 ]; then
     return
   fi
-  : > "$LOG"
-  log "$LOG is truncated."
+  : > "$BASE_LOG"
+  log "$BASE_LOG is truncated."
 }
 
 # Information logger.
 log() {
-  truncate
-  tim "I $*" | tee -a "$LOG"
+  base_truncate
+  base_tim "I $*" | tee -a "$BASE_LOG"
 }
 
 # Error logger.
 loge() {
-  truncate
-  tim "E $*" | tee -a "$LOG" 1>&2
+  base_truncate
+  base_tim "E $*" | tee -a "$BASE_LOG" 1>&2
 }
 
 # Prints error and exits.
@@ -58,7 +65,7 @@ validate() {
 # Die if not root.
 be_root() {
   if [ "$(id -u)" -ne '0' ]; then
-    die "$IAM must be executed with root privileges."
+    die "$BASE_IAM must be executed with root privileges."
   fi
 }
 
@@ -74,7 +81,7 @@ yes_to_continue() {
 }
 
 # Calculates duration time for report. The first parameter is start time.
-duration() {
+base_duration() {
   local dur="$(($(date +%s) - $1))"
   printf "%d:%02d:%02d" \
     $((dur / 3600)) \
@@ -82,22 +89,22 @@ duration() {
     $((dur % 60))
 }
 
-hi() {
-  log "$IAM says hi."
+base_hi() {
+  log "$BASE_IAM says hi."
   BEG="$(date +%s)"
 }
 
-bye() {
-  log "$IAM says bye after $(duration "$BEG")."
+base_bye() {
+  log "$BASE_IAM says bye after $(base_duration "$BEG")."
 }
 
 # General exit handler, is called on EXIT. Any first parameter means no exit.
-cleanup() {
+base_cleanup() {
   local err=$?
-  bye
+  base_bye
   # Keeps logs of last finished instance. Could be a possible problem.
-  cp -f "$LCK/log" "$BASE_TMP/$IAM-log"
-  rm -rf "$LCK"
+  cp -f "$BASE_LCK/log" "$BASE_TMP/$BASE_IAM-log"
+  rm -rf "$BASE_LCK"
   trap '' EXIT INT TERM
   # Parameter expantion defines if the parameter is not set, which means exit.
   if [ -z ${1+x} ]; then
@@ -107,30 +114,30 @@ cleanup() {
 
 # Prevents double cleanup, see more:
 #   https://unix.stackexchange.com/questions/57940/trap-int-term-exit-really-necessary
-sig_cleanup() {
+base_sig_cleanup() {
   local err=$?
   # Some shells will call EXIT after the INT handler.
   trap '' EXIT
-  cleanup 1
+  base_cleanup 1
   exit $err
 }
 
 # Asks to continue if multiple instances.
-check_instances() {
+base_check_instances() {
   local ins=0
   # Finds process IDs of all possible instances in /tmp/<script-name.*>/pid and
   # writes them to the pipe. Loop reads the PIDs from the pipe and counts only
   # running processes.
-  local pipe="$LCK/pipe"
+  local pipe="$BASE_LCK/pipe"
   mkfifo "$pipe"
-  find "$BASE_TMP/$IAM".* -name "pid" -exec cat {} \; > "$pipe" &
+  find "$BASE_TMP/$BASE_IAM".* -name "pid" -exec cat {} \; > "$pipe" &
   while read -r p; do
     kill -0 "$p" >/dev/null 2>&1 && ins=$((ins + 1))
   done < "$pipe"
   rm "$pipe"
 
   # My instance is running!
-  local pid="$LCK/pid"
+  local pid="$BASE_LCK/pid"
   echo $$ > "$pid"
 
   # Asks permission in case of multiple instances.
@@ -141,13 +148,13 @@ check_instances() {
     else
       ending='e'
     fi
-    printf "%d instanc%s of %s are running.\n" $ins $ending $IAM
+    printf "%d instanc%s of %s are running.\n" $ins $ending $BASE_IAM
     yes_to_continue
   fi
 }
 
 # Start point.
-hi
-trap cleanup EXIT
-trap sig_cleanup INT QUIT TERM
-check_instances
+base_hi
+trap base_cleanup EXIT
+trap base_sig_cleanup INT QUIT TERM
+base_check_instances
