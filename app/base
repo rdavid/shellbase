@@ -21,10 +21,15 @@ BASE_IAM="${BASE_IAM%.*}"
 BASE_TMP='/tmp'
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXX")
 BASE_LOG="$BASE_LCK/log"
+BASE_LNL=true
 
 # Prints timestamp before arguments.
 base_tim() {
-  date +"%Y%m%d-%H:%M:%S $*"
+  local pat='%s %s'
+  if $BASE_LNL; then
+    pat="$pat\n"
+  fi
+  printf "$pat" "$(date +"%Y%m%d-%H:%M:%S")" "$*"
 }
 
 # Truncates log file in case it is more than 10MB.
@@ -69,9 +74,11 @@ be_root() {
   fi
 }
 
-# Ask a user permission to continue, exit if not 'y'.
+# Asks a user permission to continue, exit if not 'y'.
 yes_to_continue() {
-  printf 'Do you want to continue? [y/N] '
+  BASE_LNL=false
+  log 'Do you want to continue? [y/N] '
+  BASE_LNL=true
   local keep=$(stty -g)
   stty raw -echo; ans=$(head -c 1); stty "$keep"
   printf '\n'
