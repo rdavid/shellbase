@@ -32,16 +32,15 @@ base_tim() {
   printf "$pat" "$(date +"%Y%m%d-%H:%M:%S")" "$*"
 }
 
-# Truncates log file in case it is more than 10MB.
+# Truncates log file in case it is more than 10MB. Do not return in
+# functions that are called by signal trap.
 base_truncate() {
-  if [ ! -f "$BASE_LOG" ]; then
-    return
+  if [ -w "$BASE_LOG" ]; then
+    if [ "$(wc -c <"$BASE_LOG")" -gt 10485760 ]; then
+      : > "$BASE_LOG"
+      log "$BASE_LOG is truncated."
+    fi
   fi
-  if [ "$(wc -c <"$BASE_LOG")" -lt 10485760 ]; then
-    return
-  fi
-  : > "$BASE_LOG"
-  log "$BASE_LOG is truncated."
 }
 
 # Information logger.
@@ -108,11 +107,11 @@ base_bye() {
 # General exit handler, is called on EXIT. Any first parameter means no exit.
 base_cleanup() {
   local err=$?
+  trap '' EXIT INT TERM
   base_bye
   # Keeps logs of last finished instance. Could be a possible problem.
   cp -f "$BASE_LCK/log" "$BASE_TMP/$BASE_IAM-log"
   rm -rf "$BASE_LCK"
-  trap '' EXIT INT TERM
   # Parameter expantion defines if the parameter is not set, which means exit.
   if [ -z ${1+x} ]; then
     exit $err
