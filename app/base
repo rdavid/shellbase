@@ -22,6 +22,7 @@ BASE_TMP='/tmp'
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXX")
 BASE_LOG="$BASE_LCK/log"
 BASE_LNL=true
+BASE_BEG=$(date +%s)
 
 # Prints timestamp before arguments.
 base_tim() {
@@ -97,11 +98,10 @@ base_duration() {
 
 base_hi() {
   log "$BASE_IAM says hi."
-  BEG="$(date +%s)"
 }
 
 base_bye() {
-  log "$BASE_IAM says bye after $(base_duration "$BEG")."
+  log "$BASE_IAM says bye after $(base_duration "$BASE_BEG")."
 }
 
 # General exit handler, is called on EXIT. Any first parameter means no exit.
