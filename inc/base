@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 # vi:ts=2 sw=2 tw=79 et lbr wrap
-# Copyright 2020-current David Rabkin
+# Copyright 2020 by David Rabkin
 #
 # The script uses local variables which are not POSIX but supported by most
 # shells, see more:
@@ -8,13 +8,18 @@
 # Disables shellcheck warning about using non POSIX features.
 # shellcheck disable=SC2039
 #
-# General framework to run a client shell script. Defines global variables and
-# functions. Handles multiple instances. All functions started with base_ are
-# internal and should not be used by clients. All functions without base_ are
-# API and should be used by clients. API functions are: log, loge, die,
-# validate, be_root, yes_to_continue. Global variables has BASE_ prefix and
-# clients could use them. Client should place all temporaly files under
-# $BASE_LCK.
+# shellbase is general framework for POSIX shell scripts. It provides multiple
+# services: functions (be_root, die, log, validate, yes_to_continue),
+# signals handlers, garbage collection, multiple instances. It asks for a
+# permission to continue if multiple running instances of a same script are
+# detected.
+#
+# shellbase defines global variables and functions. All functions without
+# base_ prefix are API and should be used by clients. API functions are: log,
+# loge, die, validate, be_root, yes_to_continue. Global variables has
+# BASE_ prefix and clients could use them. Clients should place all temporaly
+# files under $BASE_LCK. All functions started with base_ prefix are internal
+# and should not be used by clients.
 
 BASE_IAM=$(basename -- "$0")
 BASE_IAM="${BASE_IAM%.*}"
