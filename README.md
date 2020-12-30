@@ -1,5 +1,5 @@
 # Shellbase
-General framework for POSIX shell scripts
+General framework for Unix shell scripts.
 
 [![Hits-of-Code](https://hitsofcode.com/github/rdavid/shellbase?branch=master)](https://hitsofcode.com/view/github/rdavid/shellbase?branch=master)
 [![License](https://img.shields.io/badge/license-0BSD-green)](https://github.com/rdavid/shellbase/blob/master/LICENSE)
@@ -8,9 +8,9 @@ General framework for POSIX shell scripts
 * [License](#license)
 
 ## About
-Hi, I'm [David Rabkin](http://davi.drabk.in).
+Hi, I'm [David Rabkin](http://cv.rabkin.co.il).
 
-`shellbase` is general framework for POSIX shell scripts. It provides multiple
+`shellbase` is general framework for Unix shell scripts. It provides multiple
 services: functions (`be_root`, `die`, `log`, `validate`, `yes_to_continue`),
 signals handlers, garbage collection, multiple instances. It asks for a
 permission to continue if multiple running instances of a same script are
@@ -26,5 +26,5 @@ and should not be used by clients.
 See [Toolbox project](https://github.com/rdavid/toolbox) as an example.
 
 ## License
-`shellbase` is copyright [David Rabkin](http://davi.drabk.in) and available
+`shellbase` is copyright [David Rabkin](http://cv.rabkin.co.il) and available
 under a [Zero-Clause BSD license](https://github.com/rdavid/shellbase/blob/master/LICENSE).
