@@ -92,13 +92,82 @@ yes_to_continue() {
   fi
 }
 
-# Calculates duration time for report. The first parameter is start time.
+# Formats time titles, the first parameter is a number, the second parameter is
+# a time title.
+base_time_title() {
+  case "$1" in
+    0)
+      printf ''
+      ;;
+    1)
+      printf '%d %s' "$1" "$2"
+      ;;
+    *)
+      printf '%d %ss' "$1" "$2"
+      ;;
+  esac
+}
+
+# Calculates a separator for time titles based on amount of non-empty
+# parameters.
+base_time_separator() {
+  local cnt=0
+  case "$#" in
+    1)
+      [ ! -z "$1" ] && cnt=$((cnt+1))
+      ;;
+    2)
+      [ ! -z "$1" ] && cnt=$((cnt+1))
+      [ ! -z "$2" ] && cnt=$((cnt+1))
+      ;;
+    3)
+      [ ! -z "$1" ] && cnt=$((cnt+1))
+      [ ! -z "$2" ] && cnt=$((cnt+1))
+      [ ! -z "$3" ] && cnt=$((cnt+1))
+      ;;
+    *)
+      printf 'error: param number is %d: %s.' "$#" "$@"
+      ;;
+  esac
+  case "$cnt" in
+    0)
+      printf ''
+      ;;
+    1)
+      printf ' and '
+      ;;
+    2|3)
+      printf ', '
+      ;;
+    *)
+      printf 'error: counter is %d.' "$cnt"
+      ;;
+  esac
+}
+
+# Calculates duration time for report. The first parameter is a start time.
+# 86400 seconds in a day, 3600 seconds in an hour, 60 seconds in a minute.
 base_duration() {
-  local dur="$(($(date +%s) - $1))"
-  printf "%d:%02d:%02d" \
-    $((dur / 3600)) \
-    $((dur % 3600 / 60)) \
-    $((dur % 60))
+  local dur="$(($(date +%s)-$1))"
+  local d="$(base_time_title $((dur / 86400)) day)"
+  local h="$(base_time_title $((dur % 86400 / 3600)) hour)"
+  local m="$(base_time_title $((dur % 86400 % 3600 / 60)) minute)"
+  local s="$(base_time_title $((dur % 60)) second)"
+  if [ ! -z "$d" ]; then
+    printf '%s%s' "$d" "$(base_time_separator "$h" "$m" "$s")"
+  fi
+  if [ ! -z "$h" ]; then
+    printf '%s%s' "$h" "$(base_time_separator "$m" "$s")"
+  fi
+  if [ ! -z "$m" ]; then
+    printf '%s%s' "$m" "$(base_time_separator "$s")"
+  fi
+  if [ ! -z "$s" ]; then
+    printf '%s' "$s"
+  fi
+  if [ -z "$d" ] && [ -z "$h" ] && [ -z "$m" ] && [ -z "$s" ]; then
+    printf 'less than a second'
+  fi
 }
 
 base_hi() {
