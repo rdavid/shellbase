@@ -5,8 +5,8 @@
 # The script uses local variables which are not POSIX but supported by most
 # shells, see more:
 #  https://stackoverflow.com/questions/18597697/posix-compliant-way-to-scope-variables-to-a-function-in-a-shell-script
-# Disables shellcheck warning about using non POSIX features.
-# shellcheck disable=SC2039
+# Disables shellcheck warning about using local variables.
+# shellcheck disable=SC3043
 #
 # shellbase is general framework for POSIX shell scripts. It provides multiple
 # services: functions (be_root, die, log, validate, yes_to_continue),
@@ -35,6 +35,7 @@ base_tim() {
   if $BASE_LNL; then
     pat="$pat\n"
   fi
+  # shellcheck disable=SC2059
   printf "$pat" "$(date +"%Y%m%d-%H:%M:%S")" "$*"
 }
 
@@ -84,7 +85,8 @@ yes_to_continue() {
   BASE_LNL=false
   log 'Do you want to continue? [y/N] '
   BASE_LNL=true
-  local keep=$(stty -g)
+  local keep
+  keep="$(stty -g)"
   stty raw -echo; ans=$(head -c 1); stty "$keep"
   printf '\n'
   if ! printf '%s' "$ans" | grep -iq '^y'; then
@@ -114,16 +116,16 @@ base_time_separator() {
   local cnt=0
   case "$#" in
     1)
-      [ ! -z "$1" ] && cnt=$((cnt+1))
+      [ -n "$1" ] && cnt=$((cnt+1))
       ;;
     2)
-      [ ! -z "$1" ] && cnt=$((cnt+1))
-      [ ! -z "$2" ] && cnt=$((cnt+1))
+      [ -n "$1" ] && cnt=$((cnt+1))
+      [ -n "$2" ] && cnt=$((cnt+1))
       ;;
     3)
-      [ ! -z "$1" ] && cnt=$((cnt+1))
-      [ ! -z "$2" ] && cnt=$((cnt+1))
-      [ ! -z "$3" ] && cnt=$((cnt+1))
+      [ -n "$1" ] && cnt=$((cnt+1))
+      [ -n "$2" ] && cnt=$((cnt+1))
+      [ -n "$3" ] && cnt=$((cnt+1))
       ;;
     *)
       printf 'error: param number is %d: %s.' "$#" "$@"
@@ -149,20 +151,21 @@ base_time_separator() {
 # 86400 seconds in a day, 3600 seconds in an hour, 60 seconds in a minute.
 base_duration() {
   local dur="$(($(date +%s)-$1))"
-  local d="$(base_time_title $((dur / 86400)) day)"
-  local h="$(base_time_title $((dur % 86400 / 3600)) hour)"
-  local m="$(base_time_title $((dur % 86400 % 3600 / 60)) minute)"
-  local s="$(base_time_title $((dur % 60)) second)"
-  if [ ! -z "$d" ]; then
+  local d h m s
+  d="$(base_time_title $((dur / 86400)) day)"
+  h="$(base_time_title $((dur % 86400 / 3600)) hour)"
+  m="$(base_time_title $((dur % 86400 % 3600 / 60)) minute)"
+  s="$(base_time_title $((dur % 60)) second)"
+  if [ -n "$d" ]; then
     printf '%s%s' "$d" "$(base_time_separator "$h" "$m" "$s")"
   fi
-  if [ ! -z "$h" ]; then
+  if [ -n "$h" ]; then
     printf '%s%s' "$h" "$(base_time_separator "$m" "$s")"
   fi
-  if [ ! -z "$m" ]; then
+  if [ -n "$m" ]; then
     printf '%s%s' "$m" "$(base_time_separator "$s")"
   fi
-  if [ ! -z "$s" ]; then
+  if [ -n "$s" ]; then
     printf '%s' "$s"
   fi
   if [ -z "$d" ] && [ -z "$h" ] && [ -z "$m" ] && [ -z "$s" ]; then
@@ -228,7 +231,7 @@ base_check_instances() {
     else
       ending='e'
     fi
-    printf "%d instanc%s of %s are running.\n" $ins $ending $BASE_IAM
+    printf "%d instanc%s of %s are running.\n" $ins $ending "$BASE_IAM"
     yes_to_continue
   fi
 }
