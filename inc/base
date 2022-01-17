@@ -28,6 +28,7 @@ BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXX")
 BASE_LOG="$BASE_LCK/log"
 BASE_LNL=true
 BASE_BEG=$(date +%s)
+BASE_VER='0.9.1'
 
 # Prints timestamp before arguments.
 base_tim() {
@@ -174,7 +175,7 @@ base_duration() {
 }
 
 base_hi() {
-  log "$BASE_IAM says hi."
+  log "$BASE_IAM says hi, shellbase $BASE_VER."
 }
 
 base_bye() {
