@@ -26,18 +26,13 @@ BASE_IAM="${BASE_IAM%.*}"
 BASE_TMP='/tmp'
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXX")
 BASE_LOG="$BASE_LCK/log"
-BASE_LNL=true
-BASE_BEG=$(date +%s)
-BASE_VER='0.9.1'
+BASE_BEGIN=$(date +%s)
+BASE_VERSION='0.9.2'
+BASE_VERBOSE=false
 
 # Prints timestamp before arguments.
 base_tim() {
-  local pat='%s %s'
-  if $BASE_LNL; then
-    pat="$pat\n"
-  fi
-  # shellcheck disable=SC2059
-  printf "$pat" "$(date +"%Y%m%d-%H:%M:%S")" "$*"
+  printf '%s %s\n' "$(date +"%Y%m%d-%H:%M:%S")" "$*"
 }
 
 # Truncates log file in case it is more than 10MB. Do not return in
@@ -54,7 +49,11 @@ base_truncate() {
 # Information logger.
 log() {
   base_truncate
-  base_tim "I $*" | tee -a "$BASE_LOG"
+  if [ "$BASE_VERBOSE" = true ]; then
+    base_tim "I $*" | tee -a "$BASE_LOG"
+  else
+    base_tim "I $*" >> "$BASE_LOG"
+  fi
 }
 
 # Error logger.
@@ -83,9 +82,8 @@ be_root() {
 
 # Asks a user permission to continue, exit if not 'y'.
 yes_to_continue() {
-  BASE_LNL=false
-  log 'Do you want to continue? [y/N] '
-  BASE_LNL=true
+  # Allows to print an answer on the same line.
+  printf 'Do you want to continue? [y/N] '
   local keep
   keep="$(stty -g)"
   stty raw -echo; ans=$(head -c 1); stty "$keep"
@@ -175,11 +173,11 @@ base_duration() {
 }
 
 base_hi() {
-  log "$BASE_IAM says hi, shellbase $BASE_VER."
+  log "$BASE_IAM says hi."
 }
 
 base_bye() {
-  log "$BASE_IAM says bye after $(base_duration "$BASE_BEG")."
+  log "$BASE_IAM says bye after $(base_duration "$BASE_BEGIN")."
 }
 
 # General exit handler, is called on EXIT. Any first parameter means no exit.
@@ -237,7 +235,26 @@ base_check_instances() {
   fi
 }
 
-# Start point.
+# Start point. Loops through command line arguments.
+for arg; do
+  shift
+  case "$arg" in
+    --help)
+      export BASE_SHOW_HELP=true
+      ;;
+    --verbose|-v)
+      BASE_VERBOSE=true
+      ;;
+    --version)
+      printf 'shellbase %s\n' "$BASE_VERSION"
+      export BASE_SHOW_VERSION=true
+      ;;
+    *)
+      # Sets back any unused args.
+      set -- "$@" "$arg"
+  esac
+done
+
 base_hi
 trap base_cleanup EXIT
 trap base_sig_cleanup INT QUIT TERM
