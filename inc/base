@@ -46,7 +46,7 @@ base_truncate() {
   fi
 }
 
-# Information logger.
+# Information logger prints to stdout only with -v (verbose) flag.
 log() {
   base_truncate
   if [ "$BASE_VERBOSE" = true ]; then
@@ -60,6 +60,12 @@ log() {
 loge() {
   base_truncate
   base_tim "E $*" | tee -a "$BASE_LOG" 1>&2
+}
+
+# Warning logger.
+logw() {
+  base_truncate
+  base_tim "W $*" | tee -a "$BASE_LOG" 1>&2
 }
 
 # Prints error and exits.
