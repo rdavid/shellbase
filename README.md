@@ -11,14 +11,14 @@ General framework for Unix shell scripts.
 Hi, I'm [David Rabkin](http://cv.rabkin.co.il).
 
 `shellbase` is general framework for Unix shell scripts. It provides multiple
-services: functions (`be_root`, `die`, `log`, `validate`, `yes_to_continue`),
+services: functions (`be_root`, `bye`, `log`, `validate`, `yes_to_continue`),
 signals handlers, garbage collection, multiple instances. It asks for a
 permission to continue if multiple running instances of a same script are
 detected.
 
 `shellbase` defines global variables and functions. All functions without
 `base_` prefix are API and should be used by clients. API functions are: `log`,
-`loge`, `die`, `validate`, `be_root`, `yes_to_continue`. Global variables has
+`loge`, `bye`, `validate`, `be_root`, `yes_to_continue`. Global variables has
 `BASE_` prefix and clients could use them. Clients should place all temporaly
 files under `$BASE_LCK`. All functions started with `base_` prefix are internal
 and should not be used by clients.

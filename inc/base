@@ -9,14 +9,14 @@
 # shellcheck disable=SC3043
 #
 # shellbase is general framework for POSIX shell scripts. It provides multiple
-# services: functions (be_root, die, log, validate, yes_to_continue),
+# services: functions (be_root, bye, log, validate, yes_to_continue),
 # signals handlers, garbage collection, multiple instances. It asks for a
 # permission to continue if multiple running instances of a same script are
 # detected.
 #
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are: log,
-# loge, die, validate, be_root, yes_to_continue. Global variables has
+# loge, bye, validate, be_root, yes_to_continue. Global variables has
 # BASE_ prefix and clients could use them. Clients should place all temporaly
 # files under $BASE_LCK. All functions started with base_ prefix are internal
 # and should not be used by clients.
@@ -69,20 +69,20 @@ logw() {
 }
 
 # Prints error and exits.
-die() {
+bye() {
   loge "$@"
   exit 1
 }
 
 # Checks if the command exists.
 validate() {
-  command -v "$1" >/dev/null 2>&1 || die "Install $1."
+  command -v "$1" >/dev/null 2>&1 || bye "Install $1."
 }
 
-# Die if not root.
+# Bye if not root.
 be_root() {
   if [ "$(id -u)" -ne '0' ]; then
-    die "$BASE_IAM must be executed with root privileges."
+    bye "$BASE_IAM must be executed with root privileges."
   fi
 }
 
