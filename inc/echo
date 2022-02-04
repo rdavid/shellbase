@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 # vi:ts=2 sw=2 tw=79 et lbr wrap
-# Copyright 2022 by David Rabkin
+# Copyright 2022 David Rabkin
 
 # The function ‘repairs’ echo to behave in a reasonable way, see more:
 #   http://www.etalabs.net/sh_tricks.html

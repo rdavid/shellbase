@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 # vi:ts=2 sw=2 tw=79 et lbr wrap
-# Copyright 2020 by David Rabkin
+# Copyright 2020-2022 David Rabkin
 #
 # The script uses local variables which are not POSIX but supported by most
 # shells, see more:
