@@ -9,17 +9,17 @@
 # shellcheck disable=SC3043
 #
 # shellbase is general framework for POSIX shell scripts. It provides multiple
-# services: functions (be_root, bye, log, validate, yes_to_continue),
-# signals handlers, garbage collection, multiple instances. It asks for a
-# permission to continue if multiple running instances of a same script are
-# detected.
+# services: functions (be_root, bye, log, validate, validate_var,
+# yes_to_continue), signals handlers, garbage collection, multiple instances. It
+# asks for a permission to continue if multiple running instances of a same
+# script are detected.
 #
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are: log,
-# loge, bye, validate, be_root, yes_to_continue. Global variables has
-# BASE_ prefix and clients could use them. Clients should place all temporaly
-# files under $BASE_LCK. All functions started with base_ prefix are internal
-# and should not be used by clients.
+# loge, bye, validate, validate_var, be_root, yes_to_continue. Global variables
+# have BASE_ prefix and clients could use them. Clients should place all
+# temporaly files under $BASE_LCK. All functions started with base_ prefix are
+# internal and should not be used by clients.
 
 BASE_IAM=$(basename -- "$0")
 BASE_IAM="${BASE_IAM%.*}"
@@ -77,6 +77,17 @@ bye() {
 # Checks if the command exists.
 validate() {
   command -v "$1" >/dev/null 2>&1 || bye "Install $1."
+}
+
+# Checks if the environment variable is defined.
+validate_var() {
+  [ -z "${1-}" ] || [ $# -ne 1 ] && bye 'validate_var expected one argument.'
+  set +u
+  local var
+  eval "var=\${$1}"
+  set -u
+  [ -z "${var}" ] && bye "Define $1."
+  log "$1=$var"
 }
 
 # Bye if not root.

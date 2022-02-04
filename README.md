@@ -18,10 +18,10 @@ detected.
 
 `shellbase` defines global variables and functions. All functions without
 `base_` prefix are API and should be used by clients. API functions are: `log`,
-`loge`, `bye`, `validate`, `be_root`, `yes_to_continue`. Global variables has
-`BASE_` prefix and clients could use them. Clients should place all temporaly
-files under `$BASE_LCK`. All functions started with `base_` prefix are internal
-and should not be used by clients.
+`loge`, `bye`, `validate`, `validate_var`, `be_root`, `yes_to_continue`. Global
+variables have `BASE_` prefix and clients could use them. Clients should place
+all temporaly files under `$BASE_LCK`. All functions started with `base_` prefix
+are internal and should not be used by clients.
 
 See [Toolbox project](https://github.com/rdavid/toolbox) as an example.
 
