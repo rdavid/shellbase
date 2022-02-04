@@ -68,13 +68,13 @@ logw() {
   base_tim "W $*" | tee -a "$BASE_LOG" 1>&2
 }
 
-# Prints error and exits.
+# Prints all parameters as error and exits with the error code.
 bye() {
   loge "$@"
   exit 1
 }
 
-# Checks if a program is installed.
+# Checks if an application is installed.
 validate_cmd() {
   [ -z "${1-}" ] || [ $# -ne 1 ] && bye 'validate_cmd expected one argument.'
   command -v "$1" >/dev/null 2>&1 || bye "Install $1."
