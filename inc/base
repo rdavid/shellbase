@@ -9,17 +9,17 @@
 # shellcheck disable=SC3043
 #
 # shellbase is general framework for POSIX shell scripts. It provides multiple
-# services: functions (be_root, bye, log, validate, validate_var,
+# services: functions (be_root, bye, log, validate_cmd, validate_var,
 # yes_to_continue), signals handlers, garbage collection, multiple instances. It
 # asks for a permission to continue if multiple running instances of a same
 # script are detected.
 #
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are: log,
-# loge, bye, validate, validate_var, be_root, yes_to_continue. Global variables
-# have BASE_ prefix and clients could use them. Clients should place all
-# temporaly files under $BASE_LCK. All functions started with base_ prefix are
-# internal and should not be used by clients.
+# loge, bye, validate_cmd, validate_var, be_root, yes_to_continue. Global
+# variables have BASE_ prefix and clients could use them. Clients should place
+# all temporaly files under $BASE_LCK. All functions started with base_ prefix
+# are internal and should not be used by clients.
 
 BASE_IAM=$(basename -- "$0")
 BASE_IAM="${BASE_IAM%.*}"
@@ -27,7 +27,7 @@ BASE_TMP='/tmp'
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXX")
 BASE_LOG="$BASE_LCK/log"
 BASE_BEGIN=$(date +%s)
-BASE_VERSION='0.9.2'
+BASE_VERSION='0.9.3'
 BASE_VERBOSE=false
 
 # Prints timestamp before arguments.
@@ -74,12 +74,13 @@ bye() {
   exit 1
 }
 
-# Checks if the command exists.
-validate() {
+# Checks if a program is installed.
+validate_cmd() {
+  [ -z "${1-}" ] || [ $# -ne 1 ] && bye 'validate_cmd expected one argument.'
   command -v "$1" >/dev/null 2>&1 || bye "Install $1."
 }
 
-# Checks if the environment variable is defined.
+# Checks if an environment variable is defined.
 validate_var() {
   [ -z "${1-}" ] || [ $# -ne 1 ] && bye 'validate_var expected one argument.'
   set +u
