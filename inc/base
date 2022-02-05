@@ -74,21 +74,28 @@ bye() {
   exit 1
 }
 
-# Checks if an application is installed.
+# Checks if applications in parameters are installed.
 validate_cmd() {
-  [ -z "${1-}" ] || [ $# -ne 1 ] && bye 'validate_cmd expected one argument.'
-  command -v "$1" >/dev/null 2>&1 || bye "Install $1."
+  [ -z "${1-}" ] || [ $# -eq 0 ] && bye 'Usage: validate_cmd cmd1 cmd2 ...'
+  local arg
+  for arg do
+    command -v "$arg" >/dev/null 2>&1 || bye "Install $arg."
+    log "$arg is installed."
+  done
 }
 
-# Checks if an environment variable is defined.
+# Checks if environment variables in parameters are defined.
 validate_var() {
-  [ -z "${1-}" ] || [ $# -ne 1 ] && bye 'validate_var expected one argument.'
-  set +u
-  local var
-  eval "var=\${$1}"
-  set -u
-  [ -z "${var}" ] && bye "Define $1."
-  log "$1=$var"
+  [ -z "${1-}" ] || [ $# -eq 0 ] && bye 'Usage: validate_var var1 var2 ...'
+  local arg
+  for arg do
+    set +u
+    local var
+    eval "var=\${$arg}"
+    set -u
+    [ -z "${var}" ] && bye "Define $arg."
+    log "$arg is defined as $var."
+  done
 }
 
 # Bye if not root.
@@ -254,7 +261,7 @@ base_check_instances() {
 }
 
 # Start point. Loops through command line arguments.
-for arg; do
+for arg do
   shift
   case "$arg" in
     --help)
