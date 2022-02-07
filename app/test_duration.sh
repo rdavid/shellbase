@@ -5,7 +5,7 @@
 # shellcheck source=../inc/base
 . "$(dirname "$(realpath "$0")")/../inc/base"
 
-while true; do
+while :; do
 	printf "%s\n" "$(base_duration 0)"
 	sleep 1
 done
