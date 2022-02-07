@@ -3,6 +3,7 @@
 # Copyright 2022 David Rabkin
 
 # shellcheck disable=SC1091
+. "$(dirname "$(realpath "$0")")/../inc/base"
 . "$(dirname "$(realpath "$0")")/../inc/echo"
 
 echo hello
