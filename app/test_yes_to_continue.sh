@@ -7,3 +7,4 @@
 
 yes_to_continue
 echo 'Continued.'
+exit 0

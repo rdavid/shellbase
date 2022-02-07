@@ -6,6 +6,6 @@
 . "$(dirname "$(realpath "$0")")/../inc/base"
 
 while true; do
-  printf "%s\n" "$(base_duration 0)"
-  sleep 1
+	printf "%s\n" "$(base_duration 0)"
+	sleep 1
 done
