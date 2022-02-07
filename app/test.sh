@@ -6,6 +6,6 @@
 . "$(dirname "$(realpath "$0")")/../inc/base"
 
 DUR=2
-echo "Sleeping for $DUR seconds..."
-sleep "$DUR"
+printf 'Sleeping for %s seconds...\n' $DUR
+sleep $DUR
 exit 0
