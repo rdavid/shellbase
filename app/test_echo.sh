@@ -15,3 +15,4 @@ echo -n hello
 # shellcheck disable=SC3037
 echo -ne hello
 echo bye
+exit 0

@@ -8,3 +8,4 @@
 DUR=2
 echo "Sleeping for $DUR seconds..."
 sleep "$DUR"
+exit 0

@@ -32,252 +32,248 @@ BASE_VERBOSE=false
 
 # Prints timestamp before arguments.
 base_tim() {
-  printf '%s %s\n' "$(date +"%Y%m%d-%H:%M:%S")" "$*"
+	printf '%s %s\n' "$(date +"%Y%m%d-%H:%M:%S")" "$*"
 }
 
 # Truncates log file in case it is more than 10MB. Do not return in
 # functions that are called by signal trap.
 base_truncate() {
-  if [ -w "$BASE_LOG" ]; then
-    if [ "$(wc -c <"$BASE_LOG")" -gt 10485760 ]; then
-      : > "$BASE_LOG"
-      log "$BASE_LOG is truncated."
-    fi
-  fi
+	if [ -w "$BASE_LOG" ]; then
+		if [ "$(wc -c <"$BASE_LOG")" -gt 10485760 ]; then
+			: > "$BASE_LOG"
+			log "$BASE_LOG is truncated."
+		fi
+	fi
 }
 
 # Information logger prints to stdout only with -v (verbose) flag.
 log() {
-  base_truncate
-  if [ "$BASE_VERBOSE" = true ]; then
-    base_tim "I $*" | tee -a "$BASE_LOG"
-  else
-    base_tim "I $*" >> "$BASE_LOG"
-  fi
+	base_truncate
+	if [ "$BASE_VERBOSE" = true ]; then
+		base_tim "I $*" | tee -a "$BASE_LOG"
+	else
+		base_tim "I $*" >> "$BASE_LOG"
+	fi
 }
 
 # Error logger.
 loge() {
-  base_truncate
-  base_tim "E $*" | tee -a "$BASE_LOG" 1>&2
+	base_truncate
+	base_tim "E $*" | tee -a "$BASE_LOG" 1>&2
 }
 
 # Warning logger.
 logw() {
-  base_truncate
-  base_tim "W $*" | tee -a "$BASE_LOG" 1>&2
+	base_truncate
+	base_tim "W $*" | tee -a "$BASE_LOG" 1>&2
 }
 
 # Prints all parameters as error and exits with the error code.
 bye() {
-  loge "$@"
-  exit 1
+	loge "$@"
+	exit 1
 }
 
 # Checks if applications in parameters are installed.
 validate_cmd() {
-  [ -z "${1-}" ] || [ $# -eq 0 ] && bye 'Usage: validate_cmd cmd1 cmd2 ...'
-  local arg
-  for arg do
-    command -v "$arg" >/dev/null 2>&1 || bye "Install $arg."
-    log "$arg is installed."
-  done
+	[ -z "${1-}" ] || [ $# -eq 0 ] && bye 'Usage: validate_cmd cmd1 cmd2 ...'
+	local arg
+	for arg do
+		command -v "$arg" >/dev/null 2>&1 || bye "Install $arg."
+		log "$arg is installed."
+	done
 }
 
 # Checks if environment variables in parameters are defined.
 validate_var() {
-  [ -z "${1-}" ] || [ $# -eq 0 ] && bye 'Usage: validate_var var1 var2 ...'
-  local arg
-  for arg do
-    set +u
-    local var
-    eval "var=\${$arg}"
-    set -u
-    [ -z "${var}" ] && bye "Define $arg."
-    log "$arg is defined as $var."
-  done
+	[ -z "${1-}" ] || [ $# -eq 0 ] && bye 'Usage: validate_var var1 var2 ...'
+	local arg
+	for arg do
+		set +u
+		local var
+		eval "var=\${$arg}"
+		set -u
+		[ -z "${var}" ] && bye "Define $arg."
+		log "$arg is defined as $var."
+	done
 }
 
 # Bye if not root.
 be_root() {
-  if [ "$(id -u)" -ne '0' ]; then
-    bye "$BASE_IAM must be executed with root privileges."
-  fi
+	[ "$(id -u)" -ne '0' ] && bye "Run $BASE_IAM with root privileges."
 }
 
 # Asks a user permission to continue, exit if not 'y'.
 yes_to_continue() {
-  # Allows to print an answer on the same line.
-  printf 'Do you want to continue? [y/N] '
-  local keep
-  keep="$(stty -g)"
-  stty raw -echo; ans=$(head -c 1); stty "$keep"
-  printf '\n'
-  if ! printf '%s' "$ans" | grep -iq '^y'; then
-    exit 0
-  fi
+	# Allows to print an answer on the same line.
+	printf 'Do you want to continue? [y/N] '
+	local keep
+	keep="$(stty -g)"
+	stty raw -echo; ans=$(head -c 1); stty "$keep"
+	printf '\n'
+	printf '%s' "$ans" | grep -iq '^y' || exit 0
 }
 
 # Formats time titles, the first parameter is a number, the second parameter is
 # a time title.
 base_time_title() {
-  case "$1" in
-    0)
-      printf ''
-      ;;
-    1)
-      printf '%d %s' "$1" "$2"
-      ;;
-    *)
-      printf '%d %ss' "$1" "$2"
-      ;;
-  esac
+	case "$1" in
+		0)
+			printf ''
+			;;
+		1)
+			printf '%d %s' "$1" "$2"
+			;;
+		*)
+			printf '%d %ss' "$1" "$2"
+			;;
+	esac
 }
 
 # Calculates a separator for time titles based on amount of non-empty
 # parameters.
 base_time_separator() {
-  local cnt=0
-  case "$#" in
-    1)
-      [ -n "$1" ] && cnt=$((cnt+1))
-      ;;
-    2)
-      [ -n "$1" ] && cnt=$((cnt+1))
-      [ -n "$2" ] && cnt=$((cnt+1))
-      ;;
-    3)
-      [ -n "$1" ] && cnt=$((cnt+1))
-      [ -n "$2" ] && cnt=$((cnt+1))
-      [ -n "$3" ] && cnt=$((cnt+1))
-      ;;
-    *)
-      printf 'error: param number is %d: %s.' "$#" "$@"
-      ;;
-  esac
-  case "$cnt" in
-    0)
-      printf ''
-      ;;
-    1)
-      printf ' and '
-      ;;
-    2|3)
-      printf ', '
-      ;;
-    *)
-      printf 'error: counter is %d.' "$cnt"
-      ;;
-  esac
+	local cnt=0
+	case "$#" in
+		1)
+			[ -n "$1" ] && cnt=$((cnt+1))
+			;;
+		2)
+			[ -n "$1" ] && cnt=$((cnt+1))
+			[ -n "$2" ] && cnt=$((cnt+1))
+			;;
+		3)
+			[ -n "$1" ] && cnt=$((cnt+1))
+			[ -n "$2" ] && cnt=$((cnt+1))
+			[ -n "$3" ] && cnt=$((cnt+1))
+			;;
+		*)
+			printf 'error: param number is %d: %s.' "$#" "$@"
+			;;
+	esac
+	case "$cnt" in
+		0)
+			printf ''
+			;;
+		1)
+			printf ' and '
+			;;
+		2|3)
+			printf ', '
+			;;
+		*)
+			printf 'error: counter is %d.' "$cnt"
+			;;
+	esac
 }
 
 # Calculates duration time for report. The first parameter is a start time.
 # 86400 seconds in a day, 3600 seconds in an hour, 60 seconds in a minute.
 base_duration() {
-  local dur="$(($(date +%s)-$1))"
-  local d h m s
-  d="$(base_time_title $((dur / 86400)) day)"
-  h="$(base_time_title $((dur % 86400 / 3600)) hour)"
-  m="$(base_time_title $((dur % 86400 % 3600 / 60)) minute)"
-  s="$(base_time_title $((dur % 60)) second)"
-  if [ -n "$d" ]; then
-    printf '%s%s' "$d" "$(base_time_separator "$h" "$m" "$s")"
-  fi
-  if [ -n "$h" ]; then
-    printf '%s%s' "$h" "$(base_time_separator "$m" "$s")"
-  fi
-  if [ -n "$m" ]; then
-    printf '%s%s' "$m" "$(base_time_separator "$s")"
-  fi
-  if [ -n "$s" ]; then
-    printf '%s' "$s"
-  fi
-  if [ -z "$d" ] && [ -z "$h" ] && [ -z "$m" ] && [ -z "$s" ]; then
-    printf 'less than a second'
-  fi
+	local dur="$(($(date +%s)-$1))"
+	local d h m s
+	d="$(base_time_title $((dur / 86400)) day)"
+	h="$(base_time_title $((dur % 86400 / 3600)) hour)"
+	m="$(base_time_title $((dur % 86400 % 3600 / 60)) minute)"
+	s="$(base_time_title $((dur % 60)) second)"
+	if [ -n "$d" ]; then
+		printf '%s%s' "$d" "$(base_time_separator "$h" "$m" "$s")"
+	fi
+	if [ -n "$h" ]; then
+		printf '%s%s' "$h" "$(base_time_separator "$m" "$s")"
+	fi
+	if [ -n "$m" ]; then
+		printf '%s%s' "$m" "$(base_time_separator "$s")"
+	fi
+	if [ -n "$s" ]; then
+		printf '%s' "$s"
+	fi
+	if [ -z "$d" ] && [ -z "$h" ] && [ -z "$m" ] && [ -z "$s" ]; then
+		printf 'less than a second'
+	fi
 }
 
 base_hi() {
-  log "$BASE_IAM says hi."
+	log "$BASE_IAM says hi."
 }
 
 base_bye() {
-  log "$BASE_IAM says bye after $(base_duration "$BASE_BEGIN")."
+	log "$BASE_IAM says bye after $(base_duration "$BASE_BEGIN")."
 }
 
 # General exit handler, is called on EXIT. Any first parameter means no exit.
 base_cleanup() {
-  local err=$?
-  trap '' EXIT INT TERM
-  base_bye
-  # Keeps logs of last finished instance. Could be a possible problem.
-  cp -f "$BASE_LCK/log" "$BASE_TMP/$BASE_IAM-log"
-  rm -rf "$BASE_LCK"
-  # Parameter expantion defines if the parameter is not set, which means exit.
-  if [ -z ${1+x} ]; then
-    exit $err
-  fi
+	local err=$?
+	trap '' EXIT INT TERM
+	base_bye
+	# Keeps logs of last finished instance. Could be a possible problem.
+	cp -f "$BASE_LCK/log" "$BASE_TMP/$BASE_IAM-log"
+	rm -rf "$BASE_LCK"
+	# Parameter expantion defines if the parameter is not set, which means exit.
+	if [ -z ${1+x} ]; then
+		exit $err
+	fi
 }
 
 # Prevents double cleanup, see more:
-#   https://unix.stackexchange.com/questions/57940/trap-int-term-exit-really-necessary
+#		https://unix.stackexchange.com/questions/57940/trap-int-term-exit-really-necessary
 base_sig_cleanup() {
-  local err=$?
-  # Some shells will call EXIT after the INT handler.
-  trap '' EXIT
-  base_cleanup 1
-  exit $err
+	local err=$?
+	# Some shells will call EXIT after the INT handler.
+	trap '' EXIT
+	base_cleanup 1
+	exit $err
 }
 
 # Asks to continue if multiple instances.
 base_check_instances() {
-  local ins=0
-  # Finds process IDs of all possible instances in /tmp/<script-name.*>/pid and
-  # writes them to the pipe. Loop reads the PIDs from the pipe and counts only
-  # running processes.
-  local pipe="$BASE_LCK/pipe"
-  mkfifo "$pipe"
-  find "$BASE_TMP/$BASE_IAM".* -name "pid" -exec cat {} \; > "$pipe" &
-  while read -r p; do
-    kill -0 "$p" >/dev/null 2>&1 && ins=$((ins + 1))
-  done < "$pipe"
-  rm "$pipe"
+	local ins=0
+	# Finds process IDs of all possible instances in /tmp/<script-name.*>/pid and
+	# writes them to the pipe. Loop reads the PIDs from the pipe and counts only
+	# running processes.
+	local pipe="$BASE_LCK/pipe"
+	mkfifo "$pipe"
+	find "$BASE_TMP/$BASE_IAM".* -name "pid" -exec cat {} \; > "$pipe" &
+	while read -r p; do
+		kill -0 "$p" >/dev/null 2>&1 && ins=$((ins + 1))
+	done < "$pipe"
+	rm "$pipe"
 
-  # My instance is running!
-  local pid="$BASE_LCK/pid"
-  echo $$ > "$pid"
+	# My instance is running!
+	local pid="$BASE_LCK/pid"
+	echo $$ > "$pid"
 
-  # Asks permission in case of multiple instances.
-  if [ $ins -ne 0 ]; then
-    local ending
-    if [ $ins -gt 1 ]; then
-      ending='es'
-    else
-      ending='e'
-    fi
-    printf "%d instanc%s of %s are running.\n" $ins $ending "$BASE_IAM"
-    yes_to_continue
-  fi
+	# Asks permission in case of multiple instances.
+	if [ $ins -ne 0 ]; then
+		local ending
+		if [ $ins -gt 1 ]; then
+			ending='es'
+		else
+			ending='e'
+		fi
+		printf "%d instanc%s of %s are running.\n" $ins $ending "$BASE_IAM"
+		yes_to_continue
+	fi
 }
 
 # Start point. Loops through command line arguments.
 for arg do
-  shift
-  case "$arg" in
-    --help)
-      export BASE_SHOW_HELP=true
-      ;;
-    --verbose|-v)
-      BASE_VERBOSE=true
-      ;;
-    --version)
-      printf 'shellbase %s\n' "$BASE_VERSION"
-      export BASE_SHOW_VERSION=true
-      ;;
-    *)
-      # Sets back any unused args.
-      set -- "$@" "$arg"
-  esac
+	shift
+	case "$arg" in
+		--help)
+			export BASE_SHOW_HELP=true
+			;;
+		--verbose|-v)
+			BASE_VERBOSE=true
+			;;
+		--version)
+			printf 'shellbase %s\n' "$BASE_VERSION"
+			export BASE_SHOW_VERSION=true
+			;;
+		*)
+			# Sets back any unused args.
+			set -- "$@" "$arg"
+	esac
 done
 
 base_hi
