@@ -38,12 +38,10 @@ base_tim() {
 # Truncates log file in case it is more than 10MB. Do not return in
 # functions that are called by signal trap.
 base_truncate() {
-	if [ -w "$BASE_LOG" ]; then
-		if [ "$(wc -c <"$BASE_LOG")" -gt 10485760 ]; then
-			: > "$BASE_LOG"
-			log "$BASE_LOG is truncated."
-		fi
-	fi
+	[ -w "$BASE_LOG" ] || return 0
+	[ "$(wc -c <"$BASE_LOG")" -gt 10485760 ] || return 0
+	: > "$BASE_LOG"
+	log "$BASE_LOG is truncated."
 }
 
 # Information logger prints to stdout only with -v (verbose) flag.
@@ -74,7 +72,8 @@ bye() {
 	exit 1
 }
 
-# Checks if applications in parameters are installed.
+# Checks if applications are installed. Loops over the arguments, each one is an
+# application name.
 validate_cmd() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && bye 'Usage: validate_cmd cmd1 cmd2 ...'
 	local arg
@@ -84,7 +83,8 @@ validate_cmd() {
 	done
 }
 
-# Checks if environment variables in parameters are defined.
+# Checks if environment variables are defined. Loops over the arguments, each
+# one is a variable name.
 validate_var() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && bye 'Usage: validate_var var1 var2 ...'
 	local arg
