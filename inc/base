@@ -9,17 +9,17 @@
 # shellcheck disable=SC3043
 #
 # shellbase is general framework for POSIX shell scripts. It provides multiple
-# services: functions (be_root, bye, log, validate_cmd, validate_var,
-# yes_to_continue), signals handlers, garbage collection, multiple instances. It
-# asks for a permission to continue if multiple running instances of a same
-# script are detected.
+# services: functions (be_root, bye, is_directory_empty, log, validate_cmd,
+# validate_var, yes_to_continue), signals handlers, garbage collection, multiple
+# instances. It asks for a permission to continue if multiple running instances
+# of a same script are detected.
 #
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are: log,
-# loge, bye, validate_cmd, validate_var, be_root, yes_to_continue. Global
-# variables have BASE_ prefix and clients could use them. Clients should place
-# all temporaly files under $BASE_LCK. All functions started with base_ prefix
-# are internal and should not be used by clients.
+# loge, bye, is_directory_empty, validate_cmd, validate_var, be_root,
+# yes_to_continue. Global variables have BASE_ prefix and clients could use
+# them. Clients should place all temporaly files under $BASE_LCK. All functions
+# started with base_ prefix are internal and should not be used by clients.
 
 BASE_IAM=$(basename -- "$0")
 BASE_IAM="${BASE_IAM%.*}"
@@ -27,7 +27,7 @@ BASE_TMP='/tmp'
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXX")
 BASE_LOG="$BASE_LCK/log"
 BASE_BEGIN=$(date +%s)
-BASE_VERSION='0.9.3'
+BASE_VERSION='0.9.4'
 BASE_VERBOSE=false
 
 # Public functions have generic names: log, validate, etc.
@@ -100,6 +100,16 @@ yes_to_continue() {
 	stty raw -echo; ans=$(head -c 1); stty "$keep"
 	printf '\n'
 	printf '%s' "$ans" | grep -iq '^y' || exit 0
+}
+
+# Inspect fils existence in a directory passed by the parameter.
+is_directory_empty() {
+	[ -z "${1-}" ] || [ $# -gt 1 ] && bye 'Usage: is_directory_empty dir'
+	[ -d "$1" ] || bye "Directory is not found: $1."
+	# shellcheck disable=SC2010
+	# Don't use ls | grep. Use a glob or a for loop with a condition to allow
+	# non-alphanumeric filenames.
+	! ls -1qA "$1" | grep -q .
 }
 
 # Private functions have prefix base_, they are used locally.
