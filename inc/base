@@ -30,19 +30,7 @@ BASE_BEGIN=$(date +%s)
 BASE_VERSION='0.9.3'
 BASE_VERBOSE=false
 
-# Prints timestamp before arguments.
-base_tim() {
-	printf '%s %s\n' "$(date +"%Y%m%d-%H:%M:%S")" "$*"
-}
-
-# Truncates log file in case it is more than 10MB. Do not return in
-# functions that are called by signal trap.
-base_truncate() {
-	[ -w "$BASE_LOG" ] || return 0
-	[ "$(wc -c <"$BASE_LOG")" -gt 10485760 ] || return 0
-	: > "$BASE_LOG"
-	log "$BASE_LOG is truncated."
-}
+# Public functions have generic names: log, validate, etc.
 
 # Information logger prints to stdout only with -v (verbose) flag.
 log() {
@@ -112,6 +100,22 @@ yes_to_continue() {
 	stty raw -echo; ans=$(head -c 1); stty "$keep"
 	printf '\n'
 	printf '%s' "$ans" | grep -iq '^y' || exit 0
+}
+
+# Private functions have prefix base_, they are used locally.
+
+# Prints timestamp before arguments.
+base_tim() {
+	printf '%s %s\n' "$(date +"%Y%m%d-%H:%M:%S")" "$*"
+}
+
+# Truncates log file in case it is more than 10MB. Do not return in
+# functions that are called by signal trap.
+base_truncate() {
+	[ -w "$BASE_LOG" ] || return 0
+	[ "$(wc -c <"$BASE_LOG")" -gt 10485760 ] || return 0
+	: > "$BASE_LOG"
+	log "$BASE_LOG is truncated."
 }
 
 # Formats time titles, the first parameter is a number, the second parameter is
