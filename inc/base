@@ -9,17 +9,17 @@
 # shellcheck disable=SC3043
 #
 # shellbase is general framework for POSIX shell scripts. It provides multiple
-# services: functions (be_root, bye, is_directory_empty, log, validate_cmd,
-# validate_var, yes_to_continue), signals handlers, garbage collection, multiple
-# instances. It asks for a permission to continue if multiple running instances
-# of a same script are detected.
+# services: public functions (logger, validation), signals handlers, garbage
+# collection, multiple instances. It asks for a permission to continue if
+# multiple running instances of a same script are detected.
 #
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are: log,
-# loge, bye, is_directory_empty, validate_cmd, validate_var, be_root,
-# yes_to_continue. Global variables have BASE_ prefix and clients could use
-# them. Clients should place all temporaly files under $BASE_LCK. All functions
-# started with base_ prefix are internal and should not be used by clients.
+# loge, bye, file_exists, is_directory_empty, validate_cmd, validate_var,
+# be_root, yes_to_continue. Global variables have BASE_ prefix and clients could
+# use them. Clients should place all temporaly files under $BASE_LCK. All
+# functions started with base_ prefix are internal and should not be used by
+# clients.
 
 BASE_IAM=$(basename -- "$0")
 BASE_IAM="${BASE_IAM%.*}"
@@ -110,6 +110,12 @@ is_directory_empty() {
 	# Don't use ls | grep. Use a glob or a for loop with a condition to allow
 	# non-alphanumeric filenames.
 	! ls -1qA "$1" | grep -q .
+}
+
+# Checks whether files or directories exist.
+file_exists() {
+	[ -z "${1-}" ] && bye 'Usage: file_exists name'
+	ls "$1" >/dev/null 2>&1
 }
 
 # Private functions have prefix base_, they are used locally.
