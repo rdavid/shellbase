@@ -17,7 +17,7 @@ running instances of a same script are detected.
 
 `shellbase` defines global variables and functions. All functions without
 `base_` prefix are API and should be used by clients. API functions are:
-`be_root`, `bye`, `file_exists`, `is_directory_empty`, `log`, `loge`, `logw`,
+`be_root`, `bye`, `file_exists`, `is_empty`, `log`, `loge`, `logw`,
 `validate_cmd`, `validate_var`, `yes_to_continue`. Global variables have
 `BASE_` prefix and clients could use them. Clients should place all temporaly
 files under `$BASE_LCK`. All functions started with `base_` prefix are internal
