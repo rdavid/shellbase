@@ -95,9 +95,11 @@ be_root() {
 yes_to_continue() {
 	# Allows to print an answer on the same line.
 	printf 'Do you want to continue? [y/N] '
-	local keep
-	keep="$(stty -g)"
-	stty raw -echo; ans=$(head -c 1); stty "$keep"
+	local arc ans
+	arc="$(stty -g)"
+	stty raw -echo
+	ans=$(head -c 1)
+	stty "$arc"
 	printf '\n'
 	printf '%s' "$ans" | grep -iq '^y' || exit 0
 }
