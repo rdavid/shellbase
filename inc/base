@@ -239,7 +239,7 @@ base_cleanup() {
 }
 
 # Prevents double cleanup, see more:
-#		https://unix.stackexchange.com/questions/57940/trap-int-term-exit-really-necessary
+#  https://unix.stackexchange.com/questions/57940/trap-int-term-exit-really-necessary
 base_sig_cleanup() {
 	local err=$?
 	# Some shells will call EXIT after the INT handler.
