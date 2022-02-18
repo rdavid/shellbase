@@ -224,10 +224,10 @@ base_bye() {
 	log "$BASE_IAM says bye after $(base_duration "$BASE_BEGIN")."
 }
 
-# General exit handler, is called on EXIT. Any first parameter means no exit.
+# General exit handler, it is called on EXIT. Any first parameter means no exit.
 base_cleanup() {
 	local err=$?
-	trap '' EXIT INT TERM
+	trap '' EXIT INT QUIT TERM
 	base_bye
 	# Keeps logs of last finished instance. Could be a possible problem.
 	cp -f "$BASE_LCK/log" "$BASE_TMP/$BASE_IAM-log"
