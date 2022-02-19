@@ -260,7 +260,7 @@ base_bye() {
 # General exit handler, it is called on EXIT. Any first parameter means no exit.
 base_cleanup() {
 	local err=$?
-	trap '' EXIT INT QUIT TERM
+	trap - HUP EXIT INT QUIT TERM
 	base_bye
 	# Keeps logs of last finished instance. Could be a possible problem.
 	cp -f "$BASE_LCK/log" "$BASE_TMP/$BASE_IAM-log"
@@ -276,7 +276,7 @@ base_cleanup() {
 base_sig_cleanup() {
 	local err=$?
 	# Some shells will call EXIT after the INT handler.
-	trap '' EXIT
+	trap - EXIT
 	base_cleanup 1
 	exit $err
 }
@@ -333,6 +333,9 @@ for arg do
 done
 
 base_hi
+
+# Handles signals, see more:
+#  https://mywiki.wooledge.org/SignalTrap
 trap base_cleanup EXIT
-trap base_sig_cleanup INT QUIT TERM
+trap base_sig_cleanup HUP INT QUIT TERM
 base_check_instances
