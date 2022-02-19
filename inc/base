@@ -91,17 +91,50 @@ be_root() {
 	[ "$(id -u)" -ne '0' ] && bye "Run $BASE_IAM with root privileges."
 }
 
-# Asks a user permission to continue, exit if not 'y'.
+# Asks a user permission to continue, exits if not 'y'. Exits by timeout if any
+# input is not detected.
 yes_to_continue() {
-	# Allows to print an answer on the same line.
-	printf 'Do you want to continue? [y/N] '
-	local arc ans
+	local arc
 	arc="$(stty -g)"
+
+	# The trap returns tty settings, adds the new line before any printing to
+	# compensate the question without a new line.
+	local tmo=20
+	trap 'stty "$arc"; printf \\n; bye "Timed out in $tmo seconds".' TERM
+
+	# Runs watchdog process that kills dad and kids proceeses with common unique
+	# process group ID, see minus before dad PID.
+	local dad="$$"
+	(sleep "$tmo"; kill -- -$dad)&
+	local kid="$!"
+	log "PIDs: dad $dad, kid $kid."
+
+	# Prints the question without a new line allows to print an answer on the
+	# same line. The question is not logged.
+	printf 'Do you want to continue? [y/N] '
 	stty raw -echo
+
+	# Runs child process to read first character from stdin.
+	local ans
 	ans=$(head -c 1)
 	stty "$arc"
-	printf '\n'
-	printf '%s' "$ans" | grep -iq '^y' || exit 0
+	trap base_sig_cleanup TERM
+
+	# Adds the new line before any printing to compensate the question without a
+	# new line.
+	printf \\n
+	log "Killing watchdog kid $kid."
+	kill "$kid"
+	# Command wait could return an error code, temporarily disables exit on error.
+	set +e
+	wait "$kid" 2>/dev/null
+	set -e
+	if printf '%s' "$ans" | grep -iq '^y'; then
+		log 'Continue working.'
+		return 0
+	fi
+	log 'Stop working.'
+	exit 0
 }
 
 # Decides if a directory is empty. See more:
