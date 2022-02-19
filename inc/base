@@ -14,20 +14,20 @@
 # multiple running instances of a same script are detected.
 #
 # shellbase defines global variables and functions. All functions without
-# base_ prefix are API and should be used by clients. API functions are: log,
-# loge, bye, file_exists, is_empty, validate_cmd, validate_var, be_root,
-# yes_to_continue. Global variables have BASE_ prefix and clients could
-# use them. Clients should place all temporaly files under $BASE_LCK. All
+# base_ prefix are API and should be used by clients. API functions are:
+# be_root, bye, file_exists, is_empty, log, loge, logw, validate_cmd,
+# validate_var, yes_to_continue. Global variables have BASE_ prefix and clients
+# could use them. Clients should place all temporaly files under $BASE_LCK. All
 # functions started with base_ prefix are internal and should not be used by
 # clients.
 
 BASE_IAM=$(basename -- "$0")
 BASE_IAM="${BASE_IAM%.*}"
-BASE_TMP='/tmp'
+BASE_TMP=/tmp
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXX")
 BASE_LOG="$BASE_LCK/log"
 BASE_BEGIN=$(date +%s)
-BASE_VERSION='0.9.4'
+BASE_VERSION=0.9.5
 BASE_VERBOSE=false
 
 # Public functions have generic names: log, validate, etc.
@@ -125,6 +125,7 @@ yes_to_continue() {
 	printf \\n
 	log "Killing watchdog kid $kid."
 	kill "$kid"
+
 	# Command wait could return an error code, temporarily disables exit on error.
 	set +e
 	wait "$kid" 2>/dev/null
@@ -262,9 +263,11 @@ base_cleanup() {
 	local err=$?
 	trap - HUP EXIT INT QUIT TERM
 	base_bye
+
 	# Keeps logs of last finished instance. Could be a possible problem.
 	cp -f "$BASE_LCK/log" "$BASE_TMP/$BASE_IAM-log"
 	rm -rf "$BASE_LCK"
+
 	# Parameter expantion defines if the parameter is not set, which means exit.
 	if [ -z ${1+x} ]; then
 		exit $err
@@ -275,6 +278,7 @@ base_cleanup() {
 #  https://unix.stackexchange.com/questions/57940/trap-int-term-exit-really-necessary
 base_sig_cleanup() {
 	local err=$?
+
 	# Some shells will call EXIT after the INT handler.
 	trap - EXIT
 	base_cleanup 1
@@ -284,6 +288,7 @@ base_sig_cleanup() {
 # Asks to continue if multiple instances.
 base_check_instances() {
 	local ins=0
+
 	# Finds process IDs of all possible instances in /tmp/<script-name.*>/pid and
 	# writes them to the pipe. Loop reads the PIDs from the pipe and counts only
 	# running processes.
@@ -312,7 +317,7 @@ base_check_instances() {
 	fi
 }
 
-# Start point. Loops through command line arguments.
+# Starting point. First loops through command line arguments.
 for arg do
 	shift
 	case "$arg" in
@@ -332,10 +337,14 @@ for arg do
 	esac
 done
 
+# Logs the starting point.
 base_hi
 
 # Handles signals, see more:
 #  https://mywiki.wooledge.org/SignalTrap
 trap base_cleanup EXIT
 trap base_sig_cleanup HUP INT QUIT TERM
+
+# Detects previously ran processes with the same name. If found asks to
+# continue.
 base_check_instances
