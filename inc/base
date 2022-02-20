@@ -15,7 +15,7 @@
 #
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
-# be_root, bye, file_exists, is_empty, log, loge, logw, validate_cmd,
+# be_root, be_user, bye, file_exists, is_empty, log, loge, logw, validate_cmd,
 # validate_var, yes_to_continue. Global variables have BASE_ prefix and clients
 # could use them. Clients should place all temporaly files under $BASE_LCK. All
 # functions started with base_ prefix are internal and should not be used by
@@ -86,9 +86,19 @@ validate_var() {
 	done
 }
 
-# Bye if not root.
+# Exits with error if it is not ran by a user.
+be_user() {
+	[ -z "${1-}" ] && bye 'Usage: be_user name.'
+	local ask cur usr="$1"
+	cur="$(id -u)"
+	ask="$(id -u "$usr" 2>/dev/null)" || bye "$usr: no such user."
+	[ "$ask" -ne "$cur" ] && bye "You are $(id -un) ($cur), be $usr ($ask)."
+	log "You are $usr ($cur)."
+}
+
+# Exits with error if it is not ran by root.
 be_root() {
-	[ "$(id -u)" -ne '0' ] && bye "Run $BASE_IAM with root privileges."
+	be_user root
 }
 
 # Asks a user permission to continue, exits if not 'y'. Exits by timeout if any
