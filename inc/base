@@ -27,7 +27,7 @@ BASE_TMP=/tmp
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXX")
 BASE_LOG="$BASE_LCK/log"
 BASE_BEGIN=$(date +%s)
-BASE_VERSION=0.9.5
+BASE_VERSION=0.9.20220220
 BASE_VERBOSE=false
 
 # Public functions have generic names: log, validate, etc.
