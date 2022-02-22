@@ -23,6 +23,10 @@ running instances of a same script are detected.
 files under `$BASE_LCK`. All functions started with `base_` prefix are internal
 and should not be used by clients.
 
+Run `shellcheck` on sources by `redo`, run tests by `redo test`. Install
+[Daniel J. Bernstein's redo build system](http://cr.yp.to/redo.html) program by:
+`brew install redo`.
+
 See [Toolbox project](https://github.com/rdavid/toolbox) as an example.
 
 ## License
