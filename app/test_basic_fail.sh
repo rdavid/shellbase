@@ -5,6 +5,5 @@
 # shellcheck source=../inc/base
 . "$(dirname "$(realpath "$0")")/../inc/base"
 
-be_user david
-be_root
+bye 'Something went wrong.'
 exit 0
