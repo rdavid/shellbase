@@ -63,7 +63,7 @@ bye() {
 # Checks if applications are installed. Loops over the arguments, each one is an
 # application name.
 validate_cmd() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && bye 'Usage: validate_cmd cmd1 cmd2 ...'
+	[ -z "${1-}" ] || [ $# -eq 0 ] && bye 'Usage: validate_cmd cmd1 cmd2...'
 	local arg
 	for arg do
 		command -v "$arg" >/dev/null 2>&1 || bye "Install $arg."
@@ -74,7 +74,7 @@ validate_cmd() {
 # Checks if environment variables are defined. Loops over the arguments, each
 # one is a variable name.
 validate_var() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && bye 'Usage: validate_var var1 var2 ...'
+	[ -z "${1-}" ] || [ $# -eq 0 ] && bye 'Usage: validate_var var1 var2...'
 	local arg
 	for arg do
 		set +u
