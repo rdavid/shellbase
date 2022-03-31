@@ -16,10 +16,10 @@
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
 # be_root, be_user, bye, file_exists, is_empty, log, loge, logw, validate_cmd,
-# validate_var, yes_to_continue. Global variables have BASE_ prefix and clients
-# could use them. Clients should place all temporaly files under $BASE_LCK. All
-# functions started with base_ prefix are internal and should not be used by
-# clients.
+# validate_var, var_exists yes_to_continue. Global variables have BASE_ prefix
+# and clients could use them. Clients should place all temporaly files under
+# $BASE_LCK. All functions started with base_ prefix are internal and should not
+# be used by clients.
 
 BASE_IAM=$(basename -- "$0")
 BASE_IAM="${BASE_IAM%.*}"
@@ -71,18 +71,25 @@ validate_cmd() {
 	done
 }
 
+# Validates if environment variable is set. Returns false if a variable is
+# unset or null, returns true if a variable has a value.
+var_exists() {
+	[ -z "${1-}" ] && bye 'Usage: var_is_set name.'
+	local var
+	set +u
+	eval "var=\${$1}"
+	set -u
+	[ -z "${var}" ] && return 1
+	log "$1 is set to $var."
+}
+
 # Checks if environment variables are defined. Loops over the arguments, each
 # one is a variable name.
 validate_var() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && bye 'Usage: validate_var var1 var2...'
 	local arg
 	for arg do
-		set +u
-		local var
-		eval "var=\${$arg}"
-		set -u
-		[ -z "${var}" ] && bye "Define $arg."
-		log "$arg is defined as $var."
+		var_exists "$arg" || bye "Define $arg."
 	done
 }
 
