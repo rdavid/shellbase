@@ -331,7 +331,10 @@ base_check_instances() {
 for arg do
 	shift
 	case "$arg" in
-		--help)
+		--execute|-x)
+			set -x
+			;;
+		--help|-h)
 			export BASE_SHOW_HELP=true
 			;;
 		--verbose|-v)
