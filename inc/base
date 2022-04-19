@@ -30,7 +30,7 @@ BASE_BEGIN=$(date +%s)
 BASE_VERSION=0.9.20220413
 BASE_VERBOSE=false
 
-# Public functions have generic names: log, validate, etc.
+# Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
 # Information logger prints to stdout only with -v (verbose) flag.
 log() {
