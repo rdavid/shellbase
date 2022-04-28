@@ -7,6 +7,6 @@
 
 file_exists /tmp && printf '/tmp exists.\n'
 file_exists /tmp1 || printf '/tmp1 does not exist.\n'
-file_exists /tmp/* && printf '/tmp/* exists\n.'
-file_exists /tmp1/* || printf '/tmp1/* does not exist\n.'
+file_exists /tmp/* && printf '/tmp/* exists.\n'
+file_exists /tmp1/* || printf '/tmp1/* does not exist.\n'
 exit 0

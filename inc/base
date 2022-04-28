@@ -16,10 +16,10 @@
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
 # be_root, be_user, bye, file_exists, is_empty, is_readable, is_writable, log,
-# loge, logw, validate_cmd, validate_var, var_exists yes_to_continue. Global
-# variables have BASE_ prefix and clients could use them. Clients should place
-# all temporaly files under $BASE_LCK. All functions started with base_ prefix
-# are internal and should not be used by clients.
+# loge, logw, url_exists, validate_cmd, validate_var, var_exists
+# yes_to_continue. Global variables have BASE_ prefix and clients could use
+# them. Clients should place all temporaly files under $BASE_LCK. All functions
+# started with base_ prefix are internal and should not be used by clients.
 
 BASE_IAM=$(basename -- "$0")
 BASE_IAM="${BASE_IAM%.*}"
@@ -27,7 +27,7 @@ BASE_TMP=/tmp
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXX")
 BASE_LOG="$BASE_LCK/log"
 BASE_BEGIN=$(date +%s)
-BASE_VERSION=0.9.20220413
+BASE_VERSION=0.9.20220429
 BASE_VERBOSE=false
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
@@ -194,8 +194,28 @@ is_empty() {
 
 # Checks whether files or directories exist.
 file_exists() {
-	[ -z "${1-}" ] && bye Usage: file_exists name.
+	[ -z "${1-}" ] && bye Usage: file_exists filename.
 	ls "$1" >/dev/null 2>&1
+}
+
+# Checks whether URL exists, any returned HTTP code is OK.
+url_exists() {
+	[ -z "${1-}" ] && bye Usage: url_exists URL.
+	validate_cmd curl
+	local out
+	local url="$1"
+	out=$(curl \
+		--head \
+		--output /dev/null \
+		--show-error \
+		--silent \
+		--write-out '%{http_code}' \
+		"$url" \
+		2>&1) && { log "$url returns HTTP code $out."; return 0; }
+
+	# In case of error out has two lines: error message and HTTP code 000.
+	loge "$url is unavailable. $(printf %s "$out" | head --lines=1)."
+	return 1
 }
 
 # Private functions have prefix base_, they are used locally.
