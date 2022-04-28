@@ -18,11 +18,11 @@ running instances of a same script are detected.
 `shellbase` defines global variables and functions. All functions without
 `base_` prefix are API and should be used by clients. API functions are:
 `be_root`, `be_user`, `bye`, `file_exists`, `is_empty`, `is_readable`,
-`is_writable`, `log`, `loge`, `logw`, `validate_cmd`, `validate_var`,
-`var_exists`, `yes_to_continue`. Global variables have `BASE_` prefix and
-clients could use them. Clients should place all temporaly files under
-`$BASE_LCK`. All functions started with `base_` prefix are internal and should
-not be used by clients.
+`is_writable`, `log`, `loge`, `logw`, `url_exists`, `validate_cmd`,
+`validate_var`, `var_exists`, `yes_to_continue`. Global variables have `BASE_`
+prefix and clients could use them. Clients should place all temporaly files
+under `$BASE_LCK`. All functions started with `base_` prefix are internal and
+should not be used by clients.
 
 Run `shellcheck` on sources by `redo`, run tests by `redo test`. Install
 [Daniel J. Bernstein's redo build system](http://cr.yp.to/redo.html) program by:
