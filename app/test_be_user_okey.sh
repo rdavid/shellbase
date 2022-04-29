@@ -6,4 +6,5 @@
 . "$(dirname "$(realpath "$0")")/../inc/base"
 
 be_user "$USER"
+printf 'You are %s.\n' "$USER"
 exit 0

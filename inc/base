@@ -125,7 +125,7 @@ be_user() {
 	local ask cur usr="$1"
 	cur="$(id -u)"
 	ask="$(id -u "$usr" 2>/dev/null)" || bye "$usr: no such user."
-	[ "$ask" -ne "$cur" ] && bye "You are $(id -un) ($cur), be $usr ($ask)."
+	[ "$ask" -eq "$cur" ] || bye "You are $(id -un) ($cur), be $usr ($ask)."
 	log "You are $usr ($cur)."
 }
 
