@@ -20,14 +20,15 @@
 # yes_to_continue. Global variables have BASE_ prefix and clients could use
 # them. Clients should place all temporaly files under $BASE_LCK. All functions
 # started with base_ prefix are internal and should not be used by clients.
-
 BASE_IAM=$(basename -- "$0")
 BASE_IAM="${BASE_IAM%.*}"
 BASE_TMP=/tmp
-BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXX")
+
+# busybox implementation of mktemp requires six X.
+BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXXXXX")
 BASE_LOG="$BASE_LCK/log"
 BASE_BEGIN=$(date +%s)
-BASE_VERSION=0.9.20220429
+BASE_VERSION=0.9.20220501
 BASE_VERBOSE=false
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.

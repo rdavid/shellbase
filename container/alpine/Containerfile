@@ -1,0 +1,32 @@
+FROM alpine:3.15.4
+LABEL maintainer="David Rabkin <david@rabkin.co.il>"
+ENV \
+	TIME_ZONE=Asia/Jerusalem \
+	USER=shellbase
+RUN \
+	apk add --no-cache --update \
+		curl \
+		git \
+		python3 \
+		py3-pip \
+		shellcheck \
+		tzdata && \
+	addgroup -S "$USER" && \
+	adduser -S "$USER" -G "$USER" && \
+	printf "$TIME_ZONE" > /etc/timezone && \
+	cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime && \
+	rm -rf /var/cache/apk/*
+RUN \
+	git clone https://github.com/apenwarr/redo --quiet && \
+	cd redo && \
+	DESTDIR= PREFIX=/usr/local ./do --jobs=10 install 2>&1 >/dev/null && \
+	./do --jobs=10 clean 2>&1 >/dev/null
+USER "$USER"
+WORKDIR /home/"$USER"
+COPY . .
+ENTRYPOINT \
+	redo \
+		--jobs=10 \
+		--verbose \
+		--xtrace \
+		test
