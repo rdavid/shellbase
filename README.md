@@ -28,6 +28,11 @@ Run `shellcheck` on sources by `redo`, run tests by `redo test`. Install
 [Daniel J. Bernstein's redo build system](http://cr.yp.to/redo.html) program by:
 `brew install redo`.
 
+Run tests in a container:
+```
+podman run --rm -it $(podman build -q -f container/alpine/Containerfile .)
+```
+
 See [Toolbox project](https://github.com/rdavid/toolbox) as an example.
 
 ## License
