@@ -1,0 +1,31 @@
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
+LABEL maintainer="David Rabkin <david@rabkin.co.il>"
+ENV \
+	USER=shellbase
+
+# redo needs diff (diffutils), which, and xargs (findutils).
+RUN \
+	microdnf update -y && \
+	rm -rf /var/cache/yum && \
+	microdnf install \
+		diffutils \
+		findutils \
+		git \
+		python3 \
+		which && \
+	microdnf clean all && \
+	useradd -m "$USER"
+RUN \
+	git clone https://github.com/apenwarr/redo --quiet && \
+	cd redo && \
+	DESTDIR= PREFIX=/usr/local ./do --jobs=10 install 2>&1 >/dev/null && \
+	./do --jobs=10 clean 2>&1 >/dev/null
+USER "$USER"
+WORKDIR /home/"$USER"
+COPY . .
+ENTRYPOINT \
+	redo \
+		--jobs=10 \
+		--verbose \
+		--xtrace \
+		test
