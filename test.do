@@ -1,4 +1,4 @@
-redo-ifchange all
+redo-ifchange inc/* app/*
 for f in app/*_okey.sh; do
 	"$f" --verbose 2>&1
 done
