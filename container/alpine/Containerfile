@@ -9,7 +9,6 @@ RUN \
 		git \
 		python3 \
 		py3-pip \
-		shellcheck \
 		tzdata && \
 	addgroup -S "$USER" && \
 	adduser -S "$USER" -G "$USER" && \
