@@ -28,7 +28,7 @@ BASE_TMP=/tmp
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXXXXX")
 BASE_LOG="$BASE_LCK/log"
 BASE_BEGIN=$(date +%s)
-BASE_VERSION=0.9.20220501
+BASE_VERSION=0.9.20220505
 BASE_VERBOSE=false
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
@@ -160,7 +160,7 @@ yes_to_continue() {
 
 	# Runs child process to read first character from stdin.
 	local ans
-	ans=$(head -c 1)
+	ans=$(head --bytes=1)
 	stty "$arc"
 	trap base_sig_cleanup TERM
 
@@ -174,7 +174,7 @@ yes_to_continue() {
 	set +e
 	wait "$kid" 2>/dev/null
 	set -e
-	if printf '%s' "$ans" | grep -iq '^y'; then
+	if printf '%s' "$ans" | grep --ignore-case --quiet '^y'; then
 		log Continue working.
 		return 0
 	fi
