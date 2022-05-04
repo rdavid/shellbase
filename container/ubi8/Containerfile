@@ -5,27 +5,37 @@ ENV \
 
 # redo needs diff (diffutils), which, and xargs (findutils).
 RUN \
-	microdnf update -y && \
-	rm -rf /var/cache/yum && \
-	microdnf install \
-		diffutils \
-		findutils \
-		git \
-		python3 \
-		which && \
-	microdnf clean all && \
-	useradd -m "$USER"
+	microdnf update --assumeyes --disableplugin=subscription-manager && \
+	rm --force --recursive /var/cache/yum && \
+	microdnf install --assumeyes --disableplugin=subscription-manager \
+		diffutils-3.6 \
+		findutils-4.6.0 \
+		git-2.27.0 \
+		python36-3.6.8 \
+		which-2.21 && \
+	microdnf clean all --disableplugin=subscription-manager && \
+	useradd --create-home "$USER"
 RUN \
-	git clone https://github.com/apenwarr/redo --quiet && \
-	cd redo && \
-	DESTDIR= PREFIX=/usr/local ./do --jobs=10 install 2>&1 >/dev/null && \
-	./do --jobs=10 clean 2>&1 >/dev/null
+	git clone \
+		--branch redo-0.42d \
+		--config advice.detachedHead=false \
+		--quiet \
+		https://github.com/apenwarr/redo
+WORKDIR /redo
+RUN \
+	DESTDIR='' PREFIX=/usr/local ./do --jobs=10 install >/dev/null 2>&1 && \
+	./do --jobs=10 clean >/dev/null 2>&1
 USER "$USER"
 WORKDIR /home/"$USER"
-COPY . .
+COPY \
+	--chown="$USER":"$USER" \
+	. .
 ENTRYPOINT \
-	redo \
-		--jobs=10 \
-		--verbose \
-		--xtrace \
-		test
+	[ \
+		"redo", \
+		"--jobs=10", \
+		"--verbose", \
+		"--xtrace" \
+	]
+CMD \
+	[ "test" ]
