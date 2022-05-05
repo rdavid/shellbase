@@ -1,0 +1,37 @@
+FROM archlinux:base-20220501.0.54834
+LABEL maintainer="David Rabkin <david@rabkin.co.il>"
+ENV \
+	USER=shellbase
+
+# redo needs diff (diffutils), and which.
+RUN \
+	pacman --noconfirm --refresh --sync --sysupgrade \
+		diffutils=3.8 \
+		git=2.36.0 \
+		python=3.10.4 \
+		which=2.21 && \
+	useradd --create-home "$USER"
+RUN \
+	git clone \
+		--branch redo-0.42d \
+		--config advice.detachedHead=false \
+		--quiet \
+		https://github.com/apenwarr/redo
+WORKDIR /redo
+RUN \
+	DESTDIR='' PREFIX=/usr/local ./do --jobs=10 install >/dev/null 2>&1 && \
+	./do --jobs=10 clean >/dev/null 2>&1
+USER "$USER"
+WORKDIR /home/"$USER"
+COPY \
+	--chown="$USER":"$USER" \
+	. .
+ENTRYPOINT \
+	[ \
+		"redo", \
+		"--jobs=10", \
+		"--verbose", \
+		"--xtrace" \
+	]
+CMD \
+	[ "test" ]
