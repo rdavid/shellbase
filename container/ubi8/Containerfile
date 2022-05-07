@@ -1,41 +1,37 @@
+FROM golang:1.18-alpine as builder
+RUN \
+	apk add --no-cache --update \
+		zstd=1.5.0-r0 && \
+	rm -rf /var/cache/apk/*
+
+# hadolint ignore=DL4006
+RUN \
+	wget --quiet \
+		http://www.goredo.cypherpunks.ru/download/goredo-1.24.0.tar.zst && \
+	zstd -d < goredo-1.24.0.tar.zst | tar xf -
+WORKDIR /go/goredo-1.24.0/src
+RUN go build -mod=vendor
+
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
 LABEL maintainer="David Rabkin <david@rabkin.co.il>"
 ENV \
 	USER=shellbase
-
-# redo needs diff (diffutils), which, and xargs (findutils).
+COPY LICENSE /licenses/LICENSE
+WORKDIR /bin
+COPY --from=builder /go/goredo-1.24.0/src/goredo .
 RUN \
 	microdnf update --assumeyes --disableplugin=subscription-manager && \
 	rm --force --recursive /var/cache/yum && \
 	microdnf install --assumeyes --disableplugin=subscription-manager \
-		diffutils-3.6 \
 		findutils-4.6.0 \
-		git-2.27.0 \
-		python36-3.6.8 \
-		which-2.21 && \
+		shadow-utils-2:4.6-14.el8 && \
 	microdnf clean all --disableplugin=subscription-manager && \
-	useradd --create-home "$USER"
-RUN \
-	git clone \
-		--branch redo-0.42d \
-		--config advice.detachedHead=false \
-		--quiet \
-		https://github.com/apenwarr/redo
-WORKDIR /redo
-RUN \
-	DESTDIR='' PREFIX=/usr/local ./do --jobs=10 install >/dev/null 2>&1 && \
-	./do --jobs=10 clean >/dev/null 2>&1
+	useradd --create-home "$USER" && \
+	./goredo -symlinks
 USER "$USER"
 WORKDIR /home/"$USER"
 COPY \
 	--chown="$USER":"$USER" \
 	. .
-ENTRYPOINT \
-	[ \
-		"redo", \
-		"--jobs=10", \
-		"--verbose", \
-		"--xtrace" \
-	]
 CMD \
-	[ "test" ]
+	[ "redo", "-j=10", "-x", "test" ]

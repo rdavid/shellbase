@@ -1,37 +1,32 @@
+FROM golang:1.18-alpine as builder
+RUN \
+	apk add --no-cache --update \
+		zstd=1.5.0-r0 && \
+	rm -rf /var/cache/apk/*
+
+# hadolint ignore=DL4006
+RUN \
+	wget --quiet \
+		http://www.goredo.cypherpunks.ru/download/goredo-1.24.0.tar.zst && \
+	zstd -d < goredo-1.24.0.tar.zst | tar xf -
+WORKDIR /go/goredo-1.24.0/src
+RUN go build -mod=vendor
+
 FROM archlinux:base-20220501.0.54834
 LABEL maintainer="David Rabkin <david@rabkin.co.il>"
 ENV \
 	USER=shellbase
-
-# redo needs diff (diffutils), and which.
+COPY LICENSE /licenses/LICENSE
+WORKDIR /bin
+COPY --from=builder /go/goredo-1.24.0/src/goredo .
 RUN \
-	pacman --noconfirm --refresh --sync --sysupgrade \
-		diffutils=3.8 \
-		git=2.36.0 \
-		python=3.10.4 \
-		which=2.21 && \
-	useradd --create-home "$USER"
-RUN \
-	git clone \
-		--branch redo-0.42d \
-		--config advice.detachedHead=false \
-		--quiet \
-		https://github.com/apenwarr/redo
-WORKDIR /redo
-RUN \
-	DESTDIR='' PREFIX=/usr/local ./do --jobs=10 install >/dev/null 2>&1 && \
-	./do --jobs=10 clean >/dev/null 2>&1
+	pacman --noconfirm --refresh --sync --sysupgrade >/dev/null 2>&1 && \
+	useradd --create-home "$USER" && \
+	./goredo -symlinks
 USER "$USER"
 WORKDIR /home/"$USER"
 COPY \
 	--chown="$USER":"$USER" \
 	. .
-ENTRYPOINT \
-	[ \
-		"redo", \
-		"--jobs=10", \
-		"--verbose", \
-		"--xtrace" \
-	]
 CMD \
-	[ "test" ]
+	[ "redo", "-j=10", "-x", "test" ]
