@@ -3,12 +3,16 @@ RUN \
 	apk add --no-cache --update \
 		zstd=1.5.0-r0 && \
 	rm -rf /var/cache/apk/*
+ENV \
+	SHA=656e96d9f3efa45f035c2dd096fa91763854dbf1a09a37409c25ffc25cbc358f \
+	VER=goredo-1.24.0
 
 # hadolint ignore=DL4006
 RUN \
 	wget --quiet \
-		http://www.goredo.cypherpunks.ru/download/goredo-1.24.0.tar.zst && \
-	zstd -d < goredo-1.24.0.tar.zst | tar xf -
+		http://www.goredo.cypherpunks.ru/download/$VER.tar.zst && \
+		printf '%s  %s' $SHA $VER.tar.zst | sha256sum -cs && \
+	zstd --decompress < $VER.tar.zst | tar --extract --file -
 WORKDIR /go/goredo-1.24.0/src
 RUN go build -mod=vendor
 
@@ -18,7 +22,7 @@ ENV \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
-COPY --from=builder /go/goredo-1.24.0/src/goredo .
+COPY --from=builder /go/goredo-*/src/goredo .
 RUN \
 	pacman --noconfirm --refresh --sync --sysupgrade >/dev/null 2>&1 && \
 	useradd --create-home "$USER" && \
