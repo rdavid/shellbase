@@ -1,0 +1,38 @@
+FROM golang:1.18-alpine as builder
+RUN \
+	apk add --no-cache --update \
+		zstd=1.5.0-r0 && \
+	rm -rf /var/cache/apk/*
+
+# hadolint ignore=DL4006
+RUN \
+	wget --quiet \
+		http://www.goredo.cypherpunks.ru/download/goredo-1.24.0.tar.zst && \
+	zstd -d < goredo-1.24.0.tar.zst | tar xf -
+WORKDIR /go/goredo-1.24.0/src
+RUN go build -mod=vendor
+
+FROM debian:bullseye-20220418
+LABEL maintainer="David Rabkin <david@rabkin.co.il>"
+ENV \
+	DEBCONF_NOWARNINGS=yes \
+	USER=shellbase
+COPY LICENSE /licenses/LICENSE
+WORKDIR /bin
+COPY --from=builder /go/goredo-1.24.0/src/goredo .
+RUN \
+	apt-get update --assume-yes && \
+	apt-get upgrade --assume-yes && \
+	apt-get install --assume-yes --no-install-recommends \
+		curl=7.74.0-1.3+deb11u1 && \
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/* && \
+	useradd --create-home "$USER" && \
+	./goredo -symlinks
+USER "$USER"
+WORKDIR /home/"$USER"
+COPY \
+	--chown="$USER":"$USER" \
+	. .
+CMD \
+	[ "redo", "-j=10", "-x", "test" ]
