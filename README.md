@@ -23,7 +23,7 @@ should not be used by clients.
 
 Run `shellcheck` on sources by `redo`, run tests by `redo test`. Install
 [Daniel J. Bernstein's redo build system](http://cr.yp.to/redo.html) program by:
-`brew install redo`.
+`brew install goredo`.
 
 Or run tests in multiple environments in containers:
 ```
