@@ -4,6 +4,5 @@
 
 # shellcheck source=../inc/base
 . "$(dirname "$(realpath "$0")")/../inc/base"
-
-bye 'Something went wrong.'
+die 'Something went wrong.'
 exit 0

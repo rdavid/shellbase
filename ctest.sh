@@ -10,7 +10,7 @@ for f in container/*/Containerfile; do
 	log "Test $(printf '%s' "$f" | awk --field-separator '/' '{print $2}')."
 
 	# The build is ran quietly, it produces a container hash.
-	out=$(podman build --file "$f" --quiet . 2>&1) || bye "$out"
+	out=$(podman build --file "$f" --quiet . 2>&1) || die "$out"
 
 	# Run the container, then remove it.
 	podman run \
