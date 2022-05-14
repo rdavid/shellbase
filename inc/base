@@ -15,7 +15,7 @@
 #
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
-# be_root, be_user, bye, file_exists, is_empty, is_readable, is_writable, log,
+# be_root, be_user, die, file_exists, is_empty, is_readable, is_writable, log,
 # loge, logw, url_exists, validate_cmd, validate_var, var_exists
 # yes_to_continue. Global variables have BASE_ prefix and clients could use
 # them. Clients should place all temporaly files under $BASE_LCK. All functions
@@ -28,7 +28,7 @@ BASE_TMP=/tmp
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXXXXX")
 BASE_LOG="$BASE_LCK/log"
 BASE_BEGIN=$(date +%s)
-BASE_VERSION=0.9.20220505
+BASE_VERSION=0.9.20220514
 BASE_VERBOSE=false
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
@@ -56,7 +56,7 @@ logw() {
 }
 
 # Prints all parameters as error and exits with the error code.
-bye() {
+die() {
 	loge "$@"
 	exit 1
 }
@@ -64,10 +64,10 @@ bye() {
 # Checks if applications are installed. Loops over the arguments, each one is an
 # application name.
 validate_cmd() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && bye Usage: validate_cmd cmd1 cmd2...
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: validate_cmd cmd1 cmd2...
 	local arg
 	for arg do
-		command -v "$arg" >/dev/null 2>&1 || bye "Install $arg."
+		command -v "$arg" >/dev/null 2>&1 || die "Install $arg."
 		log "$arg is installed."
 	done
 }
@@ -75,7 +75,7 @@ validate_cmd() {
 # Validates if environment variable is set. Returns false if a variable is
 # unset or null, returns true if a variable has a value.
 var_exists() {
-	[ -z "${1-}" ] && bye Usage: var_is_set name.
+	[ -z "${1-}" ] && die Usage: var_is_set name.
 	local var
 	set +u
 	eval "var=\${$1}"
@@ -87,16 +87,16 @@ var_exists() {
 # Checks if environment variables are defined. Loops over the arguments, each
 # one is a variable name.
 validate_var() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && bye Usage: validate_var var1 var2...
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: validate_var var1 var2...
 	local arg
 	for arg do
-		var_exists "$arg" || bye "Define $arg."
+		var_exists "$arg" || die "Define $arg."
 	done
 }
 
 # Verifies that all parameters are readable files.
 is_readable() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && bye Usage: is_readable file1 file2...
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: is_readable file1 file2...
 	local arg
 	for arg do
 		[ -r "$arg" ] || { loge "$arg is not readable."; return 1; }
@@ -105,7 +105,7 @@ is_readable() {
 
 # Verifies that all parameters are writable files or do not exist.
 is_writable() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && bye Usage: is_writable file1 file2...
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: is_writable file1 file2...
 	local arg
 	for arg do
 		if file_exists "$arg"; then
@@ -122,11 +122,11 @@ is_writable() {
 
 # Exits with error if it is not ran by a user.
 be_user() {
-	[ -z "${1-}" ] && bye Usage: be_user name.
+	[ -z "${1-}" ] && die Usage: be_user name.
 	local ask cur usr="$1"
 	cur="$(id -u)"
-	ask="$(id -u "$usr" 2>/dev/null)" || bye "$usr: no such user."
-	[ "$ask" -eq "$cur" ] || bye "You are $(id -un) ($cur), be $usr ($ask)."
+	ask="$(id -u "$usr" 2>/dev/null)" || die "$usr: no such user."
+	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."
 	log "You are $usr ($cur)."
 }
 
@@ -144,7 +144,7 @@ yes_to_continue() {
 	# The trap returns tty settings, adds the new line before any printing to
 	# compensate the question without a new line.
 	local tmo=20
-	trap 'stty "$arc"; printf \\n; bye "Timed out in $tmo seconds".' TERM
+	trap 'stty "$arc"; printf \\n; die "Timed out in $tmo seconds".' TERM
 
 	# Runs watchdog process that kills dad and kids proceeses with common unique
 	# process group ID, see minus before dad PID.
@@ -185,8 +185,8 @@ yes_to_continue() {
 # Decides if a directory is empty. See more:
 #  https://www.etalabs.net/sh_tricks.html
 is_empty() {
-	[ -z "${1-}" ] || [ $# -gt 1 ] && bye Usage: is_empty dir.
-	cd "$1" >/dev/null 2>&1 || bye "Directory is not accessible: $1."
+	[ -z "${1-}" ] || [ $# -gt 1 ] && die Usage: is_empty dir.
+	cd "$1" >/dev/null 2>&1 || die "Directory is not accessible: $1."
 	set -- .[!.]* ; test -f "$1" && return 1
 	set -- ..?* ; test -f "$1" && return 1
 	set -- * ; test -f "$1" && return 1
@@ -195,13 +195,13 @@ is_empty() {
 
 # Checks whether files or directories exist.
 file_exists() {
-	[ -z "${1-}" ] && bye Usage: file_exists filename.
+	[ -z "${1-}" ] && die Usage: file_exists filename.
 	ls "$1" >/dev/null 2>&1
 }
 
 # Checks whether URL exists, any returned HTTP code is OK.
 url_exists() {
-	[ -z "${1-}" ] && bye Usage: url_exists URL.
+	[ -z "${1-}" ] && die Usage: url_exists URL.
 	validate_cmd curl
 	local out
 	local url="$1"
