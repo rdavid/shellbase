@@ -2,6 +2,17 @@
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # Copyright 2020-2022 David Rabkin
 #
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+#
 # The script uses local variables which are not POSIX but supported by most
 # shells, see more:
 #  https://stackoverflow.com/questions/18597697/posix-compliant-way-to-scope-variables-to-a-function-in-a-shell-script
@@ -28,7 +39,7 @@ BASE_TMP=/tmp
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXXXXX")
 BASE_LOG="$BASE_LCK/log"
 BASE_BEGIN=$(date +%s)
-BASE_VERSION=0.9.20220514
+BASE_VERSION=0.9.20220516
 BASE_VERBOSE=false
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
@@ -399,9 +410,28 @@ Arguments:
   -e, --version     Display version number.
   -h, --help        Display this help message.
   -v, --verbose     Echoes log messages to stdout.
+  -w, --warranty    Echoes warranty statement to stdout.
   -x, --execute     Echoes every command before execution.
 EOM
 	var_exists BASE_APP_USAGE && printf %s\\n "$BASE_APP_USAGE"
+}
+
+# Prints shellbase warranty.
+base_display_warranty() {
+	cat <<EOM
+Copyright 2020-2022 David Rabkin
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+EOM
 }
 
 # Starting point. First loops through command line arguments.
@@ -409,17 +439,19 @@ for arg do
 	shift
 	case "$arg" in
 		-e|--version)
-			# BASE_DISPLAY_VERSION appears unused.
 			# shellcheck disable=SC2034
 			BASE_DISPLAY_VERSION=true
 			;;
 		-h|--help)
-			# BASE_DISPLAY_USAGE appears unused.
 			# shellcheck disable=SC2034
 			BASE_DISPLAY_USAGE=true
 			;;
 		-v|--verbose)
 			BASE_VERBOSE=true
+			;;
+		-w|--warranty)
+			# shellcheck disable=SC2034
+			BASE_DISPLAY_WARRANTY=true
 			;;
 		-x|--execute)
 			set -x
@@ -449,6 +481,10 @@ if var_exists BASE_DISPLAY_USAGE; then
 fi
 if var_exists BASE_DISPLAY_VERSION; then
 	base_display_version
+	exit 0
+fi
+if var_exists BASE_DISPLAY_WARRANTY; then
+	base_display_warranty
 	exit 0
 fi
 
