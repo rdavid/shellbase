@@ -2,6 +2,8 @@
 General framework for Unix shell scripts.
 
 * [About](#about)
+* [Install](#install)
+* [Test](#test)
 * [License](#license)
 
 ## About
@@ -21,14 +23,24 @@ prefix and clients could use them. Clients should place all temporaly files
 under `$BASE_LCK`. All functions started with `base_` prefix are internal and
 should not be used by clients.
 
+## Install
+Make sure `/usr/local/bin` is in your `PATH`.
+
+    wget \
+      https://github.com/rdavid/shellbase/releases/download/v0.9.20220516/base \
+      --output-document /usr/local/bin/shellbase
+
+## Test
+
+    git clone https://github.com/rdavid/shellbase.git
+
 Run `shellcheck` on sources by `redo`, run tests by `redo test`. Install
 [Daniel J. Bernstein's redo build system](http://cr.yp.to/redo.html) program by:
 `brew install goredo`.
 
 Or run tests in multiple environments in containers:
-```
-./ctest.sh --verbose
-```
+
+    ./ctest.sh --verbose
 
 See [Toolbox project](https://github.com/rdavid/toolbox) as an example.
 
