@@ -1,5 +1,8 @@
 container/
 ctest.sh
+all.do
+shellbase.do
 test
+test_container.do
 Makefile
 README.md
