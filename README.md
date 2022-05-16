@@ -23,24 +23,29 @@ prefix and clients could use them. Clients should place all temporaly files
 under `$BASE_LCK`. All functions started with `base_` prefix are internal and
 should not be used by clients.
 
+See [Toolbox project](https://github.com/rdavid/toolbox) as an example.
+
 ## Install
-Make sure `/usr/local/bin` is in your `PATH`.
+The artifact is a single non-executable text file. Install the file from the
+repository:
+
+    git clone https://github.com/rdavid/shellbase.git && \
+      shellbase/install.sh
+
+Install the file from released version directly:
 
     wget \
       https://github.com/rdavid/shellbase/releases/download/v0.9.20220516/base \
       --output-document /usr/local/bin/shellbase
 
+Make sure `/usr/local/bin` is in your `PATH`.
+
+## Test
 Install [Daniel J. Bernstein's redo build system](http://cr.yp.to/redo.html)
 program by: `brew install goredo`.
 
-## Test
-
-    git clone https://github.com/rdavid/shellbase.git
-
 Run `shellcheck` on sources by `redo`, run tests by `redo test`, run tests in
 multiple environments in containers by `redo test_container`.
-
-See [Toolbox project](https://github.com/rdavid/toolbox) as an example.
 
 ## License
 `shellbase` is copyright [David Rabkin](http://cv.rabkin.co.il) and available
