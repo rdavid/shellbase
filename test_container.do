@@ -1,7 +1,6 @@
-#!/bin/sh -eu
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # Copyright 2022 David Rabkin
-BASE_APP_VERSION=0.9.20220508
+redo-ifchange inc/* app/*
 
 # shellcheck source=./inc/base
 . "$(dirname "$(realpath "$0")")/inc/base"
@@ -21,4 +20,3 @@ for f in container/*/Containerfile; do
 		"$out" \
 		2>&1 | while IFS= read -r l; do log "$l"; done
 done
-exit 0

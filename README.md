@@ -11,8 +11,8 @@ Hi, I'm [David Rabkin](http://cv.rabkin.co.il).
 
 `shellbase` is general framework for Unix shell scripts. It provides multiple
 services: public functions (logger, validation), signals handlers, garbage
-collection, multiple instances. It asks for a permission to continue if multiple
-running instances of a same script are detected.
+collection, multiple instances. It asks for a permission to continue if
+multiple running instances of a same script are detected.
 
 `shellbase` defines global variables and functions. All functions without
 `base_` prefix are API and should be used by clients. API functions are:
@@ -30,17 +30,15 @@ Make sure `/usr/local/bin` is in your `PATH`.
       https://github.com/rdavid/shellbase/releases/download/v0.9.20220516/base \
       --output-document /usr/local/bin/shellbase
 
+Install [Daniel J. Bernstein's redo build system](http://cr.yp.to/redo.html)
+program by: `brew install goredo`.
+
 ## Test
 
     git clone https://github.com/rdavid/shellbase.git
 
-Run `shellcheck` on sources by `redo`, run tests by `redo test`. Install
-[Daniel J. Bernstein's redo build system](http://cr.yp.to/redo.html) program by:
-`brew install goredo`.
-
-Or run tests in multiple environments in containers:
-
-    ./ctest.sh --verbose
+Run `shellcheck` on sources by `redo`, run tests by `redo test`, run tests in
+multiple environments in containers by `redo test_container`.
 
 See [Toolbox project](https://github.com/rdavid/toolbox) as an example.
 
