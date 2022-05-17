@@ -122,10 +122,8 @@ is_writable() {
 		if file_exists "$arg"; then
 			[ -w "$arg" ] || { loge "$arg is not writable."; return 1; }
 		else
-			if ! touch "$arg" 2>/dev/null; then
-				loge "$arg is not accessible."
-				return 1
-			fi
+			touch "$arg" 2>/dev/null || \
+				{ loge "$arg is not accessible."; return 1; }
 			rm "$arg"
 		fi
 	done
@@ -185,12 +183,9 @@ yes_to_continue() {
 	set +e
 	wait "$kid" 2>/dev/null
 	set -e
-	if printf '%s' "$ans" | grep --ignore-case --quiet '^y'; then
-		log Continue working.
-		return 0
-	fi
-	log Stop working.
-	exit 0
+	printf %s "$ans" | grep --ignore-case --quiet ^y || \
+		{ log Stop working.; exit 0; }
+	log Continue working.
 }
 
 # Decides if a directory is empty. See more:
@@ -210,24 +205,24 @@ file_exists() {
 	ls "$1" >/dev/null 2>&1
 }
 
-# Checks whether URL exists, any returned HTTP code is OK.
+# Checks whether URL exists, any returned HTTP code is OK.  In case of error
+# out has two lines: error message and HTTP code 000.
 url_exists() {
 	[ -z "${1-}" ] && die Usage: url_exists URL.
 	validate_cmd curl
-	local out
-	local url="$1"
+	local out url="$1"
 	out=$(curl \
 		--head \
 		--output /dev/null \
 		--show-error \
 		--silent \
-		--write-out '%{http_code}' \
+		--write-out %{http_code} \
 		"$url" \
-		2>&1) && { log "$url returns HTTP code $out."; return 0; }
-
-	# In case of error out has two lines: error message and HTTP code 000.
-	loge "$url is unavailable. $(printf %s "$out" | head --lines=1)."
-	return 1
+		2>&1) || { \
+		loge "$url is unavailable. $(printf %s "$out" | head --lines=1)."; \
+		return 1; \
+	}
+	log "$url returns HTTP code $out."
 }
 
 # Private functions have prefix base_, they are used locally.
@@ -378,7 +373,7 @@ base_check_instances() {
 	done < "$pipe"
 	rm "$pipe"
 
-	# My instance is running!
+	# My instance is running.
 	local pid="$BASE_LCK/pid"
 	echo $$ > "$pid"
 
@@ -390,7 +385,7 @@ base_check_instances() {
 		else
 			ending='e'
 		fi
-		printf "%d instanc%s of %s are running.\n" $ins $ending "$BASE_IAM"
+		printf '%d instanc%s of %s are running.\n' $ins $ending "$BASE_IAM"
 		yes_to_continue
 	fi
 }
@@ -398,7 +393,8 @@ base_check_instances() {
 # Prints shellbase version and exits.
 base_display_version() {
 	printf 'shellbase %s\n' "$BASE_VERSION"
-	var_exists BASE_APP_VERSION && printf '%s %s\n' "$BASE_IAM" "$BASE_APP_VERSION"
+	var_exists BASE_APP_VERSION || return 0
+	printf '%s %s\n' "$BASE_IAM" "$BASE_APP_VERSION"
 }
 
 # Prints shellbase usage and exits.
