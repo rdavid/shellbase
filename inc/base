@@ -57,19 +57,19 @@ log() {
 # Error logger.
 loge() {
 	base_truncate
-	base_tim "E $*" | tee -a "$BASE_LOG" 1>&2
+	base_tim "E $*" | tee -a "$BASE_LOG" >&2
 }
 
 # Warning logger.
 logw() {
 	base_truncate
-	base_tim "W $*" | tee -a "$BASE_LOG" 1>&2
+	base_tim "W $*" | tee -a "$BASE_LOG" >&2
 }
 
 # Prints all parameters as error and exits with the error code.
 die() {
 	loge "$@"
-	exit 1
+	exit 11
 }
 
 # Checks if applications are installed. Loops over the arguments, each one is an
