@@ -37,9 +37,9 @@ BASE_TMP=/tmp
 
 # busybox implementation of mktemp requires six X.
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXXXXX")
-BASE_LOG="$BASE_LCK/log"
+BASE_LOG="$BASE_LCK"/log
 BASE_BEGIN=$(date +%s)
-BASE_VERSION=0.9.20220516
+BASE_VERSION=0.9.20220518
 BASE_VERBOSE=false
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
@@ -78,8 +78,8 @@ validate_cmd() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: validate_cmd cmd1 cmd2...
 	local arg
 	for arg do
-		command -v "$arg" >/dev/null 2>&1 || die "Install $arg."
-		log "$arg is installed."
+		command -v "$arg" >/dev/null 2>&1 || die Install "$arg".
+		log "$arg" is installed.
 	done
 }
 
@@ -101,7 +101,7 @@ validate_var() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: validate_var var1 var2...
 	local arg
 	for arg do
-		var_exists "$arg" || die "Define $arg."
+		var_exists "$arg" || die Define "$arg".
 	done
 }
 
@@ -110,7 +110,7 @@ is_readable() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: is_readable file1 file2...
 	local arg
 	for arg do
-		[ -r "$arg" ] || { loge "$arg is not readable."; return 1; }
+		[ -r "$arg" ] || { loge "$arg" is not readable.; return 1; }
 	done
 }
 
@@ -120,10 +120,10 @@ is_writable() {
 	local arg
 	for arg do
 		if file_exists "$arg"; then
-			[ -w "$arg" ] || { loge "$arg is not writable."; return 1; }
+			[ -w "$arg" ] || { loge "$arg" is not writable.; return 1; }
 		else
 			touch "$arg" 2>/dev/null || \
-				{ loge "$arg is not accessible."; return 1; }
+				{ loge "$arg" is not accessible.; return 1; }
 			rm "$arg"
 		fi
 	done
@@ -176,7 +176,7 @@ yes_to_continue() {
 	# Adds the new line before any printing to compensate the question without a
 	# new line.
 	printf \\n
-	log "Killing watchdog kid $kid."
+	log Killing watchdog kid "$kid".
 	kill "$kid"
 
 	# Command wait could return an error code, temporarily disables exit on error.
@@ -192,7 +192,7 @@ yes_to_continue() {
 #  https://www.etalabs.net/sh_tricks.html
 is_empty() {
 	[ -z "${1-}" ] || [ $# -gt 1 ] && die Usage: is_empty dir.
-	cd "$1" >/dev/null 2>&1 || die "Directory is not accessible: $1."
+	cd "$1" >/dev/null 2>&1 || die Directory is not accessible: "$1".
 	set -- .[!.]* ; test -f "$1" && return 1
 	set -- ..?* ; test -f "$1" && return 1
 	set -- * ; test -f "$1" && return 1
@@ -238,7 +238,7 @@ base_truncate() {
 	[ -w "$BASE_LOG" ] || return 0
 	[ "$(wc -c <"$BASE_LOG")" -gt 10485760 ] || return 0
 	: > "$BASE_LOG"
-	log "$BASE_LOG is truncated."
+	log "$BASE_LOG" is truncated.
 }
 
 # Formats time titles, the first parameter is a number, the second parameter is
@@ -304,16 +304,16 @@ base_duration() {
 	m="$(base_time_title $((dur % 86400 % 3600 / 60)) minute)"
 	s="$(base_time_title $((dur % 60)) second)"
 	if [ -n "$d" ]; then
-		printf '%s%s' "$d" "$(base_time_separator "$h" "$m" "$s")"
+		printf %s "$d" "$(base_time_separator "$h" "$m" "$s")"
 	fi
 	if [ -n "$h" ]; then
-		printf '%s%s' "$h" "$(base_time_separator "$m" "$s")"
+		printf %s "$h" "$(base_time_separator "$m" "$s")"
 	fi
 	if [ -n "$m" ]; then
-		printf '%s%s' "$m" "$(base_time_separator "$s")"
+		printf %s "$m" "$(base_time_separator "$s")"
 	fi
 	if [ -n "$s" ]; then
-		printf '%s' "$s"
+		printf %s "$s"
 	fi
 	if [ -z "$d" ] && [ -z "$h" ] && [ -z "$m" ] && [ -z "$s" ]; then
 		printf 'less than a second'
@@ -321,7 +321,7 @@ base_duration() {
 }
 
 base_hi() {
-	log "$BASE_IAM says hi."
+	log "$BASE_IAM" says hi.
 }
 
 base_bye() {
@@ -339,7 +339,7 @@ base_cleanup() {
 	if is_writable "$log"; then
 		cp -f "$BASE_LCK/log" "$log"
 	fi
-	rm -rf "$BASE_LCK"
+	rm -fr "$BASE_LCK"
 
 	# Parameter expantion defines if the parameter is not set, which means exit.
 	if [ -z ${1+x} ]; then
@@ -381,9 +381,9 @@ base_check_instances() {
 	if [ $ins -ne 0 ]; then
 		local ending
 		if [ $ins -gt 1 ]; then
-			ending='es'
+			ending=es
 		else
-			ending='e'
+			ending=e
 		fi
 		printf '%d instanc%s of %s are running.\n' $ins $ending "$BASE_IAM"
 		yes_to_continue
@@ -399,34 +399,41 @@ base_display_version() {
 
 # Prints shellbase usage and exits.
 base_display_usage() {
-	cat <<EOM
-Usage: $BASE_IAM [-e] [-h] [-v] [-x]
+	if var_exists BASE_APP_USAGE; then
+		printf %s\\n "$BASE_APP_USAGE"
+		return 0
+	fi
+	cat <<-EOM
+		Usage: $BASE_IAM [-e] [-h] [-v] [-w] [-x]
 
-Arguments:
-  -e, --version     Display version number.
-  -h, --help        Display this help message.
-  -v, --verbose     Echoes log messages to stdout.
-  -w, --warranty    Echoes warranty statement to stdout.
-  -x, --execute     Echoes every command before execution.
+		Arguments:
+		  -e, --version     Display version number.
+		  -h, --help        Display this help message.
+		  -v, --verbose     Echoes log messages to stdout.
+		  -w, --warranty    Echoes warranty statement to stdout.
+		  -x, --execute     Echoes every command before execution.
 EOM
-	var_exists BASE_APP_USAGE && printf %s\\n "$BASE_APP_USAGE"
 }
 
 # Prints shellbase warranty.
 base_display_warranty() {
-	cat <<EOM
-Copyright 2020-2022 David Rabkin
+	if var_exists BASE_APP_WARRANTY; then
+		printf %s\\n "$BASE_APP_WARRANTY"
+		return 0
+	fi
+	cat <<-EOM
+		Copyright 2020-2022 David Rabkin
 
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
+		Permission to use, copy, modify, and/or distribute this software for any
+		purpose with or without fee is hereby granted.
 
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+		THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+		WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+		MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+		ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+		WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+		ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+		OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 EOM
 }
 
