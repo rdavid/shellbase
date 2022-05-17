@@ -5,6 +5,7 @@ redo-ifchange inc/* app/*
 # shellcheck source=./inc/base
 . "$(dirname "$(realpath "$0")")/inc/base"
 validate_cmd podman
+podman machine start >/dev/null 2>&1 || :
 for f in container/*/Containerfile; do
 	log "Test $(printf '%s' "$f" | awk --field-separator '/' '{print $2}')."
 
