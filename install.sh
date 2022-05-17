@@ -13,10 +13,8 @@ if [ -r "$TGT" ]; then
 		"$BASE_VERSION"
 	yes_to_continue
 fi
-[ -w "$(dirname $TGT)" ] || \
-	{ printf '%s is not writable.\n' "$(dirname $TGT)" >&2; exit 11; }
-cp -f "$BASE" $TGT || \
-	{ printf 'Unable to copy %s to %s.\n' "$BASE" $TGT >&2; exit 12; }
+[ -w "$(dirname $TGT)" ] || die "$(dirname $TGT) is not writable."
+cp -f "$BASE" $TGT || die "Unable to copy $BASE to $TGT."
 printf \
 	'shellbase %s is installed to %s.\n' \
 	"$(sh $TGT --version)" \
