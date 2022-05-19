@@ -7,5 +7,6 @@
 
 url_exists \
 	http://google.com/ \
-	1.1.1.1
+	1.1.1.1 \
+	http://doesnotexist.c0m/
 exit 0
