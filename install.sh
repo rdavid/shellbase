@@ -5,18 +5,19 @@
 # shellcheck source=./inc/base
 BASE="$(dirname "$(realpath "$0")")/inc/base"
 . "$BASE"
-TGT=/usr/local/bin/shellbase
-if [ -r "$TGT" ]; then
+DEST=/usr/local/bin
+TRGT=$DEST/shellbase
+if file_exists $TRGT; then
 	printf \
 		'%s is already installed. Install %s?\n' \
-		"$(sh $TGT --version)" \
+		"$(sh $TRGT --version)" \
 		"$BASE_VERSION"
 	yes_to_continue
 fi
-[ -w "$(dirname $TGT)" ] || die "$(dirname $TGT) is not writable."
-cp -f "$BASE" $TGT || die "Unable to copy $BASE to $TGT."
+is_writable $DEST || die $DEST is not writable.
+cp -f "$BASE" $TRGT || die "Unable to copy $BASE to $TRGT."
 printf \
-	'shellbase %s is installed to %s.\n' \
-	"$(sh $TGT --version)" \
-	$TGT
+	'%s is installed to %s.\n' \
+	"$(sh $TRGT --version)" \
+	$DEST
 exit 0

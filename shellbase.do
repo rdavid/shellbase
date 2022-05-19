@@ -1,4 +1,4 @@
-redo-ifchange inc/base
-shellcheck inc/base
-redo-ifchange inc/echo
-shellcheck inc/echo
+redo-ifchange ./*.sh
+shellcheck -x ./*.sh
+redo-ifchange inc/*
+shellcheck inc/*
