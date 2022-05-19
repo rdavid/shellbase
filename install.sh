@@ -14,7 +14,7 @@ if file_exists $TRGT; then
 		"$BASE_VERSION"
 	yes_to_continue
 fi
-is_writable $DEST || die $DEST is not writable.
+is_writable $DEST || die
 cp -f "$BASE" $TRGT || die "Unable to copy $BASE to $TRGT."
 printf \
 	'%s is installed to %s.\n' \
