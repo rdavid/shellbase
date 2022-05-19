@@ -26,11 +26,12 @@
 #
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
-# be_root, be_user, die, file_exists, is_empty, is_readable, is_writable, log,
-# loge, logw, url_exists, validate_cmd, validate_var, var_exists
-# yes_to_continue. Global variables have BASE_ prefix and clients could use
-# them. Clients should place all temporaly files under $BASE_LCK. All functions
-# started with base_ prefix are internal and should not be used by clients.
+# be_root, be_user, cmd_exists die, file_exists, is_empty, is_readable,
+# is_writable, log, loge, logw, url_exists, validate_cmd, validate_var,
+# var_exists, yes_to_continue. Global variables have BASE_ prefix and clients
+# could use them. Clients should place all temporaly files under $BASE_LCK. All
+# functions started with base_ prefix are internal and should not be used by
+# clients.
 BASE_IAM=$(basename -- "$0")
 BASE_IAM="${BASE_IAM%.*}"
 BASE_TMP=/tmp
@@ -39,7 +40,7 @@ BASE_TMP=/tmp
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXXXXX")
 BASE_LOG="$BASE_LCK"/log
 BASE_BEGIN=$(date +%s)
-BASE_VERSION=0.9.20220518
+BASE_VERSION=0.9.20220519
 BASE_VERBOSE=false
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
@@ -72,15 +73,21 @@ die() {
 	exit 11
 }
 
-# Checks if applications are installed. Loops over the arguments, each one is an
-# application name.
-validate_cmd() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: validate_cmd cmd1 cmd2...
+# Checks whether all commands exits. Loops over the arguments, each one is an
+# command name.
+cmd_exists() {
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: cmd_exists cmd1 cmd2...
 	local arg
 	for arg do
-		command -v "$arg" >/dev/null 2>&1 || die Install "$arg".
-		log "$arg" is installed.
+		command -v "$arg" >/dev/null 2>&1 || \
+			{ loge "$arg" does not exist.; return 1; }
+		log "$arg" exists.
 	done
+}
+
+# Makes sure all commands exist, othewise dies.
+validate_cmd() {
+	cmd_exists "$@" || die Install the command.
 }
 
 # Validates if environment variable is set. Returns false if a variable is
@@ -199,7 +206,7 @@ is_empty() {
 	return 0
 }
 
-# Checks whether files or directories exist.
+# Checks whether a file exists.
 file_exists() {
 	[ -z "${1-}" ] && die Usage: file_exists filename.
 	ls "$1" >/dev/null 2>&1
@@ -209,7 +216,7 @@ file_exists() {
 # out has two lines: error message and HTTP code 000.
 url_exists() {
 	[ -z "${1-}" ] && die Usage: url_exists URL.
-	validate_cmd curl
+	cmd_exists curl || return 1
 	local out url="$1"
 	out=$(curl \
 		--head \
