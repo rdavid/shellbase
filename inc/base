@@ -98,7 +98,9 @@ var_exists() {
 	set +u
 	eval "var=\${$1}"
 	set -u
-	[ -z "${var}" ] && return 1
+
+	# An absence of a variable is a very common case. Does not log the event.
+	[ -n "$var" ] || return 1
 	log "$1 is set to $var."
 }
 
@@ -223,7 +225,7 @@ url_exists() {
 		--output /dev/null \
 		--show-error \
 		--silent \
-		--write-out %{http_code} \
+		--write-out %\{http_code\} \
 		"$url" \
 		2>&1) || { \
 		loge "$url is unavailable. $(printf %s "$out" | head --lines=1)."; \
