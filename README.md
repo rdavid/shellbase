@@ -30,15 +30,34 @@ The artifact is a single non-executable text file. Install the file from the
 repository:
 
     git clone https://github.com/rdavid/shellbase.git && \
-      shellbase/install.sh
+    	shellbase/install.sh
 
 Install the file from released version directly:
 
     wget \
-      https://github.com/rdavid/shellbase/releases/download/v0.9.20220516/base \
-      --output-document /usr/local/bin/shellbase
+    	https://github.com/rdavid/shellbase/releases/download/v0.9.20220516/base \
+    	--output-document /usr/local/bin/shellbase
 
-Make sure `/usr/local/bin` is in your `PATH`.
+Make sure `/usr/local/bin` is in your `PATH`. Then your script can use
+`shellbase`, e.g. `foobar.sh`:
+
+    #!/bin/sh -eu
+    set -- --verbose "$@"
+    . shellbase
+    log I\'m using shellbase!
+
+You can try shellbase without installation, e.g. `foobar.sh`:
+
+    #!/bin/sh -eu
+    set -- --verbose "$@"
+    TAG=v0.9.20220516
+    URL=https://github.com/rdavid/shellbase/releases/download/$TAG/base
+    eval "$( \
+    	wget $URL \
+    		--output-document - \
+    		--quiet \
+    	)"
+    log I\'m using shellbase!
 
 ## Test
 Install [Daniel J. Bernstein's redo build system](http://cr.yp.to/redo.html)
