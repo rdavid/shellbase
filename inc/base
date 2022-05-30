@@ -27,11 +27,11 @@
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
 # be_root, be_user, cmd_exists die, file_exists, is_empty, is_readable,
-# is_writable, log, loge, logw, url_exists, validate_cmd, validate_var,
-# var_exists, yes_to_continue. Global variables have BASE_ prefix and clients
-# could use them. Clients should place all temporaly files under $BASE_LCK. All
-# functions started with base_ prefix are internal and should not be used by
-# clients.
+# is_writable, log, loge, logw, url_exists, usr_exists, validate_cmd,
+# validate_var, var_exists, yes_to_continue. Global variables have BASE_ prefix
+# and clients could use them. Clients should place all temporaly files under
+# $BASE_LCK. All functions started with base_ prefix are internal and should
+# not be used by clients.
 BASE_IAM=$(basename -- "$0")
 BASE_IAM="${BASE_IAM%.*}"
 BASE_TMP=/tmp
@@ -40,7 +40,7 @@ BASE_TMP=/tmp
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXXXXX")
 BASE_LOG="$BASE_LCK"/log
 BASE_BEGIN=$(date +%s)
-BASE_VERSION=0.9.20220523
+BASE_VERSION=0.9.20220531
 BASE_VERBOSE=false
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
@@ -142,6 +142,18 @@ url_exists() {
 	done
 }
 
+# Checks whether a user exists.
+usr_exists() {
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: usr_exists usr1 usr2...
+	cmd_exists id || return 1
+	local arg
+	for arg do
+		id "$arg" >/dev/null 2>&1 || \
+			{ loge "$arg": no such user.; return 1; }
+		log User "$arg" exists.
+	done
+}
+
 # Verifies that all parameters are readable files.
 is_readable() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: is_readable file1 file2...
@@ -170,8 +182,9 @@ is_writable() {
 be_user() {
 	[ -z "${1-}" ] && die Usage: be_user name.
 	local ask cur usr="$1"
+	usr_exists "$usr" || die
 	cur="$(id -u)"
-	ask="$(id -u "$usr" 2>/dev/null)" || die "$usr: no such user."
+	ask="$(id -u "$usr")"
 	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."
 	log "You are $usr ($cur)."
 }
