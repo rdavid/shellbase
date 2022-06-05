@@ -35,7 +35,7 @@ repository:
 Install the file from released version directly:
 
     wget \
-    	https://github.com/rdavid/shellbase/releases/download/v0.9.20220523/base \
+    	https://github.com/rdavid/shellbase/releases/download/v0.9.20220605/base \
     	--output-document /usr/local/bin/shellbase
 
 Make sure `/usr/local/bin` is in your `PATH`. Then your script can use
@@ -50,7 +50,7 @@ You can try shellbase without installation, e.g. `foobar.sh`:
 
     #!/bin/sh -eu
     set -- --verbose "$@"
-    TAG=v0.9.20220523
+    TAG=v0.9.20220605
     URL=https://github.com/rdavid/shellbase/releases/download/$TAG/base
     eval "$( \
     	wget $URL \
