@@ -254,7 +254,7 @@ yes_to_continue() {
 	set +e
 	wait "$kid" 2>/dev/null
 	set -e
-	printf %s "$ans" | grep --ignore-case --quiet ^y || \
+	printf %s "$ans" | grep -i -q ^y || \
 		{ log Stop working.; exit 0; }
 	log Continue working.
 }
