@@ -6,6 +6,6 @@
 . "$(dirname "$(realpath "$0")")/../inc/base"
 
 url_exists \
-	http://google.com/ \
-	1.1.1.1
+	1.1.1.1 \
+	http://google.com/
 exit 0

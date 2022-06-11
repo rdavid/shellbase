@@ -5,5 +5,8 @@
 # shellcheck source=../inc/base
 . "$(dirname "$(realpath "$0")")/../inc/base"
 
-validate_var UNDEF1NED_VAR1ABLE
+validate_var \
+	HOME \
+	UNDEF1NED_VAR1ABLE \
+	USER
 exit 0

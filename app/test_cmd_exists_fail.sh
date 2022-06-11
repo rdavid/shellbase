@@ -5,7 +5,7 @@
 # shellcheck source=../inc/base
 . "$(dirname "$(realpath "$0")")/../inc/base"
 
-validate_cmd \
+cmd_exists \
 	find \
 	foobar_c0mmand \
 	grep \

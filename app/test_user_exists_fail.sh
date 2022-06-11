@@ -6,7 +6,7 @@
 . "$(dirname "$(realpath "$0")")/../inc/base"
 
 user_exists \
+	nonexistentuser \
 	root \
-	"$USER" \
-	nonexistentuser
+	"$USER"
 exit 0
