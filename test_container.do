@@ -13,11 +13,14 @@ for f in container/*/Containerfile; do
 	out=$(podman build --file "$f" --quiet . 2>&1) || die "$out"
 
 	# Run the container, then remove it.
-	podman run \
-		--interactive \
-		--rm \
-		--rmi \
-		--tty \
-		"$out" \
-		2>&1 | while IFS= read -r l; do log "$l"; done
+	{ \
+		podman run \
+			--interactive \
+			--rm \
+			--rmi \
+			--tty \
+			"$out" \
+		2>&1 1>&3 3>&- | to_loge; \
+	} \
+		3>&1 1>&2 | to_log
 done
