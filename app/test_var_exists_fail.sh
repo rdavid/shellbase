@@ -5,9 +5,9 @@
 # shellcheck source=../inc/base
 . "$(dirname "$(realpath "$0")")/../inc/base"
 
-validate_cmd \
-	find \
-	foobar_c0mmand \
-	grep \
-	ls
+var_exists \
+	HOME \
+	PATH \
+	UNDEF1NED_VAR1ABLE \
+	USER
 exit 0

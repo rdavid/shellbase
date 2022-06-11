@@ -32,6 +32,7 @@
 # have BASE_ prefix and clients could use them. Clients should place all
 # temporaly files under $BASE_LCK. All functions started with base_ prefix are
 # internal and should not be used by clients.
+BASE_BEGIN=$(date +%s)
 BASE_IAM=$(basename -- "$0")
 BASE_IAM="${BASE_IAM%.*}"
 BASE_TMP=/tmp
@@ -39,32 +40,35 @@ BASE_TMP=/tmp
 # busybox implementation of mktemp requires six X.
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXXXXX")
 BASE_LOG="$BASE_LCK"/log
-BASE_BEGIN=$(date +%s)
+BASE_QUIET=false
 BASE_VERSION=0.9.20220611
-BASE_VERBOSE=false
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
-# Information logger prints to stdout only with -v (verbose) flag.
+# Information logger doesn't print to stdout with --quite flag.
 log() {
 	base_truncate
-	if [ "$BASE_VERBOSE" = true ]; then
-		base_tim "I $*" | tee -a "$BASE_LOG"
-	else
+	if [ $BASE_QUIET = true ]; then
 		base_tim "I $*" >> "$BASE_LOG"
+	else
+		base_tim "I $*" | tee -a "$BASE_LOG"
 	fi
 }
 
-# Error logger.
+# Warning logger doesn't print to stderr with --quite flag.
+logw() {
+	base_truncate
+	if [ $BASE_QUIET = true ]; then
+		base_tim "W $*" >> "$BASE_LOG"
+	else
+		base_tim "W $*" | tee -a "$BASE_LOG" >&2
+	fi
+}
+
+# Error logger always prints to stderr.
 loge() {
 	base_truncate
 	base_tim "E $*" | tee -a "$BASE_LOG" >&2
-}
-
-# Warning logger.
-logw() {
-	base_truncate
-	base_tim "W $*" | tee -a "$BASE_LOG" >&2
 }
 
 # Redirects input to logger line by line. It is usefull for logging multiple
@@ -94,39 +98,55 @@ die() {
 	exit 11
 }
 
-# Checks whether all commands exits. Loops over the arguments, each one is an
+# Checks whether all commands exits. Loops over the arguments, each one is a
 # command name.
 cmd_exists() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: cmd_exists cmd1 cmd2...
+	local arg ret=0
+	for arg do
+		if command -v "$arg" >/dev/null 2>&1; then
+			log Command "$arg" exists.
+		else
+			ret=1
+			logw Command "$arg" does not exist.
+		fi
+	done
+	return $ret
+}
+
+# Makes sure all commands exist, othewise dies. Loops over the arguments in
+# order to die with a command name in error.
+validate_cmd() {
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: validate_cmd cmd1 cmd2...
 	local arg
 	for arg do
-		command -v "$arg" >/dev/null 2>&1 || \
-			{ loge "$arg" does not exist.; return 1; }
-		log "$arg" exists.
+		cmd_exists "$arg" || die Install "$arg".
 	done
 }
 
-# Makes sure all commands exist, othewise dies.
-validate_cmd() {
-	cmd_exists "$@" || die Install the command.
-}
-
-# Validates if environment variable is set. Returns false if a variable is
-# unset or null, returns true if a variable has a value.
+# Checks whether all variables are defined. Loops over the arguments, each one
+# is a variable name. Fails if one of a variable is unset or null.
 var_exists() {
-	[ -z "${1-}" ] && die Usage: var_is_set name.
-	local var
-	set +u
-	eval "var=\${$1}"
-	set -u
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: var_exists var1 var2...
+	local arg ret=0
+	for arg do
+		local var
+		set +u
+		eval "var=\${$arg}"
+		set -u
 
-	# An absence of a variable is a very common case. Does not log the event.
-	[ -n "$var" ] || return 1
-	log "$1 is set to $var."
+		# An absence of a variable is a very common case. Does not log the event.
+		if [ -n "$var" ]; then
+			log "Variable $arg is set to $var."
+		else
+			ret=1
+		fi
+	done
+	return $ret
 }
 
-# Checks if environment variables are defined. Loops over the arguments, each
-# one is a variable name.
+# Checks if environment variables are defined. Loops over the arguments in
+# order to die with a variable name in error.
 validate_var() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: validate_var var1 var2...
 	local arg
@@ -135,75 +155,108 @@ validate_var() {
 	done
 }
 
-# Checks whether a file exists.
+# Checks whether all files exist. Loops over the arguments, each one is a file
+# name. Fails if one of a file doesn't exist.
 file_exists() {
-	[ -z "${1-}" ] && die Usage: file_exists filename.
-	ls "$1" >/dev/null 2>&1
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: file_exists file1 file2...
+	local arg ret=0
+	for arg do
+		if ls "$arg" >/dev/null 2>&1; then
+			log File "$arg" exists.
+		else
+			ret=1
+			logw File "$arg" does not exist.
+		fi
+	done
+	return $ret
 }
 
-# Checks whether URL exists, any returned HTTP code is OK. In case of error
+# Checks whether all URLs exist, any returned HTTP code is OK. In case of error
 # out has two lines: error message and HTTP code 000.
 url_exists() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: url_exists url1 url2...
-	cmd_exists curl || return 1
-	local arg out
+	cmd_exists curl
+	local arg out ret=0
 	for arg do
-		out="$(curl \
-			--head \
-			--output /dev/null \
-			--show-error \
-			--silent \
-			--write-out %\{http_code\} \
-			"$arg" 2>&1)" || \
-		{ \
-			loge "$arg is unavailable. $(printf %s "$out" | head --lines=1)."; \
-			return 1; \
-		}
-		log "$arg returns HTTP code $out."
+		if out="$(\
+			curl \
+				--head \
+				--output /dev/null \
+				--show-error \
+				--silent \
+				--write-out %\{http_code\} \
+				"$arg" \
+			2>&1)"; then
+			log "URL $arg returns HTTP code $out."
+		else
+			ret=1
+			logw "URL $arg is unavailable. $(printf %s "$out" | head -n 1)."
+		fi
 	done
+	return $ret
 }
 
-# Checks whether a user exists.
+# Checks whether all user exist.
 user_exists() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: user_exists user1 user2...
-	cmd_exists id || return 1
-	local arg
+	cmd_exists id
+	local arg ret=0
 	for arg do
-		id "$arg" >/dev/null 2>&1 || \
-			{ loge "$arg": no such user.; return 1; }
-		log User "$arg" exists.
+		if id "$arg" >/dev/null 2>&1; then
+			log User "$arg" exists.
+		else
+			ret=1
+			logw "$arg": No such user.
+		fi
 	done
+	return $ret
 }
 
 # Verifies that all parameters are readable files.
 is_readable() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: is_readable file1 file2...
-	local arg
+	local arg ret=0
 	for arg do
-		[ -r "$arg" ] || { loge "$arg" is not readable.; return 1; }
+		if [ -r "$arg" ]; then
+			log File "$arg" is readable.
+		else
+			ret=1
+			logw File "$arg" is not readable.
+		fi
 	done
+	return $ret
 }
 
 # Verifies that all parameters are writable files or do not exist.
 is_writable() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: is_writable file1 file2...
-	local arg
+	local arg ret=0
 	for arg do
 		if file_exists "$arg"; then
-			[ -w "$arg" ] || { loge "$arg" is not writable.; return 1; }
+			if [ -w "$arg" ]; then
+				log File "$arg" is writable.
+			else
+				ret=1
+				logw File "$arg" is not writable.
+			fi
 		else
-			touch "$arg" 2>/dev/null || \
-				{ loge "$arg" is not accessible.; return 1; }
-			rm "$arg"
+			if touch "$arg" 2>/dev/null; then
+				rm "$arg"
+				log File "$arg" is accessible.
+			else
+				ret=1
+				logw File "$arg" is not accessible.
+			fi
 		fi
 	done
+	return $ret
 }
 
 # Exits with error if it is not ran by a user.
 be_user() {
 	[ -z "${1-}" ] && die Usage: be_user name.
 	local ask cur usr="$1"
-	user_exists "$usr" || die
+	user_exists "$usr" || die "$usr": No such user.
 	cur="$(id -u)"
 	ask="$(id -u "$usr")"
 	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."
@@ -379,7 +432,8 @@ base_cleanup() {
 	trap - HUP EXIT INT QUIT TERM
 	base_bye
 
-	# Keeps logs of last finished instance.
+	# Keeps logs of last finished instance. Keeps the function quiet.
+	BASE_QUIET=true
 	local log="$BASE_TMP/$BASE_IAM-log"
 	if is_writable "$log"; then
 		cp -f "$BASE_LCK/log" "$log"
@@ -452,9 +506,9 @@ base_display_usage() {
 		Usage: $BASE_IAM [-e] [-h] [-v] [-w] [-x]
 
 		Arguments:
-		  -e, --version     Display version number.
 		  -h, --help        Display this help message.
-		  -v, --verbose     Echoes log messages to stdout.
+		  -q, --quiet       Hides information and warning logs.
+		  -v, --version     Display version number.
 		  -w, --warranty    Echoes warranty statement to stdout.
 		  -x, --execute     Echoes every command before execution.
 EOM
@@ -486,16 +540,16 @@ EOM
 for arg do
 	shift
 	case "$arg" in
-		-e|--version)
-			# shellcheck disable=SC2034
-			BASE_DISPLAY_VERSION=true
-			;;
 		-h|--help)
 			# shellcheck disable=SC2034
 			BASE_DISPLAY_USAGE=true
 			;;
-		-v|--verbose)
-			BASE_VERBOSE=true
+		-q|--quiet)
+			BASE_QUIET=true
+			;;
+		-v|--version)
+			# shellcheck disable=SC2034
+			BASE_DISPLAY_VERSION=true
 			;;
 		-w|--warranty)
 			# shellcheck disable=SC2034
