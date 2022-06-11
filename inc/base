@@ -27,7 +27,7 @@
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
 # be_root, be_user, cmd_exists die, file_exists, is_empty, is_readable,
-# is_writable, log, loge, logw, to_log, to_loge, url_exists, usr_exists,
+# is_writable, log, loge, logw, to_log, to_loge, url_exists, user_exists,
 # validate_cmd, validate_var, var_exists, yes_to_continue. Global variables
 # have BASE_ prefix and clients could use them. Clients should place all
 # temporaly files under $BASE_LCK. All functions started with base_ prefix are
@@ -40,7 +40,7 @@ BASE_TMP=/tmp
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXXXXX")
 BASE_LOG="$BASE_LCK"/log
 BASE_BEGIN=$(date +%s)
-BASE_VERSION=0.9.20220605
+BASE_VERSION=0.9.20220611
 BASE_VERBOSE=false
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
@@ -164,8 +164,8 @@ url_exists() {
 }
 
 # Checks whether a user exists.
-usr_exists() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: usr_exists usr1 usr2...
+user_exists() {
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: user_exists user1 user2...
 	cmd_exists id || return 1
 	local arg
 	for arg do
@@ -203,7 +203,7 @@ is_writable() {
 be_user() {
 	[ -z "${1-}" ] && die Usage: be_user name.
 	local ask cur usr="$1"
-	usr_exists "$usr" || die
+	user_exists "$usr" || die
 	cur="$(id -u)"
 	ask="$(id -u "$usr")"
 	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."

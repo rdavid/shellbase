@@ -5,7 +5,7 @@
 # shellcheck source=../inc/base
 . "$(dirname "$(realpath "$0")")/../inc/base"
 
-usr_exists \
+user_exists \
 	root \
 	"$USER" \
 	nonexistentuser
