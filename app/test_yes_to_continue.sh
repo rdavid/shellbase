@@ -6,5 +6,7 @@
 . "$(dirname "$(realpath "$0")")/../inc/base"
 
 yes_to_continue
-printf Continued.\\n
+printf Continued\ first.\\n
+yes_to_continue You\'re "$USER", continue?
+printf Continued\ second.\\n
 exit 0

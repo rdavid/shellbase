@@ -269,7 +269,8 @@ be_root() {
 }
 
 # Asks a user permission to continue, exits if not 'y'. Exits by timeout if any
-# input is not detected.
+# input is not detected. If exists uses parameters as a question, otherwise
+# uses default message.
 yes_to_continue() {
 	local arc
 	arc="$(stty -g)"
@@ -288,7 +289,13 @@ yes_to_continue() {
 
 	# Prints the question without a new line allows to print an answer on the
 	# same line. The question is not logged.
-	printf 'Do you want to continue? [y/N] '
+	local msg
+	if [ -z "${1-}" ]; then
+		msg='Do you want to continue?'
+	else
+		msg="$*"
+	fi
+	printf '%s [y/N] ' "$msg"
 	stty raw -echo
 
 	# Runs child process to read first character from stdin.
