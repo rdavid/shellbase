@@ -41,7 +41,7 @@ BASE_TMP=/tmp
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXXXXX")
 BASE_LOG="$BASE_LCK"/log
 BASE_QUIET=false
-BASE_VERSION=0.9.20220611
+BASE_VERSION=0.9.20220613
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
