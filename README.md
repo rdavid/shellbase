@@ -26,8 +26,9 @@ started with `base_` prefix are internal and should not be used by clients.
 See [Toolbox project](https://github.com/rdavid/toolbox) as an example.
 
 ## Install
-The artifact is a single non-executable text file. Install the file from the
-repository:
+The artifact is a single non-executable [text
+file](https://github.com/rdavid/shellbase/blob/master/inc/base). Install the
+file from the repository:
 
     git clone https://github.com/rdavid/shellbase.git && \
     	shellbase/install.sh
@@ -51,10 +52,11 @@ You can try shellbase without installation, e.g. `foobar.sh`:
     #!/bin/sh -eu
     TAG=v0.9.20220613
     URL=https://github.com/rdavid/shellbase/releases/download/$TAG/base
-    eval "$( \
-    	wget $URL \
-    		--output-document - \
-    		--quiet \
+    eval \
+    	"$( \
+    		wget $URL \
+    			--output-document - \
+    			--quiet \
     	)"
     log I\'m using shellbase!
 
