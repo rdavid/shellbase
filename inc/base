@@ -178,14 +178,13 @@ url_exists() {
 	cmd_exists curl
 	local arg out ret=0
 	for arg do
-		if out="$(\
-			curl \
-				--head \
-				--output /dev/null \
-				--show-error \
-				--silent \
-				--write-out %\{http_code\} \
-				"$arg" \
+		if out="$(curl \
+			--head \
+			--output /dev/null \
+			--show-error \
+			--silent \
+			--write-out %\{http_code\} \
+			"$arg" \
 			2>&1)"; then
 			log "URL $arg returns HTTP code $out."
 		else
