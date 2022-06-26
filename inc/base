@@ -231,7 +231,7 @@ is_writable() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: is_writable file1 file2...
 	local arg ret=0
 	for arg do
-		if file_exists "$arg"; then
+		if file_exists "$arg" >/dev/null 2>&1; then
 			if [ -w "$arg" ]; then
 				log File "$arg" is writable.
 			else
@@ -439,9 +439,8 @@ base_cleanup() {
 	base_bye
 
 	# Keeps logs of last finished instance. Keeps the function quiet.
-	BASE_QUIET=true
 	local log="$BASE_TMP/$BASE_IAM-log"
-	if is_writable "$log"; then
+	if is_writable "$log" >/dev/null; then
 		cp -f "$BASE_LCK/log" "$log"
 	fi
 	rm -fr "$BASE_LCK"
