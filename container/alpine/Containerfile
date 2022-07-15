@@ -26,7 +26,7 @@ WORKDIR /bin
 COPY --from=builder /go/goredo-*/src/goredo .
 RUN \
 	apk add --no-cache --update \
-		curl=7.80.0-r1 \
+		curl~=7.80.0 \
 		tzdata=2022a-r0 && \
 	rm -rf /var/cache/apk/* && \
 	addgroup -S "$USER" && \
