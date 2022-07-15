@@ -17,11 +17,12 @@ multiple running instances of a same script are detected.
 `shellbase` defines global variables and functions. All functions without
 `base_` prefix are API and should be used by clients. API functions are:
 `be_root`, `be_user`, `cmd_exists`, `die`, `file_exists`, `is_empty`,
-`is_readable`, `is_writable`, `log`, `loge`, `logw`, `to_log`, `to_loge`,
-`url_exists`, `user_exists`, `validate_cmd`, `validate_var`, `var_exists`,
-`yes_to_continue`. Global variables have `BASE_` prefix and clients could use
-them. Clients should place all temporaly files under `$BASE_LCK`. All functions
-started with `base_` prefix are internal and should not be used by clients.
+`is_readable`, `is_writable`, `log`, `loge`, `logw`, `prettytable`, `to_log`,
+`to_loge`, `url_exists`, `user_exists`, `validate_cmd`, `validate_var`,
+`var_exists`, `yes_to_continue`. Global variables have `BASE_` prefix and
+clients could use them. Clients should place all temporaly files under
+`$BASE_LCK`. All functions started with `base_` prefix are internal and should
+not be used by clients.
 
 See [Toolbox project](https://github.com/rdavid/toolbox) as an example.
 
@@ -59,6 +60,25 @@ You can try shellbase without installation, e.g. `foobar.sh`:
     			--quiet \
     	)"
     log I\'m using shellbase!
+
+Prettytable example:
+
+    #!/bin/sh -eu
+    . shellbase
+    {
+    	printf 'ID\tNAME\tTITLE\n'
+    	printf '123456789\tJohn Foo\tDirector\n'
+    	printf '12\tMike Bar\tEngineer\n'
+    } | prettytable
+
+Output:
+
+    +-----------+----------+----------+
+    |ID         |NAME      |TITLE     |
+    +-----------+----------+----------+
+    |123456789  |John Foo  |Director  |
+    |12         |Mike Bar  |Engineer  |
+    +-----------+----------+----------+
 
 ## Test
 The project uses Daniel J. Bernstein's (aka, djb)

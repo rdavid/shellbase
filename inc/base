@@ -27,11 +27,11 @@
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
 # be_root, be_user, cmd_exists die, file_exists, is_empty, is_readable,
-# is_writable, log, loge, logw, to_log, to_loge, url_exists, user_exists,
-# validate_cmd, validate_var, var_exists, yes_to_continue. Global variables
-# have BASE_ prefix and clients could use them. Clients should place all
-# temporaly files under $BASE_LCK. All functions started with base_ prefix are
-# internal and should not be used by clients.
+# is_writable, log, loge, logw, prettytable, to_log, to_loge, url_exists,
+# user_exists, validate_cmd, validate_var, var_exists, yes_to_continue. Global
+# variables have BASE_ prefix and clients could use them. Clients should place
+# all temporaly files under $BASE_LCK. All functions started with base_ prefix
+# are internal and should not be used by clients.
 BASE_BEGIN=$(date +%s)
 BASE_IAM=$(basename -- "$0")
 BASE_IAM="${BASE_IAM%.*}"
@@ -41,7 +41,7 @@ BASE_TMP=/tmp
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXXXXX")
 BASE_LOG="$BASE_LCK"/log
 BASE_QUIET=false
-BASE_VERSION=0.9.20220613
+BASE_VERSION=0.9.20220715
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -329,7 +329,64 @@ is_empty() {
 	return 0
 }
 
+# Draws ASCII table with sizing columns. Expects input as:
+# {
+# 	printf 'ID\tNAME\tTITLE\n'
+# 	printf '123456789\tJohn Foo\tDirector\n'
+# 	printf '12\tMike Bar\tEngineer\n'
+# } | prettytable
+# It produces output:
+# +-----------+----------+----------+
+# |ID         |NAME      |TITLE     |
+# +-----------+----------+----------+
+# |123456789  |John Foo  |Director  |
+# |12         |Mike Bar  |Engineer  |
+# +-----------+----------+----------+
+# The implementation is inspired by Jakob Westhoff:
+#  https://github.com/jakobwesthoff/prettytable.sh
+prettytable() {
+	local bdy col hdr inp
+	inp="$(cat -)"
+	hdr="$(printf %s "$inp" | head -n1)"
+	bdy="$(printf %s "$inp" | tail -n+2)"
+
+	# Calculates number of columns, col=number-of-tabs+1.
+	col="$(printf %s "$hdr" | awk -F\\t '{print NF-1}')"
+	col=$((col+1))
+
+	# Expects column separated by tab, see column -s. Double quates in sed's
+	# regex are needed.
+	{
+		base_prettytable_separator "$col"
+		printf %s\\n "$hdr" | base_prettytable_prettify
+		base_prettytable_separator "$col"
+		printf %s\\n "$bdy" | base_prettytable_prettify
+		base_prettytable_separator "$col"
+	} | \
+		column -ts '	' | \
+		sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g" | \
+		to_log
+}
+
 # Private functions have prefix base_, they are used locally.
+
+# Adds vertical borders. Double quates are needed.
+base_prettytable_prettify() {
+    cat - | sed "s/^/|/;s/\$/	/;s/	/	|/g"
+}
+
+# Adds horisontal line with colums separator. The input parameter is a number
+# of columns.
+base_prettytable_separator() {
+	local i
+	i="$1"
+	printf +
+	while [ "$i" -gt 1 ]; do
+		printf \\t+
+		i=$((i-1))
+	done
+	printf '\t+\n'
+}
 
 # Prints timestamp before arguments.
 base_tim() {
