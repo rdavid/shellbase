@@ -1,6 +1,6 @@
 #!/bin/sh -eu
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2021-2022 David Rabkin
+# Copyright 2022 David Rabkin
 
 # shellcheck source=../inc/base
 . "$(dirname "$(realpath "$0")")/../inc/base"
@@ -22,9 +22,9 @@ foo() {
 	done
 }
 
-{ \
+{
 	foo \
-	2>&1 1>&3 3>&- | to_loge; \
+	2>&1 1>&3 3>&- | to_loge
 } \
 	3>&1 1>&2 | to_log
 exit 0

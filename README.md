@@ -31,7 +31,7 @@ The artifact is a single non-executable [text
 file](https://github.com/rdavid/shellbase/blob/master/inc/base). Install the
 file from the repository:
 
-    git clone https://github.com/rdavid/shellbase.git && \
+    git clone https://github.com/rdavid/shellbase.git &&
     	shellbase/install.sh
 
 Install the file from released version directly:
@@ -54,7 +54,7 @@ You can try shellbase without installation, e.g. `foobar.sh`:
     TAG=v0.9.20220613
     URL=https://github.com/rdavid/shellbase/releases/download/$TAG/base
     eval \
-    	"$( \
+    	"$(
     		wget $URL \
     			--output-document - \
     			--quiet \

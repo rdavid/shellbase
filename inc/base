@@ -41,7 +41,7 @@ BASE_TMP=/tmp
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXXXXX")
 BASE_LOG="$BASE_LCK"/log
 BASE_QUIET=false
-BASE_VERSION=0.9.20220715
+BASE_VERSION=0.9.20220803
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -74,9 +74,9 @@ loge() {
 # Redirects input to logger line by line. It is usefull for logging multiple
 # lines output. In order to handle error and standard outputs, use following
 # trick:
-# { \
+# {
 # 	a-command \
-# 	2>&1 1>&3 3>&- | to_loge; \
+#			2>&1 1>&3 3>&- | to_loge
 # } \
 # 	3>&1 1>&2 | to_log
 # Order will always be indeterminate, see more details:
@@ -178,14 +178,16 @@ url_exists() {
 	cmd_exists curl
 	local arg out ret=0
 	for arg do
-		if out="$(curl \
-			--head \
-			--output /dev/null \
-			--show-error \
-			--silent \
-			--write-out %\{http_code\} \
-			"$arg" \
-			2>&1)"; then
+		if out="$(
+			curl \
+				--head \
+				--output /dev/null \
+				--show-error \
+				--silent \
+				--write-out %\{http_code\} \
+				"$arg" \
+				2>&1
+			)"; then
 			log "URL $arg returns HTTP code $out."
 		else
 			ret=1
@@ -313,8 +315,7 @@ yes_to_continue() {
 	set +e
 	wait "$kid" 2>/dev/null
 	set -e
-	printf %s "$ans" | grep -i -q ^y || \
-		{ log Stop working.; exit 0; }
+	printf %s "$ans" | grep -i -q ^y || { log Stop working.; exit 0; }
 	log Continue working.
 }
 
@@ -362,9 +363,9 @@ prettytable() {
 		base_prettytable_separator "$col"
 		printf %s\\n "$bdy" | base_prettytable_prettify
 		base_prettytable_separator "$col"
-	} | \
-		column -ts '	' | \
-		sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g" | \
+	} |
+		column -ts '	' |
+		sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g" |
 		to_log
 }
 
@@ -372,7 +373,7 @@ prettytable() {
 
 # Adds vertical borders. Double quates are needed.
 base_prettytable_prettify() {
-    cat - | sed "s/^/|/;s/\$/	/;s/	/	|/g"
+	cat - | sed "s/^/|/;s/\$/	/;s/	/	|/g"
 }
 
 # Adds horisontal line with colums separator. The input parameter is a number
