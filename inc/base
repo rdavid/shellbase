@@ -131,9 +131,9 @@ var_exists() {
 	local arg ret=0
 	for arg do
 		local var
-		set +u
+		set +o nounset
 		eval "var=\${$arg}"
-		set -u
+		set -o nounset
 
 		# An absence of a variable is a very common case. Does not log the event.
 		if [ -n "$var" ]; then
@@ -311,10 +311,11 @@ yes_to_continue() {
 	log Killing watchdog kid "$kid".
 	kill "$kid"
 
-	# Command wait could return an error code, temporarily disables exit on error.
-	set +e
+	# Command wait could return an error code, temporarily disables exit on
+	# error.
+	set +o errexit
 	wait "$kid" 2>/dev/null
-	set -e
+	set -o errexit
 	printf %s "$ans" | grep -i -q ^y || { log Stop working.; exit 0; }
 	log Continue working.
 }
@@ -490,7 +491,8 @@ base_bye() {
 	log "$BASE_IAM says bye after $(base_duration "$BASE_BEGIN")."
 }
 
-# General exit handler, it is called on EXIT. Any first parameter means no exit.
+# General exit handler, it is called on EXIT. Any first parameter means no
+# exit.
 base_cleanup() {
 	local err=$?
 	trap - HUP EXIT INT QUIT TERM
