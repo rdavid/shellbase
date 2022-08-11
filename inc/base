@@ -27,11 +27,11 @@
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
 # be_root, be_user, cmd_exists, die, file_exists, is_empty, is_readable,
-# is_writable, log, loge, logw, prettytable, to_log, to_loge, url_exists,
-# user_exists, validate_cmd, validate_var, var_exists, yes_to_continue. Global
-# variables have BASE_ prefix and clients could use them. Clients should place
-# all temporaly files under $BASE_LCK. All functions started with base_ prefix
-# are internal and should not be used by clients.
+# is_writable, log, loge, logw, prettytable, timestamp, to_log, to_loge,
+# url_exists, user_exists, validate_cmd, validate_var, var_exists,
+# yes_to_continue. Global variables have BASE_ prefix and clients could use
+# them. Clients should place all temporaly files under $BASE_LCK. All functions
+# started with base_ prefix are internal and should not be used by clients.
 BASE_BEGIN=$(date +%s)
 BASE_IAM=$(basename -- "$0")
 BASE_IAM="${BASE_IAM%.*}"
@@ -41,34 +41,33 @@ BASE_TMP=/tmp
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXXXXX")
 BASE_LOG="$BASE_LCK"/log
 BASE_QUIET=false
-BASE_VERSION=0.9.20220809
+BASE_VERSION=0.9.20220810
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
 # Information logger doesn't print to stdout with --quite flag.
 log() {
-	base_truncate
-	if [ $BASE_QUIET = true ]; then
-		base_tim "I $*" >> "$BASE_LOG"
-	else
-		base_tim "I $*" | tee -a "$BASE_LOG"
-	fi
+	local ts
+	ts="$(timestamp)"
+	[ $BASE_QUIET = false ] && printf '\033[0;32m%s I\033[0m %s\n' "$ts" "$*"
+	base_write_to_file "$ts" I "$*"
 }
 
 # Warning logger doesn't print to stderr with --quite flag.
 logw() {
-	base_truncate
-	if [ $BASE_QUIET = true ]; then
-		base_tim "W $*" >> "$BASE_LOG"
-	else
-		base_tim "W $*" | tee -a "$BASE_LOG" >&2
-	fi
+	local ts
+	ts="$(timestamp)"
+	[ $BASE_QUIET = false ] && printf '\033[0;33m%s W\033[0m %s\n' "$ts" "$*" >&2
+	base_write_to_file "$ts" W "$*"
+	
 }
 
 # Error logger always prints to stderr.
 loge() {
-	base_truncate
-	base_tim "E $*" | tee -a "$BASE_LOG" >&2
+	local ts
+	ts="$(timestamp)"
+	printf '\033[0;31m%s E\033[0m %s\n' "$ts" "$*" >&2
+	base_write_to_file "$ts" E "$*"
 }
 
 # Redirects input to logger line by line. It is usefull for logging multiple
@@ -96,6 +95,11 @@ to_loge() {
 die() {
 	[ $# -eq 0 ] || loge "$@"
 	exit 11
+}
+
+# Returns current time in form of timestamp.
+timestamp() {
+	date +%Y%m%d-%H:%M:%S
 }
 
 # Checks whether all commands exits. Loops over the arguments, each one is a
@@ -372,6 +376,21 @@ prettytable() {
 
 # Private functions have prefix base_, they are used locally.
 
+# Truncates log file in case it is more than 10MB. Do not return in
+# functions that are called by signal trap.
+base_truncate() {
+	[ -w "$BASE_LOG" ] || return 0
+	[ "$(wc -c <"$BASE_LOG")" -gt 10485760 ] || return 0
+	: > "$BASE_LOG"
+	log "$BASE_LOG" is truncated.
+}
+
+# Adds log string to the log file.
+base_write_to_file() {
+	base_truncate
+	printf %s\\n "$*" >> "$BASE_LOG"
+}
+
 # Adds vertical borders. Double quates are needed.
 base_prettytable_prettify() {
 	cat - | sed "s/^/|/;s/\$/	/;s/	/	|/g"
@@ -388,20 +407,6 @@ base_prettytable_separator() {
 		i=$((i-1))
 	done
 	printf '\t+\n'
-}
-
-# Prints timestamp before arguments.
-base_tim() {
-	printf '%s %s\n' "$(date +"%Y%m%d-%H:%M:%S")" "$*"
-}
-
-# Truncates log file in case it is more than 10MB. Do not return in
-# functions that are called by signal trap.
-base_truncate() {
-	[ -w "$BASE_LOG" ] || return 0
-	[ "$(wc -c <"$BASE_LOG")" -gt 10485760 ] || return 0
-	: > "$BASE_LOG"
-	log "$BASE_LOG" is truncated.
 }
 
 # Formats time titles, the first parameter is a number, the second parameter is
