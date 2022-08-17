@@ -3,8 +3,7 @@
 # Copyright 2021-2022 David Rabkin
 
 # shellcheck source=../inc/base
-. "$(dirname "$(realpath "$0")")/../inc/base"
-
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../inc/base
 i=1
 while [ "$i" -ne 10 ]; do
 	printf "%s\n" "$(base_duration 0)"

@@ -3,8 +3,7 @@
 # Copyright 2022 David Rabkin
 
 # shellcheck source=../inc/base
-. "$(dirname "$(realpath "$0")")/../inc/base"
-
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../inc/base
 file_exists /tmp && printf '/tmp exists.\n'
 file_exists /tmp1 || printf '/tmp1 does not exist.\n'
 file_exists /tmp/* && printf '/tmp/* exists.\n'

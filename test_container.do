@@ -3,7 +3,7 @@
 redo-ifchange inc/* app/*
 
 # shellcheck source=./inc/base
-. "$(dirname "$(realpath "$0")")/inc/base"
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/inc/base
 validate_cmd podman
 podman machine start >/dev/null 2>&1 || :
 for f in container/*/Containerfile; do
@@ -13,14 +13,14 @@ for f in container/*/Containerfile; do
 	out=$(podman build --file "$f" --quiet . 2>&1) || die "$out"
 
 	# Run the container, then remove it.
-	{ \
+	{
 		podman run \
 			--interactive \
 			--rm \
 			--rmi \
 			--tty \
 			"$out" \
-		2>&1 1>&3 3>&- | to_loge; \
+		2>&1 1>&3 3>&- | to_loge
 	} \
 		3>&1 1>&2 | to_log
 done

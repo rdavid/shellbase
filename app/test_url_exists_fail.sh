@@ -3,8 +3,7 @@
 # Copyright 2022 David Rabkin
 
 # shellcheck source=../inc/base
-. "$(dirname "$(realpath "$0")")/../inc/base"
-
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../inc/base
 url_exists \
 	1.1.1.1 \
 	http://doesnotexist.c0m/ \
