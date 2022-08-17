@@ -3,9 +3,8 @@
 # Copyright 2022 David Rabkin
 
 # shellcheck disable=SC1091
-. "$(dirname "$(realpath "$0")")/../inc/base"
-. "$(dirname "$(realpath "$0")")/../inc/echo"
-
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../inc/base
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../inc/echo
 echo hello
 # shellcheck disable=SC3037
 echo "-e"

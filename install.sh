@@ -2,7 +2,7 @@
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # Copyright 2022 David Rabkin
 set -- --quiet "$@"
-BASE="$(dirname "$(realpath "$0")")"/inc/base
+BASE="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/inc/base
 
 # shellcheck source=./inc/base
 . "$BASE"
