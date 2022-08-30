@@ -1,0 +1,13 @@
+#!/bin/sh
+# vi:et lbr noet sw=2 ts=2 tw=79 wrap
+# Copyright 2022 David Rabkin
+set -o errexit
+set -o nounset
+
+# shellcheck disable=SC1091
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+mkdir /tmp/empty-dir
+is_empty /tmp || printf '/tmp is not empty.\n'
+is_empty /tmp/empty-dir && printf '/tmp/empty-dir is empty.\n'
+rmdir /tmp/empty-dir
+exit 0

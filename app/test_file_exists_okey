@@ -1,0 +1,13 @@
+#!/bin/sh
+# vi:et lbr noet sw=2 ts=2 tw=79 wrap
+# Copyright 2022 David Rabkin
+set -o errexit
+set -o nounset
+
+# shellcheck disable=SC1091
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+file_exists /tmp && printf '/tmp exists.\n'
+file_exists /tmp1 || printf '/tmp1 does not exist.\n'
+file_exists /tmp/* && printf '/tmp/* exists.\n'
+file_exists /tmp1/* || printf '/tmp1/* does not exist.\n'
+exit 0

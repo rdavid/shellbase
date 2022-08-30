@@ -39,18 +39,18 @@ Install the file from released version directly:
     TAG=v0.9.20220809 \
     wget \
     	https://github.com/rdavid/shellbase/releases/download/$TAG/base \
-    	--output-document /usr/local/bin/shellbase
+    	--output-document /usr/local/bin/base.sh
 
 Make sure `/usr/local/bin` is in your `PATH`. Then your script can use
 `shellbase`, e.g. `foobar.sh`:
 
-    #!/bin/sh -eu
-    . shellbase
+    #!/bin/sh
+    . base.sh
     log I\'m using shellbase!
 
 You can try shellbase without installation, e.g. `foobar.sh`:
 
-    #!/bin/sh -eu
+    #!/bin/sh
     TAG=v0.9.20220809
     URL=https://github.com/rdavid/shellbase/releases/download/$TAG/base
     eval \
@@ -63,8 +63,8 @@ You can try shellbase without installation, e.g. `foobar.sh`:
 
 Prettytable example:
 
-    #!/bin/sh -eu
-    . shellbase
+    #!/bin/sh
+    . base.sh
     {
     	printf 'ID\tNAME\tTITLE\n'
     	printf '123456789\tJohn Foo\tDirector\n'

@@ -1,13 +1,13 @@
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # Copyright 2022 David Rabkin
-redo-ifchange inc/* app/*
+redo-ifchange lib/* app/*
 
-# shellcheck source=./inc/base
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/inc/base
+# shellcheck disable=SC1091
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/lib/base.sh
 validate_cmd podman
 podman machine start >/dev/null 2>&1 || :
 for f in container/*/Containerfile; do
-	log "Test $(printf '%s' "$f" | awk -F '/' '{print $2}')."
+	log "Test $(printf %s "$f" | awk -F / '{print $2}')."
 
 	# The build is ran quietly, it produces a container hash.
 	out=$(podman build --file "$f" --quiet . 2>&1) || die "$out"
