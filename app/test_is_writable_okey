@@ -1,0 +1,12 @@
+#!/bin/sh
+# vi:et lbr noet sw=2 ts=2 tw=79 wrap
+# Copyright 2021-2022 David Rabkin
+set -o errexit
+set -o nounset
+
+# shellcheck disable=SC1091
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+touch /tmp/1 /tmp/2
+is_writable /tmp/1 /tmp/2 /tmp/3
+rm /tmp/1 /tmp/2
+exit 0

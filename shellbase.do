@@ -1,4 +1,2 @@
-redo-ifchange ./*.sh
-shellcheck -x ./*.sh
-redo-ifchange inc/*
-shellcheck inc/*
+redo-ifchange ./install lib/* app/*
+shellcheck ./install lib/* app/*
