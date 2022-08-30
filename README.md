@@ -28,31 +28,31 @@ See [Toolbox project](https://github.com/rdavid/toolbox) as an example.
 
 ## Install
 The artifact is a single non-executable [text
-file](https://github.com/rdavid/shellbase/blob/master/inc/base). Install the
+file](https://github.com/rdavid/shellbase/blob/master/inc/base.sh). Install the
 file from the repository:
 
     git clone https://github.com/rdavid/shellbase.git &&
-    	shellbase/install.sh
+    	shellbase/install
 
 Install the file from released version directly:
 
-    TAG=v0.9.20220809 \
+    TAG=v0.9.20220830 \
     wget \
-    	https://github.com/rdavid/shellbase/releases/download/$TAG/base \
+    	https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh \
     	--output-document /usr/local/bin/base.sh
 
-Make sure `/usr/local/bin` is in your `PATH`. Then your script can use
-`shellbase`, e.g. `foobar.sh`:
+Make sure `/usr/local/bin/` is in your `PATH`. Then your script can use
+`shellbase`, e.g. `foobar`:
 
     #!/bin/sh
     . base.sh
     log I\'m using shellbase!
 
-You can try shellbase without installation, e.g. `foobar.sh`:
+You can try shellbase without installation, e.g. `foobar`:
 
     #!/bin/sh
-    TAG=v0.9.20220809
-    URL=https://github.com/rdavid/shellbase/releases/download/$TAG/base
+    TAG=v0.9.20220830
+    URL=https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh
     eval \
     	"$(
     		wget $URL \
