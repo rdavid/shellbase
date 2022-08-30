@@ -36,19 +36,19 @@ file from the repository:
 
 Install the file from released version directly:
 
-    TAG=v0.9.20220830 \
-    wget \
-    	https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh \
-    	--output-document /usr/local/bin/base.sh
+    TAG=v0.9.20220830 &&
+    	wget \
+    		https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh \
+    		--output-document /usr/local/bin/base.sh
 
 Make sure `/usr/local/bin/` is in your `PATH`. Then your script can use
-`shellbase`, e.g. `foobar`:
+`shellbase`:
 
     #!/bin/sh
     . base.sh
     log I\'m using shellbase!
 
-You can try shellbase without installation, e.g. `foobar`:
+You can try shellbase without installation:
 
     #!/bin/sh
     TAG=v0.9.20220830
