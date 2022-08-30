@@ -87,8 +87,8 @@ The project uses Daniel J. Bernstein's (aka, djb)
 [build system](http://cr.yp.to/redo.html). You can install Sergey Matveev's
 [goredo implementation](http://www.goredo.cypherpunks.ru/Install.html).
 
-Run `shellcheck` on sources by `redo`, run tests by `redo test`, run tests in
-multiple environments in containers by `redo test_container`.
+Run `shellcheck` on sources by `redo shellcheck`, run tests by `redo test`, run
+tests in multiple environments in containers by `redo test_container`.
 
 ## License
 `shellbase` is copyright [David Rabkin](http://cv.rabkin.co.il) and available
