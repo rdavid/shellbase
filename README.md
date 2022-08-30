@@ -28,58 +28,60 @@ See [Toolbox project](https://github.com/rdavid/toolbox) as an example.
 
 ## Install
 The artifact is a single non-executable [text
-file](https://github.com/rdavid/shellbase/blob/master/inc/base.sh). Install the
+file](https://github.com/rdavid/shellbase/blob/master/lib/base.sh). Install the
 file from the repository:
-
-    git clone https://github.com/rdavid/shellbase.git &&
-    	shellbase/install
-
+```sh
+git clone https://github.com/rdavid/shellbase.git &&
+shellbase/install
+```
 Install the file from released version directly:
-
-    TAG=v0.9.20220830 &&
-    	wget \
-    		https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh \
-    		--output-document /usr/local/bin/base.sh
-
+```sh
+TAG=v0.9.20220830 &&
+wget \
+	https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh \
+	--output-document /usr/local/bin/base.sh
+```
 Make sure `/usr/local/bin/` is in your `PATH`. Then your script can use
 `shellbase`:
-
-    #!/bin/sh
-    . base.sh
-    log I\'m using shellbase!
-
+```sh
+#!/bin/sh
+. base.sh
+log I\'m using shellbase!
+```
 You can try shellbase without installation:
-
-    #!/bin/sh
-    TAG=v0.9.20220830
-    URL=https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh
-    eval \
-    	"$(
-    		wget $URL \
-    			--output-document - \
-    			--quiet \
-    	)"
-    log I\'m using shellbase!
-
+```sh
+#!/bin/sh
+TAG=v0.9.20220830
+URL=https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh
+eval \
+	"$(
+		wget $URL \
+			--output-document - \
+			--quiet \
+	)"
+log I\'m using shellbase!
+```
 Prettytable example:
-
-    #!/bin/sh
-    . base.sh
-    {
-    	printf 'ID\tNAME\tTITLE\n'
-    	printf '123456789\tJohn Foo\tDirector\n'
-    	printf '12\tMike Bar\tEngineer\n'
-    } | prettytable
-
+```sh
+#!/bin/sh
+. base.sh
+{
+	printf 'ID\tNAME\tTITLE\n'
+	printf '123456789\tJohn Foo\tDirector\n'
+	printf '12\tMike Bar\tEngineer\n'
+} | prettytable
+```
 Output:
-
-    +-----------+----------+----------+
-    |ID         |NAME      |TITLE     |
-    +-----------+----------+----------+
-    |123456789  |John Foo  |Director  |
-    |12         |Mike Bar  |Engineer  |
-    +-----------+----------+----------+
-
+```
+20220831-01:07:40 I 1 says hi.
+20220831-01:07:40 I +-----------+----------+----------+
+20220831-01:07:40 I |ID         |NAME      |TITLE     |
+20220831-01:07:40 I +-----------+----------+----------+
+20220831-01:07:40 I |123456789  |John Foo  |Director  |
+20220831-01:07:40 I |12         |Mike Bar  |Engineer  |
+20220831-01:07:41 I +-----------+----------+----------+
+20220831-01:07:41 I 1 says bye after 1 second.
+```
 ## Test
 The project uses Daniel J. Bernstein's (aka, djb)
 [build system](http://cr.yp.to/redo.html). You can install Sergey Matveev's
