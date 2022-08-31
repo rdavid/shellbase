@@ -1,19 +1,19 @@
-FROM golang:1.18-alpine as builder
+FROM golang:1.19-alpine as builder
 RUN \
 	apk add --no-cache --update \
 		zstd~=1.5 && \
 	rm -rf /var/cache/apk/*
 ENV \
-	SHA=656e96d9f3efa45f035c2dd096fa91763854dbf1a09a37409c25ffc25cbc358f \
-	VER=goredo-1.24.0
+	SHA=63cfdb24f14ec7071b5bb8ed237023410826ea9f21d48e8e6c9f43ae2af34176 \
+	VER=1.27.0
 
 # hadolint ignore=DL4006
 RUN \
 	wget --quiet \
-		http://www.goredo.cypherpunks.ru/download/$VER.tar.zst && \
-		printf '%s  %s' $SHA $VER.tar.zst | sha256sum -cs && \
-	zstd --decompress < $VER.tar.zst | tar --extract --file -
-WORKDIR /go/goredo-1.24.0/src
+		http://www.goredo.cypherpunks.ru/download/goredo-$VER.tar.zst && \
+		printf '%s  %s' $SHA goredo-$VER.tar.zst | sha256sum -cs && \
+	zstd --decompress < goredo-$VER.tar.zst | tar --extract --file -
+WORKDIR /go/goredo-$VER/src
 RUN go build -mod=vendor
 
 FROM debian:bullseye
