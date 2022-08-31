@@ -41,7 +41,7 @@ BASE_TMP=/tmp
 BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXXXXX")
 BASE_LOG="$BASE_LCK"/log
 BASE_QUIET=false
-BASE_VERSION=0.9.20220830
+BASE_VERSION=0.9.20220831
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -606,57 +606,61 @@ base_display_warranty() {
 EOM
 }
 
-# Starting point. First loops through command line arguments.
-for arg do
-	shift
-	case "$arg" in
-		-h|--help)
-			# shellcheck disable=SC2034
-			BASE_DISPLAY_USAGE=true
-			;;
-		-q|--quiet)
-			BASE_QUIET=true
-			;;
-		-v|--version)
-			# shellcheck disable=SC2034
-			BASE_DISPLAY_VERSION=true
-			;;
-		-w|--warranty)
-			# shellcheck disable=SC2034
-			BASE_DISPLAY_WARRANTY=true
-			;;
-		-x|--execute)
-			set -x
-			;;
-		*)
-			# Sets back any unused args.
-			set -- "$@" "$arg"
-	esac
-done
+# Loops through command line arguments before any log.
+base_main() {
+	local arg
+	for arg do
+		shift
+		case "$arg" in
+			-h|--help)
+				# shellcheck disable=SC2034
+				BASE_DISPLAY_USAGE=true
+				;;
+			-q|--quiet)
+				BASE_QUIET=true
+				;;
+			-v|--version)
+				# shellcheck disable=SC2034
+				BASE_DISPLAY_VERSION=true
+				;;
+			-w|--warranty)
+				# shellcheck disable=SC2034
+				BASE_DISPLAY_WARRANTY=true
+				;;
+			-x|--execute)
+				set -x
+				;;
+			*)
+				# Sets back any unused args.
+				set -- "$@" "$arg"
+		esac
+	done
 
-# Logs the starting point.
-base_hi
+	# Logs the starting point.
+	base_hi
 
-# Handles signals, see more:
-#  https://mywiki.wooledge.org/SignalTrap
-trap base_cleanup EXIT
-trap base_sig_cleanup HUP INT QUIT TERM
+	# Handles signals, see more:
+	#  https://mywiki.wooledge.org/SignalTrap
+	trap base_cleanup EXIT
+	trap base_sig_cleanup HUP INT QUIT TERM
 
-# Detects previously ran processes with the same name. If found asks to
-# continue.
-base_check_instances
+	# Detects previously ran processes with the same name. If found asks to
+	# continue.
+	base_check_instances
 
-# The usage has higher priority over version in case both options are set.
-if var_exists BASE_DISPLAY_USAGE; then
-	base_display_usage
-	exit 0
-fi
-if var_exists BASE_DISPLAY_VERSION; then
-	base_display_version
-	exit 0
-fi
-if var_exists BASE_DISPLAY_WARRANTY; then
-	base_display_warranty
-	exit 0
-fi
+	# The usage has higher priority over version in case both options are set.
+	if var_exists BASE_DISPLAY_USAGE; then
+		base_display_usage
+		exit 0
+	fi
+	if var_exists BASE_DISPLAY_VERSION; then
+		base_display_version
+		exit 0
+	fi
+	if var_exists BASE_DISPLAY_WARRANTY; then
+		base_display_warranty
+		exit 0
+	fi
+}
 
+base_main "$@"
