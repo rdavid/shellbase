@@ -501,12 +501,15 @@ base_bye() {
 base_cleanup() {
 	local err=$?
 	trap - HUP EXIT INT QUIT TERM
-	base_bye
 
-	# Keeps logs of last finished instance. Keeps the function quiet.
+	# Keeps logs of last finished instance. Calls base_bye right before log
+	# moving or log deleting.
 	local log="$BASE_TMP/$BASE_IAM-log"
 	if is_writable "$log" >/dev/null; then
+		base_bye
 		cp -f "$BASE_LCK/log" "$log"
+	else
+		base_bye
 	fi
 	rm -fr "$BASE_LCK"
 
