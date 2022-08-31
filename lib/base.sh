@@ -443,12 +443,12 @@ base_time_separator() {
 			[ -n "$3" ] && cnt=$((cnt+1))
 			;;
 		*)
-			printf 'error: param number is %d: %s.' "$#" "$@"
+			loge Wrong param number "$#".
+			return 0
 			;;
 	esac
 	case "$cnt" in
 		0)
-			printf ''
 			;;
 		1)
 			printf ' and '
@@ -457,7 +457,7 @@ base_time_separator() {
 			printf ', '
 			;;
 		*)
-			printf 'error: counter is %d.' "$cnt"
+			loge Wrong number "$cnt".
 			;;
 	esac
 }
