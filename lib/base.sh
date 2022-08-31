@@ -510,7 +510,7 @@ base_cleanup() {
 	fi
 	rm -fr "$BASE_LCK"
 
-	# Parameter expantion defines if the parameter is not set, which means exit.
+	# Parameter expansion defines if the parameter is not set, which means exit.
 	if [ -z ${1+x} ]; then
 		exit $err
 	fi
