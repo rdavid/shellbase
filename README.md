@@ -21,7 +21,7 @@ multiple running instances of a same script are detected.
 `timestamp`, `to_log`, `to_loge`, `url_exists`, `user_exists`, `validate_cmd`,
 `validate_var`, `var_exists`, `yes_to_continue`. Global variables have `BASE_`
 prefix and clients could use them. Clients should place all temporaly files
-under `$BASE_LCK`. All functions started with `base_` prefix are internal and
+under `$BASE_WIP`. All functions started with `base_` prefix are internal and
 should not be used by clients.
 
 See [Toolbox project](https://github.com/rdavid/toolbox) as an example.
