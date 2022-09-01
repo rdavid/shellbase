@@ -15,7 +15,7 @@ is_writable $DST || die $DST is not writable.
 if file_exists $TGT; then
 	yes_to_continue \
 		"$(sh $TGT --quiet --version)" \
-		is already installed. Install \
+		is installed. Install \
 		"$BASE_VERSION"?
 fi
 cp -f "$BASE" $TGT || die Unable to copy "$BASE" to $TGT.
