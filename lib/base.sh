@@ -30,18 +30,9 @@
 # is_writable, log, loge, logw, prettytable, timestamp, to_log, to_loge,
 # url_exists, user_exists, validate_cmd, validate_var, var_exists,
 # yes_to_continue. Global variables have BASE_ prefix and clients could use
-# them. Clients should place all temporaly files under $BASE_LCK. All functions
+# them. Clients should place all temporaly files under $BASE_WIP. All functions
 # started with base_ prefix are internal and should not be used by clients.
-BASE_BEGIN=$(date +%s)
-BASE_IAM=$(basename -- "$0")
-BASE_IAM="${BASE_IAM%.*}"
-BASE_TMP=/tmp
-
-# busybox implementation of mktemp requires six X.
-BASE_LCK=$(mktemp -d "$BASE_TMP/$BASE_IAM.XXXXXX")
-BASE_LOG="$BASE_LCK"/log
-BASE_QUIET=false
-BASE_VERSION=0.9.20220831
+BASE_VERSION=0.9.20220901
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -49,7 +40,7 @@ BASE_VERSION=0.9.20220831
 log() {
 	local ts
 	ts="$(timestamp)"
-	[ $BASE_QUIET = false ] && printf '\033[0;32m%s I\033[0m %s\n' "$ts" "$*"
+	[ "$BASE_QUIET" = false ] && printf '\033[0;32m%s I\033[0m %s\n' "$ts" "$*"
 	base_write_to_file "$ts" I "$*"
 }
 
@@ -57,7 +48,7 @@ log() {
 logw() {
 	local ts
 	ts="$(timestamp)"
-	[ $BASE_QUIET = false ] && printf '\033[0;33m%s W\033[0m %s\n' "$ts" "$*" >&2
+	[ "$BASE_QUIET" = false ] && printf '\033[0;33m%s W\033[0m %s\n' "$ts" "$*" >&2
 	base_write_to_file "$ts" W "$*"
 	
 }
@@ -493,7 +484,7 @@ base_hi() {
 }
 
 base_bye() {
-	log "$BASE_IAM says bye after $(base_duration "$BASE_BEGIN")."
+	log "$BASE_IAM says bye after $(base_duration "$BASE_BEG")."
 }
 
 # General exit handler, it is called on EXIT. Any first parameter means no
@@ -504,14 +495,14 @@ base_cleanup() {
 
 	# Keeps logs of last finished instance. Calls base_bye right before log
 	# moving or log deleting.
-	local log="$BASE_TMP/$BASE_IAM-log"
+	local log="$BASE_WIP/../$BASE_IAM-log"
 	if is_writable "$log" >/dev/null; then
 		base_bye
-		cp -f "$BASE_LCK/log" "$log"
+		cp -f "$BASE_WIP/log" "$log"
 	else
 		base_bye
 	fi
-	rm -fr "$BASE_LCK"
+	rm -fr "$BASE_WIP"
 
 	# Parameter expansion defines if the parameter is not set, which means exit.
 	if [ -z ${1+x} ]; then
@@ -537,16 +528,16 @@ base_check_instances() {
 	# Finds process IDs of all possible instances in /tmp/<script-name.*>/pid and
 	# writes them to the pipe. Loop reads the PIDs from the pipe and counts only
 	# running processes.
-	local pipe="$BASE_LCK/pipe"
+	local pipe="$BASE_WIP/pipe"
 	mkfifo "$pipe"
-	find "$BASE_TMP/$BASE_IAM".* -name "pid" -exec cat {} \; > "$pipe" &
+	find "$BASE_WIP/../$BASE_IAM".* -name "pid" -exec cat {} \; > "$pipe" &
 	while read -r p; do
 		kill -0 "$p" >/dev/null 2>&1 && ins=$((ins + 1))
 	done < "$pipe"
 	rm "$pipe"
 
 	# My instance is running.
-	local pid="$BASE_LCK/pid"
+	local pid="$BASE_WIP/pid"
 	echo $$ > "$pid"
 
 	# Asks permission in case of multiple instances.
@@ -564,7 +555,7 @@ base_check_instances() {
 
 # Prints shellbase version and exits.
 base_display_version() {
-	printf 'base.sh %s\n' "$BASE_VERSION"
+	printf 'shellbase %s\n' "$BASE_VERSION"
 	var_exists BASE_APP_VERSION || return 0
 	printf '%s %s\n' "$BASE_IAM" "$BASE_APP_VERSION"
 }
@@ -611,23 +602,24 @@ EOM
 
 # Loops through command line arguments before any log.
 base_main() {
+	BASE_DISPLAY_USAGE=false
+	BASE_DISPLAY_VERSION=false
+	BASE_DISPLAY_WARRANTY=false
+	BASE_QUIET=false
 	local arg
 	for arg do
 		shift
 		case "$arg" in
 			-h|--help)
-				# shellcheck disable=SC2034
 				BASE_DISPLAY_USAGE=true
 				;;
 			-q|--quiet)
 				BASE_QUIET=true
 				;;
 			-v|--version)
-				# shellcheck disable=SC2034
 				BASE_DISPLAY_VERSION=true
 				;;
 			-w|--warranty)
-				# shellcheck disable=SC2034
 				BASE_DISPLAY_WARRANTY=true
 				;;
 			-x|--execute)
@@ -639,6 +631,13 @@ base_main() {
 		esac
 	done
 
+	# Sets global variables, busybox implementation of mktemp requires six Xs.
+	BASE_IAM="$(basename -- "$0")"
+	BASE_IAM="${BASE_IAM%.*}"
+	BASE_WIP="$(mktemp -d /tmp/"$BASE_IAM.XXXXXX")"
+	BASE_LOG="$BASE_WIP"/log
+	BASE_BEG="$(date +%s)"
+
 	# Logs the starting point.
 	base_hi
 
@@ -647,23 +646,14 @@ base_main() {
 	trap base_cleanup EXIT
 	trap base_sig_cleanup HUP INT QUIT TERM
 
-	# Detects previously ran processes with the same name. If found asks to
+	# Detects previously ran processes with the same name. If finds asks to
 	# continue.
 	base_check_instances
 
 	# The usage has higher priority over version in case both options are set.
-	if var_exists BASE_DISPLAY_USAGE; then
-		base_display_usage
-		exit 0
-	fi
-	if var_exists BASE_DISPLAY_VERSION; then
-		base_display_version
-		exit 0
-	fi
-	if var_exists BASE_DISPLAY_WARRANTY; then
-		base_display_warranty
-		exit 0
-	fi
+	[ false = $BASE_DISPLAY_USAGE ] || { base_display_usage; exit 0; }
+	[ false = $BASE_DISPLAY_VERSION ] || { base_display_version; exit 0; }
+	[ false = $BASE_DISPLAY_WARRANTY ] || { base_display_warranty; exit 0; }
 }
 
 base_main "$@"
