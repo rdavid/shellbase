@@ -36,7 +36,7 @@ shellbase/install
 ```
 Install the file from released version directly:
 ```sh
-TAG=v0.9.20220830 &&
+readonly TAG=v0.9.20220830 &&
 wget \
 	https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh \
 	--output-document /usr/local/bin/base.sh
@@ -45,17 +45,22 @@ Make sure `/usr/local/bin/` is in your `PATH`. Then your script can use
 `shellbase`:
 ```sh
 #!/bin/sh
+set -o errexit
+set -o nounset
+
+# shellcheck source=/usr/local/bin/base.sh
 . base.sh
 log I\'m using shellbase!
 ```
 You can try shellbase without installation:
 ```sh
 #!/bin/sh
-TAG=v0.9.20220830
-URL=https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh
+set -o errexit
+set -o nounset
+readonly TAG=v0.9.20220830
 eval \
 	"$(
-		wget $URL \
+		wget https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh \
 			--output-document - \
 			--quiet \
 	)"
@@ -64,6 +69,10 @@ log I\'m using shellbase!
 Prettytable example:
 ```sh
 #!/bin/sh
+set -o errexit
+set -o nounset
+
+# shellcheck source=/usr/local/bin/base.sh
 . base.sh
 {
 	printf 'ID\tNAME\tTITLE\n'
