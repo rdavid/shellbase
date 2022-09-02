@@ -32,7 +32,7 @@
 # yes_to_continue. Global variables have BASE_ prefix and clients could use
 # them. Clients should place all temporaly files under $BASE_WIP. All functions
 # started with base_ prefix are internal and should not be used by clients.
-BASE_VERSION=0.9.20220901
+readonly BASE_VERSION=0.9.20220902
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -602,25 +602,23 @@ EOM
 
 # Loops through command line arguments before any log.
 base_main() {
-	BASE_DISPLAY_USAGE=false
-	BASE_DISPLAY_VERSION=false
-	BASE_DISPLAY_WARRANTY=false
 	BASE_QUIET=false
+	local use=false ver=false war=false
 	local arg
 	for arg do
 		shift
 		case "$arg" in
 			-h|--help)
-				BASE_DISPLAY_USAGE=true
+				use=true
 				;;
 			-q|--quiet)
 				BASE_QUIET=true
 				;;
 			-v|--version)
-				BASE_DISPLAY_VERSION=true
+				ver=true
 				;;
 			-w|--warranty)
-				BASE_DISPLAY_WARRANTY=true
+				war=true
 				;;
 			-x|--execute)
 				set -x
@@ -631,12 +629,18 @@ base_main() {
 		esac
 	done
 
-	# Sets global variables, busybox implementation of mktemp requires six Xs.
+	# Sets global variables. Busybox implementation of mktemp requires six Xs.
+	BASE_BEG="$(date +%s)"
 	BASE_IAM="$(basename -- "$0")"
 	BASE_IAM="${BASE_IAM%.*}"
 	BASE_WIP="$(mktemp -d /tmp/"$BASE_IAM.XXXXXX")"
 	BASE_LOG="$BASE_WIP"/log
-	BASE_BEG="$(date +%s)"
+	readonly \
+		BASE_BEG \
+		BASE_IAM \
+		BASE_LOG \
+		BASE_QUIET \
+		BASE_WIP
 
 	# Logs the starting point.
 	base_hi
@@ -651,9 +655,9 @@ base_main() {
 	base_check_instances
 
 	# The usage has higher priority over version in case both options are set.
-	[ false = $BASE_DISPLAY_USAGE ] || { base_display_usage; exit 0; }
-	[ false = $BASE_DISPLAY_VERSION ] || { base_display_version; exit 0; }
-	[ false = $BASE_DISPLAY_WARRANTY ] || { base_display_warranty; exit 0; }
+	[ false = $use ] || { base_display_usage; exit 0; }
+	[ false = $ver ] || { base_display_version; exit 0; }
+	[ false = $war ] || { base_display_warranty; exit 0; }
 }
 
 base_main "$@"

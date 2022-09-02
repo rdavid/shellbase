@@ -5,11 +5,12 @@ set -o errexit
 set -o nounset
 set -- --quiet "$@"
 BASE="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/lib/base.sh
+DST=/usr/local/bin
+TGT=$DST/base.sh
+readonly BASE DST TGT
 
 # shellcheck disable=SC1090
 . "$BASE"
-DST=/usr/local/bin
-TGT=$DST/base.sh
 file_exists $DST || die $DST: No such directory.
 is_writable $DST || die $DST is not writable.
 if file_exists $TGT; then
