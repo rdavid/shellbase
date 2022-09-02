@@ -32,7 +32,7 @@
 # yes_to_continue. Global variables have BASE_ prefix and clients could use
 # them. Clients should place all temporaly files under $BASE_WIP. All functions
 # started with base_ prefix are internal and should not be used by clients.
-readonly BASE_VERSION=0.9.20220902
+readonly BASE_VERSION=0.9.20220903
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -268,24 +268,31 @@ be_root() {
 # input is not detected. If exists uses parameters as a question, otherwise
 # uses default message.
 yes_to_continue() {
-	local arc
+	local \
+		ans \
+		arc \
+		dad="$$" \
+		kid \
+		msg \
+		tmo=20
 	arc="$(stty -g)"
+	readonly \
+		arc \
+		dad \
+		tmo
 
 	# The trap returns tty settings, adds the new line before any printing to
 	# compensate the question without a new line.
-	local tmo=20
 	trap 'stty "$arc"; printf \\n; die "Timed out in $tmo seconds".' TERM
 
 	# Runs watchdog process that kills dad and kids proceeses with common unique
 	# process group ID, see minus before dad PID.
-	local dad="$$"
 	(sleep "$tmo"; kill -- -$dad)&
-	local kid="$!"
+	kid="$!"
 	log "PIDs: dad $dad, kid $kid."
 
 	# Prints the question without a new line allows to print an answer on the
 	# same line. The question is not logged.
-	local msg
 	if [ -z "${1-}" ]; then
 		msg='Do you want to continue?'
 	else
@@ -295,7 +302,6 @@ yes_to_continue() {
 	stty raw -echo
 
 	# Runs child process to read first character from stdin.
-	local ans
 	ans=$(head --bytes=1)
 	stty "$arc"
 	trap base_sig_cleanup TERM
@@ -390,8 +396,7 @@ base_prettytable_prettify() {
 # Adds horisontal line with colums separator. The input parameter is a number
 # of columns.
 base_prettytable_separator() {
-	local i
-	i="$1"
+	local i="$1"
 	printf +
 	while [ "$i" -gt 1 ]; do
 		printf \\t+
@@ -456,25 +461,30 @@ base_time_separator() {
 # Calculates duration time for report. The first parameter is a start time.
 # 86400 seconds in a day, 3600 seconds in an hour, 60 seconds in a minute.
 base_duration() {
-	local dur="$(($(date +%s)-$1))"
-	local d h m s
-	d="$(base_time_title $((dur / 86400)) day)"
-	h="$(base_time_title $((dur % 86400 / 3600)) hour)"
-	m="$(base_time_title $((dur % 86400 % 3600 / 60)) minute)"
-	s="$(base_time_title $((dur % 60)) second)"
-	if [ -n "$d" ]; then
-		printf %s "$d" "$(base_time_separator "$h" "$m" "$s")"
+	local \
+		day \
+		dur \
+		hou \
+		min \
+		sec
+	dur="$(($(date +%s)-$1))"
+	day="$(base_time_title $((dur/86400)) day)"
+	hou="$(base_time_title $((dur%86400/3600)) hour)"
+	min="$(base_time_title $((dur%86400%3600/60)) minute)"
+	sec="$(base_time_title $((dur%60)) second)"
+	if [ -n "$day" ]; then
+		printf %s "$day" "$(base_time_separator "$hou" "$min" "$sec")"
 	fi
-	if [ -n "$h" ]; then
-		printf %s "$h" "$(base_time_separator "$m" "$s")"
+	if [ -n "$hou" ]; then
+		printf %s "$hou" "$(base_time_separator "$min" "$sec")"
 	fi
-	if [ -n "$m" ]; then
-		printf %s "$m" "$(base_time_separator "$s")"
+	if [ -n "$min" ]; then
+		printf %s "$min" "$(base_time_separator "$sec")"
 	fi
-	if [ -n "$s" ]; then
-		printf %s "$s"
+	if [ -n "$sec" ]; then
+		printf %s "$sec"
 	fi
-	if [ -z "$d" ] && [ -z "$h" ] && [ -z "$m" ] && [ -z "$s" ]; then
+	if [ -z "$day" ] && [ -z "$hou" ] && [ -z "$min" ] && [ -z "$sec" ]; then
 		printf 'less than a second'
 	fi
 }
@@ -523,34 +533,34 @@ base_sig_cleanup() {
 
 # Asks to continue if multiple instances.
 base_check_instances() {
-	local ins=0
+	local \
+		ins=0 \
+		end \
+		pid="$BASE_WIP"/pid \
+		pip="$BASE_WIP"/pip \
+		pro
 
 	# Finds process IDs of all possible instances in /tmp/<script-name.*>/pid and
 	# writes them to the pipe. Loop reads the PIDs from the pipe and counts only
 	# running processes.
-	local pipe="$BASE_WIP/pipe"
-	mkfifo "$pipe"
-	find "$BASE_WIP/../$BASE_IAM".* -name "pid" -exec cat {} \; > "$pipe" &
-	while read -r p; do
-		kill -0 "$p" >/dev/null 2>&1 && ins=$((ins + 1))
-	done < "$pipe"
-	rm "$pipe"
+	mkfifo "$pip"
+	find "$BASE_WIP/../$BASE_IAM".* -name "pid" -exec cat {} \; > "$pip" &
+	while read -r pro; do
+		kill -0 "$pro" >/dev/null 2>&1 && ins=$((ins+1))
+	done < "$pip"
 
 	# My instance is running.
-	local pid="$BASE_WIP/pid"
 	echo $$ > "$pid"
 
 	# Asks permission in case of multiple instances.
-	if [ $ins -ne 0 ]; then
-		local ending
-		if [ $ins -gt 1 ]; then
-			ending=es
-		else
-			ending=e
-		fi
-		printf '%d instanc%s of %s are running.\n' $ins $ending "$BASE_IAM"
-		yes_to_continue
+	[ $ins -ne 0 ] || return 0
+	if [ $ins -gt 1 ]; then
+		end=es
+	else
+		end=e
 	fi
+	printf '%d instanc%s of %s are running.\n' $ins $end "$BASE_IAM"
+	yes_to_continue
 }
 
 # Prints shellbase version and exits.
@@ -603,8 +613,7 @@ EOM
 # Loops through command line arguments before any log.
 base_main() {
 	BASE_QUIET=false
-	local use=false ver=false war=false
-	local arg
+	local arg use=false ver=false war=false
 	for arg do
 		shift
 		case "$arg" in
