@@ -6,7 +6,7 @@ set -o nounset
 
 # shellcheck disable=SC1091
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
-DUR=2
+readonly DUR=2
 printf 'Sleeping for %s seconds...\n' $DUR
 sleep $DUR
 exit 0
