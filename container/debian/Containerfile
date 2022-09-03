@@ -30,8 +30,14 @@ RUN \
 	apt-get update --assume-yes && \
 	apt-get upgrade --assume-yes && \
 	apt-get install --assume-yes --no-install-recommends \
-		curl && \
-	apt-get clean && \
+		bash \
+		curl \
+		dash \
+		fish \
+		ksh \
+		tcsh \
+		zsh \
+	&& apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
 	useradd --create-home "$USER" && \
 	./goredo -symlinks
