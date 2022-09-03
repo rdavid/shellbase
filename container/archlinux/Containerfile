@@ -25,7 +25,14 @@ WORKDIR /bin
 COPY --from=builder /go/goredo-*/src/goredo .
 RUN \
 	pacman --noconfirm --refresh --sync --sysupgrade >/dev/null 2>&1 && \
-	useradd --create-home "$USER" && \
+	pacman --noconfirm --sync \
+		bash>=5.1 \
+		dash>=0.5 \
+		fish>=3.5 \
+		ksh>=2020 \
+		tcsh>=6.24 \
+		zsh>=r5.9 \
+	&& useradd --create-home "$USER" && \
 	./goredo -symlinks
 USER "$USER"
 WORKDIR /home/"$USER"
