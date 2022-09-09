@@ -82,14 +82,14 @@ set -o nounset
 ```
 Output:
 ```
-20220831-01:07:40 I 1 says hi.
+20220831-01:07:40 I prettytable 33704 says hi.
 20220831-01:07:40 I +-----------+----------+----------+
 20220831-01:07:40 I |ID         |NAME      |TITLE     |
 20220831-01:07:40 I +-----------+----------+----------+
 20220831-01:07:40 I |123456789  |John Foo  |Director  |
 20220831-01:07:40 I |12         |Mike Bar  |Engineer  |
 20220831-01:07:41 I +-----------+----------+----------+
-20220831-01:07:41 I 1 says bye after 1 second.
+20220831-01:07:41 I prettytable 33704 says bye after 1 second.
 ```
 ## Test
 The project uses Daniel J. Bernstein's (aka, djb)

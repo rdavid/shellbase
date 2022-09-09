@@ -32,7 +32,7 @@
 # yes_to_continue. Global variables have BASE_ prefix and clients could use
 # them. Clients should place all temporaly files under $BASE_WIP. All functions
 # started with base_ prefix are internal and should not be used by clients.
-readonly BASE_VERSION=0.9.20220904
+readonly BASE_VERSION=0.9.20220909
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -490,11 +490,11 @@ base_duration() {
 }
 
 base_hi() {
-	log "$BASE_IAM" says hi.
+	log "$BASE_IAM $$" says hi.
 }
 
 base_bye() {
-	log "$BASE_IAM says bye after $(base_duration "$BASE_BEG")."
+	log "$BASE_IAM $$ says bye after $(base_duration "$BASE_BEG")."
 }
 
 # General exit handler, it is called on EXIT. Any first parameter means no
