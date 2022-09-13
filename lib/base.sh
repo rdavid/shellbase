@@ -123,9 +123,8 @@ validate_cmd() {
 # is a variable name. Fails if one of a variable is unset or null.
 var_exists() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: var_exists var1 var2...
-	local arg ret=0
+	local arg ret=0 var
 	for arg do
-		local var
 		set +o nounset
 		eval "var=\${$arg}"
 		set -o nounset
@@ -367,8 +366,8 @@ prettytable() {
 		base_prettytable_separator "$col"
 	} |
 		column -ts '	' |
-		sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g" |
-		to_log
+			sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g" |
+			to_log
 }
 
 # Private functions have prefix base_, they are used locally.
@@ -500,12 +499,14 @@ base_bye() {
 # General exit handler, it is called on EXIT. Any first parameter means no
 # exit.
 base_cleanup() {
-	local err=$?
+	local \
+		err=$? \
+		log="$BASE_WIP/../$BASE_IAM-log"
+	readonly err log
 	trap - HUP EXIT INT QUIT TERM
 
 	# Keeps logs of last finished instance. Calls base_bye right before log
 	# moving or log deleting.
-	local log="$BASE_WIP/../$BASE_IAM-log"
 	if is_writable "$log" >/dev/null; then
 		base_bye
 		cp -f "$BASE_WIP/log" "$log"
@@ -524,6 +525,7 @@ base_cleanup() {
 #  https://unix.stackexchange.com/questions/57940/trap-int-term-exit-really-necessary
 base_sig_cleanup() {
 	local err=$?
+	readonly err
 
 	# Some shells will call EXIT after the INT handler.
 	trap - EXIT
@@ -539,6 +541,7 @@ base_check_instances() {
 		pid="$BASE_WIP"/pid \
 		pip="$BASE_WIP"/pip \
 		pro
+	readonly pid pip
 
 	# Finds process IDs of all possible instances in /tmp/<script-name.*>/pid and
 	# writes them to the pipe. Loop reads the PIDs from the pipe and counts only
@@ -566,13 +569,13 @@ base_check_instances() {
 # Prints shellbase version and exits.
 base_display_version() {
 	printf 'shellbase %s\n' "$BASE_VERSION"
-	var_exists BASE_APP_VERSION || return 0
+	var_exists BASE_APP_VERSION >/dev/null || return 0
 	printf '%s %s\n' "$BASE_IAM" "$BASE_APP_VERSION"
 }
 
 # Prints shellbase usage and exits.
 base_display_usage() {
-	if var_exists BASE_APP_USAGE; then
+	if var_exists BASE_APP_USAGE >/dev/null; then
 		printf %s\\n "$BASE_APP_USAGE"
 		return 0
 	fi
@@ -590,7 +593,7 @@ EOM
 
 # Prints shellbase warranty.
 base_display_warranty() {
-	if var_exists BASE_APP_WARRANTY; then
+	if var_exists BASE_APP_WARRANTY >/dev/null; then
 		printf %s\\n "$BASE_APP_WARRANTY"
 		return 0
 	fi
