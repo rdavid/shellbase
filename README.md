@@ -36,7 +36,7 @@ shellbase/install
 ```
 Install the file from released version directly:
 ```sh
-readonly TAG=v0.9.20220904
+readonly TAG=v0.9.20220914
 wget \
 	https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh \
 	--output-document /usr/local/bin/base.sh
@@ -57,7 +57,7 @@ You can try shellbase without installation:
 #!/bin/sh
 set -o errexit
 set -o nounset
-readonly TAG=v0.9.20220904
+readonly TAG=v0.9.20220914
 eval \
 	"$(
 		wget https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh \
