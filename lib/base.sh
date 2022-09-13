@@ -32,7 +32,7 @@
 # yes_to_continue. Global variables have BASE_ prefix and clients could use
 # them. Clients should place all temporaly files under $BASE_WIP. All functions
 # started with base_ prefix are internal and should not be used by clients.
-readonly BASE_VERSION=0.9.20220909
+readonly BASE_VERSION=0.9.20220914
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -610,18 +610,15 @@ base_display_warranty() {
 EOM
 }
 
-# Loops through command line arguments before any log.
+# Loops through the function arguments before any log. Handles only arguments
+# with 'do and exit' logic.
 base_main() {
-	BASE_QUIET=false
 	local arg use=false ver=false war=false
-	for arg do
+	for arg in "$@"; do
 		shift
 		case "$arg" in
 			-h|--help)
 				use=true
-				;;
-			-q|--quiet)
-				BASE_QUIET=true
 				;;
 			-v|--version)
 				ver=true
@@ -629,12 +626,7 @@ base_main() {
 			-w|--warranty)
 				war=true
 				;;
-			-x|--execute)
-				set -x
-				;;
 			*)
-				# Sets back any unused args.
-				set -- "$@" "$arg"
 		esac
 	done
 
@@ -648,7 +640,6 @@ base_main() {
 		BASE_BEG \
 		BASE_IAM \
 		BASE_LOG \
-		BASE_QUIET \
 		BASE_WIP
 
 	# Logs the starting point.
@@ -669,4 +660,23 @@ base_main() {
 	[ false = $war ] || { base_display_warranty; exit 0; }
 }
 
+# Starting point. Loops through command line arguments of the script. Handles
+# only arguments with 'set and go' logic.
+BASE_QUIET=false
+for arg do
+	shift
+	case "$arg" in
+		-q|--quiet)
+			BASE_QUIET=true
+			;;
+		-x|--execute)
+			set -x
+			;;
+		*)
+			# Sets back any unused args to global list of arguments.
+			set -- "$@" "$arg"
+	esac
+done
+unset arg
+readonly BASE_QUIET
 base_main "$@"
