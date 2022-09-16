@@ -32,11 +32,13 @@ file](https://github.com/rdavid/shellbase/blob/master/lib/base.sh). Install the
 file from the repository:
 ```sh
 git clone https://github.com/rdavid/shellbase.git &&
-shellbase/install
+	shellbase/install
 ```
-Install the file from released version directly:
+Install the file from released version directly. Some OS demands
+administrative rights to install to `/usr/local/bin/`, use `sudo` or `doas`
+before `wget`:
 ```sh
-readonly TAG=v0.9.20220914
+TAG=v0.9.20220914
 wget \
 	https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh \
 	--output-document /usr/local/bin/base.sh
