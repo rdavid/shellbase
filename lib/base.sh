@@ -32,7 +32,7 @@
 # yes_to_continue. Global variables have BASE_ prefix and clients could use
 # them. Clients should place all temporaly files under $BASE_WIP. All functions
 # started with base_ prefix are internal and should not be used by clients.
-readonly BASE_VERSION=0.9.20220914
+readonly BASE_VERSION=0.9.20220918
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -659,8 +659,12 @@ base_main() {
 	[ false = $war ] || { base_display_warranty; exit 0; }
 }
 
-# Starting point. Loops through command line arguments of the script. Handles
-# only arguments with 'set and go' logic.
+# Starting point.
+set -o errexit
+set -o nounset
+
+# Loops through command line arguments of the script. Handles only arguments
+# with 'set and go' logic.
 BASE_QUIET=false
 for arg do
 	shift

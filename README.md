@@ -47,9 +47,6 @@ Make sure `/usr/local/bin/` is in your `PATH`. Then your script can use
 `shellbase`:
 ```sh
 #!/bin/sh
-set -o errexit
-set -o nounset
-
 # shellcheck source=/usr/local/bin/base.sh
 . base.sh
 log I\'m using shellbase!
@@ -57,8 +54,6 @@ log I\'m using shellbase!
 You can try shellbase without installation:
 ```sh
 #!/bin/sh
-set -o errexit
-set -o nounset
 readonly TAG=v0.9.20220914
 eval \
 	"$(
@@ -71,9 +66,6 @@ log I\'m using shellbase!
 Prettytable example:
 ```sh
 #!/bin/sh
-set -o errexit
-set -o nounset
-
 # shellcheck source=/usr/local/bin/base.sh
 . base.sh
 {
