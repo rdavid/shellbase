@@ -292,11 +292,7 @@ yes_to_continue() {
 
 	# Prints the question without a new line allows to print an answer on the
 	# same line. The question is not logged.
-	if [ -z "${1-}" ]; then
-		msg='Do you want to continue?'
-	else
-		msg="$*"
-	fi
+	msg="${*:-Do you want to continue?}"
 	printf '%s [y/N] ' "$msg"
 	stty raw -echo
 
