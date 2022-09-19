@@ -32,7 +32,7 @@
 # yes_to_continue. Global variables have BASE_ prefix and clients could use
 # them. Clients should place all temporaly files under $BASE_WIP. All functions
 # started with base_ prefix are internal and should not be used by clients.
-readonly BASE_VERSION=0.9.20220918
+readonly BASE_VERSION=0.9.20220919
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -616,20 +616,14 @@ base_main() {
 	for arg in "$@"; do
 		shift
 		case "$arg" in
-			-h|--help)
-				use=true
-				;;
-			-v|--version)
-				ver=true
-				;;
-			-w|--warranty)
-				war=true
-				;;
-			*)
+			-h|--help)     use=true;;
+			-v|--version)  ver=true;;
+			-w|--warranty) war=true;;
 		esac
 	done
 
 	# Sets global variables. Busybox implementation of mktemp requires six Xs.
+	# 'date', 'basename' and 'mktemp' do not return errors.
 	BASE_BEG="$(date +%s)"
 	BASE_IAM="$(basename -- "$0")"
 	BASE_IAM="${BASE_IAM%.*}"
@@ -654,8 +648,8 @@ base_main() {
 	base_check_instances
 
 	# The usage has higher priority over version in case both options are set.
-	[ false = $use ] || { base_display_usage; exit 0; }
-	[ false = $ver ] || { base_display_version; exit 0; }
+	[ false = $use ] || { base_display_usage;    exit 0; }
+	[ false = $ver ] || { base_display_version;  exit 0; }
 	[ false = $war ] || { base_display_warranty; exit 0; }
 }
 
@@ -669,15 +663,10 @@ BASE_QUIET=false
 for arg do
 	shift
 	case "$arg" in
-		-q|--quiet)
-			BASE_QUIET=true
-			;;
-		-x|--execute)
-			set -x
-			;;
-		*)
-			# Sets back any unused args to global list of arguments.
-			set -- "$@" "$arg"
+		-q|--quiet)   BASE_QUIET=true;;
+		-x|--execute) set -x;;
+		# Sets back any unused args to global list of arguments.
+		*) set -- "$@" "$arg";;
 	esac
 done
 unset arg
