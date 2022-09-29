@@ -2,8 +2,8 @@ FROM golang:1.19.1-alpine AS goredoer
 LABEL maintainer="David Rabkin <david@rabkin.co.il>"
 RUN \
 	apk add --no-cache --update \
-		zstd~=1.5.2 && \
-	rm -rf /var/cache/apk/*
+		zstd~=1.5.2 \
+		&& rm -rf /var/cache/apk/*
 ENV \
 	SHA=98c1a8a189b33753fcd61e1dbdbe627dba3820621d2032a3856d89829eea08d9 \
 	VER=1.27.1
@@ -13,9 +13,9 @@ ENV \
 # hadolint ignore=DL4006
 RUN \
 	wget --quiet \
-		http://www.goredo.cypherpunks.ru/download/goredo-$VER.tar.zst && \
-		printf '%s  %s' $SHA goredo-$VER.tar.zst | sha256sum -cs && \
-	zstd --decompress < goredo-$VER.tar.zst | tar --extract --file -
+		http://www.goredo.cypherpunks.ru/download/goredo-$VER.tar.zst \
+		&& printf '%s  %s' $SHA goredo-$VER.tar.zst | sha256sum -cs \
+		&& zstd --decompress < goredo-$VER.tar.zst | tar --extract --file -
 WORKDIR /go/goredo-$VER/src
 RUN go build -mod=vendor
 
@@ -30,9 +30,9 @@ COPY --from=goredoer /go/goredo-*/src/goredo .
 
 # hadolint ignore=DL3008
 RUN \
-	apt-get update --assume-yes && \
-	apt-get upgrade --assume-yes && \
-	apt-get install --assume-yes --no-install-recommends \
+	apt-get update --assume-yes \
+	&& apt-get upgrade --assume-yes \
+	&& apt-get install --assume-yes --no-install-recommends \
 		bash \
 		curl \
 		dash \
@@ -40,10 +40,10 @@ RUN \
 		ksh \
 		tcsh \
 		zsh \
-	&& apt-get clean && \
-	rm -rf /var/lib/apt/lists/* && \
-	useradd --create-home "$USER" && \
-	./goredo -symlinks
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& useradd --create-home "$USER" \
+	&& ./goredo -symlinks
 USER "$USER"
 WORKDIR /home/"$USER"
 COPY \
