@@ -32,7 +32,7 @@
 # yes_to_continue. Global variables have BASE_ prefix and clients could use
 # them. Clients should place all temporaly files under $BASE_WIP. All functions
 # started with base_ prefix are internal and should not be used by clients.
-readonly BASE_VERSION=0.9.20220919
+readonly BASE_VERSION=0.9.20221002
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -613,8 +613,7 @@ EOM
 # with 'do and exit' logic.
 base_main() {
 	local arg use=false ver=false war=false
-	for arg in "$@"; do
-		shift
+	for arg do
 		case "$arg" in
 			-h|--help)     use=true;;
 			-v|--version)  ver=true;;
@@ -665,8 +664,7 @@ for arg do
 	case "$arg" in
 		-q|--quiet)   BASE_QUIET=true;;
 		-x|--execute) set -x;;
-		# Sets back any unused args to global list of arguments.
-		*) set -- "$@" "$arg";;
+		*) set -- "$@" "$arg";;  # Sets back any unused args.
 	esac
 done
 unset arg
