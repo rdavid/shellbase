@@ -32,7 +32,7 @@
 # yes_to_continue. Global variables have BASE_ prefix and clients could use
 # them. Clients should place all temporaly files under $BASE_WIP. All functions
 # started with base_ prefix are internal and should not be used by clients.
-readonly BASE_VERSION=0.9.20221002
+readonly BASE_VERSION=0.9.20221020
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -536,7 +536,8 @@ base_check_instances() {
 		end \
 		pid="$BASE_WIP"/pid \
 		pip="$BASE_WIP"/pip \
-		pro
+		pro \
+		vrb
 	readonly pid pip
 
 	# Finds process IDs of all possible instances in /tmp/<script-name.*>/pid and
@@ -555,18 +556,19 @@ base_check_instances() {
 	[ $ins -ne 0 ] || return 0
 	if [ $ins -gt 1 ]; then
 		end=es
+		vrb=are
 	else
 		end=e
+		vrb=is
 	fi
-	printf '%d instanc%s of %s are running.\n' $ins $end "$BASE_IAM"
-	yes_to_continue
+	yes_to_continue $ins instanc$end of "$BASE_IAM" $vrb running, continue?
 }
 
 # Prints shellbase version and exits.
 base_display_version() {
-	printf 'shellbase %s\n' "$BASE_VERSION"
+	printf shellbase\ %s\\n "$BASE_VERSION"
 	var_exists BASE_APP_VERSION >/dev/null || return 0
-	printf '%s %s\n' "$BASE_IAM" "$BASE_APP_VERSION"
+	printf %s\ %s\\n "$BASE_IAM" "$BASE_APP_VERSION"
 }
 
 # Prints shellbase usage and exits.
