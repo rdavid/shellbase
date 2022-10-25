@@ -27,12 +27,12 @@
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
 # be_root, be_user, cmd_exists, die, file_exists, is_empty, is_readable,
-# is_writable, log, loge, logw, prettytable, timestamp, to_log, to_loge,
-# url_exists, user_exists, validate_cmd, validate_var, var_exists,
+# is_solid, is_writable, log, loge, logw, prettytable, timestamp, to_log,
+# to_loge, url_exists, user_exists, validate_cmd, validate_var, var_exists,
 # yes_to_continue. Global variables have BASE_ prefix and clients could use
 # them. Clients should place all temporaly files under $BASE_WIP. All functions
 # started with base_ prefix are internal and should not be used by clients.
-readonly BASE_VERSION=0.9.20221020
+readonly BASE_VERSION=0.9.20221026
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -245,6 +245,28 @@ is_writable() {
 		fi
 	done
 	return $ret
+}
+
+# Verifies that a content of a running script has a written inside the script
+# hash (SHA-256). It doesn't consider a line where the hash is defined.
+is_solid() {
+	readonly \
+		file="$0" \
+		temp="$BASE_WIP"/hashless \
+		patt=^BASE_APP_HASH
+	is_readable "$file" || die File "$file" is not readable.
+	local hash line
+	line="$(
+		grep --regexp "$patt" "$file"
+	)" || { loge File "$file" doesn\'t have a hash.; return 1; }
+	hash="$(
+		printf %s "$line" | head -1 | awk -F = '{ print $2 }'
+	)" || { loge File "$file" has hash with unknown format: "$line".; return 2; }
+	readonly hash line
+	grep --invert-match --regexp "$patt" "$file" > "$temp"
+	printf %s\ \ %s "$hash" "$temp" | sha256sum --check --status ||
+		{ loge Hash of "$file" does not match "$hash"; return 3; }
+	log File "$file" is solid.
 }
 
 # Exits with error if it is not ran by a user.
