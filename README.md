@@ -16,7 +16,7 @@ multiple running instances of a same script are detected.
 
 `shellbase` defines global variables and functions. All functions without
 `base_` prefix are API and should be used by clients. API functions are:
-`be_root`, `be_user`, `cmd_exists`, `die`, `file_exists`, `is_empty`,
+`be_root`, `be_user`, `cmd_exists`, `echo`, `die`, `file_exists`, `is_empty`,
 `is_readable`, `is_solid`, `is_writable`, `log`, `loge`, `logw`, `prettytable`,
 `timestamp`, `to_log`, `to_loge`, `url_exists`, `user_exists`, `validate_cmd`,
 `validate_var`, `var_exists`, `yes_to_continue`. Global variables have `BASE_`
