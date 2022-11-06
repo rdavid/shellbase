@@ -3,9 +3,6 @@
 # Copyright 2022 David Rabkin
 # shellcheck disable=SC1091
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
-
-# shellcheck disable=SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/echo.sh
 echo hello
 
 # shellcheck disable=SC3037

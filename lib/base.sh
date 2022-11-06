@@ -26,15 +26,42 @@
 #
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
-# be_root, be_user, cmd_exists, die, file_exists, is_empty, is_readable,
+# be_root, be_user, cmd_exists, die, echo, file_exists, is_empty, is_readable,
 # is_solid, is_writable, log, loge, logw, prettytable, timestamp, to_log,
 # to_loge, url_exists, user_exists, validate_cmd, validate_var, var_exists,
 # yes_to_continue. Global variables have BASE_ prefix and clients could use
 # them. Clients should place all temporaly files under $BASE_WIP. All functions
 # started with base_ prefix are internal and should not be used by clients.
-readonly BASE_VERSION=0.9.20221026
+readonly BASE_VERSION=0.9.20221106
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
+
+# The function ‘repairs’ echo to behave in a reasonable way, see more:
+#  http://www.etalabs.net/sh_tricks.html
+echo() (
+	local end=\\n fmt=%s
+	IFS=" "
+	while [ $# -gt 1 ]; do
+		case "$1" in
+			[!-]*|-*[!ne]*)
+				break
+				;;
+			*ne*|*en*)
+				fmt=%b end=
+				;;
+			*n*)
+				end=
+				;;
+			*e*)
+				fmt=%b
+				;;
+		esac
+	shift
+	done
+
+	# shellcheck disable=SC2059
+	printf "$fmt$end" "$*"
+)
 
 # Information logger doesn't print to stdout with --quite flag.
 log() {
@@ -50,7 +77,6 @@ logw() {
 	ts="$(timestamp)"
 	[ "$BASE_QUIET" = false ] && printf '\033[0;33m%s W\033[0m %s\n' "$ts" "$*" >&2
 	base_write_to_file "$ts" W "$*"
-	
 }
 
 # Error logger always prints to stderr.
