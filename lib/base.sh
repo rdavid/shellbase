@@ -36,6 +36,44 @@ readonly BASE_VERSION=0.9.20221106
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
+# Exits with error if it is not ran by root.
+be_root() {
+	be_user root
+}
+
+# Exits with error if it is not ran by a user.
+be_user() {
+	[ -z "${1-}" ] && die Usage: be_user name.
+	local ask cur usr="$1"
+	user_exists "$usr" || die "$usr": No such user.
+	cur="$(id -u)"
+	ask="$(id -u "$usr")"
+	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."
+	log "You are $usr ($cur)."
+}
+
+# Checks whether all commands exits. Loops over the arguments, each one is a
+# command name.
+cmd_exists() {
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: cmd_exists cmd1 cmd2...
+	local arg ret=0
+	for arg do
+		if command -v "$arg" >/dev/null 2>&1; then
+			log Command "$arg" exists.
+		else
+			ret=1
+			logw Command "$arg" does not exist.
+		fi
+	done
+	return $ret
+}
+
+# Prints all parameters as error and exits with the error code.
+die() {
+	[ $# -eq 0 ] || loge "$@"
+	exit 11
+}
+
 # The function ‘repairs’ echo to behave in a reasonable way, see more:
 #  http://www.etalabs.net/sh_tricks.html
 echo() (
@@ -63,12 +101,109 @@ echo() (
 	printf "$fmt$end" "$*"
 )
 
+# Checks whether all files exist. Loops over the arguments, each one is a file
+# name. Fails if one of a file doesn't exist.
+file_exists() {
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: file_exists file1 file2...
+	local arg ret=0
+	for arg do
+		if ls "$arg" >/dev/null 2>&1; then
+			log File "$arg" exists.
+		else
+			ret=1
+			logw File "$arg" does not exist.
+		fi
+	done
+	return $ret
+}
+
+# Decides if a directory is empty. See more:
+#  https://www.etalabs.net/sh_tricks.html
+is_empty() {
+	[ -z "${1-}" ] || [ $# -gt 1 ] && die Usage: is_empty dir.
+	cd "$1" >/dev/null 2>&1 || die Directory is not accessible: "$1".
+	set -- .[!.]* ; test -f "$1" && return 1
+	set -- ..?* ; test -f "$1" && return 1
+	set -- * ; test -f "$1" && return 1
+	return 0
+}
+
+# Verifies that all parameters are readable files.
+is_readable() {
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: is_readable file1 file2...
+	local arg ret=0
+	for arg do
+		if [ -r "$arg" ]; then
+			log File "$arg" is readable.
+		else
+			ret=1
+			logw File "$arg" is not readable.
+		fi
+	done
+	return $ret
+}
+
+# Verifies that a content of a running script has a written inside the script
+# hash (SHA-256). It doesn't consider a line where the hash is defined.
+is_solid() {
+	readonly \
+		file="$0" \
+		temp="$BASE_WIP"/hashless \
+		patt=^BASE_APP_HASH
+	is_readable "$file" || die File "$file" is not readable.
+	local hash line
+	line="$(
+		grep --regexp "$patt" "$file"
+	)" || { loge File "$file" doesn\'t have a hash.; return 1; }
+	hash="$(
+		printf %s "$line" | head -1 | awk -F = '{ print $2 }'
+	)" || { loge File "$file" has hash with unknown format: "$line".; return 2; }
+	readonly hash line
+	grep --invert-match --regexp "$patt" "$file" > "$temp"
+	printf %s\ \ %s "$hash" "$temp" | sha256sum --check --status ||
+		{ loge Hash of "$file" does not match "$hash"; return 3; }
+	log File "$file" is solid.
+}
+
+# Verifies that all parameters are writable files or do not exist.
+is_writable() {
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: is_writable file1 file2...
+	local arg ret=0
+	for arg do
+		if file_exists "$arg" >/dev/null 2>&1; then
+			if [ -w "$arg" ]; then
+				log File "$arg" is writable.
+			else
+				ret=1
+				logw File "$arg" is not writable.
+			fi
+		else
+			if touch "$arg" 2>/dev/null; then
+				rm "$arg"
+				log File "$arg" is accessible.
+			else
+				ret=1
+				logw File "$arg" is not accessible.
+			fi
+		fi
+	done
+	return $ret
+}
+
 # Information logger doesn't print to stdout with --quite flag.
 log() {
 	local ts
 	ts="$(timestamp)"
 	[ "$BASE_QUIET" = false ] && printf '\033[0;32m%s I\033[0m %s\n' "$ts" "$*"
 	base_write_to_file "$ts" I "$*"
+}
+
+# Error logger always prints to stderr.
+loge() {
+	local ts
+	ts="$(timestamp)"
+	printf '\033[0;31m%s E\033[0m %s\n' "$ts" "$*" >&2
+	base_write_to_file "$ts" E "$*"
 }
 
 # Warning logger doesn't print to stderr with --quite flag.
@@ -79,12 +214,48 @@ logw() {
 	base_write_to_file "$ts" W "$*"
 }
 
-# Error logger always prints to stderr.
-loge() {
-	local ts
-	ts="$(timestamp)"
-	printf '\033[0;31m%s E\033[0m %s\n' "$ts" "$*" >&2
-	base_write_to_file "$ts" E "$*"
+# Draws ASCII table with sizing columns. Expects input as:
+# {
+# 	printf 'ID\tNAME\tTITLE\n'
+# 	printf '123456789\tJohn Foo\tDirector\n'
+# 	printf '12\tMike Bar\tEngineer\n'
+# } | prettytable
+# It produces output:
+# +-----------+----------+----------+
+# |ID         |NAME      |TITLE     |
+# +-----------+----------+----------+
+# |123456789  |John Foo  |Director  |
+# |12         |Mike Bar  |Engineer  |
+# +-----------+----------+----------+
+# The implementation is inspired by Jakob Westhoff:
+#  https://github.com/jakobwesthoff/prettytable.sh
+prettytable() {
+	local bdy col hdr inp
+	inp="$(cat -)"
+	hdr="$(printf %s "$inp" | head -n1)"
+	bdy="$(printf %s "$inp" | tail -n+2)"
+
+	# Calculates number of columns, col=number-of-tabs+1.
+	col="$(printf %s "$hdr" | awk -F\\t '{print NF-1}')"
+	col=$((col+1))
+
+	# Expects column separated by tab, see column -s. Double quates in sed's
+	# regex are needed.
+	{
+		base_prettytable_separator "$col"
+		printf %s\\n "$hdr" | base_prettytable_prettify
+		base_prettytable_separator "$col"
+		printf %s\\n "$bdy" | base_prettytable_prettify
+		base_prettytable_separator "$col"
+	} |
+		column -ts '	' |
+			sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g" |
+			to_log
+}
+
+# Returns current time in form of timestamp.
+timestamp() {
+	date +%Y%m%d-%H:%M:%S
 }
 
 # Redirects input to logger line by line. It is usefull for logging multiple
@@ -106,89 +277,6 @@ to_log() {
 to_loge() {
 	local l
 	while IFS= read -r l; do loge "$l"; done
-}
-
-# Prints all parameters as error and exits with the error code.
-die() {
-	[ $# -eq 0 ] || loge "$@"
-	exit 11
-}
-
-# Returns current time in form of timestamp.
-timestamp() {
-	date +%Y%m%d-%H:%M:%S
-}
-
-# Checks whether all commands exits. Loops over the arguments, each one is a
-# command name.
-cmd_exists() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: cmd_exists cmd1 cmd2...
-	local arg ret=0
-	for arg do
-		if command -v "$arg" >/dev/null 2>&1; then
-			log Command "$arg" exists.
-		else
-			ret=1
-			logw Command "$arg" does not exist.
-		fi
-	done
-	return $ret
-}
-
-# Makes sure all commands exist, othewise dies. Loops over the arguments in
-# order to die with a command name in error.
-validate_cmd() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: validate_cmd cmd1 cmd2...
-	local arg
-	for arg do
-		cmd_exists "$arg" || die Install "$arg".
-	done
-}
-
-# Checks whether all variables are defined. Loops over the arguments, each one
-# is a variable name. Fails if one of a variable is unset or null.
-var_exists() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: var_exists var1 var2...
-	local arg ret=0 var
-	for arg do
-		set +o nounset
-		eval "var=\${$arg}"
-		set -o nounset
-
-		# An absence of a variable is a very common case. Does not log the event.
-		if [ -n "$var" ]; then
-			log "Variable $arg is set to $var."
-		else
-			ret=1
-		fi
-	done
-	return $ret
-}
-
-# Checks if environment variables are defined. Loops over the arguments in
-# order to die with a variable name in error.
-validate_var() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: validate_var var1 var2...
-	local arg
-	for arg do
-		var_exists "$arg" || die Define "$arg".
-	done
-}
-
-# Checks whether all files exist. Loops over the arguments, each one is a file
-# name. Fails if one of a file doesn't exist.
-file_exists() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: file_exists file1 file2...
-	local arg ret=0
-	for arg do
-		if ls "$arg" >/dev/null 2>&1; then
-			log File "$arg" exists.
-		else
-			ret=1
-			logw File "$arg" does not exist.
-		fi
-	done
-	return $ret
 }
 
 # Checks whether all URLs exist, any returned HTTP code is OK. In case of error
@@ -233,82 +321,44 @@ user_exists() {
 	return $ret
 }
 
-# Verifies that all parameters are readable files.
-is_readable() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: is_readable file1 file2...
-	local arg ret=0
+# Makes sure all commands exist, othewise dies. Loops over the arguments in
+# order to die with a command name in error.
+validate_cmd() {
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: validate_cmd cmd1 cmd2...
+	local arg
 	for arg do
-		if [ -r "$arg" ]; then
-			log File "$arg" is readable.
+		cmd_exists "$arg" || die Install "$arg".
+	done
+}
+
+# Checks if environment variables are defined. Loops over the arguments in
+# order to die with a variable name in error.
+validate_var() {
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: validate_var var1 var2...
+	local arg
+	for arg do
+		var_exists "$arg" || die Define "$arg".
+	done
+}
+
+# Checks whether all variables are defined. Loops over the arguments, each one
+# is a variable name. Fails if one of a variable is unset or null.
+var_exists() {
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: var_exists var1 var2...
+	local arg ret=0 var
+	for arg do
+		set +o nounset
+		eval "var=\${$arg}"
+		set -o nounset
+
+		# An absence of a variable is a very common case. Does not log the event.
+		if [ -n "$var" ]; then
+			log "Variable $arg is set to $var."
 		else
 			ret=1
-			logw File "$arg" is not readable.
 		fi
 	done
 	return $ret
-}
-
-# Verifies that all parameters are writable files or do not exist.
-is_writable() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: is_writable file1 file2...
-	local arg ret=0
-	for arg do
-		if file_exists "$arg" >/dev/null 2>&1; then
-			if [ -w "$arg" ]; then
-				log File "$arg" is writable.
-			else
-				ret=1
-				logw File "$arg" is not writable.
-			fi
-		else
-			if touch "$arg" 2>/dev/null; then
-				rm "$arg"
-				log File "$arg" is accessible.
-			else
-				ret=1
-				logw File "$arg" is not accessible.
-			fi
-		fi
-	done
-	return $ret
-}
-
-# Verifies that a content of a running script has a written inside the script
-# hash (SHA-256). It doesn't consider a line where the hash is defined.
-is_solid() {
-	readonly \
-		file="$0" \
-		temp="$BASE_WIP"/hashless \
-		patt=^BASE_APP_HASH
-	is_readable "$file" || die File "$file" is not readable.
-	local hash line
-	line="$(
-		grep --regexp "$patt" "$file"
-	)" || { loge File "$file" doesn\'t have a hash.; return 1; }
-	hash="$(
-		printf %s "$line" | head -1 | awk -F = '{ print $2 }'
-	)" || { loge File "$file" has hash with unknown format: "$line".; return 2; }
-	readonly hash line
-	grep --invert-match --regexp "$patt" "$file" > "$temp"
-	printf %s\ \ %s "$hash" "$temp" | sha256sum --check --status ||
-		{ loge Hash of "$file" does not match "$hash"; return 3; }
-	log File "$file" is solid.
-}
-
-# Exits with error if it is not ran by a user.
-be_user() {
-	[ -z "${1-}" ] && die Usage: be_user name.
-	local ask cur usr="$1"
-	user_exists "$usr" || die "$usr": No such user.
-	cur="$(id -u)"
-	ask="$(id -u "$usr")"
-	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."
-	log "You are $usr ($cur)."
-}
-
-# Exits with error if it is not ran by root.
-be_root() {
-	be_user root
 }
 
 # Asks a user permission to continue, exits if not 'y'. Exits by timeout if any
@@ -364,217 +414,10 @@ yes_to_continue() {
 	log Continue working.
 }
 
-# Decides if a directory is empty. See more:
-#  https://www.etalabs.net/sh_tricks.html
-is_empty() {
-	[ -z "${1-}" ] || [ $# -gt 1 ] && die Usage: is_empty dir.
-	cd "$1" >/dev/null 2>&1 || die Directory is not accessible: "$1".
-	set -- .[!.]* ; test -f "$1" && return 1
-	set -- ..?* ; test -f "$1" && return 1
-	set -- * ; test -f "$1" && return 1
-	return 0
-}
-
-# Draws ASCII table with sizing columns. Expects input as:
-# {
-# 	printf 'ID\tNAME\tTITLE\n'
-# 	printf '123456789\tJohn Foo\tDirector\n'
-# 	printf '12\tMike Bar\tEngineer\n'
-# } | prettytable
-# It produces output:
-# +-----------+----------+----------+
-# |ID         |NAME      |TITLE     |
-# +-----------+----------+----------+
-# |123456789  |John Foo  |Director  |
-# |12         |Mike Bar  |Engineer  |
-# +-----------+----------+----------+
-# The implementation is inspired by Jakob Westhoff:
-#  https://github.com/jakobwesthoff/prettytable.sh
-prettytable() {
-	local bdy col hdr inp
-	inp="$(cat -)"
-	hdr="$(printf %s "$inp" | head -n1)"
-	bdy="$(printf %s "$inp" | tail -n+2)"
-
-	# Calculates number of columns, col=number-of-tabs+1.
-	col="$(printf %s "$hdr" | awk -F\\t '{print NF-1}')"
-	col=$((col+1))
-
-	# Expects column separated by tab, see column -s. Double quates in sed's
-	# regex are needed.
-	{
-		base_prettytable_separator "$col"
-		printf %s\\n "$hdr" | base_prettytable_prettify
-		base_prettytable_separator "$col"
-		printf %s\\n "$bdy" | base_prettytable_prettify
-		base_prettytable_separator "$col"
-	} |
-		column -ts '	' |
-			sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g" |
-			to_log
-}
-
 # Private functions have prefix base_, they are used locally.
-
-# Truncates log file in case it is more than 10MB. Do not return in
-# functions that are called by signal trap.
-base_truncate() {
-	[ -w "$BASE_LOG" ] || return 0
-	[ "$(wc -c <"$BASE_LOG")" -gt 10485760 ] || return 0
-	: > "$BASE_LOG"
-	log "$BASE_LOG" is truncated.
-}
-
-# Adds log string to the log file.
-base_write_to_file() {
-	base_truncate
-	printf %s\\n "$*" >> "$BASE_LOG"
-}
-
-# Adds vertical borders. Double quates are needed.
-base_prettytable_prettify() {
-	cat - | sed "s/^/|/;s/\$/	/;s/	/	|/g"
-}
-
-# Adds horisontal line with colums separator. The input parameter is a number
-# of columns.
-base_prettytable_separator() {
-	local i="$1"
-	printf +
-	while [ "$i" -gt 1 ]; do
-		printf \\t+
-		i=$((i-1))
-	done
-	printf '\t+\n'
-}
-
-# Formats time titles, the first parameter is a number, the second parameter is
-# a time title.
-base_time_title() {
-	case "$1" in
-		0)
-			printf ''
-			;;
-		1)
-			printf '%d %s' "$1" "$2"
-			;;
-		*)
-			printf '%d %ss' "$1" "$2"
-			;;
-	esac
-}
-
-# Calculates a separator for time titles based on amount of non-empty
-# parameters.
-base_time_separator() {
-	local cnt=0
-	case "$#" in
-		1)
-			[ -n "$1" ] && cnt=$((cnt+1))
-			;;
-		2)
-			[ -n "$1" ] && cnt=$((cnt+1))
-			[ -n "$2" ] && cnt=$((cnt+1))
-			;;
-		3)
-			[ -n "$1" ] && cnt=$((cnt+1))
-			[ -n "$2" ] && cnt=$((cnt+1))
-			[ -n "$3" ] && cnt=$((cnt+1))
-			;;
-		*)
-			loge Wrong param number "$#".
-			return 0
-			;;
-	esac
-	case "$cnt" in
-		0)
-			;;
-		1)
-			printf ' and '
-			;;
-		2|3)
-			printf ', '
-			;;
-		*)
-			loge Wrong number "$cnt".
-			;;
-	esac
-}
-
-# Calculates duration time for report. The first parameter is a start time.
-# 86400 seconds in a day, 3600 seconds in an hour, 60 seconds in a minute.
-base_duration() {
-	local \
-		day \
-		dur \
-		hou \
-		min \
-		sec
-	dur="$(($(date +%s)-$1))"
-	day="$(base_time_title $((dur/86400)) day)"
-	hou="$(base_time_title $((dur%86400/3600)) hour)"
-	min="$(base_time_title $((dur%86400%3600/60)) minute)"
-	sec="$(base_time_title $((dur%60)) second)"
-	if [ -n "$day" ]; then
-		printf %s "$day" "$(base_time_separator "$hou" "$min" "$sec")"
-	fi
-	if [ -n "$hou" ]; then
-		printf %s "$hou" "$(base_time_separator "$min" "$sec")"
-	fi
-	if [ -n "$min" ]; then
-		printf %s "$min" "$(base_time_separator "$sec")"
-	fi
-	if [ -n "$sec" ]; then
-		printf %s "$sec"
-	fi
-	if [ -z "$day" ] && [ -z "$hou" ] && [ -z "$min" ] && [ -z "$sec" ]; then
-		printf 'less than a second'
-	fi
-}
-
-base_hi() {
-	log "$BASE_IAM $$" says hi.
-}
 
 base_bye() {
 	log "$BASE_IAM $$ says bye after $(base_duration "$BASE_BEG")."
-}
-
-# General exit handler, it is called on EXIT. Any first parameter means no
-# exit.
-base_cleanup() {
-	local \
-		err=$? \
-		log="$BASE_WIP/../$BASE_IAM-log"
-	readonly err log
-	trap - HUP EXIT INT QUIT TERM
-
-	# Keeps logs of last finished instance. Calls base_bye right before log
-	# moving or log deleting.
-	if is_writable "$log" >/dev/null; then
-		base_bye
-		cp -f "$BASE_WIP/log" "$log"
-	else
-		base_bye
-	fi
-	rm -fr "$BASE_WIP"
-
-	# Parameter expansion defines if the parameter is not set, which means exit.
-	if [ -z ${1+x} ]; then
-		exit $err
-	fi
-}
-
-# Prevents double cleanup, see more:
-#  https://unix.stackexchange.com/questions/57940/trap-int-term-exit-really-necessary
-base_sig_cleanup() {
-	local err=$?
-	readonly err
-
-	# Some shells will call EXIT after the INT handler.
-	trap - EXIT
-	base_cleanup 1
-	exit $err
 }
 
 # Asks to continue if multiple instances.
@@ -612,11 +455,29 @@ base_check_instances() {
 	yes_to_continue $ins instanc$end of "$BASE_IAM" $vrb running, continue?
 }
 
-# Prints shellbase version and exits.
-base_display_version() {
-	printf shellbase\ %s\\n "$BASE_VERSION"
-	var_exists BASE_APP_VERSION >/dev/null || return 0
-	printf %s\ %s\\n "$BASE_IAM" "$BASE_APP_VERSION"
+# General exit handler, it is called on EXIT. Any first parameter means no
+# exit.
+base_cleanup() {
+	local \
+		err=$? \
+		log="$BASE_WIP/../$BASE_IAM-log"
+	readonly err log
+	trap - HUP EXIT INT QUIT TERM
+
+	# Keeps logs of last finished instance. Calls base_bye right before log
+	# moving or log deleting.
+	if is_writable "$log" >/dev/null; then
+		base_bye
+		cp -f "$BASE_WIP/log" "$log"
+	else
+		base_bye
+	fi
+	rm -fr "$BASE_WIP"
+
+	# Parameter expansion defines if the parameter is not set, which means exit.
+	if [ -z ${1+x} ]; then
+		exit $err
+	fi
 }
 
 # Prints shellbase usage and exits.
@@ -635,6 +496,13 @@ base_display_usage() {
 		  -w, --warranty    Echoes warranty statement to stdout.
 		  -x, --execute     Echoes every command before execution.
 EOM
+}
+
+# Prints shellbase version and exits.
+base_display_version() {
+	printf shellbase\ %s\\n "$BASE_VERSION"
+	var_exists BASE_APP_VERSION >/dev/null || return 0
+	printf %s\ %s\\n "$BASE_IAM" "$BASE_APP_VERSION"
 }
 
 # Prints shellbase warranty.
@@ -657,6 +525,41 @@ base_display_warranty() {
 		ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 		OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 EOM
+}
+
+# Calculates duration time for report. The first parameter is a start time.
+# 86400 seconds in a day, 3600 seconds in an hour, 60 seconds in a minute.
+base_duration() {
+	local \
+		day \
+		dur \
+		hou \
+		min \
+		sec
+	dur="$(($(date +%s)-$1))"
+	day="$(base_time_title $((dur/86400)) day)"
+	hou="$(base_time_title $((dur%86400/3600)) hour)"
+	min="$(base_time_title $((dur%86400%3600/60)) minute)"
+	sec="$(base_time_title $((dur%60)) second)"
+	if [ -n "$day" ]; then
+		printf %s "$day" "$(base_time_separator "$hou" "$min" "$sec")"
+	fi
+	if [ -n "$hou" ]; then
+		printf %s "$hou" "$(base_time_separator "$min" "$sec")"
+	fi
+	if [ -n "$min" ]; then
+		printf %s "$min" "$(base_time_separator "$sec")"
+	fi
+	if [ -n "$sec" ]; then
+		printf %s "$sec"
+	fi
+	if [ -z "$day" ] && [ -z "$hou" ] && [ -z "$min" ] && [ -z "$sec" ]; then
+		printf 'less than a second'
+	fi
+}
+
+base_hi() {
+	log "$BASE_IAM $$" says hi.
 }
 
 # Loops through the function arguments before any log. Handles only arguments
@@ -700,6 +603,103 @@ base_main() {
 	[ false = $use ] || { base_display_usage;    exit 0; }
 	[ false = $ver ] || { base_display_version;  exit 0; }
 	[ false = $war ] || { base_display_warranty; exit 0; }
+}
+
+# Adds vertical borders. Double quates are needed.
+base_prettytable_prettify() {
+	cat - | sed "s/^/|/;s/\$/	/;s/	/	|/g"
+}
+
+# Adds horisontal line with colums separator. The input parameter is a number
+# of columns.
+base_prettytable_separator() {
+	local i="$1"
+	printf +
+	while [ "$i" -gt 1 ]; do
+		printf \\t+
+		i=$((i-1))
+	done
+	printf '\t+\n'
+}
+
+# Prevents double cleanup, see more:
+#  https://unix.stackexchange.com/questions/57940/trap-int-term-exit-really-necessary
+base_sig_cleanup() {
+	local err=$?
+	readonly err
+
+	# Some shells will call EXIT after the INT handler.
+	trap - EXIT
+	base_cleanup 1
+	exit $err
+}
+
+# Calculates a separator for time titles based on amount of non-empty
+# parameters.
+base_time_separator() {
+	local cnt=0
+	case "$#" in
+		1)
+			[ -n "$1" ] && cnt=$((cnt+1))
+			;;
+		2)
+			[ -n "$1" ] && cnt=$((cnt+1))
+			[ -n "$2" ] && cnt=$((cnt+1))
+			;;
+		3)
+			[ -n "$1" ] && cnt=$((cnt+1))
+			[ -n "$2" ] && cnt=$((cnt+1))
+			[ -n "$3" ] && cnt=$((cnt+1))
+			;;
+		*)
+			loge Wrong param number "$#".
+			return 0
+			;;
+	esac
+	case "$cnt" in
+		0)
+			;;
+		1)
+			printf ' and '
+			;;
+		2|3)
+			printf ', '
+			;;
+		*)
+			loge Wrong number "$cnt".
+			;;
+	esac
+}
+
+# Formats time titles, the first parameter is a number, the second parameter is
+# a time title.
+base_time_title() {
+	case "$1" in
+		0)
+			printf ''
+			;;
+		1)
+			printf '%d %s' "$1" "$2"
+			;;
+		*)
+			printf '%d %ss' "$1" "$2"
+			;;
+	esac
+}
+
+# Truncates log file in case it is more than 10MB. Do not return in
+# functions that are called by signal trap.
+base_truncate() {
+	[ -w "$BASE_LOG" ] || return 0
+	[ "$(wc -c <"$BASE_LOG")" -gt 10485760 ] || return 0
+	: > "$BASE_LOG"
+	log "$BASE_LOG" is truncated.
+}
+
+# Adds log string to the log file.
+base_write_to_file() {
+	base_truncate
+	printf %s\\n "$*" >> "$BASE_LOG"
 }
 
 # Starting point.
