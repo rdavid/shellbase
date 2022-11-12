@@ -568,8 +568,8 @@ base_main() {
 	local arg use=false ver=false war=false
 	for arg do
 		case "$arg" in
-			-h|--help)     use=true;;
-			-v|--version)  ver=true;;
+			-h|--help) use=true;;
+			-v|--version) ver=true;;
 			-w|--warranty) war=true;;
 		esac
 	done
@@ -660,10 +660,10 @@ base_time_separator() {
 		0)
 			;;
 		1)
-			printf ' and '
+			printf \ and\
 			;;
 		2|3)
-			printf ', '
+			printf ,\
 			;;
 		*)
 			loge Wrong number "$cnt".
@@ -679,10 +679,10 @@ base_time_title() {
 			printf ''
 			;;
 		1)
-			printf '%d %s' "$1" "$2"
+			printf %d\ %s "$1" "$2"
 			;;
 		*)
-			printf '%d %ss' "$1" "$2"
+			printf %d\ %ss "$1" "$2"
 			;;
 	esac
 }
@@ -712,7 +712,7 @@ BASE_QUIET=false
 for arg do
 	shift
 	case "$arg" in
-		-q|--quiet)   BASE_QUIET=true;;
+		-q|--quiet) BASE_QUIET=true;;
 		-x|--execute) set -x;;
 		*) set -- "$@" "$arg";;  # Sets back any unused args.
 	esac
