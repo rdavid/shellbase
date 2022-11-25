@@ -32,7 +32,7 @@
 # yes_to_continue. Global variables have BASE_ prefix and clients could use
 # them. Clients should place all temporaly files under $BASE_WIP. All functions
 # started with base_ prefix are internal and should not be used by clients.
-readonly BASE_VERSION=0.9.20221106
+readonly BASE_VERSION=0.9.20221126
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -660,10 +660,10 @@ base_time_separator() {
 		0)
 			;;
 		1)
-			printf \ and\
+			printf ' and '
 			;;
 		2|3)
-			printf ,\
+			printf ', '
 			;;
 		*)
 			loge Wrong number "$cnt".
