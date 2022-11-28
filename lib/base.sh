@@ -26,13 +26,14 @@
 #
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
-# be_root, be_user, cmd_exists, die, echo, file_exists, is_empty, is_readable,
-# is_solid, is_writable, log, loge, logw, prettytable, timestamp, to_log,
-# to_loge, url_exists, user_exists, validate_cmd, validate_var, var_exists,
-# yes_to_continue. Global variables have BASE_ prefix and clients could use
-# them. Clients should place all temporaly files under $BASE_WIP. All functions
-# started with base_ prefix are internal and should not be used by clients.
-readonly BASE_VERSION=0.9.20221126
+# be_root, be_user, cmd_exists, die, echo, file_exists, inside, is_empty,
+# is_readable, is_solid, is_writable, log, loge, logw, prettytable, timestamp,
+# to_log, to_loge, url_exists, user_exists, validate_cmd, validate_var,
+# var_exists, yes_to_continue. Global variables have BASE_ prefix and clients
+# could use them. Clients should place all temporaly files under $BASE_WIP. All
+# functions started with base_ prefix are internal and should not be used by
+# clients.
+readonly BASE_VERSION=0.9.20221129
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -115,6 +116,23 @@ file_exists() {
 		fi
 	done
 	return $ret
+}
+
+# Returns a TRUE if $2 is inside $1. I'll use a case statement, because this is
+# a built-in of the shell, and faster. I could use grep:
+#  echo $1 | grep -s "$2" >/dev/null
+# or this
+#  echo $1 | grep -qs "$2"
+# or expr:
+#  expr "$1" : ".*$2" >/dev/null && return 0 # true
+# but case does not require another shell process.
+# From here:
+#  https://www.grymoire.com/Unix/Sh.html
+inside() {
+	case "$1" in
+		*$2*) return 0
+	esac
+	return 1
 }
 
 # Decides if a directory is empty. See more:
