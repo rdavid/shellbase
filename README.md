@@ -32,41 +32,35 @@ file](https://github.com/rdavid/shellbase/blob/master/lib/base.sh). Install the
 file from the repository:
 ```sh
 git clone https://github.com/rdavid/shellbase.git &&
-	shellbase/install
+	./shellbase/install
 ```
 Install the file from released version directly. Some OS demands
 administrative rights to install to `/usr/local/bin/`, use `sudo` or `doas`
-before `wget`:
+before `curl`:
 ```sh
-TAG=v0.9.20221129
-wget \
-	https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh \
-	--output-document /usr/local/bin/base.sh
+DST=/usr/local/bin/base.sh
+REL=v0.9.20221129
+SRC=https://github.com/rdavid/shellbase/releases/download/$REL/base.sh
+curl --location --output $DST --silent $SRC
 ```
 Make sure `/usr/local/bin/` is in your `PATH`. Then your script can use
 `shellbase`:
 ```sh
 #!/bin/sh
-# shellcheck source=/usr/local/bin/base.sh
 . base.sh
-log I\'m using shellbase!
+log I\'m using shellbase.
 ```
 You can try shellbase without installation:
 ```sh
 #!/bin/sh
-readonly TAG=v0.9.20221129
-eval \
-	"$(
-		wget https://github.com/rdavid/shellbase/releases/download/$TAG/base.sh \
-			--output-document - \
-			--quiet \
-	)"
-log I\'m using shellbase!
+REL=v0.9.20221129
+SRC=https://github.com/rdavid/shellbase/releases/download/$REL/base.sh
+eval "$(curl --location --silent $SRC)"
+log I\'m using shellbase.
 ```
 Prettytable example:
 ```sh
 #!/bin/sh
-# shellcheck source=/usr/local/bin/base.sh
 . base.sh
 {
 	printf 'ID\tNAME\tTITLE\n'
@@ -95,4 +89,5 @@ tests in multiple environments in containers by `redo test_container`.
 
 ## License
 `shellbase` is copyright [David Rabkin](http://cv.rabkin.co.il) and available
-under a [Zero-Clause BSD license](https://github.com/rdavid/shellbase/blob/master/LICENSE).
+under a
+[Zero-Clause BSD license](https://github.com/rdavid/shellbase/blob/master/LICENSE).
