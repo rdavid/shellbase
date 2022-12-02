@@ -33,7 +33,7 @@
 # could use them. Clients should place all temporaly files under $BASE_WIP. All
 # functions started with base_ prefix are internal and should not be used by
 # clients.
-readonly BASE_VERSION=0.9.20221129
+readonly BASE_VERSION=0.9.20221202
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -298,10 +298,10 @@ to_loge() {
 }
 
 # Checks whether all URLs exist, any returned HTTP code is OK. In case of error
-# out has two lines: error message and HTTP code 000.
+# out has two lines: error message and HTTP code 000. Uses curl, make sure it
+# is installed with 'cmd_exists curl' before calling the function.
 url_exists() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: url_exists url1 url2...
-	cmd_exists curl
 	local arg out ret=0
 	for arg do
 		if out="$(
@@ -323,10 +323,10 @@ url_exists() {
 	return $ret
 }
 
-# Checks whether all user exist.
+# Checks whether all user exist. Uses id, make sure it is installed with
+# 'cmd_exists id' before calling the function.
 user_exists() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: user_exists user1 user2...
-	cmd_exists id
 	local arg ret=0
 	for arg do
 		if id "$arg" >/dev/null 2>&1; then
