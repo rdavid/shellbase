@@ -1,5 +1,5 @@
 FROM golang:1.19.3-alpine AS goredoer
-LABEL maintainer="David Rabkin <david@rabkin.co.il>"
+LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 RUN \
 	apk add --no-cache --update \
 		curl~=7.83.1 \
@@ -16,7 +16,7 @@ ENV \
 # hadolint ignore=DL4006
 RUN \
 	curl --location --remote-name --silent $URL \
-		&& printf '%s  %s' $SHA $NME | sha256sum -cs \
+		&& printf %s\ \ %s $SHA $NME | sha256sum -cs \
 		&& zstd --decompress < $NME | tar --extract --file -
 WORKDIR /go/goredo-$VER/src
 RUN go build -mod=vendor

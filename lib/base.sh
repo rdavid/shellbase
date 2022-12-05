@@ -33,7 +33,7 @@
 # could use them. Clients should place all temporaly files under $BASE_WIP. All
 # functions started with base_ prefix are internal and should not be used by
 # clients.
-readonly BASE_VERSION=0.9.20221202
+readonly BASE_VERSION=0.9.20221206
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -172,14 +172,14 @@ is_solid() {
 	local hash line
 	line="$(
 		grep --regexp "$patt" "$file"
-	)" || { loge File "$file" doesn\'t have a hash.; return 1; }
+	)" || { loge File "$file" doesn\'t have a hash.; return 1;}
 	hash="$(
 		printf %s "$line" | head -1 | awk -F = '{ print $2 }'
-	)" || { loge File "$file" has hash with unknown format: "$line".; return 2; }
+	)" || { loge File "$file" has hash with unknown format: "$line".; return 2;}
 	readonly hash line
 	grep --invert-match --regexp "$patt" "$file" > "$temp"
 	printf %s\ \ %s "$hash" "$temp" | sha256sum --check --status ||
-		{ loge Hash of "$file" does not match "$hash"; return 3; }
+		{ loge Hash of "$file" does not match "$hash"; return 3;}
 	log File "$file" is solid.
 }
 
@@ -409,7 +409,7 @@ yes_to_continue() {
 	# Prints the question without a new line allows to print an answer on the
 	# same line. The question is not logged.
 	msg="${*:-Do you want to continue?}"
-	printf '%s [y/N] ' "$msg"
+	printf %s\ [y/N]\  "$msg"
 	stty raw -echo
 
 	# Runs child process to read first character from stdin.
@@ -428,7 +428,7 @@ yes_to_continue() {
 	set +o errexit
 	wait "$kid" 2>/dev/null
 	set -o errexit
-	printf %s "$ans" | grep -i -q ^y || { log Stop working.; exit 0; }
+	printf %s "$ans" | grep -i -q ^y || { log Stop working.; exit 0;}
 	log Continue working.
 }
 
@@ -618,9 +618,9 @@ base_main() {
 	base_check_instances
 
 	# The usage has higher priority over version in case both options are set.
-	[ false = $use ] || { base_display_usage;    exit 0; }
-	[ false = $ver ] || { base_display_version;  exit 0; }
-	[ false = $war ] || { base_display_warranty; exit 0; }
+	[ false = $use ] || { base_display_usage;    exit 0;}
+	[ false = $ver ] || { base_display_version;  exit 0;}
+	[ false = $war ] || { base_display_warranty; exit 0;}
 }
 
 # Adds vertical borders. Double quates are needed.
