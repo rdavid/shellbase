@@ -33,7 +33,7 @@
 # could use them. Clients should place all temporaly files under $BASE_WIP. All
 # functions started with base_ prefix are internal and should not be used by
 # clients.
-readonly BASE_VERSION=0.9.20221206
+readonly BASE_VERSION=0.9.20221207
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -164,19 +164,19 @@ is_readable() {
 # Verifies that a content of a running script has a written inside the script
 # hash (SHA-256). It doesn't consider a line where the hash is defined.
 is_solid() {
-	readonly \
+	local \
 		file="$0" \
+		hash \
+		line \
 		temp="$BASE_WIP"/hashless \
 		patt=^BASE_APP_HASH
 	is_readable "$file" || die File "$file" is not readable.
-	local hash line
 	line="$(
 		grep --regexp "$patt" "$file"
 	)" || { loge File "$file" doesn\'t have a hash.; return 1;}
 	hash="$(
 		printf %s "$line" | head -1 | awk -F = '{ print $2 }'
 	)" || { loge File "$file" has hash with unknown format: "$line".; return 2;}
-	readonly hash line
 	grep --invert-match --regexp "$patt" "$file" > "$temp"
 	printf %s\ \ %s "$hash" "$temp" | sha256sum --check --status ||
 		{ loge Hash of "$file" does not match "$hash"; return 3;}
@@ -391,10 +391,6 @@ yes_to_continue() {
 		msg \
 		tmo=20
 	arc="$(stty -g)"
-	readonly \
-		arc \
-		dad \
-		tmo
 
 	# The trap returns tty settings, adds the new line before any printing to
 	# compensate the question without a new line.
@@ -447,7 +443,6 @@ base_check_instances() {
 		pip="$BASE_WIP"/pip \
 		pro \
 		vrb
-	readonly pid pip
 
 	# Finds process IDs of all possible instances in /tmp/<script-name.*>/pid and
 	# writes them to the pipe. Loop reads the PIDs from the pipe and counts only
@@ -479,7 +474,6 @@ base_cleanup() {
 	local \
 		err=$? \
 		log="$BASE_WIP/../$BASE_IAM-log"
-	readonly err log
 	trap - HUP EXIT INT QUIT TERM
 
 	# Keeps logs of last finished instance. Calls base_bye right before log
@@ -644,7 +638,6 @@ base_prettytable_separator() {
 #  https://unix.stackexchange.com/questions/57940/trap-int-term-exit-really-necessary
 base_sig_cleanup() {
 	local err=$?
-	readonly err
 
 	# Some shells will call EXIT after the INT handler.
 	trap - EXIT
