@@ -21,7 +21,7 @@ out="$(
 		printf '12\tMike Bar\tEngineer\n'
 	} |
 		prettytable |
-		awk '{ print substr($0, index($0,$3)) }'
+		awk '{print substr($0, index($0,$3))}'
 )"
 [ "$carbon" = "$out" ]
 exit 0

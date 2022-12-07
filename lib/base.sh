@@ -175,7 +175,7 @@ is_solid() {
 		grep --regexp "$patt" "$file"
 	)" || { loge File "$file" doesn\'t have a hash.; return 1;}
 	hash="$(
-		printf %s "$line" | head -1 | awk -F = '{ print $2 }'
+		printf %s "$line" | head -1 | awk -F = '{print $2}'
 	)" || { loge File "$file" has hash with unknown format: "$line".; return 2;}
 	grep --invert-match --regexp "$patt" "$file" > "$temp"
 	printf %s\ \ %s "$hash" "$temp" | sha256sum --check --status ||
@@ -598,8 +598,6 @@ base_main() {
 		BASE_IAM \
 		BASE_LOG \
 		BASE_WIP
-
-	# Logs the starting point.
 	base_hi
 
 	# Handles signals, see more:
@@ -612,8 +610,8 @@ base_main() {
 	base_check_instances
 
 	# The usage has higher priority over version in case both options are set.
-	[ false = $use ] || { base_display_usage;    exit 0;}
-	[ false = $ver ] || { base_display_version;  exit 0;}
+	[ false = $use ] || { base_display_usage; exit 0;}
+	[ false = $ver ] || { base_display_version; exit 0;}
 	[ false = $war ] || { base_display_warranty; exit 0;}
 }
 
