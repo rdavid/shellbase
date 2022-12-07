@@ -52,7 +52,7 @@ Make sure `/usr/local/bin/` is in your `PATH`. Then your script can use
 . base.sh
 log I\'m using shellbase.
 ```
-You can try shellbase without installation:
+You can try `shellbase` without installation:
 ```sh
 #!/bin/sh
 REL=v0.9.20221129
@@ -60,7 +60,7 @@ SRC=https://github.com/rdavid/shellbase/releases/download/$REL/base.sh
 eval "$(curl --location --silent $SRC)"
 log I\'m using shellbase.
 ```
-Prettytable example:
+`prettytable` example:
 ```sh
 #!/bin/sh
 . base.sh
