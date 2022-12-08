@@ -1,0 +1,8 @@
+#!/bin/sh
+# vi:et lbr noet sw=2 ts=2 tw=79 wrap
+# Copyright 2022 David Rabkin
+# shellcheck disable=SC1091
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+ver="$(semver 'I am 1.2')"
+log SemVer: "$ver".
+! inside "$ver" 0.0.0+nil

@@ -27,13 +27,13 @@
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
 # be_root, be_user, cmd_exists, die, echo, file_exists, inside, is_empty,
-# is_readable, is_solid, is_writable, log, loge, logw, prettytable, timestamp,
-# to_log, to_loge, url_exists, user_exists, validate_cmd, validate_var,
-# var_exists, yes_to_continue. Global variables have BASE_ prefix and clients
-# could use them. Clients should place all temporaly files under $BASE_WIP. All
-# functions started with base_ prefix are internal and should not be used by
-# clients.
-readonly BASE_VERSION=0.9.20221207
+# is_readable, is_solid, is_writable, log, loge, logw, prettytable, semver,
+# timestamp, to_log, to_loge, url_exists, user_exists, validate_cmd,
+# validate_var, var_exists, yes_to_continue. Global variables have BASE_ prefix
+# and clients could use them. Clients should place all temporaly files under
+# $BASE_WIP. All functions started with base_ prefix are internal and should
+# not be used by clients.
+readonly BASE_VERSION=0.9.20221208
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -269,6 +269,25 @@ prettytable() {
 		column -ts '	' |
 			sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g" |
 			to_log
+}
+
+# Extracts semantic versioning from a string, see https://semver.org/:
+#  1.2.3
+#  1.2.3+meta
+#  1.2.3-4-alpha
+# Uses GNU grep with PCRE option.
+semver() {
+	[ -z "${1-}" ] || [ $# -gt 1 ] && die Usage: semver string.
+	local str="$1" ver
+	ver="$(
+		printf %s "$str" |
+			grep --only-matching --perl-regexp \
+			'(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+	)" || {
+		logw Unable to extract SemVer from "$str".
+		ver=0.0.0+nil
+	}
+	printf %s "$ver"
 }
 
 # Returns current time in form of timestamp.
