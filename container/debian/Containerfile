@@ -1,8 +1,8 @@
-FROM golang:1.19.3-alpine AS goredoer
+FROM golang:1.20-rc-alpine AS goredoer
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 RUN \
 	apk add --no-cache --update \
-		curl~=7.83.1 \
+		curl~=7.86.0 \
 		zstd~=1.5.2 \
 		&& rm -rf /var/cache/apk/*
 ENV \
