@@ -212,7 +212,8 @@ is_writable() {
 log() {
 	local ts
 	ts="$(timestamp)"
-	[ "$BASE_QUIET" = false ] && printf '\033[0;32m%s I\033[0m %s\n' "$ts" "$*"
+	[ "$BASE_QUIET" = false ] &&
+		printf '\033[0;32m%s I\033[0m %s\n' "$ts" "$*"
 	base_write_to_file "$ts" I "$*"
 }
 
@@ -228,7 +229,8 @@ loge() {
 logw() {
 	local ts
 	ts="$(timestamp)"
-	[ "$BASE_QUIET" = false ] && printf '\033[0;33m%s W\033[0m %s\n' "$ts" "$*" >&2
+	[ "$BASE_QUIET" = false ] &&
+		printf '\033[0;33m%s W\033[0m %s\n' "$ts" "$*" >&2
 	base_write_to_file "$ts" W "$*"
 }
 
