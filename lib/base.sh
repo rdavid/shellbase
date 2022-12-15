@@ -33,7 +33,7 @@
 # and clients could use them. Clients should place all temporaly files under
 # $BASE_WIP. All functions started with base_ prefix are internal and should
 # not be used by clients.
-readonly BASE_VERSION=0.9.20221213
+readonly BASE_VERSION=0.9.20221215
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -731,6 +731,9 @@ base_write_to_file() {
 	base_truncate
 	printf %s\\n "$*" >> "$BASE_LOG"
 }
+
+# Stops here if running in interactive mode.
+case "$-" in *i*) return 0; esac
 
 # Starting point.
 set -o errexit
