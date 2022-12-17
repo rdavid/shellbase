@@ -130,9 +130,8 @@ file_exists() {
 # From here:
 #  https://www.grymoire.com/Unix/Sh.html
 inside() {
-	case "$1" in
-		*$2*) return 0
-	esac
+	[ $# -lt 2 ] && die Usage: inside body element.
+	case "$1" in *$2*) return 0; esac
 	return 1
 }
 
@@ -694,17 +693,10 @@ base_time_separator() {
 			;;
 	esac
 	case "$cnt" in
-		0)
-			;;
-		1)
-			printf ' and '
-			;;
-		2|3)
-			printf ', '
-			;;
-		*)
-			loge Wrong number "$cnt".
-			;;
+		0) ;;
+		1) printf ' and ';;
+		2|3) printf ', ';;
+		*) loge Wrong number "$cnt".;;
 	esac
 }
 
@@ -712,15 +704,9 @@ base_time_separator() {
 # a time title.
 base_time_title() {
 	case "$1" in
-		0)
-			printf ''
-			;;
-		1)
-			printf %d\ %s "$1" "$2"
-			;;
-		*)
-			printf %d\ %ss "$1" "$2"
-			;;
+		0) printf '';;
+		1) printf %d\ %s "$1" "$2";;
+		*) printf %d\ %ss "$1" "$2";;
 	esac
 }
 

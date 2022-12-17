@@ -25,8 +25,6 @@ place all temporaly files under `$BASE_WIP`. All functions started with `base_`
 prefix are internal and should not be used by clients.
 
 See [`toolbox`](https://github.com/rdavid/toolbox) as an example.
-variables have `BASE_` prefix and clients could use them. Clients should place
-all temporaly files under `$BASE_WIP`. All functions started with `base_`
 
 ## Install
 The artifact is a single non-executable [text
