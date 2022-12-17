@@ -33,7 +33,8 @@
 # and clients could use them. Clients should place all temporaly files under
 # $BASE_WIP. All functions started with base_ prefix are internal and should
 # not be used by clients.
-readonly BASE_VERSION=0.9.20221215
+BASE_QUIET=false
+BASE_VERSION=0.9.20221217
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -214,7 +215,7 @@ log() {
 	ts="$(timestamp)"
 	[ "$BASE_QUIET" = false ] &&
 		printf '\033[0;32m%s I\033[0m %s\n' "$ts" "$*"
-	base_write_to_file "$ts" I "$*"
+	base_is_interactive || base_write_to_file "$ts" I "$*"
 }
 
 # Error logger always prints to stderr.
@@ -222,7 +223,7 @@ loge() {
 	local ts
 	ts="$(timestamp)"
 	printf '\033[0;31m%s E\033[0m %s\n' "$ts" "$*" >&2
-	base_write_to_file "$ts" E "$*"
+	base_is_interactive || base_write_to_file "$ts" E "$*"
 }
 
 # Warning logger doesn't print to stderr with --quite flag.
@@ -231,7 +232,7 @@ logw() {
 	ts="$(timestamp)"
 	[ "$BASE_QUIET" = false ] &&
 		printf '\033[0;33m%s W\033[0m %s\n' "$ts" "$*" >&2
-	base_write_to_file "$ts" W "$*"
+	base_is_interactive || base_write_to_file "$ts" W "$*"
 }
 
 # Draws ASCII table with sizing columns. Expects input as:
@@ -595,6 +596,12 @@ base_hi() {
 	log "$BASE_IAM $$" says hi.
 }
 
+# Defines if shellbase is running in interactive mode.
+base_is_interactive() {
+	case "$-" in *i*) return 0; esac
+	return 1
+}
+
 # Loops through the function arguments before any log. Handles only arguments
 # with 'do and exit' logic.
 base_main() {
@@ -732,16 +739,15 @@ base_write_to_file() {
 	printf %s\\n "$*" >> "$BASE_LOG"
 }
 
-# Stops here if running in interactive mode.
-case "$-" in *i*) return 0; esac
-
 # Starting point.
+
+# Stops here if running in interactive mode.
+base_is_interactive && return 0
 set -o errexit
 set -o nounset
 
 # Loops through command line arguments of the script. Handles only arguments
 # with 'set and go' logic.
-BASE_QUIET=false
 for arg do
 	shift
 	case "$arg" in
@@ -751,5 +757,5 @@ for arg do
 	esac
 done
 unset arg
-readonly BASE_QUIET
+readonly BASE_QUIET BASE_VERSION
 base_main "$@"
