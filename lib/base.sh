@@ -27,15 +27,15 @@
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
 # be_root, be_user, cmd_exists, die, echo, file_exists, heic2jpg, grbt, inside,
-# is_empty, is_readable, is_solid, is_writable, log, loge, logw, pingo,
-# prettytable, semver, timestamp, to_log, to_loge, to_lower, url_exists,
-# user_exists, validate_cmd, validate_var, var_exists, yes_to_continue, ytda.
+# is_empty, is_readable, is_solid, is_writable, log, loge, logw, prettytable,
+# semver, timestamp, to_log, to_loge, to_lower, url_exists, user_exists,
+# validate_cmd, validate_var, var_exists, yes_to_continue, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients.
 BASE_QUIET=false
-BASE_VERSION=0.9.20221219
+BASE_VERSION=0.9.20221221
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -246,11 +246,6 @@ logw() {
 	[ "$BASE_QUIET" = false ] &&
 		printf '\033[0;33m%s W\033[0m %s\n' "$ts" "$*" >&2
 	base_is_interactive || base_write_to_file "$ts" W "$*"
-}
-
-# Adds timestamps to ping command output.
-pingo() {
-	ping "$1" 2>&1 | to_log
 }
 
 # Draws ASCII table with sizing columns. Expects input as:
