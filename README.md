@@ -18,7 +18,7 @@ multiple running instances of a same script are detected.
 `base_` prefix are API and should be used by clients. API functions are:
 `be_root`, `be_user`, `cmd_exists`, `echo`, `die`, `file_exists`, `grbt`,
 `heic2jpg`, `inside`, `is_empty`, `is_readable`, `is_solid`, `is_writable`,
-`log`, `loge`, `logw`, `prettytable`, `pingo`, `semver`, `timestamp`, `to_log`,
+`log`, `loge`, `logw`, `prettytable`, `semver`, `timestamp`, `to_log`,
 `to_loge`, `to_lower`, `url_exists`, `user_exists`, `validate_cmd`,
 `validate_var`, `var_exists`, `yes_to_continue`, `ytda`.
 
