@@ -1,10 +1,9 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # Copyright 2022 David Rabkin
-# shellcheck disable=SC1091
+# shellcheck disable=SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
-file_exists /tmp && printf '/tmp exists.\n'
-file_exists /tmp1 || printf '/tmp1 does not exist.\n'
-file_exists /tmp/* && printf '/tmp/* exists.\n'
-file_exists /tmp1/* || printf '/tmp1/* does not exist.\n'
-exit 0
+file_exists /tmp && log /tmp exists.
+file_exists /tmp1 || log /tmp1 does not exist.
+file_exists /tmp/* && log /tmp/\* exists.
+file_exists /tmp1/* || log /tmp1/\* does not exist.

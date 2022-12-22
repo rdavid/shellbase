@@ -3,10 +3,9 @@
 # Copyright 2022 David Rabkin
 BASE="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 
-# shellcheck disable=SC1090
+# shellcheck disable=SC1090 # File not following.
 . "$BASE"
 
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034 # Appears unused.
 BASE_APP_HASH=6c98c7b786ef74a657c8b7418d1ded08905f746f3583814735912ef3c21db5eb
 is_solid || die
-exit 0

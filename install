@@ -7,7 +7,7 @@ readonly \
 	DST=/usr/local/bin \
 	TGT=/usr/local/bin/base.sh
 
-# shellcheck disable=SC1090
+# shellcheck disable=SC1090 # File not following.
 . "$BSH"
 file_exists $DST || die $DST: No such directory.
 is_writable $DST || die $DST is not writable.
@@ -21,4 +21,3 @@ printf \
 	'%s is installed to %s.\n' \
 	"$(sh $TGT --quiet --version)" \
 	$DST
-exit 0
