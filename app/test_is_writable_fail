@@ -1,15 +1,11 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # Copyright 2021-2022 David Rabkin
-# shellcheck disable=SC1091
+# shellcheck disable=SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 touch /tmp/1 /tmp/2
 chmod -w /tmp/1
-if is_writable /tmp/1 /tmp/2 /tmp/3; then
-	ret=0
-else
-	ret=1
-fi
+is_writable /tmp/1 /tmp/2 /tmp/3 && ret=0 || ret=1
 chmod +w /tmp/1
 rm /tmp/1 /tmp/2
-exit $ret
+exit "$ret"

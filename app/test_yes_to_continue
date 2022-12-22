@@ -1,10 +1,9 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # Copyright 2022 David Rabkin
-# shellcheck disable=SC1091
+# shellcheck disable=SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 yes_to_continue
-printf Continued\ first.\\n
+log Continued first.
 yes_to_continue You\'re "$USER", continue?
-printf Continued\ second.\\n
-exit 0
+log Continued second.
