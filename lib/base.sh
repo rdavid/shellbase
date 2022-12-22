@@ -16,8 +16,7 @@
 # The script uses local variables which are not POSIX but supported by most
 # shells, see more:
 #  https://stackoverflow.com/questions/18597697/posix-compliant-way-to-scope-variables-to-a-function-in-a-shell-script
-# Disables shellcheck warning about using local variables.
-# shellcheck disable=SC3043
+# shellcheck disable=SC3043 # Uses local variables.
 #
 # shellbase is general framework for POSIX shell scripts. It provides multiple
 # services: public functions (logger, validation), signals handlers, garbage
@@ -35,7 +34,7 @@
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients.
 BASE_QUIET=false
-BASE_VERSION=0.9.20221221
+BASE_VERSION=0.9.20221222
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -77,7 +76,7 @@ die() {
 	exit 11
 }
 
-# The function ‘repairs’ echo to behave in a reasonable way, see more:
+# Repairs echo to behave in a reasonable way, see:
 #  http://www.etalabs.net/sh_tricks.html
 echo() (
 	local end=\\n fmt=%s
@@ -100,7 +99,7 @@ echo() (
 	shift
 	done
 
-	# shellcheck disable=SC2059
+	# shellcheck disable=SC2059 # Uses variables in the printf format string.
 	printf "$fmt$end" "$*"
 )
 
