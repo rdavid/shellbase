@@ -34,7 +34,7 @@
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients.
 BASE_QUIET=false
-BASE_VERSION=0.9.20221222
+BASE_VERSION=0.9.20221223
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -73,7 +73,8 @@ cmd_exists() {
 # Prints all parameters as error and exits with the error code.
 die() {
 	[ $# -eq 0 ] || loge "$@"
-	exit 11
+	base_is_interactive || exit 11
+	logw You\'re immortal in interactive mode!
 }
 
 # Repairs echo to behave in a reasonable way, see:
