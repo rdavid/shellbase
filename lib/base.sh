@@ -34,7 +34,7 @@
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients.
 BASE_QUIET=false
-BASE_VERSION=0.9.20221223
+BASE_VERSION=0.9.20221225
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -192,7 +192,7 @@ is_solid() {
 		printf %s "$line" | head -1 | awk -F = '{print $2}'
 	)" || { loge File "$file" has hash with unknown format: "$line".; return 2;}
 	grep --invert-match --regexp "$patt" "$file" > "$temp"
-	printf %s\ \ %s "$hash" "$temp" | sha256sum --check --status ||
+	printf %s\ \ %s "$hash" "$temp" | shasum --check --status ||
 		{ loge Hash of "$file" does not match "$hash"; return 3;}
 	log File "$file" is solid.
 }
