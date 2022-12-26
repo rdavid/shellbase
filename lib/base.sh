@@ -25,18 +25,37 @@
 #
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
-# be_root, be_user, cmd_exists, die, echo, file_exists, heic2jpg, grbt, inside,
-# is_empty, is_readable, is_solid, is_writable, log, loge, logw, prettytable,
-# semver, timestamp, to_log, to_loge, to_lower, url_exists, user_exists,
-# validate_cmd, validate_var, var_exists, yes_to_continue, ytda.
+# aud_only, be_root, be_user, cmd_exists, die, echo, file_exists, heic2jpg,
+# grbt, inside, is_empty, is_readable, is_solid, is_writable, log, loge, logw,
+# pdf2jpg, pdf2png, prettytable, semver, timestamp, to_log, to_loge, to_lower,
+# url_exists, user_exists, validate_cmd, validate_var, var_exists, vid2aud,
+# yes_to_continue, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients.
 BASE_QUIET=false
-BASE_VERSION=0.9.20221225
+BASE_VERSION=0.9.20221227
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
+
+# Removes any file besides mp3, m4a, flac in current directory. Removes empty
+# directories.
+aud_only() {
+	local ans keep
+	find . -type f \
+		! \( -name \*.mp3 -o -name \*.m4a -o -name \*.flac \)
+	keep=$(stty -g)
+	stty raw -echo
+	ans=$(head -c 1)
+	stty "$keep"
+	printf \\n
+	printf %s "$ans" | grep -iq ^y || return
+	find . -type f \
+		! \( -name \*.mp3 -o -name \*.m4a -o -name \*.flac \) \
+		-exec rm -f {} +
+	find . -type d -empty -delete
+}
 
 # Exits with error if it is not ran by root.
 be_root() {
@@ -248,6 +267,24 @@ logw() {
 	base_is_interactive || base_write_to_file "$ts" W "$*"
 }
 
+# Converts all PDF files in current directory to JPG files.
+pdf2jpg() {
+	local f
+	for f in *.pdf; do
+		log Convert "$f" to JPG.
+		sips -s format jpeg "$f" --out "$f.jpg"
+	done
+}
+
+# Converts all PDF files in current directory to PNG files.
+pdf2png() {
+	local f
+	for f in *.pdf; do
+		log Convert "$f" to PNG.
+		pdftoppm "$f" "${f%.*}" -png
+	done
+}
+
 # Draws ASCII table with sizing columns. Expects input as:
 # {
 # 	printf 'ID\tNAME\tTITLE\n'
@@ -417,6 +454,19 @@ var_exists() {
 		fi
 	done
 	return $ret
+}
+
+# Converts all video files in current directory to MP3 files.
+vid2aud() {
+	local dst src
+	find . -type f -maxdepth 1 \
+		\( -name \*.mp4 -o -name \*.m4v -o -name \*.avi -o -name \*.mkv \) |
+		while read -r src; do
+			src="$(basename -- "$src")"
+			dst="${src%.*}".mp3
+			log Convert "$src" to "$dst".
+			ffmpeg -nostdin -i "$src" -vn -ar 44100 -ac 2 -ab 320k -f mp3 "$dst"
+		done
 }
 
 # Asks a user permission to continue, exits if not 'y'. Exits by timeout if any
