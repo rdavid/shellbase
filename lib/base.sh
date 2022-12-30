@@ -35,7 +35,7 @@
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients.
 BASE_QUIET=false
-BASE_VERSION=0.9.20221230
+BASE_VERSION=0.9.20221231
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -97,31 +97,21 @@ cmd_exists() {
 # Prints all parameters as error and exits with the error code.
 die() {
 	[ $# -eq 0 ] || loge "$@"
-	base_is_interactive || exit 11
-	logw You\'re immortal in interactive mode!
+	base_is_interactive && log You\'re immortal! || exit 11
 }
 
 # Repairs echo to behave in a reasonable way, see:
 #  http://www.etalabs.net/sh_tricks.html
 echo() (
-	local end=\\n fmt=%s
-	IFS=" "
+	local end=\\n fmt=%s IFS=' '
 	while [ $# -gt 1 ]; do
 		case "$1" in
-			[!-]*|-*[!ne]*)
-				break
-				;;
-			*ne*|*en*)
-				fmt=%b end=
-				;;
-			*n*)
-				end=
-				;;
-			*e*)
-				fmt=%b
-				;;
+			[!-]*|-*[!ne]*) break;;
+			*ne*|*en*) fmt=%b end=;;
+			*n*) end=;;
+			*e*) fmt=%b;;
 		esac
-	shift
+		shift
 	done
 
 	# shellcheck disable=SC2059 # Uses variables in the printf format string.
