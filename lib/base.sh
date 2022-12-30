@@ -25,17 +25,17 @@
 #
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are API and should be used by clients. API functions are:
-# aud_only, be_root, be_user, cmd_exists, die, echo, file_exists, heic2jpg,
-# grbt, inside, is_empty, is_readable, is_solid, is_writable, log, loge, logw,
-# pdf2jpg, pdf2png, prettytable, semver, timestamp, to_log, to_loge, to_lower,
-# url_exists, user_exists, validate_cmd, validate_var, var_exists, vid2aud,
-# yes_to_continue, ytda.
+# aud_only, be_root, be_user, cheat, cmd_exists, die, echo, file_exists,
+# heic2jpg, grbt, inside, is_empty, is_readable, is_solid, is_writable, log,
+# loge, logw, pdf2jpg, pdf2png, prettytable, semver, timestamp, to_log,
+# to_loge, to_lower, url_exists, user_exists, validate_cmd, validate_var,
+# var_exists, vid2aud, yes_to_continue, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients.
 BASE_QUIET=false
-BASE_VERSION=0.9.20221227
+BASE_VERSION=0.9.20221230
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -71,6 +71,11 @@ be_user() {
 	ask="$(id -u "$usr")"
 	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."
 	log "You are $usr ($cur)."
+}
+
+# The only cheat sheet you need.
+cheat() {
+	curl https://cht.sh/"$1"
 }
 
 # Checks whether all commands exits. Loops over the arguments, each one is a
