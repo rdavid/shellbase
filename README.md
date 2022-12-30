@@ -16,12 +16,12 @@ multiple running instances of a same script are detected.
 
 `shellbase` defines global variables and functions. All functions without
 `base_` prefix are API and should be used by clients. API functions are:
-`aud_only`, `be_root`, `be_user`, `cmd_exists`, `echo`, `die`, `file_exists`,
-`grbt`, `heic2jpg`, `inside`, `is_empty`, `is_readable`, `is_solid`,
-`is_writable`, `log`, `loge`, `logw`, `pdf2jpg`, `pdf2png`, `prettytable`,
-`semver`, `timestamp`, `to_log`, `to_loge`, `to_lower`, `url_exists`,
-`user_exists`, `validate_cmd`, `validate_var`, `var_exists`, `vid2aud`,
-`yes_to_continue`, `ytda`.
+`aud_only`, `be_root`, `be_user`, `cheat`, `cmd_exists`, `echo`, `die`,
+`file_exists`, `grbt`, `heic2jpg`, `inside`, `is_empty`, `is_readable`,
+`is_solid`, `is_writable`, `log`, `loge`, `logw`, `pdf2jpg`, `pdf2png`,
+`prettytable`, `semver`, `timestamp`, `to_log`, `to_loge`, `to_lower`,
+`url_exists`, `user_exists`, `validate_cmd`, `validate_var`, `var_exists`,
+`vid2aud`, `yes_to_continue`, `ytda`.
 
 Global variables have `BASE_` prefix and clients could use them. Clients should
 place all temporaly files under `$BASE_WIP`. All functions started with `base_`
