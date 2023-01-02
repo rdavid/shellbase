@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2020-2022 David Rabkin
+# Copyright 2020-2023 David Rabkin
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted.
@@ -35,7 +35,7 @@
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients.
 BASE_QUIET=false
-BASE_VERSION=0.9.20221231
+BASE_VERSION=0.9.20230102
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -620,7 +620,7 @@ base_display_warranty() {
 		return 0
 	fi
 	cat <<-EOM
-		Copyright 2020-2022 David Rabkin
+		Copyright 2020-2023 David Rabkin
 
 		Permission to use, copy, modify, and/or distribute this software for any
 		purpose with or without fee is hereby granted.

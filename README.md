@@ -42,7 +42,7 @@ administrative rights to install to `/usr/local/bin/`, use `sudo` or `doas`
 before `curl`:
 ```sh
 DST=/usr/local/bin/base.sh
-REL=v0.9.20221213
+REL=v0.9.20230102
 SRC=https://github.com/rdavid/shellbase/releases/download/$REL/base.sh
 curl --location --output $DST --silent $SRC
 ```
@@ -56,7 +56,7 @@ log I\'m using shellbase.
 You can try `shellbase` without installation:
 ```sh
 #!/bin/sh
-REL=v0.9.20221213
+REL=v0.9.20230102
 SRC=https://github.com/rdavid/shellbase/releases/download/$REL/base.sh
 eval "$(curl --location --silent $SRC)"
 log I\'m using shellbase.
