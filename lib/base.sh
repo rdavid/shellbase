@@ -29,13 +29,13 @@
 # heic2jpg, grbt, inside, is_empty, is_readable, is_solid, is_writable, log,
 # loge, logw, pdf2jpg, pdf2png, prettytable, semver, timestamp, to_log,
 # to_loge, to_lower, url_exists, user_exists, validate_cmd, validate_var,
-# var_exists, vid2aud, yes_to_continue, ytda.
+# var_exists, ver_ge, vid2aud, yes_to_continue, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients.
 BASE_QUIET=false
-BASE_VERSION=0.9.20230102
+BASE_VERSION=0.9.20230105
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -449,6 +449,13 @@ var_exists() {
 		fi
 	done
 	return $ret
+}
+
+# Compares two versions, return true if the first parameter is greater or equal
+# to the second parameter. See more:
+#  https://unix.stackexchange.com/questions/285924/how-to-compare-a-programs-version-in-a-shell-script
+ver_ge() {
+	printf %s\\n "$2" "$1" | sort --check=quiet --version-sort
 }
 
 # Converts all video files in current directory to MP3 files.

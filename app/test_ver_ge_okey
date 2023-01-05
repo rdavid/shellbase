@@ -1,0 +1,8 @@
+#!/bin/sh
+# vi:et lbr noet sw=2 ts=2 tw=79 wrap
+# Copyright 2023 David Rabkin
+# shellcheck disable=SC1091 # File not following.
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+for v in 1.2.3 1.2.3-alpha 1.2.4; do
+	ver_ge $v 1.2.3 || die $v
+done

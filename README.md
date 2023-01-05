@@ -21,7 +21,7 @@ multiple running instances of a same script are detected.
 `is_solid`, `is_writable`, `log`, `loge`, `logw`, `pdf2jpg`, `pdf2png`,
 `prettytable`, `semver`, `timestamp`, `to_log`, `to_loge`, `to_lower`,
 `url_exists`, `user_exists`, `validate_cmd`, `validate_var`, `var_exists`,
-`vid2aud`, `yes_to_continue`, `ytda`.
+`ver_ge`, `vid2aud`, `yes_to_continue`, `ytda`.
 
 Global variables have `BASE_` prefix and clients could use them. Clients should
 place all temporaly files under `$BASE_WIP`. All functions started with `base_`
