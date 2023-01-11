@@ -38,32 +38,46 @@ git clone https://github.com/rdavid/shellbase.git &&
 	./shellbase/install
 ```
 Install the file from released version directly. Some OS demands
-administrative rights to install to `/usr/local/bin/`, use `sudo` or `doas`
-before `curl`:
+administrative right to install to `/usr/local/bin`, use `sudo` or `doas`
+before `tar`:
 ```sh
-DST=/usr/local/bin/base.sh
-REL=v0.9.20230102
-SRC=https://github.com/rdavid/shellbase/releases/download/$REL/base.sh
-curl --location --output $DST --silent $SRC
+REL=0.9.20230102
+SRC=https://github.com/rdavid/shellbase/archive/refs/tags/v$REL.tar.gz
+curl --location --silent $SRC |
+	tar \
+		--directory /usr/local/bin \
+		--extract \
+		--gzip \
+		--strip-components=2 \
+		shellbase-$REL/lib/base.sh
 ```
-Make sure `/usr/local/bin/` is in your `PATH`. Then your script can use
+Make sure `/usr/local/bin` is in your `PATH`. Then your script can use
 `shellbase`:
 ```sh
 #!/bin/sh
+# shellcheck disable=SC1091 # File not following.
 . base.sh
-log I\'m using shellbase.
+log I\'m using the shellbase.
 ```
 You can try `shellbase` without installation:
 ```sh
 #!/bin/sh
-REL=v0.9.20230102
-SRC=https://github.com/rdavid/shellbase/releases/download/$REL/base.sh
-eval "$(curl --location --silent $SRC)"
-log I\'m using shellbase.
+REL=0.9.20230102
+SRC=https://github.com/rdavid/shellbase/archive/refs/tags/v$REL.tar.gz
+eval "$(
+	curl --location --silent $SRC |
+		tar \
+			--extract \
+			--gzip \
+			--to-stdout \
+			shellbase-$REL/lib/base.sh
+)"
+log I\'m using the shellbase.
 ```
 `prettytable` example:
 ```sh
 #!/bin/sh
+# shellcheck disable=SC1091 # File not following.
 . base.sh
 {
 	printf 'ID\tNAME\tTITLE\n'
