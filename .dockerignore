@@ -1,5 +1,4 @@
-container/
-ctest.sh
+container
 all.do
 shellbase.do
 test
