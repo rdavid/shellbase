@@ -35,7 +35,7 @@
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients.
 BASE_QUIET=false
-BASE_VERSION=0.9.20230105
+BASE_VERSION=0.9.20230114
 
 # Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
 
@@ -144,7 +144,7 @@ grbt() {
 
 # Converts Apple's HEIC files in a current directory to JPEG.
 heic2jpg() {
-	magick mogrify -monitor -format jpg ./*.[hH][eE][iI][cC]
+	magick mogrify -format jpg -monitor ./*.[hH][eE][iI][cC]
 }
 
 # Returns a TRUE if $2 is inside $1. I'll use a case statement, because this is
