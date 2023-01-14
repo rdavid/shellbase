@@ -9,10 +9,11 @@ General framework for Unix shell scripts.
 ## About
 Hi, I'm [David Rabkin](http://cv.rabkin.co.il).
 
-`shellbase` is general framework for Unix shell scripts. It provides multiple
-services: public functions (logger, validation), signals handlers, garbage
-collection, multiple instances. It asks for a permission to continue if
-multiple running instances of a same script are detected.
+`shellbase` is a general framework for Unix shell scripts. The framework is
+mostly POSIX-compliant. It provides multiple services: public functions
+(logger, validation), signals handlers, garbage collection, multiple instances.
+It asks for a permission to continue if multiple running instances of a same
+script are detected.
 
 `shellbase` defines global variables and functions. All functions without
 `base_` prefix are API and should be used by clients. API functions are:
@@ -34,7 +35,7 @@ The artifact is a single non-executable [text
 file](https://github.com/rdavid/shellbase/blob/master/lib/base.sh). Install the
 file from the repository:
 ```sh
-git clone https://github.com/rdavid/shellbase.git &&
+git clone git@github.com:rdavid/shellbase.git &&
 	./shellbase/install
 ```
 Install the file from released version directly. Some OS demands
@@ -99,10 +100,13 @@ Output:
 ## Test
 The project uses Daniel J. Bernstein's (aka, djb)
 [build system](http://cr.yp.to/redo.html). You can install Sergey Matveev's
-[goredo implementation](http://www.goredo.cypherpunks.ru/Install.html).
+[`goredo`](http://www.goredo.cypherpunks.ru/Install.html) implementation.
 
-Run `shellcheck` on sources by `redo shellcheck`, run tests by `redo test`, run
-tests in multiple environments in containers by `redo test_container`.
+Run [`shellcheck`](https://github.com/koalaman/shellcheck) on sources by
+`redo shellcheck`, run tests by `redo test`, run tests in multiple environments
+in containers by `redo test_container`. It uses
+[`goredoer`](https://github.com/rdavid/goredoer) to build
+[`goredo`](http://www.goredo.cypherpunks.ru/Install.html).
 
 ## License
 `shellbase` is copyright [David Rabkin](http://cv.rabkin.co.il) and available
