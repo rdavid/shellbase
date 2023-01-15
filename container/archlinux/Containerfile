@@ -1,11 +1,14 @@
 FROM ghcr.io/rdavid/goredoer:v0.9.20230113 AS goredoer
 FROM archlinux:base
-LABEL maintainer="David Rabkin <david@rabkin.co.il>"
+LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
 COPY --from=goredoer /go/goredo-*/src/goredo .
+
+# Multiple redirections compete for stdout.
+# hadolint ignore=SC2261
 RUN \
 	pacman-key --init >/dev/null 2>&1 \
 	&& pacman --noconfirm --refresh --sync archlinux-keyring >/dev/null 2>&1 \
