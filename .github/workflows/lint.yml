@@ -1,0 +1,26 @@
+---
+name: Linters
+"on":
+  push:
+    branches:
+      - master
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Run Hadolint
+        uses: hadolint/hadolint-action@v2.1.0
+        with:
+          dockerfile: Containerfile
+          recursive: true
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          additional_files: install lib/base.sh
+          scandir: app
+      - name: Run YamlLint
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: .github/workflows/*.yml
