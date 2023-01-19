@@ -16,7 +16,8 @@ It asks for a permission to continue if multiple running instances of a same
 script are detected.
 
 `shellbase` defines global variables and functions. All functions without
-`base_` prefix are API and should be used by clients. API functions are:
+`base_` prefix are public and could be used by clients. The public functions
+are, in alphabetical order:
 `aud_only`, `be_root`, `be_user`, `cheat`, `cmd_exists`, `echo`, `die`,
 `file_exists`, `grbt`, `heic2jpg`, `inside`, `is_empty`, `is_readable`,
 `is_solid`, `is_writable`, `log`, `loge`, `logw`, `pdf2jpg`, `pdf2png`,
@@ -26,7 +27,8 @@ script are detected.
 
 Global variables have `BASE_` prefix and clients could use them. Clients should
 place all temporaly files under `$BASE_WIP`. All functions started with `base_`
-prefix are internal and should not be used by clients.
+prefix are internal and should not be used by clients. All names are in
+alphabetical order.
 
 See [`toolbox`](https://github.com/rdavid/toolbox) as an example.
 
