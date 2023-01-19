@@ -24,7 +24,8 @@
 # multiple running instances of a same script are detected.
 #
 # shellbase defines global variables and functions. All functions without
-# base_ prefix are API and should be used by clients. API functions are:
+# base_ prefix are public and could be used by clients. The public functions
+# are, in alphabetical order:
 # aud_only, be_root, be_user, cheat, cmd_exists, die, echo, file_exists,
 # heic2jpg, grbt, inside, is_empty, is_readable, is_solid, is_writable, log,
 # loge, logw, pdf2jpg, pdf2png, prettytable, semver, timestamp, to_log,
@@ -33,11 +34,10 @@
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place all temporaly files under $BASE_WIP. All functions started with
-# base_ prefix are internal and should not be used by clients.
+# base_ prefix are internal and should not be used by clients. All names are in
+# alphabetical order.
 BASE_QUIET=false
-BASE_VERSION=0.9.20230114
-
-# Public functions have generic names: log, validate_cmd, yes_to_contine, etc.
+BASE_VERSION=0.9.20230119
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
 # directories.
@@ -807,15 +807,13 @@ base_write_to_file() {
 	printf %s\\n "$*" >> "$BASE_LOG"
 }
 
-# Starting point.
-
-# Stops here if running in interactive mode.
+# Starting point. Stops right away if it has ran in interactive mode.
 base_is_interactive && return 0
 set -o errexit
 set -o nounset
 
 # Loops through command line arguments of the script. Handles only arguments
-# with 'set and go' logic.
+# with set-and-go logic.
 for arg do
 	shift
 	case "$arg" in
