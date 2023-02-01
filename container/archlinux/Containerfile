@@ -1,11 +1,10 @@
-FROM ghcr.io/rdavid/goredoer:v0.9.20230113 AS goredoer
 FROM archlinux:base
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
-COPY --from=goredoer /go/goredo-*/src/goredo .
+COPY --from=ghcr.io/rdavid/goredoer:v0.9.20230203 /go/goredo .
 
 # Multiple redirections compete for stdout.
 # hadolint ignore=SC2261
@@ -21,7 +20,7 @@ RUN \
 		tcsh>=6.24 \
 		zsh>=r5.9 \
 	&& useradd --create-home "$USER" \
-	&& ./goredo -symlinks
+	&& goredo -symlinks
 USER "$USER"
 WORKDIR /home/"$USER"
 COPY \

@@ -1,4 +1,3 @@
-FROM ghcr.io/rdavid/goredoer:v0.9.20230113 AS goredoer
 FROM debian:bullseye
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
@@ -6,7 +5,7 @@ ENV \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
-COPY --from=goredoer /go/goredo-*/src/goredo .
+COPY --from=ghcr.io/rdavid/goredoer:v0.9.20230203 /go/goredo .
 
 # hadolint ignore=DL3008
 RUN \
@@ -23,7 +22,7 @@ RUN \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& useradd --create-home "$USER" \
-	&& ./goredo -symlinks
+	&& goredo -symlinks
 USER "$USER"
 WORKDIR /home/"$USER"
 COPY \
