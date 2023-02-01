@@ -1,4 +1,3 @@
-FROM ghcr.io/rdavid/goredoer:v0.9.20230113 AS goredoer
 FROM alpine:3.17.0
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
@@ -6,7 +5,7 @@ ENV \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
-COPY --from=goredoer /go/goredo-*/src/goredo .
+COPY --from=ghcr.io/rdavid/goredoer:v0.9.20230203 /go/goredo .
 RUN \
 	apk add --no-cache --update \
 		bash~=5.2 \
@@ -23,7 +22,7 @@ RUN \
 		&& adduser -S "$USER" -G "$USER" \
 		&& cp /usr/share/zoneinfo/$TIME_ZONE /etc/localtime \
 		&& printf %s "$TIME_ZONE" > /etc/timezone \
-		&& ./goredo -symlinks
+		&& goredo -symlinks
 USER "$USER"
 WORKDIR /home/"$USER"
 COPY \
