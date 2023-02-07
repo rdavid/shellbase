@@ -1,5 +1,5 @@
 ---
-name: Linters
+name: linters
 "on":
   push:
     branches:
