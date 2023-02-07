@@ -1,6 +1,6 @@
 ---
 name: linters
-"on":
+'on':
   push:
     branches:
       - master
