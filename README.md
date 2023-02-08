@@ -41,7 +41,7 @@ git clone git@github.com:rdavid/shellbase.git &&
 	./shellbase/install
 ```
 Install the file from released version directly. Some OS demands
-administrative right to install to `/usr/local/bin`, use `sudo` or `doas`
+administrative rights to install to `/usr/local/bin`, use `sudo` or `doas`
 before `tar`:
 ```sh
 REL=0.9.20230102
