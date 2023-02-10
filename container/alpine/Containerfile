@@ -5,7 +5,7 @@ ENV \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
-COPY --from=ghcr.io/rdavid/goredoer:v0.9.20230203 /go/goredo .
+COPY --from=ghcr.io/rdavid/goredoer:v0.9.20230210 /go/goredo .
 RUN \
 	apk add --no-cache --update \
 		bash~=5.2 \
