@@ -37,7 +37,7 @@
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
 BASE_QUIET=false
-BASE_VERSION=0.9.20230119
+BASE_VERSION=0.9.20230212
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
 # directories.
