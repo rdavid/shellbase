@@ -38,7 +38,7 @@ file](https://github.com/rdavid/shellbase/blob/master/lib/base.sh). Install the
 file from the repository:
 ```sh
 git clone git@github.com:rdavid/shellbase.git &&
-	./shellbase/install
+	./shellbase/app/install
 ```
 Install the file from released version directly. Some OS demands
 administrative rights to install to `/usr/local/bin`, use `sudo` or `doas`
