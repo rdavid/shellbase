@@ -12,8 +12,8 @@ jobs:
           recursive: true
       - uses: ludeeus/action-shellcheck@master
         with:
-          additional_files: install lib/base.sh *.do
-          scandir: app
+          additional_files: ./*.do
+          scandir: app lib
       - uses: ibiqlik/action-yamllint@v3
         with:
           file_or_dir: .github/workflows/*.yml
