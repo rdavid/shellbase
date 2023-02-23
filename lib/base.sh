@@ -27,17 +27,17 @@
 # base_ prefix are public and could be used by clients. The public functions
 # are, in alphabetical order:
 # aud_only, be_root, be_user, cheat, cmd_exists, die, echo, file_exists,
-# heic2jpg, grbt, inside, is_empty, is_readable, is_solid, is_writable, log,
-# loge, logw, pdf2jpg, pdf2png, prettytable, semver, timestamp, to_log,
-# to_loge, to_lower, url_exists, user_exists, validate_cmd, validate_var,
-# var_exists, ver_ge, vid2aud, yes_to_continue, ytda.
+# heic2jpg, grbt, inside, is_empty, is_func, is_readable, is_solid,
+# is_writable, log, loge, logw, pdf2jpg, pdf2png, prettytable, semver,
+# timestamp, to_log, to_loge, to_lower, url_exists, user_exists, validate_cmd,
+# validate_var, var_exists, ver_ge, vid2aud, yes_to_continue, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
 BASE_QUIET=false
-BASE_VERSION=0.9.20230212
+BASE_VERSION=0.9.20230224
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
 # directories.
@@ -172,6 +172,15 @@ is_empty() {
 	set -- ..?* ; test -f "$1" && return 1
 	set -- * ; test -f "$1" && return 1
 	return 0
+}
+
+# Determines whether a shell function with a given name exists, see:
+#  https://stackoverflow.com/questions/35818555/how-to-determine-whether-a-function-exists-in-a-posix-shell
+is_func() {
+	case "$(type -- "$1" 2>/dev/null)" in
+		*function*) return 0;;
+	esac
+	return 1
 }
 
 # Verifies that all parameters are readable files.
