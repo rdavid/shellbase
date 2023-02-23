@@ -1,7 +1,7 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2022 David Rabkin
-BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/lib/base.sh
+# Copyright 2022-2023 David Rabkin
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 readonly \
 	BSH \
 	DST=/usr/local/bin \
