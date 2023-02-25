@@ -30,17 +30,18 @@ place all temporaly files under `$BASE_WIP`. All functions started with `base_`
 prefix are internal and should not be used by clients. All names are in
 alphabetical order.
 
-See [`toolbox`](https://github.com/rdavid/toolbox) as an example.
+See [`gento`](https://github.com/rdavid/gento) and
+[`toolbox`](https://github.com/rdavid/toolbox) as examples.
 
 ## Install
-The artifact is a single non-executable [text
-file](https://github.com/rdavid/shellbase/blob/master/lib/base.sh). Install the
+The artifact is a single non-executable POSIX-compliant shell script file
+[`base.sh`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh). Install the
 file from the repository:
 ```sh
 git clone git@github.com:rdavid/shellbase.git &&
 	./shellbase/app/install
 ```
-Install the file from released version directly. Some OS demands
+Install the file from the released version. Some OS demands
 administrative rights to install to `/usr/local/bin`, use `sudo` or `doas`
 before `tar`:
 ```sh
@@ -100,8 +101,8 @@ Output:
 20220831-01:07:41 I prettytable 33704 says bye after 1 second.
 ```
 ## Test
-The project uses Daniel J. Bernstein's (aka, djb)
-[build system](http://cr.yp.to/redo.html). You can install Sergey Matveev's
+The project uses Daniel J. Bernstein's (aka, djb) build system
+[`redo`](http://cr.yp.to/redo.html). You can install Sergey Matveev's
 [`goredo`](http://www.goredo.cypherpunks.ru/Install.html) implementation.
 
 Run [`shellcheck`](https://github.com/koalaman/shellcheck) on sources by
