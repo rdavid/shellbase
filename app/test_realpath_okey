@@ -1,0 +1,9 @@
+#!/bin/sh
+# vi:et lbr noet sw=2 ts=2 tw=79 wrap
+# Copyright 2023 David Rabkin
+# shellcheck disable=SC1091 # File not following.
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+[ /usr = "$(realpath /usr)" ] || die 1
+[ /usr = "$(realpath /usr/)" ] || die 2
+[ /usr/local = "$(realpath /usr/local/)" ] || die 3
+[ "$(basename -- "$0")" = "$(basename -- "$(realpath "$0")")" ] || die 4

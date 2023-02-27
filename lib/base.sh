@@ -28,16 +28,17 @@
 # are, in alphabetical order:
 # aud_only, be_root, be_user, cheat, cmd_exists, die, echo, file_exists,
 # heic2jpg, grbt, inside, is_empty, is_func, is_readable, is_solid,
-# is_writable, log, loge, logw, pdf2jpg, pdf2png, prettytable, semver,
-# timestamp, to_log, to_loge, to_lower, url_exists, user_exists, validate_cmd,
-# validate_var, var_exists, ver_ge, vid2aud, yes_to_continue, ytda.
+# is_writable, log, loge, logw, pdf2jpg, pdf2png, prettytable, realpath,
+# semver, timestamp, to_log, to_loge, to_lower, url_exists, user_exists,
+# validate_cmd, validate_var, var_exists, ver_ge, vid2aud, yes_to_continue,
+# ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
 BASE_QUIET=false
-BASE_VERSION=0.9.20230227
+BASE_VERSION=0.9.20230301
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
 # directories.
@@ -325,6 +326,19 @@ prettytable() {
 		column -ts '	' |
 			sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g" |
 			to_log
+}
+
+# Returns absolute path to a file, see:
+#  https://stackoverflow.com/questions/3915040/how-to-obtain-the-absolute-path-of-a-file-via-shell-bash-zsh-sh
+realpath() {
+	local base dir1 dir2 file="$1"
+	dir1="$(dirname -- "$file" 2>&1)" ||
+		die "$file: Unable to read a directory name, $dir1."
+	dir2="$(CDPATH='' \cd -- "$dir1" 2>&1 && pwd -P)" ||
+		die "$dir1: Unable to change directory, $dir2."
+	base="$(basename -- "$file" 2>&1)" ||
+		die "$file: Unable to read a base name, $base."
+	[ / = "$dir2" ] && printf /%s\\n "$base" || printf %s/%s\\n "$dir2" "$base"
 }
 
 # Extracts semantic versioning from a string, see https://semver.org/:
