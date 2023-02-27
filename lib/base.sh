@@ -37,7 +37,7 @@
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
 BASE_QUIET=false
-BASE_VERSION=0.9.20230224
+BASE_VERSION=0.9.20230227
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
 # directories.
@@ -222,7 +222,6 @@ is_solid() {
 
 # Verifies that all parameters are writable files or do not exist.
 is_writable() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: is_writable file1 file2...
 	local arg ret=0
 	for arg do
 		if file_exists "$arg" >/dev/null 2>&1; then
@@ -247,45 +246,45 @@ is_writable() {
 
 # Information logger doesn't print to stdout with --quite flag.
 log() {
-	local ts
-	ts="$(timestamp)"
+	local tms
+	tms="$(timestamp)"
 	[ "$BASE_QUIET" = false ] &&
-		printf '\033[0;32m%s I\033[0m %s\n' "$ts" "$*"
-	base_is_interactive || base_write_to_file "$ts" I "$*"
+		printf '\033[0;32m%s I\033[0m %s\n' "$tms" "$*"
+	base_is_interactive || base_write_to_file "$tms" I "$*"
 }
 
 # Error logger always prints to stderr.
 loge() {
-	local ts
-	ts="$(timestamp)"
-	printf '\033[0;31m%s E\033[0m %s\n' "$ts" "$*" >&2
-	base_is_interactive || base_write_to_file "$ts" E "$*"
+	local tms
+	tms="$(timestamp)"
+	printf '\033[0;31m%s E\033[0m %s\n' "$tms" "$*" >&2
+	base_is_interactive || base_write_to_file "$tms" E "$*"
 }
 
 # Warning logger doesn't print to stderr with --quite flag.
 logw() {
-	local ts
-	ts="$(timestamp)"
+	local tms
+	tms="$(timestamp)"
 	[ "$BASE_QUIET" = false ] &&
-		printf '\033[0;33m%s W\033[0m %s\n' "$ts" "$*" >&2
-	base_is_interactive || base_write_to_file "$ts" W "$*"
+		printf '\033[0;33m%s W\033[0m %s\n' "$tms" "$*" >&2
+	base_is_interactive || base_write_to_file "$tms" W "$*"
 }
 
 # Converts all PDF files in current directory to JPG files.
 pdf2jpg() {
-	local f
-	for f in *.pdf; do
-		log Convert "$f" to JPG.
-		sips -s format jpeg "$f" --out "$f.jpg"
+	local fil
+	for fil in *.pdf; do
+		sips -s format jpeg "$fil" --out "$fil.jpg"
+		log Converted "$fil" to JPG.
 	done
 }
 
 # Converts all PDF files in current directory to PNG files.
 pdf2png() {
-	local f
-	for f in *.pdf; do
-		log Convert "$f" to PNG.
-		pdftoppm "$f" "${f%.*}" -png
+	local fil
+	for fil in *.pdf; do
+		pdftoppm "$fil" "${fil%.*}" -png
+		log Converted "$fil" to PNG.
 	done
 }
 
@@ -363,14 +362,14 @@ timestamp() {
 # Order will always be indeterminate, see more details:
 #  https://stackoverflow.com/questions/9112979/pipe-stdout-and-stderr-to-two-different-processes-in-shell-script
 to_log() {
-	local l
-	while IFS= read -r l; do log "$l"; done
+	local lne
+	while IFS= read -r lne; do log "$lne"; done
 }
 
 # See comment to function to_log.
 to_loge() {
-	local l
-	while IFS= read -r l; do loge "$l"; done
+	local lne
+	while IFS= read -r lne; do loge "$lne"; done
 }
 
 # Renames files in current directory to lower case.
@@ -423,21 +422,15 @@ user_exists() {
 # Makes sure all commands exist, othewise dies. Loops over the arguments in
 # order to die with a command name in error.
 validate_cmd() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: validate_cmd cmd1 cmd2...
 	local arg
-	for arg do
-		cmd_exists "$arg" || die Install "$arg".
-	done
+	for arg do cmd_exists "$arg" || die Install "$arg".; done
 }
 
 # Checks if environment variables are defined. Loops over the arguments in
 # order to die with a variable name in error.
 validate_var() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: validate_var var1 var2...
 	local arg
-	for arg do
-		var_exists "$arg" || die Define "$arg".
-	done
+	for arg do var_exists "$arg" || die Define "$arg".; done
 }
 
 # Checks whether all variables are defined. Loops over the arguments, each one
