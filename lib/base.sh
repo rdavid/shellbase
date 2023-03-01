@@ -38,7 +38,7 @@
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
 BASE_QUIET=false
-BASE_VERSION=0.9.20230301
+BASE_VERSION=0.9.20230302
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
 # directories.
@@ -521,7 +521,7 @@ yes_to_continue() {
 	stty raw -echo
 
 	# Runs child process to read first character from stdin.
-	ans=$(head --bytes=1)
+	ans=$(head -c 1)
 	stty "$arc"
 	trap base_sig_cleanup TERM
 
