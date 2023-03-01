@@ -1,6 +1,6 @@
 ---
 name: linters
-'on': [push]
+'on': push
 jobs:
   lint:
     runs-on: ubuntu-latest
