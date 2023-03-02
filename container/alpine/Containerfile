@@ -1,15 +1,15 @@
-FROM alpine:3.17.1
+FROM alpine:3.17
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	TIME_ZONE=Asia/Jerusalem \
 	USER=shellbase
-COPY LICENSE /licenses/LICENSE
+#COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
 COPY --from=ghcr.io/rdavid/goredoer:v0.9.20230210 /go/goredo .
 RUN \
 	apk add --no-cache --update \
 		bash~=5.2 \
-		curl~=7.87 \
+		curl~=7.88 \
 		dash~=0.5 \
 		fish~=3.5 \
 		loksh~=7.2 \
