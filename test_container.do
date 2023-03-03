@@ -8,10 +8,10 @@ redo-ifchange lib/* app/*
 validate_cmd podman
 podman machine start >/dev/null 2>&1 || :
 for f in container/*/Containerfile; do
-	log "Test $(printf %s "$f" | awk -F / '{print $2}')."
+	log Test "$(printf %s "$f" | awk -F / '{print $2}')".
 
 	# The build is ran quietly, it produces a container hash.
-	out=$(podman build --file "$f" --quiet . 2>&1) || die "$out"
+	out="$(podman build --file "$f" --quiet . 2>&1)" || die "$out"
 
 	# Run the container, then remove it.
 	{
