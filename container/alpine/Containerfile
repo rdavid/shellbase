@@ -3,7 +3,7 @@ LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	TIME_ZONE=Asia/Jerusalem \
 	USER=shellbase
-#COPY LICENSE /licenses/LICENSE
+COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
 COPY --from=ghcr.io/rdavid/goredoer:v0.9.20230210 /go/goredo .
 RUN \
