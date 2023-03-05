@@ -10,10 +10,10 @@ jobs:
         with:
           dockerfile: Containerfile
           recursive: true
-      - uses: ludeeus/action-shellcheck@master
-        with:
-          additional_files: ./*.do app/* lib/*
       - uses: ibiqlik/action-yamllint@v3
         with:
           file_or_dir: .github/workflows/*.yml
           strict: true
+      - uses: ludeeus/action-shellcheck@master
+        with:
+          additional_files: ./*.do app/* lib/*
