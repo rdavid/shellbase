@@ -28,8 +28,8 @@
 # are, in alphabetical order:
 # aud_only, be_root, be_user, cheat, cmd_exists, die, echo, file_exists,
 # heic2jpg, grbt, inside, is_empty, is_func, is_readable, is_solid,
-# is_writable, log, loge, logw, pdf2jpg, pdf2png, prettytable, realdir,
-# realpath, semver, timestamp, to_log, to_loge, to_lower, url_exists,
+# is_writable, log, loge, logw, pdf2jpg, pdf2png, prettytable, prettyuptime,
+# realdir, realpath, semver, timestamp, to_log, to_loge, to_lower, url_exists,
 # user_exists, validate_cmd, validate_var, var_exists, ver_ge, vid2aud,
 # yes_to_continue, ytda.
 #
@@ -38,7 +38,7 @@
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
 BASE_QUIET=false
-BASE_VERSION=0.9.20230302
+BASE_VERSION=0.9.20230307
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
 # directories.
@@ -326,6 +326,23 @@ prettytable() {
 		column -ts '	' |
 			sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g" |
 			to_log
+}
+
+# Prints human readable uptime time, see:
+#  https://stackoverflow.com/questions/28353409/bash-format-uptime-to-show-days-hours-minutes
+prettyuptime() {
+	uptime | sed -E '
+		s/^[^,]*up *//
+		s/([[:digit:]]+):0?([[:digit:]]+)/\1 hrs, \2 mins/
+		s/^1 hrs/1 hr/
+		s/ 1 hrs/ 1 hr/
+		s/min,/mins,/
+		s/ 0 mins,/ less than a min,/
+		s/ 1 mins/ 1 min/
+		s/  / /
+		s/, *[[:digit:]]* users?.*//
+		s/^/↑ /
+	' | tr -d \\n
 }
 
 # Returns absolute directory of a file, see description of realpath.
