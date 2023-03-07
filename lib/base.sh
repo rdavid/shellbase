@@ -169,9 +169,12 @@ inside() {
 is_empty() {
 	[ -z "${1-}" ] || [ $# -gt 1 ] && die Usage: is_empty dir.
 	cd "$1" >/dev/null 2>&1 || die Directory is not accessible: "$1".
-	set -- .[!.]* ; test -f "$1" && return 1
-	set -- ..?* ; test -f "$1" && return 1
-	set -- * ; test -f "$1" && return 1
+	set -- .[!.]*
+	test -f "$1" && return 1
+	set -- ..?*
+	test -f "$1" && return 1
+	set -- *
+	test -f "$1" && return 1
 	return 0
 }
 
@@ -215,7 +218,7 @@ is_solid() {
 	hash="$(
 		printf %s "$line" | head -1 | awk -F = '{print $2}'
 	)" || { loge File "$file" has hash with unknown format: "$line".; return 2;}
-	grep --invert-match --regexp "$patt" "$file" > "$temp"
+	grep --invert-match --regexp "$patt" "$file" >"$temp"
 	printf %s\ \ %s "$hash" "$temp" | shasum --check --status ||
 		{ loge Hash of "$file" does not match "$hash"; return 3;}
 	log File "$file" is solid.
@@ -375,7 +378,7 @@ semver() {
 	ver="$(
 		printf %s "$str" |
 			grep --only-matching --perl-regexp \
-			'(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+				'(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
 	)" || {
 		logw Unable to extract SemVer from "$str".
 		ver=0.0.0+nil
@@ -430,7 +433,7 @@ url_exists() {
 				--write-out %\{http_code\} \
 				"$arg" \
 				2>&1
-			)"; then
+		)"; then
 			log "URL $arg returns HTTP code $out."
 		else
 			ret=1
@@ -590,13 +593,13 @@ base_check_instances() {
 	# writes them to the pipe. Loop reads the PIDs from the pipe and counts only
 	# running processes.
 	mkfifo "$pip"
-	find "$BASE_WIP/../$BASE_IAM".* -name "pid" -exec cat {} \; > "$pip" &
+	find "$BASE_WIP/../$BASE_IAM".* -name "pid" -exec cat {} \; >"$pip" &
 	while read -r pro; do
 		kill -0 "$pro" >/dev/null 2>&1 && ins=$((ins+1))
-	done < "$pip"
+	done <"$pip"
 
 	# My instance is running.
-	echo $$ > "$pid"
+	echo $$ >"$pid"
 
 	# Asks permission in case of multiple instances.
 	[ $ins -ne 0 ] || return 0
@@ -649,7 +652,7 @@ base_display_usage() {
 		  -v, --version     Display version number.
 		  -w, --warranty    Echoes warranty statement to stdout.
 		  -x, --execute     Echoes every command before execution.
-EOM
+	EOM
 }
 
 # Prints shellbase version and exits.
@@ -678,7 +681,7 @@ base_display_warranty() {
 		WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 		ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 		OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-EOM
+	EOM
 }
 
 # Calculates duration time for report. The first parameter is a start time.
@@ -836,14 +839,14 @@ base_time_title() {
 base_truncate() {
 	[ -w "$BASE_LOG" ] || return 0
 	[ "$(wc -c <"$BASE_LOG")" -gt 10485760 ] || return 0
-	: > "$BASE_LOG"
+	: >"$BASE_LOG"
 	log "$BASE_LOG" is truncated.
 }
 
 # Adds log string to the log file.
 base_write_to_file() {
 	base_truncate
-	printf %s\\n "$*" >> "$BASE_LOG"
+	printf %s\\n "$*" >>"$BASE_LOG"
 }
 
 # Starting point. Stops right away if it has ran in interactive mode.

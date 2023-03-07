@@ -1,17 +1,18 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2022 David Rabkin
+# Copyright 2022-2023 David Rabkin
 # shellcheck disable=SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 validate_cmd column
-carbon=$(cat <<- EOM
-	+-----------+----------+----------+
-	|ID         |NAME      |TITLE     |
-	+-----------+----------+----------+
-	|123456789  |John Foo  |Director  |
-	|12         |Mike Bar  |Engineer  |
-	+-----------+----------+----------+
-EOM
+carbon=$(
+	cat <<-EOM
+		+-----------+----------+----------+
+		|ID         |NAME      |TITLE     |
+		+-----------+----------+----------+
+		|123456789  |John Foo  |Director  |
+		|12         |Mike Bar  |Engineer  |
+		+-----------+----------+----------+
+	EOM
 )
 out="$(
 	{
