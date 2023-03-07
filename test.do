@@ -5,7 +5,7 @@ redo-ifchange lib/* app/*
 
 # shellcheck disable=SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/lib/base.sh
-readonly SHELLS='bash dash fish ksh sh tcsh zsh'
+readonly SHELLS='bash dash fish ksh sh tcsh yash zsh'
 for shell in $SHELLS; do
 	cmd_exists "$shell" || continue
 	for okey in app/*_okey; do
