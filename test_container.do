@@ -21,7 +21,7 @@ for f in container/*/Containerfile; do
 			--rmi \
 			--tty \
 			"$out" \
-		2>&1 1>&3 3>&- | to_loge
+			2>&1 1>&3 3>&- | to_loge
 	} \
 		3>&1 1>&2 | to_log
 done
