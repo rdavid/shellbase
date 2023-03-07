@@ -5,7 +5,7 @@
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 ok=false
 up="$(prettyuptime)"
-for w in 0 1 2 3 4 5 6 7 8 9 day days hr hrs less min mins; do
+for w in 0 1 2 3 4 5 6 7 8 9 day days hour hours less minute minutes; do
 	inside "$up" $w && { log $w; ok=true;}
 done
 [ true = $ok ]
