@@ -38,7 +38,7 @@
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
 BASE_QUIET=false
-BASE_VERSION=0.9.20230307
+BASE_VERSION=0.9.20230308
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
 # directories.
@@ -84,7 +84,7 @@ cheat() {
 cmd_exists() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: cmd_exists cmd1 cmd2...
 	local arg ret=0
-	for arg do
+	for arg; do
 		if command -v "$arg" >/dev/null 2>&1; then
 			log Command "$arg" exists.
 		else
@@ -107,10 +107,10 @@ echo() (
 	local end=\\n fmt=%s IFS=' '
 	while [ $# -gt 1 ]; do
 		case "$1" in
-			[!-]*|-*[!ne]*) break;;
-			*ne*|*en*) fmt=%b end=;;
-			*n*) end=;;
-			*e*) fmt=%b;;
+		[!-]* | -*[!ne]*) break ;;
+		*ne* | *en*) fmt=%b end= ;;
+		*n*) end= ;;
+		*e*) fmt=%b ;;
 		esac
 		shift
 	done
@@ -124,7 +124,7 @@ echo() (
 file_exists() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: file_exists file1 file2...
 	local arg ret=0
-	for arg do
+	for arg; do
 		if ls "$arg" >/dev/null 2>&1; then
 			log File "$arg" exists.
 		else
@@ -160,7 +160,7 @@ heic2jpg() {
 #  https://www.grymoire.com/Unix/Sh.html
 inside() {
 	[ $# -lt 2 ] && die Usage: inside body element.
-	case "$1" in *$2*) return 0; esac
+	case "$1" in *$2*) return 0 ;; esac
 	return 1
 }
 
@@ -182,7 +182,7 @@ is_empty() {
 #  https://stackoverflow.com/questions/35818555/how-to-determine-whether-a-function-exists-in-a-posix-shell
 is_func() {
 	case "$(type -- "$1" 2>/dev/null)" in
-		*function*) return 0;;
+	*function*) return 0 ;;
 	esac
 	return 1
 }
@@ -191,7 +191,7 @@ is_func() {
 is_readable() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: is_readable file1 file2...
 	local arg ret=0
-	for arg do
+	for arg; do
 		if [ -r "$arg" ]; then
 			log File "$arg" is readable.
 		else
@@ -214,20 +214,28 @@ is_solid() {
 	is_readable "$file" || die File "$file" is not readable.
 	line="$(
 		grep --regexp "$patt" "$file"
-	)" || { loge File "$file" doesn\'t have a hash.; return 1;}
+	)" || {
+		loge File "$file" doesn\'t have a hash.
+		return 1
+	}
 	hash="$(
 		printf %s "$line" | head -1 | awk -F = '{print $2}'
-	)" || { loge File "$file" has hash with unknown format: "$line".; return 2;}
+	)" || {
+		loge File "$file" has hash with unknown format: "$line".
+		return 2
+	}
 	grep --invert-match --regexp "$patt" "$file" >"$temp"
-	printf %s\ \ %s "$hash" "$temp" | shasum --check --status ||
-		{ loge Hash of "$file" does not match "$hash"; return 3;}
+	printf %s\ \ %s "$hash" "$temp" | shasum --check --status || {
+		loge Hash of "$file" does not match "$hash"
+		return 3
+	}
 	log File "$file" is solid.
 }
 
 # Verifies that all parameters are writable files or do not exist.
 is_writable() {
 	local arg ret=0
-	for arg do
+	for arg; do
 		if file_exists "$arg" >/dev/null 2>&1; then
 			if [ -w "$arg" ]; then
 				log File "$arg" is writable.
@@ -315,7 +323,7 @@ prettytable() {
 
 	# Calculates number of columns, col=number-of-tabs+1.
 	col="$(printf %s "$hdr" | awk -F\\t '{print NF-1}')"
-	col=$((col+1))
+	col=$((col + 1))
 
 	# Expects column separated by tab, see column -s. Double quates in sed's
 	# regex are needed.
@@ -327,8 +335,8 @@ prettytable() {
 		base_prettytable_separator "$col"
 	} |
 		column -ts '	' |
-			sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g" |
-			to_log
+		sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g" |
+		to_log
 }
 
 # Prints human readable uptime time, see:
@@ -423,7 +431,7 @@ to_lower() {
 url_exists() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: url_exists url1 url2...
 	local arg out ret=0
-	for arg do
+	for arg; do
 		if out="$(
 			curl \
 				--head \
@@ -448,7 +456,7 @@ url_exists() {
 user_exists() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: user_exists user1 user2...
 	local arg ret=0
-	for arg do
+	for arg; do
 		if id "$arg" >/dev/null 2>&1; then
 			log User "$arg" exists.
 		else
@@ -463,14 +471,14 @@ user_exists() {
 # order to die with a command name in error.
 validate_cmd() {
 	local arg
-	for arg do cmd_exists "$arg" || die Install "$arg".; done
+	for arg; do cmd_exists "$arg" || die Install "$arg".; done
 }
 
 # Checks if environment variables are defined. Loops over the arguments in
 # order to die with a variable name in error.
 validate_var() {
 	local arg
-	for arg do var_exists "$arg" || die Define "$arg".; done
+	for arg; do var_exists "$arg" || die Define "$arg".; done
 }
 
 # Checks whether all variables are defined. Loops over the arguments, each one
@@ -478,7 +486,7 @@ validate_var() {
 var_exists() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: var_exists var1 var2...
 	local arg ret=0 var
-	for arg do
+	for arg; do
 		set +o nounset
 		eval "var=\${$arg}"
 		set -o nounset
@@ -532,7 +540,10 @@ yes_to_continue() {
 
 	# Runs watchdog process that kills dad and kids proceeses with common unique
 	# process group ID, see minus before dad PID.
-	(sleep "$tmo"; kill -- -$dad)&
+	(
+		sleep "$tmo"
+		kill -- -$dad
+	) &
 	kid="$!"
 	log "PIDs: dad $dad, kid $kid."
 
@@ -558,7 +569,10 @@ yes_to_continue() {
 	set +o errexit
 	wait "$kid" 2>/dev/null
 	set -o errexit
-	printf %s "$ans" | grep -i -q ^y || { log Stop working.; exit 0;}
+	printf %s "$ans" | grep -i -q ^y || {
+		log Stop working.
+		exit 0
+	}
 	log Continue working.
 }
 
@@ -595,7 +609,7 @@ base_check_instances() {
 	mkfifo "$pip"
 	find "$BASE_WIP/../$BASE_IAM".* -name "pid" -exec cat {} \; >"$pip" &
 	while read -r pro; do
-		kill -0 "$pro" >/dev/null 2>&1 && ins=$((ins+1))
+		kill -0 "$pro" >/dev/null 2>&1 && ins=$((ins + 1))
 	done <"$pip"
 
 	# My instance is running.
@@ -693,11 +707,11 @@ base_duration() {
 		hou \
 		min \
 		sec
-	dur="$(($(date +%s)-$1))"
-	day="$(base_time_title $((dur/86400)) day)"
-	hou="$(base_time_title $((dur%86400/3600)) hour)"
-	min="$(base_time_title $((dur%86400%3600/60)) minute)"
-	sec="$(base_time_title $((dur%60)) second)"
+	dur="$(($(date +%s) - $1))"
+	day="$(base_time_title $((dur / 86400)) day)"
+	hou="$(base_time_title $((dur % 86400 / 3600)) hour)"
+	min="$(base_time_title $((dur % 86400 % 3600 / 60)) minute)"
+	sec="$(base_time_title $((dur % 60)) second)"
 	if [ -n "$day" ]; then
 		printf %s "$day" "$(base_time_separator "$hou" "$min" "$sec")"
 	fi
@@ -721,7 +735,7 @@ base_hi() {
 
 # Defines if shellbase is running in interactive mode.
 base_is_interactive() {
-	case "$-" in *i*) return 0; esac
+	case "$-" in *i*) return 0 ;; esac
 	return 1
 }
 
@@ -729,11 +743,11 @@ base_is_interactive() {
 # with 'do and exit' logic.
 base_main() {
 	local arg use=false ver=false war=false
-	for arg do
+	for arg; do
 		case "$arg" in
-			-h|--help) use=true;;
-			-v|--version) ver=true;;
-			-w|--warranty) war=true;;
+		-h | --help) use=true ;;
+		-v | --version) ver=true ;;
+		-w | --warranty) war=true ;;
 		esac
 	done
 
@@ -761,9 +775,18 @@ base_main() {
 	base_check_instances
 
 	# The usage has higher priority over version in case both options are set.
-	[ false = $use ] || { base_display_usage; exit 0;}
-	[ false = $ver ] || { base_display_version; exit 0;}
-	[ false = $war ] || { base_display_warranty; exit 0;}
+	[ false = $use ] || {
+		base_display_usage
+		exit 0
+	}
+	[ false = $ver ] || {
+		base_display_version
+		exit 0
+	}
+	[ false = $war ] || {
+		base_display_warranty
+		exit 0
+	}
 }
 
 # Adds vertical borders. Double quates are needed.
@@ -778,7 +801,7 @@ base_prettytable_separator() {
 	printf +
 	while [ "$i" -gt 1 ]; do
 		printf \\t+
-		i=$((i-1))
+		i=$((i - 1))
 	done
 	printf '\t+\n'
 }
@@ -799,28 +822,28 @@ base_sig_cleanup() {
 base_time_separator() {
 	local cnt=0
 	case "$#" in
-		1)
-			[ -n "$1" ] && cnt=$((cnt+1))
-			;;
-		2)
-			[ -n "$1" ] && cnt=$((cnt+1))
-			[ -n "$2" ] && cnt=$((cnt+1))
-			;;
-		3)
-			[ -n "$1" ] && cnt=$((cnt+1))
-			[ -n "$2" ] && cnt=$((cnt+1))
-			[ -n "$3" ] && cnt=$((cnt+1))
-			;;
-		*)
-			loge Wrong param number "$#".
-			return 0
-			;;
+	1)
+		[ -n "$1" ] && cnt=$((cnt + 1))
+		;;
+	2)
+		[ -n "$1" ] && cnt=$((cnt + 1))
+		[ -n "$2" ] && cnt=$((cnt + 1))
+		;;
+	3)
+		[ -n "$1" ] && cnt=$((cnt + 1))
+		[ -n "$2" ] && cnt=$((cnt + 1))
+		[ -n "$3" ] && cnt=$((cnt + 1))
+		;;
+	*)
+		loge Wrong param number "$#".
+		return 0
+		;;
 	esac
 	case "$cnt" in
-		0) ;;
-		1) printf ' and ';;
-		2|3) printf ', ';;
-		*) loge Wrong number "$cnt".;;
+	0) ;;
+	1) printf ' and ' ;;
+	2 | 3) printf ', ' ;;
+	*) loge Wrong number "$cnt". ;;
 	esac
 }
 
@@ -828,9 +851,9 @@ base_time_separator() {
 # a time title.
 base_time_title() {
 	case "$1" in
-		0) printf '';;
-		1) printf %d\ %s "$1" "$2";;
-		*) printf %d\ %ss "$1" "$2";;
+	0) printf '' ;;
+	1) printf %d\ %s "$1" "$2" ;;
+	*) printf %d\ %ss "$1" "$2" ;;
 	esac
 }
 
@@ -856,12 +879,12 @@ set -o nounset
 
 # Loops through command line arguments of the script. Handles only arguments
 # with set-and-go logic.
-for arg do
+for arg; do
 	shift
 	case "$arg" in
-		-q|--quiet) BASE_QUIET=true;;
-		-x|--execute) set -x;;
-		*) set -- "$@" "$arg";;  # Sets back any unused args.
+	-q | --quiet) BASE_QUIET=true ;;
+	-x | --execute) set -x ;;
+	*) set -- "$@" "$arg" ;; # Sets back any unused args.
 	esac
 done
 unset arg

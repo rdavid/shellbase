@@ -106,11 +106,11 @@ The project uses Daniel J. Bernstein's (aka, djb) build system
 [`redo`](http://cr.yp.to/redo.html). You can install Sergey Matveev's
 [`goredo`](http://www.goredo.cypherpunks.ru/Install.html) implementation.
 
-Run [`shellcheck`](https://github.com/koalaman/shellcheck) on sources by
-`redo shellcheck`, run tests by `redo test`, run tests in multiple environments
-in containers by `redo test_container`. It uses
-[`goredoer`](https://github.com/rdavid/goredoer) to build
-[`goredo`](http://www.goredo.cypherpunks.ru/Install.html).
+Run [`shellcheck`](https://github.com/koalaman/shellcheck) and
+[`shfmt`](https://github.com/mvdan/sh) on sources by `redo lint`, run tests by
+`redo test`, run tests in multiple environments in containers by `redo
+test_container`. It uses [`goredoer`](https://github.com/rdavid/goredoer) to
+build [`goredo`](http://www.goredo.cypherpunks.ru/Install.html).
 
 ## License
 `shellbase` is copyright [David Rabkin](http://cv.rabkin.co.il) and available
