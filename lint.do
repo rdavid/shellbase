@@ -5,6 +5,8 @@ redo-ifchange ./*.do app/* lib/*
 
 # shellcheck disable=SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/lib/base.sh
-validate_cmd shellcheck shfmt
+validate_cmd hadolint shellcheck shfmt yamllint
+hadolint container/*/Containerfile
 shellcheck ./*.do app/* lib/*
 shfmt ./*.do app/* lib/*
+yamllint .github/workflows/*
