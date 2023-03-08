@@ -1,11 +1,11 @@
-FROM alpine:3.17
+FROM alpine:3.17.2
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	TIME_ZONE=Asia/Jerusalem \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
-COPY --from=ghcr.io/rdavid/goredoer:v0.9.20230210 /go/goredo .
+COPY --from=ghcr.io/rdavid/goredoer:v0.9.20230308 /go/goredo .
 RUN \
 	apk add --no-cache --update \
 		bash~=5.2 \
@@ -17,6 +17,7 @@ RUN \
 		tzdata~=2022 \
 		zsh~=5.9 \
 		util-linux~=2 \
+		yash~=2.53 \
 		&& rm -rf /var/cache/apk/* \
 		&& addgroup -S "$USER" \
 		&& adduser -S "$USER" -G "$USER" \

@@ -4,7 +4,7 @@ ENV \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
-COPY --from=ghcr.io/rdavid/goredoer:v0.9.20230210 /go/goredo .
+COPY --from=ghcr.io/rdavid/goredoer:v0.9.20230308 /go/goredo .
 
 # Multiple redirections compete for stdout.
 # hadolint ignore=SC2261
@@ -15,7 +15,7 @@ RUN \
 	&& pacman --noconfirm --sync \
 		bash>=5.1 \
 		dash>=0.5 \
-		fish>=3.5 \
+		fish>=3.6 \
 		ksh>=2020 \
 		tcsh>=6.24 \
 		zsh>=r5.9 \
