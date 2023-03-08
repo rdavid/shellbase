@@ -46,7 +46,7 @@ Install the file from the released version. Some OS demands
 administrative rights to install to `/usr/local/bin`, use `sudo` or `doas`
 before `tar`:
 ```sh
-REL=0.9.20230212
+REL=0.9.20230308
 SRC=https://github.com/rdavid/shellbase/archive/refs/tags/v$REL.tar.gz
 curl --location --silent $SRC |
 	tar \
@@ -67,7 +67,7 @@ log I\'m using the shellbase.
 You can try `shellbase` without installation:
 ```sh
 #!/bin/sh
-REL=0.9.20230212
+REL=0.9.20230308
 SRC=https://github.com/rdavid/shellbase/archive/refs/tags/v$REL.tar.gz
 eval "$(
 	curl --location --silent $SRC |
