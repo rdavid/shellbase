@@ -26,19 +26,19 @@
 # shellbase defines global variables and functions. All functions without
 # base_ prefix are public and could be used by clients. The public functions
 # are, in alphabetical order:
-# aud_only, be_root, be_user, cheat, cmd_exists, die, echo, file_exists,
-# heic2jpg, grbt, inside, is_empty, is_func, is_readable, is_solid,
-# is_writable, log, loge, logw, pdf2jpg, pdf2png, prettytable, prettyuptime,
-# realdir, realpath, semver, timestamp, to_log, to_loge, to_lower, url_exists,
-# user_exists, validate_cmd, validate_var, var_exists, ver_ge, vid2aud,
-# yes_to_continue, ytda.
+# aud_only, beroot, beuser, cheat, cmd_exists, die, echo, file_exists,
+# heic2jpg, grbt, inside, isempty, isfunc, isreadable, issolid, iswritable,
+# log, loge, logw, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir,
+# realpath, semver, timestamp, tolog, tologe, tolower, url_exists, user_exists,
+# validate_cmd, validate_var, var_exists, ver_ge, vid2aud, yes_to_continue,
+# ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
 BASE_QUIET=false
-BASE_VERSION=0.9.20230308
+BASE_VERSION=0.9.20230310
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
 # directories.
@@ -59,19 +59,29 @@ aud_only() {
 }
 
 # Exits with error if it is not ran by root.
+beroot() {
+	beuser root
+}
+
+# Depricated, will be removed soon.
 be_root() {
-	be_user root
+	beroot "$@"
 }
 
 # Exits with error if it is not ran by a user.
-be_user() {
-	[ -z "${1-}" ] && die Usage: be_user name.
+beuser() {
+	[ -z "${1-}" ] && die Usage: beuser name.
 	local ask cur usr="$1"
 	user_exists "$usr" || die "$usr": No such user.
 	cur="$(id -u)"
 	ask="$(id -u "$usr")"
 	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."
 	log "You are $usr ($cur)."
+}
+
+# Depricated, will be removed soon.
+be_user() {
+	beuser "$@"
 }
 
 # The only cheat sheet you need.
@@ -166,8 +176,8 @@ inside() {
 
 # Decides if a directory is empty. See more:
 #  https://www.etalabs.net/sh_tricks.html
-is_empty() {
-	[ -z "${1-}" ] || [ $# -gt 1 ] && die Usage: is_empty dir.
+isempty() {
+	[ -z "${1-}" ] || [ $# -gt 1 ] && die Usage: isempty dir.
 	cd "$1" >/dev/null 2>&1 || die Directory is not accessible: "$1".
 	set -- .[!.]*
 	test -f "$1" && return 1
@@ -178,18 +188,28 @@ is_empty() {
 	return 0
 }
 
+# Depricated, will be removed soon.
+is_empty() {
+	isempty "$@"
+}
+
 # Determines whether a shell function with a given name exists, see:
 #  https://stackoverflow.com/questions/35818555/how-to-determine-whether-a-function-exists-in-a-posix-shell
-is_func() {
+isfunc() {
 	case "$(type -- "$1" 2>/dev/null)" in
 	*function*) return 0 ;;
 	esac
 	return 1
 }
 
+# Depricated, will be removed soon.
+is_func() {
+	isfunc "$@"
+}
+
 # Verifies that all parameters are readable files.
-is_readable() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: is_readable file1 file2...
+isreadable() {
+	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: isreadable file1 file2...
 	local arg ret=0
 	for arg; do
 		if [ -r "$arg" ]; then
@@ -202,16 +222,21 @@ is_readable() {
 	return $ret
 }
 
+# Depricated, will be removed soon.
+is_readable() {
+	isreadable "$@"
+}
+
 # Verifies that a content of a running script has a written inside the script
 # hash (SHA-256). It doesn't consider a line where the hash is defined.
-is_solid() {
+issolid() {
 	local \
 		file="$0" \
 		hash \
 		line \
 		temp="$BASE_WIP"/hashless \
 		patt=^BASE_APP_HASH
-	is_readable "$file" || die File "$file" is not readable.
+	isreadable "$file" || die File "$file" is not readable.
 	line="$(
 		grep --regexp "$patt" "$file"
 	)" || {
@@ -232,8 +257,13 @@ is_solid() {
 	log File "$file" is solid.
 }
 
+# Depricated, will be removed soon.
+is_solid() {
+	issolid "$@"
+}
+
 # Verifies that all parameters are writable files or do not exist.
-is_writable() {
+iswritable() {
 	local arg ret=0
 	for arg; do
 		if file_exists "$arg" >/dev/null 2>&1; then
@@ -254,6 +284,11 @@ is_writable() {
 		fi
 	done
 	return $ret
+}
+
+# Depricated, will be removed soon.
+is_writable() {
+	iswritable "$@"
 }
 
 # Information logger doesn't print to stdout with --quite flag.
@@ -336,7 +371,7 @@ prettytable() {
 	} |
 		column -ts '	' |
 		sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g" |
-		to_log
+		tolog
 }
 
 # Prints human readable uptime time, see:
@@ -404,25 +439,40 @@ timestamp() {
 # trick:
 # {
 # 	a-command \
-#			2>&1 1>&3 3>&- | to_loge
+#			2>&1 1>&3 3>&- | tologe
 # } \
-# 	3>&1 1>&2 | to_log
+# 	3>&1 1>&2 | tolog
 # Order will always be indeterminate, see more details:
 #  https://stackoverflow.com/questions/9112979/pipe-stdout-and-stderr-to-two-different-processes-in-shell-script
-to_log() {
+tolog() {
 	local lne
 	while IFS= read -r lne; do log "$lne"; done
 }
 
-# See comment to function to_log.
-to_loge() {
+# Depricated, will be removed soon.
+to_log() {
+	tolog "$@"
+}
+
+# See comment to function tolog.
+tologe() {
 	local lne
 	while IFS= read -r lne; do loge "$lne"; done
 }
 
-# Renames files in current directory to lower case.
+# Depricated, will be removed soon.
+to_loge() {
+	tologe "$@"
+}
+
+# Renames files in a current directory to lower case.
+tolower() {
+	rename -f y/A-Z/a-z/ ./*
+}
+
+# Depricated, will be removed soon.
 to_lower() {
-	rename -f 'y/A-Z/a-z/' ./*
+	tolower "$@"
 }
 
 # Checks whether all URLs exist, any returned HTTP code is OK. In case of error
@@ -637,7 +687,7 @@ base_cleanup() {
 
 	# Keeps logs of last finished instance. Calls base_bye right before log
 	# moving or log deleting.
-	if is_writable "$log" >/dev/null; then
+	if iswritable "$log" >/dev/null; then
 		base_bye
 		cp -f "$BASE_WIP/log" "$log"
 	else

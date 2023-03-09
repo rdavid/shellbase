@@ -1,11 +1,11 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2022 David Rabkin
+# Copyright 2022-2023 David Rabkin
 BASE="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 
 # shellcheck disable=SC1090 # File not following.
 . "$BASE"
 
 # shellcheck disable=SC2034 # Appears unused.
-BASE_APP_HASH=6c98c7b786ef74a657c8b7418d1ded08905f746f3583814735912ef3c21db5eb
-is_solid || die
+BASE_APP_HASH=1d3d981b40e1a006d7be46dc1ee10a81cb7a2359f1aefa2fdf24ada5765f3a55
+issolid

@@ -1,9 +1,9 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2022 David Rabkin
+# Copyright 2022-2023 David Rabkin
 # shellcheck disable=SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 mkdir /tmp/empty-dir
-is_empty /tmp || log /tmp is not empty.
-is_empty /tmp/empty-dir && log /tmp/empty-dir is empty.
+isempty /tmp || log /tmp is not empty.
+isempty /tmp/empty-dir && log /tmp/empty-dir is empty.
 rmdir /tmp/empty-dir
