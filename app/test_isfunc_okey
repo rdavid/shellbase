@@ -3,4 +3,4 @@
 # Copyright 2023 David Rabkin
 # shellcheck disable=SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
-is_func die || die die is not defined.
+isfunc die || die die is not defined.

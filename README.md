@@ -18,13 +18,12 @@ script are detected.
 `shellbase` defines global variables and functions. All functions without
 `base_` prefix are public and could be used by clients. The public functions
 are, in alphabetical order:
-`aud_only`, `be_root`, `be_user`, `cheat`, `cmd_exists`, `echo`, `die`,
-`file_exists`, `grbt`, `heic2jpg`, `inside`, `is_empty`, `is_func`,
-`is_readable`, `is_solid`, `is_writable`, `log`, `loge`, `logw`, `pdf2jpg`,
-`pdf2png`, `prettytable`, `prettyuptime`, `realdir`, `realpath`, `semver`,
-`timestamp`, `to_log`, `to_loge`, `to_lower`, `url_exists`, `user_exists`,
-`validate_cmd`, `validate_var`, `var_exists`, `ver_ge`, `vid2aud`,
-`yes_to_continue`, `ytda`.
+`aud_only`, `beroot`, `beuser`, `cheat`, `cmd_exists`, `echo`, `die`,
+`file_exists`, `grbt`, `heic2jpg`, `inside`, `isempty`, `isfunc`, `isreadable`,
+`issolid`, `iswritable`, `log`, `loge`, `logw`, `pdf2jpg`, `pdf2png`,
+`prettytable`, `prettyuptime`, `realdir`, `realpath`, `semver`, `timestamp`,
+`tolog`, `tologe`, `tolower`, `url_exists`, `user_exists`, `validate_cmd`,
+`validate_var`, `var_exists`, `ver_ge`, `vid2aud`, `yes_to_continue`, `ytda`.
 
 Global variables have `BASE_` prefix and clients could use them. Clients should
 place all temporaly files under `$BASE_WIP`. All functions started with `base_`
