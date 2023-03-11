@@ -10,7 +10,7 @@ readonly \
 # shellcheck disable=SC1090 # File not following.
 . "$BSH"
 file_exists $DST || die $DST: No such directory.
-is_writable $DST || die $DST is not writable.
+iswritable $DST || die $DST is not writable.
 file_exists $TGT &&
 	yes_to_continue \
 		"$(sh $TGT --quiet --version)" \
