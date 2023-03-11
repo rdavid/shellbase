@@ -38,7 +38,7 @@
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
 BASE_QUIET=false
-BASE_VERSION=0.9.20230310
+BASE_VERSION=0.9.20230311
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
 # directories.
@@ -819,6 +819,12 @@ base_main() {
 	#  https://mywiki.wooledge.org/SignalTrap
 	trap base_cleanup EXIT
 	trap base_sig_cleanup HUP INT QUIT TERM
+
+	# Continues only with certain shellbase version.
+	if var_exists BASE_MIN_VERSION >/dev/null; then
+		ver_ge "$BASE_VERSION" "$BASE_MIN_VERSION" ||
+			die "Shellbase is $BASE_VERSION, needs $BASE_MIN_VERSION or above."
+	fi
 
 	# Detects previously ran processes with the same name. If finds asks to
 	# continue.
