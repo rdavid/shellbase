@@ -38,7 +38,7 @@
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
 BASE_QUIET=false
-BASE_VERSION=0.9.20230312
+BASE_VERSION=0.9.20230313
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
 # directories.
@@ -65,6 +65,7 @@ beroot() {
 
 # Depricated, will be removed soon.
 be_root() {
+	logw be_root is depricated.
 	beroot "$@"
 }
 
@@ -81,6 +82,7 @@ beuser() {
 
 # Depricated, will be removed soon.
 be_user() {
+	logw be_user is depricated.
 	beuser "$@"
 }
 
@@ -190,6 +192,7 @@ isempty() {
 
 # Depricated, will be removed soon.
 is_empty() {
+	logw is_empty is depricated.
 	isempty "$@"
 }
 
@@ -204,6 +207,7 @@ isfunc() {
 
 # Depricated, will be removed soon.
 is_func() {
+	logw is_func is depricated.
 	isfunc "$@"
 }
 
@@ -224,6 +228,7 @@ isreadable() {
 
 # Depricated, will be removed soon.
 is_readable() {
+	logw is_readable is depricated.
 	isreadable "$@"
 }
 
@@ -259,6 +264,7 @@ issolid() {
 
 # Depricated, will be removed soon.
 is_solid() {
+	logw is_solid is depricated.
 	issolid "$@"
 }
 
@@ -288,6 +294,7 @@ iswritable() {
 
 # Depricated, will be removed soon.
 is_writable() {
+	logw is_writable is depricated.
 	iswritable "$@"
 }
 
@@ -451,6 +458,7 @@ tolog() {
 
 # Depricated, will be removed soon.
 to_log() {
+	logw to_log is depricated.
 	tolog "$@"
 }
 
@@ -462,6 +470,7 @@ tologe() {
 
 # Depricated, will be removed soon.
 to_loge() {
+	logw to_loge is depricated.
 	tologe "$@"
 }
 
@@ -472,6 +481,7 @@ tolower() {
 
 # Depricated, will be removed soon.
 to_lower() {
+	logw to_lower is depricated.
 	tolower "$@"
 }
 
