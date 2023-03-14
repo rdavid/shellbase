@@ -38,7 +38,7 @@
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
 BASE_QUIET=false
-BASE_VERSION=0.9.20230313
+BASE_VERSION=0.9.20230315
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
 # directories.
@@ -690,9 +690,12 @@ base_check_instances() {
 # General exit handler, it is called on EXIT. Any first parameter means no
 # exit.
 base_cleanup() {
-	local \
-		err=$? \
-		log="$BASE_WIP/../$BASE_IAM-log"
+	local err=$? log who
+	who="$(id -nu 2>&1)" || {
+		loge "$who".
+		who=none
+	}
+	log="$BASE_WIP/../${who}_$BASE_IAM"_log
 	trap - HUP EXIT INT QUIT TERM
 
 	# Keeps logs of last finished instance. Calls base_bye right before log
