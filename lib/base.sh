@@ -37,6 +37,7 @@
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
+BASE_KEEP_WIP=false
 BASE_QUIET=false
 BASE_VERSION=0.9.20230315
 
@@ -688,25 +689,30 @@ base_check_instances() {
 }
 
 # General exit handler, it is called on EXIT. Any first parameter means no
-# exit.
+# exit. Keeps WIP directory of last finished instance. Calls base_bye right
+# before WIP moving or deleting.
 base_cleanup() {
-	local err=$? log who
-	who="$(id -nu 2>&1)" || {
-		loge "$who".
-		who=none
-	}
-	log="$BASE_WIP/../${who}_$BASE_IAM".log
+	local err=$?
 	trap - HUP EXIT INT QUIT TERM
-
-	# Keeps logs of last finished instance. Calls base_bye right before log
-	# moving or log deleting.
-	if iswritable "$log" >/dev/null; then
-		base_bye
-		cp -f "$BASE_WIP/log" "$log"
+	if [ "$BASE_KEEP_WIP" = true ]; then
+		local out who wip
+		who="$(id -nu 2>&1)" || {
+			loge "$who".
+			who=none
+		}
+		wip="${BASE_WIP%.*}_$who"
+		if out="$(rm -rf "$wip" 2>&1)"; then
+			base_bye
+			mv "$BASE_WIP" "$wip" || :
+		else
+			loge "$out".
+			base_bye
+			rm -fr "$BASE_WIP" || :
+		fi
 	else
 		base_bye
+		rm -fr "$BASE_WIP" || :
 	fi
-	rm -fr "$BASE_WIP"
 
 	# Parameter expansion defines if the parameter is not set, which means exit.
 	if [ -z ${1+x} ]; then
@@ -725,6 +731,7 @@ base_display_usage() {
 
 		Arguments:
 		  -h, --help        Display this help message.
+		  -k, --keep_wip    Keeps work in progress directory on exit.
 		  -q, --quiet       Hides information and warning logs.
 		  -v, --version     Display version number.
 		  -w, --warranty    Echoes warranty statement to stdout.
@@ -961,11 +968,15 @@ set -o nounset
 for arg; do
 	shift
 	case "$arg" in
+	-k | --keep_wip) BASE_KEEP_WIP=true ;;
 	-q | --quiet) BASE_QUIET=true ;;
 	-x | --execute) set -x ;;
 	*) set -- "$@" "$arg" ;; # Sets back any unused args.
 	esac
 done
 unset arg
-readonly BASE_QUIET BASE_VERSION
+readonly \
+	BASE_KEEP_WIP \
+	BASE_QUIET \
+	BASE_VERSION
 base_main "$@"
