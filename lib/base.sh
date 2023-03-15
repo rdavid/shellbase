@@ -110,7 +110,7 @@ cmd_exists() {
 # Prints all parameters as error and exits with the error code.
 die() {
 	[ $# -eq 0 ] || loge "$@"
-	base_is_interactive && log You\'re immortal! || exit 11
+	base_is_interactive && log You\'re immortal! || exit 21
 }
 
 # Repairs echo to behave in a reasonable way, see:
@@ -803,7 +803,7 @@ base_is_interactive() {
 }
 
 # Loops through the function arguments before any log. Handles only arguments
-# with 'do and exit' logic.
+# with 'do and exit' logic. Sets global variables.
 base_main() {
 	local arg use=false ver=false war=false
 	for arg; do
@@ -813,13 +813,23 @@ base_main() {
 		-w | --warranty) war=true ;;
 		esac
 	done
+	BASE_BEG="$(date +%s 2>&1)" || {
+		printf >&2 %s\\n "$BASE_BEG"
+		exit 11
+	}
+	BASE_IAM="$(basename -- "$0" 2>&1)" || {
+		printf >&2 %s\\n "$BASE_IAM"
+		exit 12
+	}
 
-	# Sets global variables. Busybox implementation of mktemp requires six Xs.
-	# 'date', 'basename' and 'mktemp' do not return errors.
-	BASE_BEG="$(date +%s)"
-	BASE_IAM="$(basename -- "$0")"
+	# Drops an extension, if any.
 	BASE_IAM="${BASE_IAM%.*}"
-	BASE_WIP="$(mktemp -d /tmp/"$BASE_IAM.XXXXXX")"
+
+	# Busybox implementation of mktemp requires six Xs.
+	BASE_WIP="$(mktemp -d /tmp/"$BASE_IAM.XXXXXX" 2>&1)" || {
+		printf >&2 %s\\n "$BASE_WIP"
+		exit 13
+	}
 	BASE_LOG="$BASE_WIP"/log
 	readonly \
 		BASE_BEG \
