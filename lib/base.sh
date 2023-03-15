@@ -695,7 +695,7 @@ base_cleanup() {
 		loge "$who".
 		who=none
 	}
-	log="$BASE_WIP/../${who}_$BASE_IAM"_log
+	log="$BASE_WIP/../${who}_$BASE_IAM".log
 	trap - HUP EXIT INT QUIT TERM
 
 	# Keeps logs of last finished instance. Calls base_bye right before log
