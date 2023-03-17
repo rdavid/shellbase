@@ -39,7 +39,8 @@
 # alphabetical order.
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230315
+BASE_VERSION=0.9.20230318
+BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
 # directories.
@@ -586,6 +587,7 @@ vid2aud() {
 # input is not detected. If exists uses parameters as a question, otherwise
 # uses default message.
 yes_to_continue() {
+	[ $BASE_YES_TO_CONT = true ] && return 0
 	local \
 		ans \
 		arc \
@@ -971,6 +973,7 @@ for arg; do
 	-k | --keep_wip) BASE_KEEP_WIP=true ;;
 	-q | --quiet) BASE_QUIET=true ;;
 	-x | --execute) set -x ;;
+	-y | --yes) BASE_YES_TO_CONT=true ;;
 	*) set -- "$@" "$arg" ;; # Sets back any unused args.
 	esac
 done
