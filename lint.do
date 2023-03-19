@@ -8,5 +8,5 @@ redo-ifchange ./*.do app/* lib/*
 validate_cmd hadolint shellcheck shfmt yamllint
 hadolint container/*/Containerfile
 shellcheck ./*.do app/* lib/*
-shfmt ./*.do app/* lib/*
+shfmt -d ./*.do app/* lib/*
 yamllint .github/workflows/*
