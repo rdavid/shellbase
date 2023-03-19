@@ -10,12 +10,15 @@ jobs:
         with:
           dockerfile: Containerfile
           recursive: true
-      - uses: ibiqlik/action-yamllint@v3
+      - uses: nosborn/github-action-markdown-cli@v3.2.0
         with:
-          file_or_dir: .github/workflows/*.yml
-          strict: true
+          files: ./*.md
       - uses: ludeeus/action-shellcheck@master
         with:
           additional_files: ./*.do app/* lib/*
       - uses: mfinelli/setup-shfmt@v2
       - run: shfmt -d *.do app/* lib/*
+      - uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: .github/workflows/*.yml
+          strict: true
