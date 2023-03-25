@@ -1,0 +1,13 @@
+---
+version: 2
+updates:
+  - package-ecosystem: docker
+    directory: /containers/*
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: '[docker] '
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
