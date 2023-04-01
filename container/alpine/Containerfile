@@ -1,4 +1,4 @@
-FROM alpine:3.17.2
+FROM alpine:3.17.3
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	TIME_ZONE=Asia/Jerusalem \
@@ -14,7 +14,7 @@ RUN \
 		fish~=3.5 \
 		loksh~=7.2 \
 		tcsh~=6.24 \
-		tzdata~=2022 \
+		tzdata~=2023 \
 		zsh~=5.9 \
 		util-linux~=2 \
 		yash~=2.53 \
