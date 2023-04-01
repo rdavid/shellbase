@@ -39,7 +39,7 @@
 # alphabetical order.
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230318
+BASE_VERSION=0.9.20230402
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -65,12 +65,6 @@ beroot() {
 	beuser root
 }
 
-# Depricated, will be removed soon.
-be_root() {
-	logw be_root is depricated.
-	beroot "$@"
-}
-
 # Exits with error if it is not ran by a user.
 beuser() {
 	[ -z "${1-}" ] && die Usage: beuser name.
@@ -80,12 +74,6 @@ beuser() {
 	ask="$(id -u "$usr")"
 	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."
 	log "You are $usr ($cur)."
-}
-
-# Depricated, will be removed soon.
-be_user() {
-	logw be_user is depricated.
-	beuser "$@"
 }
 
 # The only cheat sheet you need.
@@ -192,12 +180,6 @@ isempty() {
 	return 0
 }
 
-# Depricated, will be removed soon.
-is_empty() {
-	logw is_empty is depricated.
-	isempty "$@"
-}
-
 # Determines whether a shell function with a given name exists, see:
 #  https://stackoverflow.com/questions/35818555/how-to-determine-whether-a-function-exists-in-a-posix-shell
 isfunc() {
@@ -205,12 +187,6 @@ isfunc() {
 	*function*) return 0 ;;
 	esac
 	return 1
-}
-
-# Depricated, will be removed soon.
-is_func() {
-	logw is_func is depricated.
-	isfunc "$@"
 }
 
 # Verifies that all parameters are readable files.
@@ -226,12 +202,6 @@ isreadable() {
 		fi
 	done
 	return $ret
-}
-
-# Depricated, will be removed soon.
-is_readable() {
-	logw is_readable is depricated.
-	isreadable "$@"
 }
 
 # Verifies that a content of a running script has a written inside the script
@@ -264,12 +234,6 @@ issolid() {
 	log File "$file" is solid.
 }
 
-# Depricated, will be removed soon.
-is_solid() {
-	logw is_solid is depricated.
-	issolid "$@"
-}
-
 # Verifies that all parameters are writable files or do not exist.
 iswritable() {
 	local arg ret=0
@@ -292,12 +256,6 @@ iswritable() {
 		fi
 	done
 	return $ret
-}
-
-# Depricated, will be removed soon.
-is_writable() {
-	logw is_writable is depricated.
-	iswritable "$@"
 }
 
 # Information logger doesn't print to stdout with --quite flag.
@@ -458,33 +416,15 @@ tolog() {
 	while IFS= read -r lne; do log "$lne"; done
 }
 
-# Depricated, will be removed soon.
-to_log() {
-	logw to_log is depricated.
-	tolog "$@"
-}
-
 # See comment to function tolog.
 tologe() {
 	local lne
 	while IFS= read -r lne; do loge "$lne"; done
 }
 
-# Depricated, will be removed soon.
-to_loge() {
-	logw to_loge is depricated.
-	tologe "$@"
-}
-
 # Renames files in a current directory to lower case.
 tolower() {
 	rename -f y/A-Z/a-z/ ./*
-}
-
-# Depricated, will be removed soon.
-to_lower() {
-	logw to_lower is depricated.
-	tolower "$@"
 }
 
 # Checks whether all URLs exist, any returned HTTP code is OK. In case of error
