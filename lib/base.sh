@@ -39,7 +39,7 @@
 # alphabetical order.
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230402
+BASE_VERSION=0.9.20230403
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -643,7 +643,7 @@ base_cleanup() {
 			who=none
 		}
 		wip="${BASE_WIP%.*}_$who"
-		if out="$(rm -rf "$wip" 2>&1)"; then
+		if out="$(rm -fr "$wip" 2>&1)"; then
 			base_bye
 			mv "$BASE_WIP" "$wip" || :
 		else
