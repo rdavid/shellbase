@@ -1,1 +1,27 @@
-fedora/Containerfile
+FROM fedora:39
+LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
+ENV \
+	USER=shellbase
+COPY LICENSE /licenses/LICENSE
+WORKDIR /bin
+COPY --from=ghcr.io/rdavid/goredoer:v0.9.20230308 /go/goredo .
+
+# hadolint ignore=DL3041
+RUN \
+	dnf update --assumeyes \
+	&& rm --force --recursive /var/cache/yum \
+	&& dnf install --assumeyes \
+		bash \
+		findutils \
+		shadow-utils \
+		yash \
+	&& dnf clean all \
+	&& useradd --create-home "$USER" \
+	&& goredo -symlinks
+USER "$USER"
+WORKDIR /home/"$USER"
+COPY \
+	--chown="$USER":"$USER" \
+	. .
+CMD \
+	[ "redo", "-j=10", "-x", "test" ]
