@@ -86,7 +86,7 @@ administrative rights to install to `/usr/local/bin`, use `sudo` or `doas`
 before `tar`:
 
 ```sh
-REL=0.9.20230312
+REL=0.9.20230405
 SRC=https://github.com/rdavid/shellbase/archive/refs/tags/v$REL.tar.gz
 curl --location --silent $SRC |
   tar \
@@ -111,7 +111,7 @@ You can try `shellbase` without installation:
 
 ```sh
 #!/bin/sh
-REL=0.9.20230312
+REL=0.9.20230405
 SRC=https://github.com/rdavid/shellbase/archive/refs/tags/v$REL.tar.gz
 eval "$(
   curl --location --silent $SRC |
