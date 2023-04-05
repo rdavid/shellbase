@@ -37,9 +37,12 @@
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
+readonly BASE_VERSION=0.9.20230405
+
+# Following variables could be changed by command line parameters. They will be
+# declared readonly after the parsing of command line parameters.
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230405
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -664,21 +667,24 @@ base_cleanup() {
 
 # Prints shellbase usage and exits.
 base_display_usage() {
-	if var_exists BASE_APP_USAGE >/dev/null; then
-		printf %s\\n "$BASE_APP_USAGE"
-		return 0
-	fi
-	cat <<-EOM
-		Usage: $BASE_IAM [-e] [-h] [-v] [-w] [-x]
+	local use
+	use="$(
+		cat <<-EOM 2>&1
+			Usage: $BASE_IAM [-h] [-k] [-q] [-v] [-w] [-x] [-y]
 
-		Arguments:
-		  -h, --help        Display this help message.
-		  -k, --keep-wip    Keeps work in progress directory on exit.
-		  -q, --quiet       Hides information and warning logs.
-		  -v, --version     Display version number.
-		  -w, --warranty    Echoes warranty statement to stdout.
-		  -x, --execute     Echoes every command before execution.
-	EOM
+			Arguments:
+			  -h, --help        Displays this help message.
+			  -k, --keep-wip    Keeps work in progress directory on exit.
+			  -q, --quiet       Hides information and warning logs.
+			  -v, --version     Displays version number.
+			  -w, --warranty    Echoes warranty statement to stdout.
+			  -x, --execute     Echoes every command before execution.
+			  -y, --yes         Answers yes on yes_to_continue without interruption.
+		EOM
+	)" || die "$use"
+	var_exists BASE_APP_USAGE >/dev/null &&
+		printf %s\\n "$use" "$BASE_APP_USAGE" ||
+		printf %s\\n "$use"
 }
 
 # Prints shellbase version and exits.
@@ -921,5 +927,5 @@ unset arg
 readonly \
 	BASE_KEEP_WIP \
 	BASE_QUIET \
-	BASE_VERSION
+	BASE_YES_TO_CONT
 base_main "$@"
