@@ -687,11 +687,13 @@ base_display_usage() {
 		printf %s\\n "$use"
 }
 
-# Prints shellbase version and exits.
+# Prints shellbase version and an application version.
 base_display_version() {
-	printf shellbase\ %s\\n "$BASE_VERSION"
-	var_exists BASE_APP_VERSION >/dev/null || return 0
-	printf %s\ %s\\n "$BASE_IAM" "$BASE_APP_VERSION"
+	var_exists BASE_APP_VERSION >/dev/null &&
+		printf \
+			'shellbase %s\n%s %s\n' \
+			"$BASE_VERSION" "$BASE_IAM" "$BASE_APP_VERSION" ||
+		printf shellbase\ %s\\n "$BASE_VERSION"
 }
 
 # Prints shellbase warranty.
