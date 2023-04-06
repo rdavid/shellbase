@@ -41,6 +41,7 @@ readonly BASE_VERSION=0.9.20230406
 
 # Following variables could be changed by command line parameters. They will be
 # declared readonly after the parsing of command line parameters.
+BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_QUIET=false
 BASE_YES_TO_CONT=false
@@ -673,6 +674,8 @@ base_display_usage() {
 			Usage: $BASE_IAM [-h] [-k] [-q] [-v] [-w] [-x] [-y]
 
 			Arguments:
+			  -d, --dir-wip     Custom directory of work in progress directory, the
+			                    default is /tmp.
 			  -h, --help        Displays this help message.
 			  -k, --keep-wip    Keeps work in progress directory on exit.
 			  -q, --quiet       Hides information and warning logs.
@@ -772,20 +775,20 @@ base_main() {
 	done
 	BASE_BEG="$(date +%s 2>&1)" || {
 		printf >&2 %s\\n "$BASE_BEG"
-		exit 11
+		exit 13
 	}
 	BASE_IAM="$(basename -- "$0" 2>&1)" || {
 		printf >&2 %s\\n "$BASE_IAM"
-		exit 12
+		exit 14
 	}
 
 	# Drops an extension, if any.
 	BASE_IAM="${BASE_IAM%.*}"
 
 	# Busybox implementation of mktemp requires six Xs.
-	BASE_WIP="$(mktemp -d /tmp/"$BASE_IAM.XXXXXX" 2>&1)" || {
+	BASE_WIP="$(mktemp -d "$BASE_DIR_WIP"/"$BASE_IAM.XXXXXX" 2>&1)" || {
 		printf >&2 %s\\n "$BASE_WIP"
-		exit 13
+		exit 15
 	}
 	BASE_LOG="$BASE_WIP"/log
 	readonly \
@@ -918,6 +921,19 @@ set -o nounset
 for arg; do
 	shift
 	case "$arg" in
+	-d | --dir-wip)
+		set +o nounset
+		[ -n "$1" ] || {
+			printf >&2 -- '--dir-wip requires a non-empty argument.'
+			exit 11
+		}
+		set -o nounset
+		[ -w "$1" ] || {
+			printf >&2 'Unable to write to %s.\n' "$1"
+			exit 12
+		}
+		BASE_DIR_WIP="$1"
+		;;
 	-k | --keep-wip) BASE_KEEP_WIP=true ;;
 	-q | --quiet) BASE_QUIET=true ;;
 	-x | --execute) set -x ;;
@@ -927,6 +943,7 @@ for arg; do
 done
 unset arg
 readonly \
+	BASE_DIR_WIP \
 	BASE_KEEP_WIP \
 	BASE_QUIET \
 	BASE_YES_TO_CONT
