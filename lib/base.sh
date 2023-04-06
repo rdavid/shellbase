@@ -37,7 +37,7 @@
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
-readonly BASE_VERSION=0.9.20230405
+readonly BASE_VERSION=0.9.20230406
 
 # Following variables could be changed by command line parameters. They will be
 # declared readonly after the parsing of command line parameters.
@@ -918,7 +918,7 @@ set -o nounset
 for arg; do
 	shift
 	case "$arg" in
-	-k | --keep_wip) BASE_KEEP_WIP=true ;;
+	-k | --keep-wip) BASE_KEEP_WIP=true ;;
 	-q | --quiet) BASE_QUIET=true ;;
 	-x | --execute) set -x ;;
 	-y | --yes) BASE_YES_TO_CONT=true ;;
