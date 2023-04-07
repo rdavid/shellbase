@@ -913,8 +913,7 @@ base_write_to_file() {
 
 # Starting point. Stops right away if it has ran in interactive mode.
 base_is_interactive && return 0
-set -o errexit
-set -o nounset
+set -o errexit -o nounset
 
 # Loops through command line arguments of the script. Handles only arguments
 # with set-and-go logic.
