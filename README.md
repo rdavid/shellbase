@@ -67,7 +67,8 @@ place all temporaly files under `$BASE_WIP`. All functions started with `base_`
 prefix are internal and should not be used by clients. All names are in
 alphabetical order.
 
-See [`gento`](https://github.com/rdavid/gento) and
+See [`dotfiles`](https://github.com/rdavid/dotfiles),
+[`gento`](https://github.com/rdavid/gento) and
 [`toolbox`](https://github.com/rdavid/toolbox) as examples.
 
 ## Install

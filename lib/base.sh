@@ -37,7 +37,7 @@
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
-readonly BASE_VERSION=0.9.20230406
+readonly BASE_VERSION=0.9.20230408
 
 # Following variables could be changed by command line parameters. They will be
 # declared readonly after the parsing of command line parameters.
@@ -701,24 +701,29 @@ base_display_version() {
 
 # Prints shellbase warranty.
 base_display_warranty() {
-	if var_exists BASE_APP_WARRANTY >/dev/null; then
-		printf %s\\n "$BASE_APP_WARRANTY"
-		return 0
-	fi
-	cat <<-EOM
-		Copyright 2020-2023 David Rabkin
+	local war
+	war="$(
+		cat <<-EOM 2>&1
+			Shellbase is copyright David Rabkin and available under a Zero-Clause BSD
+			license.
 
-		Permission to use, copy, modify, and/or distribute this software for any
-		purpose with or without fee is hereby granted.
+			Copyright 2020-2023 David Rabkin
 
-		THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-		WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-		MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-		ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-		WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-		ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-		OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-	EOM
+			Permission to use, copy, modify, and/or distribute this software for any
+			purpose with or without fee is hereby granted.
+
+			THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+			WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+			MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+			ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+			WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+			ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+			OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+		EOM
+	)" || die "$war"
+	var_exists BASE_APP_WARRANTY >/dev/null &&
+		printf '%s\n\n%s\n' "$war" "$BASE_APP_WARRANTY" ||
+		printf %s\\n "$war"
 }
 
 # Calculates duration time for report. The first parameter is a start time.
