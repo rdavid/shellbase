@@ -1,23 +1,51 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # Copyright 2022-2023 David Rabkin
-BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+# shellcheck disable=SC3043 # Uses local variables.
+BSH="$(
+	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
+)"/../lib/base.sh || {
+	printf >&2 %s\\n "$BSH"
+	exit 1
+}
+
+# shellcheck disable=SC2034 # Variable appears unused.
 readonly \
+	BASE_APP_VERSION=0.9.20230409 \
+	BASE_MIN_VERSION=0.9.20230405 \
 	BSH \
 	DST=/usr/local/bin \
 	TGT=/usr/local/bin/base.sh
 
 # shellcheck disable=SC1090 # File not following.
 . "$BSH"
-file_exists $DST || die $DST: No such directory.
-iswritable $DST || die $DST is not writable.
-file_exists $TGT &&
-	yes_to_continue \
-		"$(sh $TGT --quiet --version)" \
-		is installed. Install \
-		"$BASE_VERSION"?
-cp -f "$BSH" $TGT || die Unable to copy "$BSH" to $TGT.
-printf \
-	'%s is installed to %s.\n' \
-	"$(sh $TGT --quiet --version)" \
-	$DST
+
+# Validates and installs.
+main() {
+	local msg new old
+	validate
+
+	# It contains the name, e.g. shellbase 0.9.20230408.
+	new="$(sh "$BSH" --quiet --version 2>&1)" || die "$new"
+	if file_exists >/dev/null 2>&1 $TGT; then
+		old="$(sh $TGT --quiet --version 2>&1)" || die "$old"
+		[ "$old" = "$new" ] &&
+			msg="$new is already installed in $DST. Continue anyway?" ||
+			msg="$old is installed in $DST. Update to $BASE_VERSION?"
+		yes_to_continue "$msg"
+		cp -f "$BSH" $TGT || die Unable to copy "$BSH" to $TGT.
+		log "$old is updated to $new in $DST."
+	else
+		cp "$BSH" $TGT || die Unable to copy "$BSH" to $TGT.
+		log "$new" is installed in $DST.
+	fi
+}
+
+# Checks the environment.
+validate() {
+	file_exists $DST || die $DST: No such directory.
+	iswritable $DST || die $DST is not writable.
+}
+
+# Starting point.
+main "$@"
