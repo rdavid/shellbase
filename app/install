@@ -11,7 +11,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20230409 \
+	BASE_APP_VERSION=0.9.20230411 \
 	BASE_MIN_VERSION=0.9.20230405 \
 	BSH \
 	DST=/usr/local/bin \
@@ -27,11 +27,11 @@ main() {
 
 	# It contains the name, e.g. shellbase 0.9.20230408.
 	new="$(sh "$BSH" --quiet --version 2>&1)" || die "$new"
-	if file_exists >/dev/null 2>&1 $TGT; then
+	if file_exists $TGT >/dev/null 2>&1; then
 		old="$(sh $TGT --quiet --version 2>&1)" || die "$old"
 		[ "$old" = "$new" ] &&
 			msg="$new is already installed in $DST. Continue anyway?" ||
-			msg="$old is installed in $DST. Update to $BASE_VERSION?"
+			msg="$old is installed in $DST. Update to $new?"
 		yes_to_continue "$msg"
 		cp -f "$BSH" $TGT || die Unable to copy "$BSH" to $TGT.
 		log "$old is updated to $new in $DST."
