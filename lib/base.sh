@@ -37,7 +37,7 @@
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
-readonly BASE_VERSION=0.9.20230408
+readonly BASE_VERSION=0.9.20230411
 
 # Following variables could be changed by command line parameters. They will be
 # declared readonly after the parsing of command line parameters.
@@ -671,7 +671,7 @@ base_display_usage() {
 	local use
 	use="$(
 		cat <<-EOM 2>&1
-			Usage: $BASE_IAM [-h] [-k] [-q] [-v] [-w] [-x] [-y]
+			Usage: $BASE_IAM [-d] [-h] [-k] [-q] [-v] [-w] [-x] [-y] ...
 
 			Arguments:
 			  -d, --dir-wip     Custom directory of work in progress directory, the
