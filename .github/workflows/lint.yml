@@ -3,9 +3,7 @@ name: linters
 'on': push
 env:
   CM_BIN: /usr/local/bin/checkmake
-
-  # yamllint disable-line
-  CM_URL: https://github.com/mrtazz/checkmake/releases/download/0.2.2/checkmake-0.2.2.linux.amd64
+  CM_URL: https://github.com/mrtazz/checkmake/releases/download/0.2.2/checkmake-0.2.2.linux.amd64 # yamllint disable-line
 jobs:
   lint:
     runs-on: ubuntu-latest
