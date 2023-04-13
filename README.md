@@ -159,6 +159,7 @@ The project uses Daniel J. Bernstein's (aka, djb) build system
 
 `redo lint` runs the following linters on the source files:
 
+* [`checkmake`](https://github.com/mrtazz/checkmake)
 * [`hadolint`](https://github.com/hadolint/hadolint)
 * [`markdownlint`](https://github.com/igorshubovych/markdownlint-cli)
 * [`shellcheck`](https://github.com/koalaman/shellcheck)
