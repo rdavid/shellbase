@@ -37,7 +37,7 @@
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
-readonly BASE_VERSION=0.9.20230411
+readonly BASE_VERSION=0.9.20230413
 
 # Following variables could be changed by command line parameters. They will be
 # declared readonly after the parsing of command line parameters.
@@ -104,7 +104,7 @@ cmd_exists() {
 # Prints all parameters as error and exits with the error code.
 die() {
 	[ $# -eq 0 ] || loge "$@"
-	base_is_interactive && log You\'re immortal! || exit 21
+	base_is_interactive && log You\'re immortal! || exit 10
 }
 
 # Repairs echo to behave in a reasonable way, see:
