@@ -20,7 +20,6 @@ out="$(
 		printf '123456789\tJohn Foo\tDirector\n'
 		printf '12\tMike Bar\tEngineer\n'
 	} |
-		prettytable |
-		awk '{print substr($0, index($0,$3))}'
+		prettytable
 )"
 [ "$carbon" = "$out" ]
