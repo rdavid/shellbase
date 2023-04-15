@@ -37,7 +37,7 @@
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
-readonly BASE_VERSION=0.9.20230413
+readonly BASE_VERSION=0.9.20230415
 
 # Following variables could be changed by command line parameters. They will be
 # declared readonly after the parsing of command line parameters.
@@ -267,7 +267,7 @@ log() {
 	local tms
 	tms="$(timestamp)"
 	[ "$BASE_QUIET" = false ] &&
-		printf '\033[0;32m%s I\033[0m %s\n' "$tms" "$*"
+		printf >&2 '\033[0;32m%s I\033[0m %s\n' "$tms" "$*"
 	base_is_interactive || base_write_to_file "$tms" I "$*"
 }
 
@@ -341,8 +341,7 @@ prettytable() {
 		base_prettytable_separator "$col"
 	} |
 		column -ts '	' |
-		sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g" |
-		tolog
+		sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g"
 }
 
 # Prints human readable uptime time, see:

@@ -44,23 +44,23 @@ are, in alphabetical order:
 [`pdf2jpg`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L292),
 [`pdf2png`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L301),
 [`prettytable`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L324),
-[`prettyuptime`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L350),
-[`realdir`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L368),
-[`realpath`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L377),
-[`semver`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L389),
-[`timestamp`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L404),
-[`tolog`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L418),
-[`tologe`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L424),
-[`tolower`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L430),
-[`url_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L437),
-[`user_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L462),
-[`validate_cmd`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L478),
-[`validate_var`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L485),
-[`var_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L492),
-[`ver_ge`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L513),
-[`vid2aud`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L518),
-[`yes_to_continue`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L531),
-[`ytda`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L587).
+[`prettyuptime`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L349),
+[`realdir`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L367),
+[`realpath`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L376),
+[`semver`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L388),
+[`timestamp`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L403),
+[`tolog`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L417),
+[`tologe`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L423),
+[`tolower`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L429),
+[`url_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L436),
+[`user_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L461),
+[`validate_cmd`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L477),
+[`validate_var`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L484),
+[`var_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L491),
+[`ver_ge`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L512),
+[`vid2aud`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L517),
+[`yes_to_continue`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L530),
+[`ytda`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L586).
 
 Global variables have `BASE_` prefix and clients could use them. Clients should
 place all temporaly files under `$BASE_WIP`. All functions started with `base_`
@@ -125,11 +125,10 @@ eval "$(
 log I\'m using the shellbase.
 ```
 
-`prettytable` example:
+[`prettytable`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L324)
+example:
 
 ```sh
-#!/bin/sh
-# shellcheck disable=SC1091 # File not following.
 . base.sh
 {
   printf 'ID\tNAME\tTITLE\n'
@@ -141,14 +140,12 @@ log I\'m using the shellbase.
 Output:
 
 ```sh
-20220831-01:07:40 I prettytable 33704 says hi.
-20220831-01:07:40 I +-----------+----------+----------+
-20220831-01:07:40 I |ID         |NAME      |TITLE     |
-20220831-01:07:40 I +-----------+----------+----------+
-20220831-01:07:40 I |123456789  |John Foo  |Director  |
-20220831-01:07:40 I |12         |Mike Bar  |Engineer  |
-20220831-01:07:41 I +-----------+----------+----------+
-20220831-01:07:41 I prettytable 33704 says bye after 1 second.
++-----------+----------+----------+
+|ID         |NAME      |TITLE     |
++-----------+----------+----------+
+|123456789  |John Foo  |Director  |
+|12         |Mike Bar  |Engineer  |
++-----------+----------+----------+
 ```
 
 ## Test
