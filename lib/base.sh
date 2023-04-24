@@ -37,13 +37,14 @@
 # place all temporaly files under $BASE_WIP. All functions started with
 # base_ prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
-readonly BASE_VERSION=0.9.20230415
-
+#
 # Following variables could be changed by command line parameters. They will be
-# declared readonly after the parsing of command line parameters.
+# declared readonly after the parsing of command line parameters. BASE_VERSION
+# should be declared writable in case of double sourcing in interactive mode.
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_QUIET=false
+BASE_VERSION=0.9.20230424
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -949,5 +950,6 @@ readonly \
 	BASE_DIR_WIP \
 	BASE_KEEP_WIP \
 	BASE_QUIET \
+	BASE_VERSION \
 	BASE_YES_TO_CONT
 base_main "$@"
