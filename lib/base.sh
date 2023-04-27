@@ -44,7 +44,7 @@
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230424
+BASE_VERSION=0.9.20230429
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -685,14 +685,14 @@ base_display_usage() {
 			  -y, --yes         Answers yes on yes_to_continue without interruption.
 		EOM
 	)" || die "$use"
-	var_exists BASE_APP_USAGE >/dev/null &&
+	var_exists BASE_APP_USAGE >/dev/null 2>&1 &&
 		printf %s\\n "$use" "$BASE_APP_USAGE" ||
 		printf %s\\n "$use"
 }
 
 # Prints shellbase version and an application version.
 base_display_version() {
-	var_exists BASE_APP_VERSION >/dev/null &&
+	var_exists BASE_APP_VERSION >/dev/null 2>&1 &&
 		printf \
 			'shellbase %s\n%s %s\n' \
 			"$BASE_VERSION" "$BASE_IAM" "$BASE_APP_VERSION" ||
@@ -721,7 +721,7 @@ base_display_warranty() {
 			OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 		EOM
 	)" || die "$war"
-	var_exists BASE_APP_WARRANTY >/dev/null &&
+	var_exists BASE_APP_WARRANTY >/dev/null 2>&1 &&
 		printf '%s\n\n%s\n' "$war" "$BASE_APP_WARRANTY" ||
 		printf %s\\n "$war"
 }
@@ -809,7 +809,7 @@ base_main() {
 	trap base_sig_cleanup HUP INT QUIT TERM
 
 	# Continues only with certain shellbase version.
-	if var_exists BASE_MIN_VERSION >/dev/null; then
+	if var_exists BASE_MIN_VERSION >/dev/null 2>&1; then
 		ver_ge "$BASE_VERSION" "$BASE_MIN_VERSION" ||
 			die "Shellbase is $BASE_VERSION, needs $BASE_MIN_VERSION or above."
 	fi
