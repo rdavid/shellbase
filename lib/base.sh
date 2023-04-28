@@ -266,7 +266,7 @@ iswritable() {
 # Information logger doesn't print to stdout with --quite flag.
 log() {
 	local tms
-	tms="$(timestamp)"
+	tms="$(timestamp)" || die
 	[ "$BASE_QUIET" = false ] &&
 		printf >&2 '\033[0;32m%s I\033[0m %s\n' "$tms" "$*"
 	base_is_interactive || base_write_to_file "$tms" I "$*"
@@ -275,7 +275,7 @@ log() {
 # Error logger always prints to stderr.
 loge() {
 	local tms
-	tms="$(timestamp)"
+	tms="$(timestamp)" || die
 	printf >&2 '\033[0;31m%s E\033[0m %s\n' "$tms" "$*"
 	base_is_interactive || base_write_to_file "$tms" E "$*"
 }
@@ -283,7 +283,7 @@ loge() {
 # Warning logger doesn't print to stderr with --quite flag.
 logw() {
 	local tms
-	tms="$(timestamp)"
+	tms="$(timestamp)" || die
 	[ "$BASE_QUIET" = false ] &&
 		printf >&2 '\033[0;33m%s W\033[0m %s\n' "$tms" "$*"
 	base_is_interactive || base_write_to_file "$tms" W "$*"
@@ -402,7 +402,9 @@ semver() {
 
 # Returns current time in form of timestamp.
 timestamp() {
-	date +%Y%m%d-%H:%M:%S
+	local tms
+	tms="$(date +%Y%m%d-%H:%M:%S 2>&1)" || die "$tms"
+	printf %s "$tms"
 }
 
 # Redirects input to logger line by line. It is usefull for logging multiple
@@ -734,8 +736,10 @@ base_duration() {
 		dur \
 		hou \
 		min \
+		now \
 		sec
-	dur="$(($(date +%s) - $1))"
+	now="$(date +%s 2>&1)" || die "$now"
+	dur="$((now - $1))"
 	day="$(base_time_title $((dur / 86400)) day)"
 	hou="$(base_time_title $((dur % 86400 / 3600)) hour)"
 	min="$(base_time_title $((dur % 86400 % 3600 / 60)) minute)"
