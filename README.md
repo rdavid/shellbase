@@ -49,18 +49,18 @@ are, in alphabetical order:
 [`realpath`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L377),
 [`semver`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L389),
 [`timestamp`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L404),
-[`tolog`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L418),
-[`tologe`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L424),
-[`tolower`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L430),
-[`url_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L437),
-[`user_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L462),
-[`validate_cmd`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L478),
-[`validate_var`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L485),
-[`var_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L492),
-[`ver_ge`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L513),
-[`vid2aud`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L518),
-[`yes_to_continue`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L531),
-[`ytda`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L587).
+[`tolog`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L420),
+[`tologe`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L426),
+[`tolower`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L432),
+[`url_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L439),
+[`user_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L464),
+[`validate_cmd`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L480),
+[`validate_var`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L487),
+[`var_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L494),
+[`ver_ge`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L515),
+[`vid2aud`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L520),
+[`yes_to_continue`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L533),
+[`ytda`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L589).
 
 Global variables have `BASE_` prefix and clients could use them. Clients should
 place all temporaly files under `$BASE_WIP`. All functions started with `base_`
@@ -125,7 +125,7 @@ eval "$(
 log I\'m using the shellbase.
 ```
 
-[`prettytable`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L324)
+[`prettytable`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L325)
 example:
 
 ```sh
