@@ -44,7 +44,7 @@
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230429
+BASE_VERSION=0.9.20230430
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -144,10 +144,12 @@ file_exists() {
 
 # Creates temporary commit, rebases it and pushes.
 grbt() {
+	local br
+	br="$(git rev-parse --abbrev-ref HEAD 2>&1)" || die "$br"
 	git commit --all --message tmp &&
 		git push &&
 		git rebase --interactive HEAD~5 &&
-		git push origin +"$(git rev-parse --abbrev-ref HEAD)"
+		git push origin +"$br"
 }
 
 # Converts Apple's HEIC files in a current directory to JPEG.
