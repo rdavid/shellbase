@@ -52,15 +52,16 @@ are, in alphabetical order:
 [`tolog`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L422),
 [`tologe`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L428),
 [`tolower`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L434),
-[`url_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L441),
-[`user_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L466),
-[`validate_cmd`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L482),
-[`validate_var`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L489),
-[`var_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L496),
-[`ver_ge`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L517),
-[`vid2aud`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L521),
-[`yes_to_continue`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L535),
-[`ytda`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L591).
+[`tsout`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L439),
+[`url_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L448),
+[`user_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L473),
+[`validate_cmd`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L489),
+[`validate_var`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L496),
+[`var_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L503),
+[`ver_ge`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L524),
+[`vid2aud`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L529),
+[`yes_to_continue`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L544),
+[`ytda`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L598).
 
 Global variables have `BASE_` prefix and clients could use them. Clients should
 place all temporaly files under `$BASE_WIP`. All functions started with `base_`
