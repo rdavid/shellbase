@@ -29,9 +29,9 @@
 # aud_only, beroot, beuser, cheat, cmd_exists, die, echo, file_exists,
 # heic2jpg, grbt, inside, isempty, isfunc, isreadable, issolid, iswritable,
 # log, loge, logw, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir,
-# realpath, semver, timestamp, tolog, tologe, tolower, url_exists, user_exists,
-# validate_cmd, validate_var, var_exists, ver_ge, vid2aud, yes_to_continue,
-# ytda.
+# realpath, semver, timestamp, tolog, tologe, tolower, tsout, url_exists,
+# user_exists, validate_cmd, validate_var, var_exists, ver_ge, vid2aud,
+# yes_to_continue, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place all temporaly files under $BASE_WIP. All functions started with
@@ -44,7 +44,7 @@
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230430
+BASE_VERSION=0.9.20230501
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -433,6 +433,13 @@ tologe() {
 # Renames files in a current directory to lower case.
 tolower() {
 	rename -f y/A-Z/a-z/ ./*
+}
+
+# Prepends output string with a timestamp.
+tsout() {
+	local tms
+	tms="$(timestamp)" || die
+	printf %s\ %s\\n "$tms" "$*"
 }
 
 # Checks whether all URLs exist, any returned HTTP code is OK. In case of error
