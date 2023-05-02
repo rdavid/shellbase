@@ -52,16 +52,17 @@ are, in alphabetical order:
 [`tolog`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L422),
 [`tologe`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L428),
 [`tolower`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L434),
-[`tsout`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L439),
-[`url_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L448),
-[`user_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L473),
-[`validate_cmd`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L489),
-[`validate_var`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L496),
-[`var_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L503),
-[`ver_ge`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L524),
-[`vid2aud`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L529),
-[`yes_to_continue`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L544),
-[`ytda`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L598).
+[`totsout`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L439),
+[`tsout`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L445),
+[`url_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L464),
+[`user_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L479),
+[`validate_cmd`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L495),
+[`validate_var`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L503),
+[`var_exists`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L509),
+[`ver_ge`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L530),
+[`vid2aud`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L535),
+[`yes_to_continue`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L550),
+[`ytda`](https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L604).
 
 Global variables have `BASE_` prefix and clients could use them. Clients should
 place all temporaly files under `$BASE_WIP`. All functions started with `base_`
