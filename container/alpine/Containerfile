@@ -5,11 +5,11 @@ ENV \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
-COPY --from=ghcr.io/rdavid/goredoer:0.9.20230410 /go/goredo .
+COPY --from=ghcr.io/rdavid/goredoer:0.9.20230504 /go/goredo .
 RUN \
 	apk add --no-cache --update \
 		bash~=5.2 \
-		curl~=7.88 \
+		curl~=8.0.1 \
 		dash~=0.5 \
 		fish~=3.5 \
 		loksh~=7.2 \
