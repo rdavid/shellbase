@@ -44,7 +44,7 @@
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230503
+BASE_VERSION=0.9.20230505
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -696,6 +696,7 @@ base_display_usage() {
 			  -h, --help        Displays this help message.
 			  -k, --keep-wip    Keeps work in progress directory on exit.
 			  -q, --quiet       Hides information and warning logs.
+			  -t, --trace       Shows information and warning logs.
 			  -v, --version     Displays version number.
 			  -w, --warranty    Echoes warranty statement to stdout.
 			  -x, --execute     Echoes every command before execution.
@@ -941,6 +942,7 @@ set -o errexit -o nounset
 
 # Loops through command line arguments of the script. Handles only arguments
 # with set-and-go logic.
+cnt=0
 for arg; do
 	shift
 	case "$arg" in
@@ -958,13 +960,15 @@ for arg; do
 		BASE_DIR_WIP="$1"
 		;;
 	-k | --keep-wip) BASE_KEEP_WIP=true ;;
-	-q | --quiet) BASE_QUIET=true ;;
+	-q | --quiet) cnt=$((cnt + 1)) ;;
+	-t | --trace) cnt=$((cnt - 1)) ;;
 	-x | --execute) set -x ;;
 	-y | --yes) BASE_YES_TO_CONT=true ;;
 	*) set -- "$@" "$arg" ;; # Sets back any unused args.
 	esac
 done
-unset arg
+[ "$cnt" -gt 0 ] && BASE_QUIET=true
+unset arg cnt
 readonly \
 	BASE_DIR_WIP \
 	BASE_KEEP_WIP \
