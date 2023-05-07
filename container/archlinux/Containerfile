@@ -17,7 +17,10 @@ RUN \
 		dash>=0.5 \
 		fish>=3.6 \
 		ksh>=2020 \
+		shellcheck>=0.9.0 \
+		shfmt>=3.6.0 \
 		tcsh>=6.24 \
+		yamllint>=1.31.0 \
 		zsh>=r5.9 \
 	&& useradd --create-home "$USER" \
 	&& goredo -symlinks
