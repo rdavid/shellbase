@@ -13,10 +13,13 @@ RUN \
 		dash~=0.5 \
 		fish~=3.5 \
 		loksh~=7.2 \
+		shellcheck~=0.8.0 \
+		shfmt~=3.5.1 \
 		tcsh~=6.24 \
 		tzdata~=2023 \
 		zsh~=5.9 \
 		util-linux~=2 \
+		yamllint~=1.28.0 \
 		yash~=2.53 \
 		&& rm -rf /var/cache/apk/* \
 		&& addgroup -S "$USER" \
@@ -30,4 +33,4 @@ COPY \
 	--chown="$USER":"$USER" \
 	. .
 CMD \
-	[ "redo", "-j=10", "-x", "test" ]
+	[ "redo", "-j=10", "-x", "lint", "test" ]

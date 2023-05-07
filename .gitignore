@@ -1,5 +1,6 @@
 1
 .redo
+clean
 lint
 test
 test_container

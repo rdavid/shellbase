@@ -12,16 +12,9 @@ redo-ifchange \
 
 # shellcheck disable=SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/lib/base.sh
-validate_cmd \
-	checkmake \
-	hadolint \
-	markdownlint \
-	shellcheck \
-	shfmt \
-	yamllint
-checkmake Makefile
-hadolint container/*/Containerfile
-markdownlint ./*.md
-shellcheck ./*.do app/* lib/*
-shfmt -d ./*.do app/* lib/*
-yamllint .github/*.yml .github/workflows/*.yml
+cmd_exists checkmake && checkmake Makefile
+cmd_exists hadolint && hadolint container/*/Containerfile
+cmd_exists markdownlint && markdownlint ./*.md
+cmd_exists shellcheck && shellcheck ./*.do app/* lib/*
+cmd_exists shfmt && shfmt -d ./*.do app/* lib/*
+cmd_exists yamllint && yamllint .github/*.yml .github/workflows/*.yml

@@ -1,7 +1,6 @@
-container
-all.do
-shellbase.do
+1
+.redo
+clean
+lint
 test
-test_container.do
-Makefile
-README.md
+test_container

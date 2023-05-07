@@ -13,7 +13,11 @@ RUN \
 	&& dnf install --assumeyes \
 		bash \
 		findutils \
+		hadolint \
 		shadow-utils \
+		shellcheck \
+		shfmt \
+		yamllint \
 		yash \
 	&& dnf clean all \
 	&& useradd --create-home "$USER" \

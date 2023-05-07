@@ -17,7 +17,9 @@ RUN \
 		dash \
 		fish \
 		ksh \
+		shellcheck \
 		tcsh \
+		yamllint \
 		yash \
 		zsh \
 	&& apt-get clean \
