@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/ubi-minimal:9.1
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.2
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	USER=shellbase
