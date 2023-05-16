@@ -1,1 +1,24 @@
-ubi8/Containerfile
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.8
+LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
+ENV \
+	USER=shellbase
+COPY LICENSE /licenses/LICENSE
+WORKDIR /bin
+COPY --from=ghcr.io/rdavid/goredoer:0.9.20230504 /go/goredo .
+RUN \
+	microdnf update --assumeyes --disableplugin=subscription-manager \
+	&& rm --force --recursive /var/cache/yum \
+	&& microdnf install --assumeyes --disableplugin=subscription-manager \
+		bash-4.4.20 \
+		findutils-4.6.0 \
+		shadow-utils \
+	&& microdnf clean all --disableplugin=subscription-manager \
+	&& useradd --create-home "$USER" \
+	&& goredo -symlinks
+USER "$USER"
+WORKDIR /home/"$USER"
+COPY \
+	--chown="$USER":"$USER" \
+	. .
+CMD \
+	[ "redo", "-j=10", "-x", "test" ]
