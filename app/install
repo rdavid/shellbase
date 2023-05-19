@@ -2,6 +2,7 @@
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # Copyright 2022-2023 David Rabkin
 # shellcheck disable=SC3043 # Uses local variables.
+set -- --quiet
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
 )"/../lib/base.sh || {
@@ -11,7 +12,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20230411 \
+	BASE_APP_VERSION=0.9.20230520 \
 	BASE_MIN_VERSION=0.9.20230405 \
 	BSH \
 	DST=/usr/local/bin \
