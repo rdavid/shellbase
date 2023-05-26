@@ -1,3 +1,7 @@
+:toc:
+:toc-placement!:
+:!toc-title:
+
 = Shellbase
 
 image:https://github.com/rdavid/shellbase/actions/workflows/lint.yml/badge.svg[linters,link=https://github.com/rdavid/shellbase/actions/workflows/lint.yml]
@@ -5,6 +9,8 @@ image:https://hitsofcode.com/github/rdavid/shellbase?branch=master&label=hits%20
 image:https://img.shields.io/github/downloads/rdavid/shellbase/total?color=blue&labelColor=gray&logo=singlestore&logoColor=lightgray&style=flat[downloads]
 image:https://img.shields.io/github/v/release/rdavid/shellbase?color=blue&label=%20&logo=semver&logoColor=white&style=flat[release),link=https://github.com/rdavid/shellbase/releases]
 image:https://img.shields.io/github/license/rdavid/shellbase?color=blue&labelColor=gray&logo=freebsd&logoColor=lightgray&style=flat[license,link=https://github.com/rdavid/shellbase/blob/master/LICENSE]
+
+toc::[]
 
 == About
 
