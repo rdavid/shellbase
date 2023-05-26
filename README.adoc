@@ -157,7 +157,6 @@ Output:
 The project uses Daniel J.
 Bernstein's (aka, djb) build system http://cr.yp.to/redo.html[`redo`].
 You can install Sergey Matveev's http://www.goredo.cypherpunks.ru/Install.html[`goredo`] implementation.
-
 `redo lint` runs the following linters on the source files:
 https://github.com/mrtazz/checkmake[`checkmake`],
 https://github.com/hadolint/hadolint[`hadolint`],
@@ -165,7 +164,6 @@ https://github.com/igorshubovych/markdownlint-cli[`markdownlint`],
 https://github.com/koalaman/shellcheck[`shellcheck`],
 https://github.com/mvdan/sh[`shfmt`],
 https://github.com/adrienverge/yamllint[`yamllint`].
-
 `redo test` runs unit tests in installed shells.
 `redo test_container` runs the tests in multiple shells in multiple containers.
 It uses https://github.com/rdavid/goredoer[`goredoer`] to build http://www.goredo.cypherpunks.ru/Install.html[`goredo`].
