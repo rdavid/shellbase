@@ -1,6 +1,11 @@
-:toc:
-:toc-placement!:
+// Settings:
+:toc: macro
 :!toc-title:
+// URLs:
+:url-base: https://github.com/rdavid/shellbase/blob/master/lib/base.sh
+:url-dotfiles: https://github.com/rdavid/dotfiles
+:url-gento: https://github.com/rdavid/gento
+:url-toolbox: https://github.com/rdavid/toolbox
 
 = Shellbase
 
@@ -9,8 +14,6 @@ image:https://hitsofcode.com/github/rdavid/shellbase?branch=master&label=hits%20
 image:https://img.shields.io/github/downloads/rdavid/shellbase/total?color=blue&labelColor=gray&logo=singlestore&logoColor=lightgray&style=flat[downloads]
 image:https://img.shields.io/github/v/release/rdavid/shellbase?color=blue&label=%20&logo=semver&logoColor=white&style=flat[release),link=https://github.com/rdavid/shellbase/releases]
 image:https://img.shields.io/github/license/rdavid/shellbase?color=blue&labelColor=gray&logo=freebsd&logoColor=lightgray&style=flat[license,link=https://github.com/rdavid/shellbase/blob/master/LICENSE]
-
-*Table of Contents*
 
 toc::[]
 
@@ -23,58 +26,58 @@ It offers a range of essential services, including public functions such as logg
 The `shellbase` defines global variables and functions.
 All functions without `base_` prefix are public and could be used by clients.
 The public functions are, in alphabetical order:
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L52[`aud_only`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L69[`beroot`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L74[`beuser`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L85[`cheat`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L91[`cmd_exists`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L105[`die`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L113[`echo`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L131[`file_exists`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L146[`grbt`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L156[`heic2jpg`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L170[`inside`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L178[`isempty`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L192[`isfunc`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L200[`isreadable`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L216[`issolid`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L245[`iswritable`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L269[`log`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L278[`loge`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L285[`logw`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L295[`pdf2jpg`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L304[`pdf2png`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L327[`prettytable`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L352[`prettyuptime`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L370[`realdir`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L379[`realpath`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L391[`semver`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L406[`timestamp`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L422[`tolog`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L428[`tologe`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L434[`tolower`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L439[`totsout`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L445[`tsout`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L464[`url_exists`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L479[`user_exists`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L495[`validate_cmd`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L503[`validate_var`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L509[`var_exists`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L530[`ver_ge`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L535[`vid2aud`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L550[`yes_to_continue`],
-https://github.com/rdavid/shellbase/blob/master/lib/base.sh#L604[`ytda`].
+{url-base}#L52[`aud_only`],
+{url-base}#L69[`beroot`],
+{url-base}#L74[`beuser`],
+{url-base}#L85[`cheat`],
+{url-base}#L91[`cmd_exists`],
+{url-base}#L105[`die`],
+{url-base}#L113[`echo`],
+{url-base}#L131[`file_exists`],
+{url-base}#L146[`grbt`],
+{url-base}#L156[`heic2jpg`],
+{url-base}#L170[`inside`],
+{url-base}#L178[`isempty`],
+{url-base}#L192[`isfunc`],
+{url-base}#L200[`isreadable`],
+{url-base}#L216[`issolid`],
+{url-base}#L245[`iswritable`],
+{url-base}#L269[`log`],
+{url-base}#L278[`loge`],
+{url-base}#L285[`logw`],
+{url-base}#L295[`pdf2jpg`],
+{url-base}#L304[`pdf2png`],
+{url-base}#L327[`prettytable`],
+{url-base}#L352[`prettyuptime`],
+{url-base}#L370[`realdir`],
+{url-base}#L379[`realpath`],
+{url-base}#L391[`semver`],
+{url-base}#L406[`timestamp`],
+{url-base}#L422[`tolog`],
+{url-base}#L428[`tologe`],
+{url-base}#L434[`tolower`],
+{url-base}#L439[`totsout`],
+{url-base}#L445[`tsout`],
+{url-base}#L464[`url_exists`],
+{url-base}#L479[`user_exists`],
+{url-base}#L495[`validate_cmd`],
+{url-base}#L503[`validate_var`],
+{url-base}#L509[`var_exists`],
+{url-base}#L530[`ver_ge`],
+{url-base}#L535[`vid2aud`],
+{url-base}#L550[`yes_to_continue`],
+{url-base}#L604[`ytda`].
 
 Global variables have `BASE_` prefix and clients could use them.
 Clients should place all temporaly files under `$BASE_WIP`.
 All functions started with `base_` prefix are internal and should not be used by clients.
 All names are in alphabetical order.
 
-See https://github.com/rdavid/dotfiles[`dotfiles`], https://github.com/rdavid/gento[`gento`] and https://github.com/rdavid/toolbox[`toolbox`] as examples.
+See {url-dotfiles}[`dotfiles`], {url-gento}[`gento`] and {url-toolbox}[`toolbox`] as examples.
 
 == Install
 
-The artifact is a single non-executable POSIX-compliant shell script file https://github.com/rdavid/shellbase/blob/master/lib/base.sh[`base.sh`].
+The artifact is a single non-executable POSIX-compliant shell script file {url-base}[`base.sh`].
 Install the file from the repository:
 
 [,sh]
