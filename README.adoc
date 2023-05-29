@@ -69,7 +69,7 @@ The public functions are, in alphabetical order:
 {url-base}#L604[`ytda`].
 
 Global variables have `BASE_` prefix and clients could use them.
-Clients should place all temporaly files under `$BASE_WIP`.
+Clients should place all temporarily files under `$BASE_WIP`.
 All functions started with `base_` prefix are internal and should not be used by clients.
 All names are in alphabetical order.
 
@@ -87,7 +87,7 @@ git clone git@github.com:rdavid/shellbase.git &&
 ----
 
 Install the file from the released version.
-Some OS demands administrative rights to install to `/usr/local/bin`, use `sudo` or `doas` before `tar`:
+Some operating systems demands administrative rights to install to `/usr/local/bin`, use `sudo` or `doas` before `tar`:
 
 [,sh]
 ----
@@ -102,7 +102,7 @@ curl --location --silent $SRC |
     shellbase-$REL/lib/base.sh
 ----
 
-Make sure `/usr/local/bin` is in your `PATH`.
+Verify `/usr/local/bin` is in your `PATH`.
 Then your script can use `shellbase`:
 
 [,sh]
