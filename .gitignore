@@ -2,5 +2,12 @@
 .redo
 clean
 lint
+styles/.vale-config
+styles/alex
+styles/Google
+styles/Joblint
+styles/proselint
+styles/Readability
+styles/write-good
 test
 test_container
