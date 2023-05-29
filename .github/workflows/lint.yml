@@ -17,9 +17,6 @@ jobs:
         with:
           dockerfile: Containerfile
           recursive: true
-      - uses: nosborn/github-action-markdown-cli@v3.3.0
-        with:
-          files: .
       - uses: ludeeus/action-shellcheck@master
         with:
           additional_files: ./*.do app/* lib/*
@@ -28,7 +25,7 @@ jobs:
       - uses: errata-ai/vale-action@reviewdog
         with:
           fail_on_error: true
-          files: README.adoc
+          files: ./*.adoc
       - uses: ibiqlik/action-yamllint@v3
         with:
           file_or_dir: .github/*.yml .github/workflows/*.yml
