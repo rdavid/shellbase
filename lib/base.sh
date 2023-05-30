@@ -44,7 +44,7 @@
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230505
+BASE_VERSION=0.9.20230530
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -268,7 +268,7 @@ iswritable() {
 # Information logger doesn't print to stdout with --quite flag.
 log() {
 	local tms
-	tms="$(timestamp)" || die
+	tms="$(timestamp)" || exit $?
 	[ "$BASE_QUIET" = false ] &&
 		printf >&2 '\033[0;32m%s I\033[0m %s\n' "$tms" "$*"
 	base_is_interactive || base_write_to_file "$tms" I "$*"
@@ -277,7 +277,7 @@ log() {
 # Error logger always prints to stderr.
 loge() {
 	local tms
-	tms="$(timestamp)" || die
+	tms="$(timestamp)" || exit $?
 	printf >&2 '\033[0;31m%s E\033[0m %s\n' "$tms" "$*"
 	base_is_interactive || base_write_to_file "$tms" E "$*"
 }
@@ -285,7 +285,7 @@ loge() {
 # Warning logger doesn't print to stderr with --quite flag.
 logw() {
 	local tms
-	tms="$(timestamp)" || die
+	tms="$(timestamp)" || exit $?
 	[ "$BASE_QUIET" = false ] &&
 		printf >&2 '\033[0;33m%s W\033[0m %s\n' "$tms" "$*"
 	base_is_interactive || base_write_to_file "$tms" W "$*"
@@ -405,7 +405,10 @@ semver() {
 # Returns current time in form of timestamp.
 timestamp() {
 	local tms
-	tms="$(date +%Y%m%d-%H:%M:%S 2>&1)" || die "$tms"
+	tms="$(date +%Y%m%d-%H:%M:%S 2>&1)" || {
+		printf >&2 %s\\n "$tms"
+		exit 16
+	}
 	printf %s "$tms"
 }
 
@@ -444,7 +447,7 @@ totsout() {
 # Prepends output string with a timestamp.
 tsout() {
 	local tms
-	tms="$(timestamp)" || die
+	tms="$(timestamp)" || exit $?
 	printf %s\ %s\\n "$tms" "$*"
 }
 
