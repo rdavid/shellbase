@@ -44,7 +44,7 @@
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230530
+BASE_VERSION=0.9.20230531
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -265,7 +265,8 @@ iswritable() {
 	return $ret
 }
 
-# Information logger doesn't print to stdout with --quite flag.
+# All log messages go to stderr. Information logger doesn't print to stderr
+# with --quite flag.
 log() {
 	local tms
 	tms="$(timestamp)" || exit $?
