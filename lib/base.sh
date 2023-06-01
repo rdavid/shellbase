@@ -44,7 +44,7 @@
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230531
+BASE_VERSION=0.9.20230601
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -405,10 +405,11 @@ semver() {
 
 # Returns current time in form of timestamp.
 timestamp() {
-	local tms
+	local err tms
 	tms="$(date +%Y%m%d-%H:%M:%S 2>&1)" || {
+		err=$?
 		printf >&2 %s\\n "$tms"
-		exit 16
+		exit $err
 	}
 	printf %s "$tms"
 }
@@ -794,7 +795,7 @@ base_is_interactive() {
 # Loops through the function arguments before any log. Handles only arguments
 # with 'do and exit' logic. Sets global variables.
 base_main() {
-	local arg use=false ver=false war=false
+	local arg err use=false ver=false war=false
 	for arg; do
 		case "$arg" in
 		-h | --help) use=true ;;
@@ -803,12 +804,14 @@ base_main() {
 		esac
 	done
 	BASE_BEG="$(date +%s 2>&1)" || {
+		err=$?
 		printf >&2 %s\\n "$BASE_BEG"
-		exit 13
+		exit $err
 	}
 	BASE_IAM="$(basename -- "$0" 2>&1)" || {
+		err=$?
 		printf >&2 %s\\n "$BASE_IAM"
-		exit 14
+		exit $err
 	}
 
 	# Drops an extension, if any.
@@ -816,8 +819,9 @@ base_main() {
 
 	# Busybox implementation of mktemp requires six Xs.
 	BASE_WIP="$(mktemp -d "$BASE_DIR_WIP"/"$BASE_IAM.XXXXXX" 2>&1)" || {
+		err=$?
 		printf >&2 %s\\n "$BASE_WIP"
-		exit 15
+		exit $err
 	}
 	BASE_LOG="$BASE_WIP"/log
 	readonly \
