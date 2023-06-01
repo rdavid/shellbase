@@ -271,7 +271,7 @@ log() {
 	local tms
 	tms="$(timestamp)" || exit $?
 	[ "$BASE_QUIET" = false ] &&
-		printf >&2 '\033[0;32m%s I\033[0m %s\n' "$tms" "$*"
+		printf >&2 '\033[0;32m%s\033[0m %s\n' "$tms" "$*"
 	base_is_interactive || base_write_to_file "$tms" I "$*"
 }
 
@@ -279,7 +279,7 @@ log() {
 loge() {
 	local tms
 	tms="$(timestamp)" || exit $?
-	printf >&2 '\033[0;31m%s E\033[0m %s\n' "$tms" "$*"
+	printf >&2 '\033[0;31m%s\033[0m %s\n' "$tms" "$*"
 	base_is_interactive || base_write_to_file "$tms" E "$*"
 }
 
@@ -288,7 +288,7 @@ logw() {
 	local tms
 	tms="$(timestamp)" || exit $?
 	[ "$BASE_QUIET" = false ] &&
-		printf >&2 '\033[0;33m%s W\033[0m %s\n' "$tms" "$*"
+		printf >&2 '\033[0;33m%s\033[0m %s\n' "$tms" "$*"
 	base_is_interactive || base_write_to_file "$tms" W "$*"
 }
 
