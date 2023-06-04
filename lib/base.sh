@@ -44,7 +44,7 @@
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230601
+BASE_VERSION=0.9.20230604
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -95,7 +95,7 @@ cmd_exists() {
 		if command -v "$arg" >/dev/null 2>&1; then
 			log Command "$arg" exists.
 		else
-			ret=1
+			ret=$?
 			logw Command "$arg" does not exist.
 		fi
 	done
@@ -135,7 +135,7 @@ file_exists() {
 		if ls "$arg" >/dev/null 2>&1; then
 			log File "$arg" exists.
 		else
-			ret=1
+			ret=$?
 			logw File "$arg" does not exist.
 		fi
 	done
@@ -225,18 +225,18 @@ issolid() {
 		grep --regexp "$patt" "$file"
 	)" || {
 		loge File "$file" doesn\'t have a hash.
-		return 1
+		return $?
 	}
 	hash="$(
 		printf %s "$line" | head -1 | awk -F = '{print $2}'
 	)" || {
 		loge File "$file" has hash with unknown format: "$line".
-		return 2
+		return $?
 	}
 	grep --invert-match --regexp "$patt" "$file" >"$temp"
 	printf %s\ \ %s "$hash" "$temp" | shasum --check --status || {
 		loge Hash of "$file" does not match "$hash"
-		return 3
+		return $?
 	}
 	log File "$file" is solid.
 }
@@ -257,7 +257,7 @@ iswritable() {
 				rm "$arg"
 				log File "$arg" is accessible.
 			else
-				ret=1
+				ret=$?
 				logw File "$arg" is not accessible.
 			fi
 		fi
@@ -472,7 +472,7 @@ url_exists() {
 		)"; then
 			log "URL $arg returns HTTP code $out."
 		else
-			ret=1
+			ret=$?
 			logw "URL $arg is unavailable. $(printf %s "$out" | head -n 1)."
 		fi
 	done
@@ -488,7 +488,7 @@ user_exists() {
 		if id "$arg" >/dev/null 2>&1; then
 			log User "$arg" exists.
 		else
-			ret=1
+			ret=$?
 			logw "$arg": No such user.
 		fi
 	done
