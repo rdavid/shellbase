@@ -2,17 +2,18 @@
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # Copyright 2022-2023 David Rabkin
 # shellcheck disable=SC3043 # Uses local variables.
-set -- --quiet
+set -- "$@" --quiet
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
 )"/../lib/base.sh || {
+	local err=$?
 	printf >&2 %s\\n "$BSH"
-	exit 1
+	exit $err
 }
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20230520 \
+	BASE_APP_VERSION=0.9.20230604 \
 	BASE_MIN_VERSION=0.9.20230405 \
 	BSH \
 	DST=/usr/local/bin \
@@ -35,10 +36,10 @@ main() {
 			msg="$old is installed in $DST. Update to $new?"
 		yes_to_continue "$msg"
 		cp -f "$BSH" $TGT || die Unable to copy "$BSH" to $TGT.
-		log "$old is updated to $new in $DST."
+		printf '%s is updated to %s in %s.\n' "$old" "$new" $DST
 	else
 		cp "$BSH" $TGT || die Unable to copy "$BSH" to $TGT.
-		log "$new" is installed in $DST.
+		printf '%s is installed in %s.\n' "$new" $DST
 	fi
 }
 
