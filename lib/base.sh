@@ -18,12 +18,13 @@
 #  https://stackoverflow.com/questions/18597697/posix-compliant-way-to-scope-variables-to-a-function-in-a-shell-script
 # shellcheck disable=SC3043 # Uses local variables.
 #
-# shellbase is general framework for POSIX shell scripts. It provides multiple
-# services: public functions (logger, validation), signals handlers, garbage
-# collection, multiple instances. It asks for a permission to continue if
-# multiple running instances of a same script are detected.
+# The shellbase framework serves as a foundation for Unix shell scripts. This
+# framework is mostly POSIX-compliant, ensuring compatibility across Unix-like
+# systems. It offers a range of essential services, including public functions
+# such as logger and multiple validations, signal handling, garbage collection,
+# and support for multiple instances.
 #
-# shellbase defines global variables and functions. All functions without
+# The shellbase defines global variables and functions. All functions without
 # base_ prefix are public and could be used by clients. The public functions
 # are, in alphabetical order:
 # aud_only, beroot, beuser, cheat, cmd_exists, die, echo, file_exists,
