@@ -1,17 +1,17 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2022 David Rabkin
+# Copyright 2022-2023 David Rabkin
 # shellcheck disable=SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
-ver="$(semver 'I am 1.2.3')"
+ver="$(semver 'I am 1.2.3')" || die
 log "$ver"
 inside "$ver" 0.0.0+nil && die
-ver="$(semver 'I am 1.2.3+meta')"
+ver="$(semver 'I am 1.2.3+meta')" || die
 log "$ver"
 inside "$ver" 0.0.0+nil && die
-ver="$(semver 'I am 1.2.3-4+alpha')"
+ver="$(semver 'I am 1.2.3-4+alpha')" || die
 log "$ver"
 inside "$ver" 0.0.0+nil && die
-ver="$(semver 'I am 1.2.3-4+beta')"
+ver="$(semver 'I am 1.2.3-4+beta')" || die
 log "$ver"
 inside "$ver" 0.0.0+nil || :

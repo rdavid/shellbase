@@ -44,7 +44,7 @@
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230604
+BASE_VERSION=0.9.20230605
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -391,16 +391,18 @@ realpath() {
 # Uses GNU grep with PCRE option.
 semver() {
 	[ -z "${1-}" ] || [ $# -gt 1 ] && die Usage: semver string.
-	local str="$1" ver
+	local ret=0 str="$1" ver
 	ver="$(
 		printf %s "$str" |
 			grep --only-matching --perl-regexp \
 				'(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
 	)" || {
+		ret=$?
 		logw Unable to extract SemVer from "$str".
 		ver=0.0.0+nil
 	}
 	printf %s "$ver"
+	return $ret
 }
 
 # Returns current time in form of timestamp.
