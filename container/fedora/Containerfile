@@ -4,7 +4,7 @@ ENV \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
-COPY --from=ghcr.io/rdavid/goredoer:0.9.20230504 /go/goredo .
+COPY --from=ghcr.io/rdavid/goredoer:0.9.20230606 /go/goredo .
 
 # hadolint ignore=DL3041
 RUN \
