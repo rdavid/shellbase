@@ -45,7 +45,7 @@
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230606
+BASE_VERSION=0.9.20230608
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -954,6 +954,7 @@ set -o errexit -o nounset
 # Loops through command line arguments of the script. Handles only arguments
 # with set-and-go logic.
 cnt=0
+skp=false
 for arg; do
 	shift
 	case "$arg" in
@@ -969,17 +970,25 @@ for arg; do
 			exit 12
 		}
 		BASE_DIR_WIP="$1"
+		skp=true
 		;;
 	-k | --keep-wip) BASE_KEEP_WIP=true ;;
 	-q | --quiet) cnt=$((cnt + 1)) ;;
 	-t | --trace) cnt=$((cnt - 1)) ;;
 	-x | --execute) set -x ;;
 	-y | --yes) BASE_YES_TO_CONT=true ;;
-	*) set -- "$@" "$arg" ;; # Sets back any unused args.
+	*)
+		# If an argument is not skipped, sets it back to all.
+		if [ $skp = false ]; then
+			set -- "$@" "$arg"
+		else
+			skp=false
+		fi
+		;;
 	esac
 done
 [ "$cnt" -gt 0 ] && BASE_QUIET=true
-unset arg cnt
+unset arg cnt skp
 readonly \
 	BASE_DIR_WIP \
 	BASE_KEEP_WIP \
