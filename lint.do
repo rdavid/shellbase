@@ -8,6 +8,7 @@ redo-ifchange \
 	app/* \
 	container/*/Containerfile \
 	lib/* \
+	Makefile \
 	README.adoc
 
 # shellcheck disable=SC1091 # File not following.
