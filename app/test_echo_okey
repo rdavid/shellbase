@@ -1,19 +1,19 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2022 David Rabkin
-# shellcheck disable=SC1091 # File not following.
+# Copyright 2022-2022 David Rabkin
+# shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 echo hello
 
-# shellcheck disable=SC3037 # Echo flags are undefined.
+# shellcheck disable=SC2039,SC3037 # Echo flags are undefined.
 echo "-e"
 
 # shellcheck disable=SC2028 # Echo won't expand escape sequences.
 echo "\\n"
 
-# shellcheck disable=SC3037 # Echo flags are undefined.
+# shellcheck disable=SC2039,SC3037 # Echo flags are undefined.
 echo -n hello
 
-# shellcheck disable=SC3037 # Echo flags are undefined.
+# shellcheck disable=SC2039,SC3037 # Echo flags are undefined.
 echo -ne hello
 echo bye

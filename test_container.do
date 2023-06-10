@@ -3,7 +3,7 @@
 # Copyright 2022-2023 David Rabkin
 redo-ifchange app/* lib/*
 
-# shellcheck disable=SC1091 # File not following.
+# shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/lib/base.sh
 validate_cmd podman
 podman machine start >/dev/null 2>&1 || :
