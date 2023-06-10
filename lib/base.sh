@@ -16,7 +16,7 @@
 # The script uses local variables which are not POSIX but supported by most
 # shells, see more:
 #  https://stackoverflow.com/questions/18597697/posix-compliant-way-to-scope-variables-to-a-function-in-a-shell-script
-# shellcheck disable=SC3043 # Uses local variables.
+# shellcheck disable=SC2039,SC3043 # Uses local variables.
 #
 # The shellbase framework serves as a foundation for Unix shell scripts. This
 # framework is mostly POSIX-compliant, ensuring compatibility across Unix-like
@@ -45,7 +45,7 @@
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230608
+BASE_VERSION=0.9.20230610
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -821,7 +821,7 @@ base_main() {
 	BASE_IAM="${BASE_IAM%.*}"
 
 	# Busybox implementation of mktemp requires six Xs.
-	BASE_WIP="$(mktemp -d "$BASE_DIR_WIP"/"$BASE_IAM.XXXXXX" 2>&1)" || {
+	BASE_WIP="$(mktemp -d "$BASE_DIR_WIP/$BASE_IAM.XXXXXX" 2>&1)" || {
 		err=$?
 		printf >&2 %s\\n "$BASE_WIP"
 		exit $err

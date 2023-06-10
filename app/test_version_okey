@@ -2,8 +2,8 @@
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # Copyright 2023 David Rabkin
 # shellcheck disable=SC2034 # Variable appears unused.
-readonly BASE_APP_VERSION=0.9.20230405
+readonly BASE_APP_VERSION=0.9.20230610
 set -- --version
 
-# shellcheck disable=SC1091 # File not following.
+# shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh

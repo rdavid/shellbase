@@ -11,7 +11,7 @@ redo-ifchange \
 	Makefile \
 	README.adoc
 
-# shellcheck disable=SC1091 # File not following.
+# shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/lib/base.sh
 cmd_exists checkmake && checkmake Makefile
 cmd_exists hadolint && hadolint container/*/Containerfile

@@ -23,5 +23,5 @@ BASE_APP_WARRANTY="$(
 )"
 set -- --warranty
 
-# shellcheck disable=SC1091 # File not following.
+# shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
