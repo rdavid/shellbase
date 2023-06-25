@@ -203,10 +203,10 @@ isreadable() {
 	local arg ret=0
 	for arg; do
 		if [ -r "$arg" ]; then
-			log File "$arg" is readable.
+			log File or directory "$arg" is readable.
 		else
 			ret=1
-			logw File "$arg" is not readable.
+			logw File or directory "$arg" is not readable.
 		fi
 	done
 	return $ret
