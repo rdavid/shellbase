@@ -45,7 +45,7 @@
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230625
+BASE_VERSION=0.9.20230626
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -385,7 +385,7 @@ realpath() {
 	[ / = "$dir" ] && printf /%s "$nme" || printf %s/%s "$dir" "$nme"
 }
 
-# Extracts semantic versioning from a string, see https://semver.org/:
+# Extracts semantic versioning from a string, see https://semver.org:
 #  1.2.3
 #  1.2.3+meta
 #  1.2.3-4-alpha
