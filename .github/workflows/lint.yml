@@ -22,6 +22,7 @@ jobs:
           additional_files: ./*.do app/* lib/*
       - uses: mfinelli/setup-shfmt@v2
       - run: shfmt -d *.do app/* lib/*
+      - uses: crate-ci/typos@master
       - uses: errata-ai/vale-action@reviewdog
         with:
           fail_on_error: true
