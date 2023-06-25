@@ -45,7 +45,7 @@
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230610
+BASE_VERSION=0.9.20230625
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -619,8 +619,11 @@ ytda() {
 		renamr -a
 }
 
-# Private functions have prefix base_, they are used locally.
+# All functions below are private, every function has prefix base_, they should
+# be used locally.
 
+# Right before a program exiting, it prints a program name and and its
+# lifespan.
 base_bye() {
 	log "$BASE_IAM $$ says bye after $(base_duration "$BASE_BEG")."
 }
