@@ -6,5 +6,5 @@
 var_exists \
 	HOME \
 	PATH \
-	UNDEF1NED_VAR1ABLE \
+	UNDEFINED_VAR1ABLE \
 	USER

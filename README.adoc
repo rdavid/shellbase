@@ -15,6 +15,7 @@
 :url-shellcheck: https://github.com/koalaman/shellcheck
 :url-shfmt: https://github.com/mvdan/sh
 :url-toolbox: https://github.com/rdavid/toolbox
+:url-typos: https://github.com/crate-ci/typos
 :url-vale: https://vale.sh
 :url-yamllint: https://github.com/adrienverge/yamllint
 
@@ -83,7 +84,7 @@ The public functions are, in alphabetical order:
 {url-base}#L612[`ytda`].
 
 Global variables have `BASE_` prefix and clients could use them.
-Clients should place all temporarily files under `$BASE_WIP`.
+Clients should place temporary files under `$BASE_WIP`.
 All functions started with `base_` prefix are internal and should not be used
 by clients.
 All names are in alphabetical order.
@@ -178,8 +179,8 @@ The project uses Daniel J. Bernstein's build system {url-redo}[`redo`].
 You can install Sergey Matveev's {url-goredo}[`goredo`] implementation.
 `redo lint` applies the following linters to the source files:
 {url-checkmake}[`checkmake`], {url-hadolint}[`hadolint`],
-{url-shellcheck}[`shellcheck`], {url-shfmt}[`shfmt`], {url-vale}[`vale`],
-{url-yamllint}[`yamllint`].
+{url-shellcheck}[`shellcheck`], {url-shfmt}[`shfmt`], {url-typos}[`typos`],
+{url-vale}[`vale`], {url-yamllint}[`yamllint`].
 `redo test` runs unit tests in installed shells.
 `redo test_container` runs the tests across various shells in containers.
 It uses {url-cv}[David Rabkin]'s {url-goredoer}[`goredoer`] to build

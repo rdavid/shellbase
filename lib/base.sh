@@ -35,8 +35,8 @@
 # vid2aud, yes_to_continue, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
-# place all temporaly files under $BASE_WIP. All functions started with
-# base_ prefix are internal and should not be used by clients. All names are in
+# place temporary files under $BASE_WIP. All functions started with base_
+# prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
 #
 # Following variables could be changed by command line parameters. They will be
@@ -498,7 +498,7 @@ user_exists() {
 	return $ret
 }
 
-# Makes sure all commands exist, othewise dies. Loops over the arguments in
+# Makes sure all commands exist, otherwise dies. Loops over the arguments in
 # order to die with a command name in error.
 validate_cmd() {
 	local arg
@@ -872,7 +872,7 @@ base_prettytable_prettify() {
 	cat - | sed "s/^/|/;s/\$/	/;s/	/	|/g"
 }
 
-# Adds horisontal line with colums separator. The input parameter is a number
+# Adds horizontal line with columns separator. The input parameter is a number
 # of columns.
 base_prettytable_separator() {
 	local i="$1"

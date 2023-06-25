@@ -5,5 +5,5 @@
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 validate_var \
 	HOME \
-	UNDEF1NED_VAR1ABLE \
+	UNDEFINED_VAR1ABLE \
 	USER
