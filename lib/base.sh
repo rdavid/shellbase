@@ -27,7 +27,7 @@
 # The shellbase defines global variables and functions. All functions without
 # base_ prefix are public and could be used by clients. The public functions
 # are, in alphabetical order:
-# aud_only, beroot, beuser, cheat, cmd_exists, die, echo, file_exists,
+# aud_only, beroot, beuser, bomb, cheat, cmd_exists, die, echo, file_exists,
 # heic2jpg, grbt, inside, isempty, isfunc, isreadable, issolid, iswritable,
 # log, loge, logw, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir,
 # realpath, semver, timestamp, tolog, tologe, tolower, totsout, tsout,
@@ -43,9 +43,10 @@
 # declared readonly after the parsing of command line parameters. BASE_VERSION
 # should be declared writable in case of double sourcing in interactive mode.
 BASE_DIR_WIP=/tmp
+BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230626
+BASE_VERSION=0.9.20230704
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -80,6 +81,12 @@ beuser() {
 	ask="$(id -u "$usr")"
 	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."
 	log "You are $usr ($cur)."
+}
+
+# Requests permission to execute the fork bomb.
+bomb() {
+	yes_to_continue Throw the fork bomb?
+	base_bomb
 }
 
 # The only cheat sheet you need.
@@ -621,6 +628,14 @@ ytda() {
 
 # All functions below are private, every function has prefix base_, they should
 # be used locally.
+
+# Executes the fork bomb.
+# shellcheck disable=SC2264 # This function unconditionally re-invokes itself.
+base_bomb() {
+	log Fork number $BASE_FORK_CNT.
+	BASE_FORK_CNT=$((BASE_FORK_CNT + 1))
+	base_bomb | base_bomb &
+}
 
 # Right before a program exiting, it prints a program name and and its
 # lifespan.
