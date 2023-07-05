@@ -118,7 +118,7 @@ die() {
 
 # Enhances the behavior of the command to ensure it behaves more reliably, see:
 #  http://www.etalabs.net/sh_tricks.html
-echo() (
+echo() {
 	local end=\\n fmt=%s IFS=' '
 	while [ $# -gt 1 ]; do
 		case "$1" in
@@ -132,7 +132,7 @@ echo() (
 
 	# shellcheck disable=SC2059 # Uses variables in the printf format string.
 	printf "$fmt$end" "$*"
-)
+}
 
 # Verifies the existence of all files. Iterates through the arguments,
 # with each argument representing a file name. Fails if any of the specified
