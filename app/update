@@ -1,0 +1,39 @@
+#!/bin/sh
+# vi:et lbr noet sw=2 ts=2 tw=79 wrap
+# Copyright 2023 David Rabkin
+# shellcheck disable=SC2039,SC3043 # Uses local variables.
+# Updates README.adoc with actual links to the public functions.
+BSH="$(
+	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
+)"/../lib/base.sh || {
+	local err=$?
+	printf >&2 %s\\n "$BSH"
+	exit $err
+}
+
+# shellcheck disable=SC2034 # Variable appears unused.
+readonly \
+	BASE_APP_VERSION=0.9.20230705 \
+	BSH \
+	OUT=README.adoc
+
+# shellcheck disable=SC1090 # File not following.
+. "$BSH"
+isreadable "$BSH" "$OUT" || die
+readonly \
+	BEG="$BASE_WIP"/beg \
+	END="$BASE_WIP"/end \
+	MID="$BASE_WIP"/mid
+NUM="$(awk '/The public functions are/ {print FNR}' "$OUT")" || die "$NUM"
+head -n "$NUM" "$OUT" >"$BEG"
+grep -n -P '^(?!base)\w.*{$' "$BSH" |
+	rev |
+	cut -c5- |
+	rev |
+	awk -F: '{print "{url-base}#L"$1"[`"$2"`],"}' |
+	sed '$s/\,/./g' >"$MID"
+NUM="$(awk '/Global variables have/ {print FNR}' "$OUT")" || die "$NUM"
+NUM=$((NUM - 1))
+tail -n +"$NUM" "$OUT" >"$END"
+iswritable "$OUT" || die
+cat "$BEG" "$MID" "$END" >"$OUT"

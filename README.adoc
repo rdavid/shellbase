@@ -41,9 +41,9 @@ support for multiple instances.
 The `shellbase` defines global variables and functions.
 All functions without `base_` prefix are public and could be used by clients.
 The public functions are, in alphabetical order:
-{url-base}#L53[`aud_only`],
-{url-base}#L70[`beroot`],
-{url-base}#L75[`beuser`],
+{url-base}#L54[`aud_only`],
+{url-base}#L71[`beroot`],
+{url-base}#L76[`beuser`],
 {url-base}#L87[`bomb`],
 {url-base}#L93[`cheat`],
 {url-base}#L99[`cmd_exists`],
@@ -53,7 +53,7 @@ The public functions are, in alphabetical order:
 {url-base}#L155[`grbt`],
 {url-base}#L165[`heic2jpg`],
 {url-base}#L179[`inside`],
-{url-base}#L188[`isempty`],
+{url-base}#L187[`isempty`],
 {url-base}#L201[`isfunc`],
 {url-base}#L209[`isreadable`],
 {url-base}#L225[`issolid`],
