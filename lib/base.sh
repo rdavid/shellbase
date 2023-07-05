@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230704
+BASE_VERSION=0.9.20230705
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -67,12 +67,12 @@ aud_only() {
 	find . -type d -empty -delete
 }
 
-# Exits with error if it is not ran by root.
+# Checks if the script is run by the root user.
 beroot() {
 	beuser root
 }
 
-# Exits with error if it is not ran by a user.
+# Checks if the script is run by a user.
 beuser() {
 	[ -z "${1-}" ] && die Usage: beuser name.
 	local ask cur usr="$1"
@@ -110,13 +110,13 @@ cmd_exists() {
 	return $ret
 }
 
-# Prints all parameters as error and exits with the error code.
+# Prints all parameters as an error message, and exits with the error code.
 die() {
 	[ $# -eq 0 ] || loge "$@"
 	base_is_interactive && log You\'re immortal! || exit 10
 }
 
-# Repairs echo to behave in a reasonable way, see:
+# Enhances the behavior of the command to ensure it behaves more reliably, see:
 #  http://www.etalabs.net/sh_tricks.html
 echo() (
 	local end=\\n fmt=%s IFS=' '
@@ -134,8 +134,9 @@ echo() (
 	printf "$fmt$end" "$*"
 )
 
-# Checks whether all files exist. Loops over the arguments, each one is a file
-# name. Fails if one of a file doesn't exist.
+# Verifies the existence of all files. Iterates through the arguments,
+# with each argument representing a file name. Fails if any of the specified
+# files do not exist.
 file_exists() {
 	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: file_exists file1 file2...
 	local arg ret=0
@@ -807,7 +808,7 @@ base_hi() {
 	log "$BASE_IAM $$" says hi.
 }
 
-# Defines if shellbase is running in interactive mode.
+# Determines if the shell is running in interactive mode.
 base_is_interactive() {
 	case "$-" in *i*) return 0 ;; esac
 	return 1
