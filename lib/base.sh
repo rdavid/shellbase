@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230705
+BASE_VERSION=0.9.20230706
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -111,9 +111,12 @@ cmd_exists() {
 }
 
 # Prints all parameters as an error message, and exits with the error code.
+# It attempts to retain the original error code; otherwise, it returns ten.
 die() {
-	[ $# -eq 0 ] || loge "$@"
-	base_is_interactive && log You\'re immortal! || exit 10
+	local ret=$?
+	[ $ret != 0 ] || ret=10
+	[ $# = 0 ] || loge "$@"
+	base_is_interactive && log You\'re immortal! || exit $ret
 }
 
 # Enhances the behavior of the command to ensure it behaves more reliably, see:
