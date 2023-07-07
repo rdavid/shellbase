@@ -113,10 +113,10 @@ cmd_exists() {
 # Prints all parameters as an error message, and exits with the error code.
 # It attempts to retain the original error code; otherwise, it returns ten.
 die() {
-	local ret=$?
-	[ $ret != 0 ] || ret=10
+	local err=$?
+	[ $err != 0 ] || err=10
 	[ $# = 0 ] || loge "$@"
-	base_is_interactive && log You\'re immortal! || exit $ret
+	base_is_interactive && log You\'re immortal! || exit $err
 }
 
 # Enhances the behavior of the command to ensure it behaves more reliably, see:
