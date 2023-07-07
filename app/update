@@ -2,7 +2,8 @@
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # Copyright 2023 David Rabkin
 # shellcheck disable=SC2039,SC3043 # Uses local variables.
-# Updates README.adoc with actual links to the public functions.
+# Updates README.adoc with actual links to the public functions. By default
+# doesn't update the file, works as a linter.
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
 )"/../lib/base.sh || {
@@ -10,30 +11,92 @@ BSH="$(
 	printf >&2 %s\\n "$BSH"
 	exit $err
 }
+BASE_APP_USAGE="$(
+	cat <<-EOM 2>&1
+		  -a, --action      Replaces README with updated version.
+	EOM
+)" || {
+	local err=$?
+	printf >&2 %s\\n "$BASE_APP_USAGE"
+	exit $err
+}
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20230705 \
+	BASE_APP_USAGE \
+	BASE_APP_VERSION=0.9.20230707 \
+	BASE_MIN_VERSION=0.9.20230405 \
 	BSH \
-	OUT=README.adoc
+	TGT=README.adoc
 
 # shellcheck disable=SC1090 # File not following.
 . "$BSH"
-isreadable "$BSH" "$OUT" || die
 readonly \
 	BEG="$BASE_WIP"/beg \
 	END="$BASE_WIP"/end \
-	MID="$BASE_WIP"/mid
-NUM="$(awk '/The public functions are/ {print FNR}' "$OUT")" || die "$NUM"
-head -n "$NUM" "$OUT" >"$BEG"
-grep -n -P '^(?!base)\w.*{$' "$BSH" |
-	rev |
-	cut -c5- |
-	rev |
-	awk -F: '{print "{url-base}#L"$1"[`"$2"`],"}' |
-	sed '$s/\,/./g' >"$MID"
-NUM="$(awk '/Global variables have/ {print FNR}' "$OUT")" || die "$NUM"
-NUM=$((NUM - 1))
-tail -n +"$NUM" "$OUT" >"$END"
-iswritable "$OUT" || die
-cat "$BEG" "$MID" "$END" >"$OUT"
+	MID="$BASE_WIP"/mid \
+	OUT="$BASE_WIP"/out
+
+# Pasrses base.sh for functions and re-creates new README.
+analyze() {
+	local num
+	num="$(awk '/The public functions are/ {print FNR}' "$TGT" 2>&1)" ||
+		die "$num"
+	head -n "$num" "$TGT" >"$BEG"
+	grep -n -P '^(?!base)\w.*{$' "$BSH" |
+		rev |
+		cut -c5- |
+		rev |
+		awk -F: '{print "{url-base}#L"$1"[`"$2"`],"}' |
+		sed '$s/\,/./g' >"$MID"
+	num="$(awk '/Global variables have/ {print FNR}' "$TGT" 2>&1)" ||
+		die "$num"
+	num=$((num - 1))
+	tail -n +"$num" "$TGT" >"$END"
+	cat "$BEG" "$MID" "$END" >"$OUT"
+}
+
+# Parses arguments, validates, analyzrs, and installs.
+main() {
+	parse "$@"
+	validate
+	analyze
+	update
+}
+
+# Parses command line arguments.
+parse() {
+	local arg
+	for arg; do
+		shift
+		case "$arg" in
+		-a | --action) ACT=true ;;
+		esac
+	done
+	var_exists ACT || ACT=false
+	readonly ACT
+}
+
+# Compares new README and current, updates if needed.
+update() {
+	if cmp --quiet "$OUT" "$TGT"; then
+		log "$TGT" is updated.
+		return
+	fi
+	if [ "$ACT" = false ]; then
+		logw "$TGT" should be updated.
+		exit 1
+	fi
+	iswritable "$TGT" || die
+	cp -f "$OUT" "$TGT" || die Unable to update "$TGT".
+	log "$TGT" has been updated.
+}
+
+# Checks the environment.
+validate() {
+	isreadable "$BSH" "$TGT" || die
+	validate_cmd awk cat cmp cut grep head rev sed tail
+}
+
+# Starting point.
+main "$@"

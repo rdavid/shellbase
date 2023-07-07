@@ -31,3 +31,4 @@ jobs:
         with:
           file_or_dir: .github/*.yml .github/workflows/*.yml
           strict: true
+      - run: ./app/update
