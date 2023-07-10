@@ -4,7 +4,7 @@ ENV \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
-COPY --from=ghcr.io/rdavid/goredoer:0.9.20230707 /go/goredo .
+COPY --from=ghcr.io/rdavid/goredoer:0.9.20230710 /goredo .
 RUN \
 	microdnf update --assumeyes --disableplugin=subscription-manager \
 	&& rm --force --recursive /var/cache/yum \
