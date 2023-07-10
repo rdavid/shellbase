@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230707
+BASE_VERSION=0.9.20230710
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -547,7 +547,7 @@ var_exists() {
 # to the second parameter. See more:
 #  https://unix.stackexchange.com/questions/285924/how-to-compare-a-programs-version-in-a-shell-script
 ver_ge() {
-	printf %s\\n "$2" "$1" | sort --check=quiet --version-sort
+	printf %s\\n "$2" "$1" | sort -V 2>/dev/null
 }
 
 # Converts all video files in current directory to MP3 files.
