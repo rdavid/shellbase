@@ -12,6 +12,7 @@ RUN \
 		bash-4.4.20 \
 		findutils-4.6.0 \
 		shadow-utils \
+		util-linux \
 	&& microdnf clean all --disableplugin=subscription-manager \
 	&& useradd --create-home "$USER" \
 	&& goredo -symlinks
