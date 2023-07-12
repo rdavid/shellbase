@@ -88,9 +88,11 @@ Global variables have `BASE_` prefix and clients could use them.
 Clients should place temporary files under `$BASE_WIP`.
 All functions started with `base_` prefix are internal and should not be used
 by clients.
-All names are in alphabetical order.
+The names are arranged in alphabetical order.
 
-See {url-dotfiles}[`dotfiles`], {url-gento}[`gento`] and {url-toolbox}[`toolbox`] as examples.
+See {url-dotfiles}[`dotfiles`], {url-gento}[`gento`], and
+{url-toolbox}[`toolbox`] as examples of projects that utilize this
+framework.
 
 == Install
 
