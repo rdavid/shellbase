@@ -17,6 +17,7 @@ RUN \
 		dash \
 		fish \
 		ksh \
+		procps \
 		shellcheck \
 		tcsh \
 		yamllint \
