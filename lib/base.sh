@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230710
+BASE_VERSION=0.9.20230713
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -202,7 +202,7 @@ isempty() {
 # Determines whether a shell function with a given name exists, see:
 #  https://stackoverflow.com/questions/35818555/how-to-determine-whether-a-function-exists-in-a-posix-shell
 isfunc() {
-	case "$(type -- "$1" 2>/dev/null)" in
+	case "$(type "$1" 2>/dev/null)" in
 	*function*) return 0 ;;
 	esac
 	return 1
