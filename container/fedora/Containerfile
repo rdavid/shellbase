@@ -17,6 +17,7 @@ RUN \
 		shadow-utils \
 		shellcheck \
 		shfmt \
+		procps \
 		util-linux \
 		yamllint \
 		yash \
