@@ -17,6 +17,7 @@ RUN \
 		shadow-utils \
 		shellcheck \
 		shfmt \
+		util-linux \
 		yamllint \
 		yash \
 	&& dnf clean all \
