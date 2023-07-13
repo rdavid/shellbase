@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230713
+BASE_VERSION=0.9.20230714
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -713,7 +713,7 @@ base_cleanup() {
 	fi
 }
 
-# Prints shellbase usage and exits.
+# Prints the usage instructions for shellbase and terminates the program.
 base_display_usage() {
 	local use
 	use="$(
@@ -721,16 +721,18 @@ base_display_usage() {
 			Usage: $BASE_IAM [-d] [-h] [-k] [-q] [-v] [-w] [-x] [-y] ...
 
 			Arguments:
-			  -d, --dir-wip     Custom directory of work in progress directory, the
-			                    default is /tmp.
-			  -h, --help        Displays this help message.
-			  -k, --keep-wip    Keeps work in progress directory on exit.
-			  -q, --quiet       Hides information and warning logs.
-			  -t, --trace       Shows information and warning logs.
-			  -v, --version     Displays version number.
-			  -w, --warranty    Echoes warranty statement to stdout.
-			  -x, --execute     Echoes every command before execution.
-			  -y, --yes         Answers yes on yes_to_continue without interruption.
+			  -d, --dir-wip     Allows specifying a custom directory for the work in
+			                    progress directory, with the default being /tmp.
+			  -h, --help        Displays the help message.
+			  -k, --keep-wip    Preserves the work in progress directory upon
+			                    exiting.
+			  -q, --quiet       Suppresses information and warning logs.
+			  -t, --trace       Displays information and warning logs.
+			  -v, --version     Displays the version number.
+			  -w, --warranty    Outputs the warranty statement to stdout.
+			  -x, --execute     Prints each command before its execution.
+			  -y, --yes         Automatically responds yes to the yes_to_continue
+			                    prompt without interruption.
 		EOM
 	)" || die "$use"
 	var_exists BASE_APP_USAGE >/dev/null 2>&1 &&
