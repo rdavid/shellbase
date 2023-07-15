@@ -1,10 +1,11 @@
+FROM ghcr.io/rdavid/goredoer:0.9.20230710 as goredoer
 FROM fedora:39
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
-COPY --from=ghcr.io/rdavid/goredoer:0.9.20230710 /goredo .
+COPY --from=goredoer /goredo .
 
 # hadolint ignore=DL3041
 RUN \

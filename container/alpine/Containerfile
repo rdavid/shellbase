@@ -1,3 +1,4 @@
+FROM ghcr.io/rdavid/goredoer:0.9.20230710 as goredoer
 FROM alpine:3.18.2
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
@@ -5,7 +6,7 @@ ENV \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
-COPY --from=ghcr.io/rdavid/goredoer:0.9.20230710 /goredo .
+COPY --from=goredoer /goredo .
 RUN \
 	apk add --no-cache --update \
 		bash~=5.2 \
