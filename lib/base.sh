@@ -553,7 +553,7 @@ var_exists() {
 # to the second parameter. See more:
 #  https://unix.stackexchange.com/questions/285924/how-to-compare-a-programs-version-in-a-shell-script
 ver_ge() {
-	printf %s\\n "$2" "$1" | sort -V 2>/dev/null
+	printf %s\\n "$2" "$1" | sort -V >/dev/null 2>&1
 }
 
 # Converts all video files in current directory to MP3 files.
