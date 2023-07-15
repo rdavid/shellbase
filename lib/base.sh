@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230714
+BASE_VERSION=0.9.20230716
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -91,21 +91,24 @@ bomb() {
 
 # The only cheat sheet you need.
 cheat() {
+	cmd_exists curl || {
+		local err=$?
+		printf ↑\ err
+		return $err
+	}
 	curl https://cht.sh/"$1"
 }
 
 # Checks whether all commands exits. Loops over the arguments, each one is a
-# command name.
+# command name. The presence of a command is a frequent occurrence, and the
+# event is not logged.
 cmd_exists() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: cmd_exists cmd1 cmd2...
 	local arg ret=0
 	for arg; do
-		if command -v "$arg" >/dev/null 2>&1; then
-			log Command "$arg" exists.
-		else
+		command -v "$arg" >/dev/null 2>&1 || {
 			ret=$?
 			logw Command "$arg" does not exist.
-		fi
+		}
 	done
 	return $ret
 }
@@ -141,7 +144,6 @@ echo() {
 # with each argument representing a file name. Fails if any of the specified
 # files do not exist.
 file_exists() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: file_exists file1 file2...
 	local arg ret=0
 	for arg; do
 		if ls "$arg" >/dev/null 2>&1; then
@@ -154,8 +156,9 @@ file_exists() {
 	return $ret
 }
 
-# Creates temporary commit, rebases it and pushes.
+# Generates a temporary commit, performs a rebase, and pushes the changes.
 grbt() {
+	cmd_exists git || return $?
 	local br
 	br="$(git rev-parse --abbrev-ref HEAD 2>&1)" || die "$br"
 	git commit --all --message tmp &&
@@ -338,6 +341,7 @@ pdf2png() {
 # The implementation is inspired by Jakob Westhoff:
 #  https://github.com/jakobwesthoff/prettytable.sh
 prettytable() {
+	cmd_exists column sed || return $?
 	local bdy col hdr inp
 	inp="$(cat -)"
 	hdr="$(printf %s "$inp" | head -n1)"
@@ -363,6 +367,11 @@ prettytable() {
 # Prints human readable uptime time, see:
 #  https://stackoverflow.com/questions/28353409/bash-format-uptime-to-show-days-hours-minutes
 prettyuptime() {
+	cmd_exists sed tr uptime || {
+		local err=$?
+		printf ↑\ err
+		return $err
+	}
 	uptime | sed -E '
 		s/^[^,]*up *//
 		s/mins/minutes/
@@ -468,10 +477,9 @@ tsout() {
 }
 
 # Checks whether all URLs exist, any returned HTTP code is OK. In case of error
-# out has two lines: error message and HTTP code 000. Uses curl, make sure it
-# is installed with 'cmd_exists curl' before calling the function.
+# out has two lines: error message and HTTP error code.
 url_exists() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: url_exists url1 url2...
+	cmd_exists curl || return $?
 	local arg out ret=0
 	for arg; do
 		if out="$(
@@ -493,10 +501,9 @@ url_exists() {
 	return $ret
 }
 
-# Checks whether all user exist. Uses id, make sure it is installed with
-# 'cmd_exists id' before calling the function.
+# Verifies the existence of all users.
 user_exists() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: user_exists user1 user2...
+	cmd_exists id || return $?
 	local arg ret=0
 	for arg; do
 		if id "$arg" >/dev/null 2>&1; then
@@ -526,7 +533,6 @@ validate_var() {
 # Checks whether all variables are defined. Loops over the arguments, each one
 # is a variable name. Fails if one of a variable is unset or null.
 var_exists() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: var_exists var1 var2...
 	local arg ret=0 var
 	for arg; do
 		set +o nounset
