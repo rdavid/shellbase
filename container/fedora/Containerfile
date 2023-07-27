@@ -15,6 +15,7 @@ RUN \
 		bash \
 		findutils \
 		hadolint \
+		perl-Digest-SHA \
 		shadow-utils \
 		shellcheck \
 		shfmt \
