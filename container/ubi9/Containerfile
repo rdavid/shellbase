@@ -12,6 +12,7 @@ RUN \
 	&& microdnf install --assumeyes --disableplugin=subscription-manager \
 		bash-5.1.8 \
 		findutils-4.8.0 \
+		perl-Digest-SHA \
 		procps-ng-3.3.17 \
 		shadow-utils-2:4.9 \
 		util-linux \
