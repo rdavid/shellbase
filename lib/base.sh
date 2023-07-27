@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230718
+BASE_VERSION=0.9.20230727
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -74,7 +74,7 @@ beroot() {
 
 # Checks if the script is run by a user.
 beuser() {
-	[ -z "${1-}" ] && die Usage: beuser name.
+	cmd_exists id || return $?
 	local ask cur usr="$1"
 	user_exists "$usr" || die "$usr": No such user.
 	cur="$(id -u)"
@@ -165,6 +165,7 @@ grbt() {
 
 # Converts Apple's HEIC files in a current directory to JPEG.
 heic2jpg() {
+	cmd_exists magick || return $?
 	magick mogrify -format jpg -monitor ./*.[hH][eE][iI][cC]
 }
 
@@ -226,6 +227,7 @@ isreadable() {
 # hash (SHA-256). It doesn't consider a line where the hash is defined.
 issolid() {
 	local \
+		err \
 		file="$0" \
 		hash \
 		line \
@@ -235,19 +237,22 @@ issolid() {
 	line="$(
 		grep --regexp "$patt" "$file"
 	)" || {
+		err=$?
 		loge File "$file" doesn\'t have a hash.
-		return $?
+		return $err
 	}
 	hash="$(
 		printf %s "$line" | head -1 | awk -F = '{print $2}'
 	)" || {
+		err=$?
 		loge File "$file" has hash with unknown format: "$line".
-		return $?
+		return $err
 	}
 	grep --invert-match --regexp "$patt" "$file" >"$temp"
 	printf %s\ \ %s "$hash" "$temp" | shasum --check --status || {
+		err=$?
 		loge Hash of "$file" does not match "$hash"
-		return $?
+		return $err
 	}
 	log File "$file" is solid.
 }
@@ -305,6 +310,7 @@ logw() {
 
 # Converts all PDF files in current directory to JPG files.
 pdf2jpg() {
+	cmd_exists sips || return $?
 	local fil
 	for fil in *.pdf; do
 		sips -s format jpeg "$fil" --out "$fil.jpg"
@@ -314,6 +320,7 @@ pdf2jpg() {
 
 # Converts all PDF files in current directory to PNG files.
 pdf2png() {
+	cmd_exists pdftoppm || return $?
 	local fil
 	for fil in *.pdf; do
 		pdftoppm "$fil" "${fil%.*}" -png
@@ -554,6 +561,7 @@ ver_ge() {
 
 # Converts all video files in current directory to MP3 files.
 vid2aud() {
+	cmd_exists ffmpeg || return $?
 	local dst src
 	find . -type f -maxdepth 1 \
 		\( -name \*.mp4 -o -name \*.m4v -o -name \*.avi -o -name \*.mkv \) |
@@ -623,6 +631,7 @@ yes_to_continue() {
 
 # Downloads a video from YouTube.
 ytda() {
+	cmd_exists renamr yt-dlp || return $?
 	yt-dlp \
 		--output "%(uploader)s-%(upload_date)s-%(title)s.%(ext)s" \
 		--format bestvideo+bestaudio \
