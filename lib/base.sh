@@ -210,7 +210,6 @@ isfunc() {
 
 # Verifies that all parameters are readable files.
 isreadable() {
-	[ -z "${1-}" ] || [ $# -eq 0 ] && die Usage: isreadable file1 file2...
 	local arg ret=0
 	for arg; do
 		if [ -r "$arg" ]; then
@@ -226,6 +225,7 @@ isreadable() {
 # Verifies that a content of a running script has a written inside the script
 # hash (SHA-256). It doesn't consider a line where the hash is defined.
 issolid() {
+	cmd_exists awk head grep shasum || return $?
 	local \
 		err \
 		file="$0" \
@@ -414,7 +414,6 @@ realpath() {
 #  1.2.3-4-alpha
 # Uses GNU grep with PCRE option.
 semver() {
-	[ -z "${1-}" ] || [ $# -gt 1 ] && die Usage: semver string.
 	local ret=0 str="$1" ver
 	ver="$(
 		printf %s "$str" |
