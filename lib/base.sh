@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230727
+BASE_VERSION=0.9.20230807
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -985,6 +985,12 @@ base_write_to_file() {
 # Starting point. Stops right away if it has ran in interactive mode.
 base_is_interactive && return 0
 set -o errexit -o nounset
+
+# If supported, pipefail will be set, and it will become POSIX-compliant in the
+# near future:
+#  https://www.austingroupbugs.net/view.php?id=789
+# shellcheck disable=SC3040 # pipefail is not POSIX.
+(set -o pipefail 2>/dev/null) && set -o pipefail
 
 # Loops through command line arguments of the script. Handles only arguments
 # with set-and-go logic.
