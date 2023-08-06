@@ -18,6 +18,7 @@ RUN \
 		dash \
 		fish \
 		ksh \
+		libdigest-sha-perl \
 		procps \
 		shellcheck \
 		tcsh \
