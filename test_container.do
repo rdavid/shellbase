@@ -13,10 +13,9 @@ for f in container/*/Containerfile; do
 	# The build is ran quietly, it produces a container hash.
 	out="$(podman build --file "$f" --quiet . 2>&1)" || die "$out"
 
-	# Run the container, then remove it.
+	# Runs a container and automatically removes it after it stops.
 	{
 		podman run \
-			--interactive \
 			--rm \
 			--rmi \
 			--tty \
