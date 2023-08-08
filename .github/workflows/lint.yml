@@ -5,7 +5,7 @@ env:
   CM_BIN: /usr/local/bin/checkmake
   CM_URL: https://github.com/mrtazz/checkmake/releases/download/0.2.2/checkmake-0.2.2.linux.amd64 # yamllint disable-line
 jobs:
-  lint:
+  lint-linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -32,3 +32,22 @@ jobs:
           file_or_dir: .github/*.yml .github/workflows/*.yml
           strict: true
       - run: ./app/update
+  lint-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          brew install \
+            asciidoctor \
+            checkmake \
+            goredo \
+            grep \
+            hadolint \
+            shellcheck \
+            shfmt \
+            typos-cli \
+            vale \
+            yamllint
+          vale sync
+          export PATH=/usr/local/opt/grep/libexec/gnubin:"$PATH"
+          redo lint
