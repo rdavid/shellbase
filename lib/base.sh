@@ -367,7 +367,7 @@ prettytable() {
 		sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g"
 }
 
-# Prints human readable uptime time, see:
+# Displays uptime in a human-readable format, see details:
 #  https://stackoverflow.com/questions/28353409/bash-format-uptime-to-show-days-hours-minutes
 prettyuptime() {
 	cmd_exists sed tr uptime || {
