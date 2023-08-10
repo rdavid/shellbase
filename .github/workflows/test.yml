@@ -1,11 +1,11 @@
 ---
-name: linters
+name: test
 'on': push
 env:
   CM_BIN: /usr/local/bin/checkmake
   CM_URL: https://github.com/mrtazz/checkmake/releases/download/0.2.2/checkmake-0.2.2.linux.amd64 # yamllint disable-line
 jobs:
-  lint-linux:
+  test-linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -32,7 +32,7 @@ jobs:
           file_or_dir: .github/*.yml .github/workflows/*.yml
           strict: true
       - run: ./app/update
-  lint-macos:
+  test-macos:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -40,14 +40,18 @@ jobs:
           brew install \
             asciidoctor \
             checkmake \
+            fish \
             goredo \
             grep \
             hadolint \
+            podman \
             shellcheck \
             shfmt \
             typos-cli \
             vale \
-            yamllint
+            yamllint \
+            yash
           vale sync
+          podman machine init
           export PATH=/usr/local/opt/grep/libexec/gnubin:"$PATH"
-          redo lint
+          redo
