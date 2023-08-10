@@ -33,7 +33,7 @@
     M9mmmP'.JMML  JMML.`Mbmmd'.JMML..JMML.P^YbmdP'  `Moo9^Yo.M9mmmP'  `Mbmmd' 
 ----
 
-image:https://github.com/rdavid/shellbase/actions/workflows/lint.yml/badge.svg[linters,link=https://github.com/rdavid/shellbase/actions/workflows/lint.yml]
+image:https://github.com/rdavid/shellbase/actions/workflows/test.yml/badge.svg[test,link=https://github.com/rdavid/shellbase/actions/workflows/test.yml]
 image:https://hitsofcode.com/github/rdavid/shellbase?branch=master&label=hits%20of%20code[hits of code,link=https://hitsofcode.com/view/github/rdavid/shellbase?branch=master]
 image:https://img.shields.io/github/downloads/rdavid/shellbase/total?color=blue&labelColor=gray&logo=singlestore&logoColor=lightgray&style=flat[downloads]
 image:https://img.shields.io/github/v/release/rdavid/shellbase?color=blue&label=%20&logo=semver&logoColor=white&style=flat[release),link=https://github.com/rdavid/shellbase/releases]
