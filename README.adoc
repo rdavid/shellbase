@@ -164,7 +164,7 @@ eval "$(
 log I\'m using the shellbase.
 ----
 
-{url-base}#L329[`prettytable`] example:
+{url-base}#L346[`prettytable`] example:
 
 [,sh]
 ----
