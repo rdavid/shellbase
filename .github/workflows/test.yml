@@ -54,4 +54,4 @@ jobs:
           vale sync
           podman machine init
           export PATH=/usr/local/opt/grep/libexec/gnubin:"$PATH"
-          redo
+          redo -xx
