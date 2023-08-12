@@ -3,8 +3,7 @@
 # Copyright 2022-2023 David Rabkin
 # shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
-validate_cmd column
-carbon=$(
+cc1=$(
 	cat <<-EOM
 		+-----------+----------+----------+
 		|ID         |NAME      |TITLE     |
@@ -22,4 +21,103 @@ out="$(
 	} |
 		prettytable
 )"
-[ "$carbon" = "$out" ]
+[ "$cc1" = "$out" ] || {
+	loge "\n$cc1\n" != "\n$out\n"
+	exit 1
+}
+log cc1 passed.
+cc2=$(
+	cat <<-EOM
+		+-----------+-----------+-----------+--------------------+
+		|ID         |NAME       |TITLE      |EMAIL               |
+		+-----------+-----------+-----------+--------------------+
+		|123456789  |John Foo   |Director   |johnfoo@gmail.com   |
+		|12         |Mike Bar   |Engineer   |mikebar@proton.me   |
+		|123        |Will Gune  |Product    |willgune@gmail.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		|1234       |Bill Clin  |President  |billclin@yahoo.com  |
+		+-----------+-----------+-----------+--------------------+
+	EOM
+)
+out="$(
+	{
+		printf 'ID\tNAME\tTITLE\tEMAIL\n'
+		printf '123456789\tJohn Foo\tDirector\tjohnfoo@gmail.com\n'
+		printf '12\tMike Bar\tEngineer\tmikebar@proton.me\n'
+		printf '123\tWill Gune\tProduct\twillgune@gmail.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+		printf '1234\tBill Clin\tPresident\tbillclin@yahoo.com\n'
+	} |
+		prettytable
+)"
+[ "$cc2" = "$out" ] || {
+	printf >&2 "%s\n!=\n%s\n" "$cc2" "$out"
+	exit 1
+}
+log cc2 passed.
