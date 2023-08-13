@@ -1,5 +1,5 @@
 FROM ghcr.io/rdavid/goredoer:0.9.20230808 as goredoer
-FROM fedora:39
+FROM fedora:40
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	USER=shellbase
