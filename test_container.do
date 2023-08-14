@@ -6,7 +6,10 @@ redo-ifchange app/* lib/*
 # shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/lib/base.sh
 validate_cmd podman
-podman machine start >/dev/null 2>&1 || :
+out="$(podman machine start 2>&1)" || {
+	[ $? = 125 ] || die "$out"
+	log VM already running or starting.
+}
 for f in container/*/Containerfile; do
 	log Test "$(printf %s "$f" | awk -F / '{print $2}')".
 
