@@ -13,7 +13,7 @@ out="$(podman machine start 2>&1)" || {
 for f in container/*/Containerfile; do
 	log Test "$(printf %s "$f" | awk -F / '{print $2}')".
 
-	# The build is ran quietly, it produces a container hash.
+	# The build is executed silently, resulting in a container hash.
 	out="$(podman build --file "$f" --quiet . 2>&1)" || die "$out"
 
 	# Runs a container and automatically removes it after it stops.

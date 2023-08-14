@@ -26,6 +26,7 @@ RUN \
 		util-linux~=2 \
 		yamllint~=1.31 \
 		yash~=2.54 \
+		1>/dev/null 2>&1 \
 		&& rm -rf /var/cache/apk/* \
 		&& addgroup -S "$USER" \
 		&& adduser -S "$USER" -G "$USER" \
