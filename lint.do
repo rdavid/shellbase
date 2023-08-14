@@ -18,6 +18,9 @@ cmd_exists hadolint && hadolint container/*/Containerfile
 cmd_exists shellcheck && shellcheck ./*.do app/* lib/*
 cmd_exists shfmt && shfmt -d ./*.do app/* lib/*
 cmd_exists typos && typos
-cmd_exists vale && vale README.adoc
+cmd_exists vale && {
+	vale sync
+	vale README.adoc
+}
 cmd_exists yamllint && yamllint .github/*.yml .github/workflows/*.yml
 ./app/update
