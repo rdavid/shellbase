@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230811
+BASE_VERSION=0.9.20230816
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -347,8 +347,8 @@ prettytable() {
 	cmd_exists column sed || return $?
 	local bdy col hdr inp
 	inp="$(cat -)"
-	hdr="$(printf %s "$inp" | head -n1)"
-	bdy="$(printf %s "$inp" | tail -n+2)"
+	hdr="$(printf %s "$inp" | head -n1)" || base_handle_pipefails $?
+	bdy="$(printf %s "$inp" | tail -n+2)" || base_handle_pipefails $?
 
 	# Calculates number of columns, col=number-of-tabs+1.
 	col="$(printf %s "$hdr" | awk -F\\t '{print NF-1}')"
@@ -827,6 +827,14 @@ base_duration() {
 	fi
 }
 
+# Ignores exit code 141 from command pipes, see more:
+#  https://stackoverflow.com/questions/22464786/ignoring-bash-pipefail-for-error-code-141
+base_handle_pipefails() {
+	[ "$1" -eq 141 ] || return "$1"
+	logw Ignore pipe fail with error code 141.
+}
+
+# The initial command log.
 base_hi() {
 	log "$BASE_IAM $$" says hi.
 }
