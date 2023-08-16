@@ -28,11 +28,11 @@
 # base_ prefix are public and could be used by clients. The public functions
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, cmd_exists, die, echo, file_exists,
-# heic2jpg, grbt, inside, isempty, isfunc, isreadable, issolid, iswritable,
-# log, loge, logw, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir,
-# realpath, semver, timestamp, tolog, tologe, tolower, totsout, tsout,
-# url_exists, user_exists, validate_cmd, validate_var, var_exists, ver_ge,
-# vid2aud, yes_to_continue, ytda.
+# handle_pipefails, heic2jpg, grbt, inside, isempty, isfunc, isreadable,
+# issolid, iswritable, log, loge, logw, pdf2jpg, pdf2png, prettytable,
+# prettyuptime, realdir, realpath, semver, timestamp, tolog, tologe, tolower,
+# totsout, tsout, url_exists, user_exists, validate_cmd, validate_var,
+# var_exists, ver_ge, vid2aud, yes_to_continue, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place temporary files under $BASE_WIP. All functions started with base_
@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230816
+BASE_VERSION=0.9.20230817
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -161,6 +161,13 @@ grbt() {
 		git push &&
 		git rebase --interactive HEAD~5 &&
 		git push origin +"$br"
+}
+
+# Ignores exit code 141 from command pipes, see more:
+#  https://stackoverflow.com/questions/22464786/ignoring-bash-pipefail-for-error-code-141
+handle_pipefails() {
+	[ "$1" -eq 141 ] || return "$1"
+	logw Ignore the pipe failure with the error code 141.
 }
 
 # Converts Apple's HEIC files in a current directory to JPEG.
@@ -347,8 +354,8 @@ prettytable() {
 	cmd_exists column sed || return $?
 	local bdy col hdr inp
 	inp="$(cat -)"
-	hdr="$(printf %s "$inp" | head -n1)" || base_handle_pipefails $?
-	bdy="$(printf %s "$inp" | tail -n+2)" || base_handle_pipefails $?
+	hdr="$(printf %s "$inp" | head -n1)" || handle_pipefails $?
+	bdy="$(printf %s "$inp" | tail -n+2)" || handle_pipefails $?
 
 	# Calculates number of columns, col=number-of-tabs+1.
 	col="$(printf %s "$hdr" | awk -F\\t '{print NF-1}')"
@@ -825,13 +832,6 @@ base_duration() {
 	if [ -z "$day" ] && [ -z "$hou" ] && [ -z "$min" ] && [ -z "$sec" ]; then
 		printf 'less than a second'
 	fi
-}
-
-# Ignores exit code 141 from command pipes, see more:
-#  https://stackoverflow.com/questions/22464786/ignoring-bash-pipefail-for-error-code-141
-base_handle_pipefails() {
-	[ "$1" -eq 141 ] || return "$1"
-	logw Ignore pipe fail with error code 141.
 }
 
 # The initial command log.
