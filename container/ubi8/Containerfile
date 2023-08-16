@@ -26,4 +26,4 @@ COPY \
 	--chown="$USER":"$USER" \
 	. .
 CMD \
-	[ "redo", "-j=10", "-x", "test" ]
+	[ "redo", "-j=10", "-xx", "test" ]
