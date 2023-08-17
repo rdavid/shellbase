@@ -4,6 +4,8 @@ LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	CM_BIN=/usr/local/bin/checkmake \
 	CM_URL=https://github.com/mrtazz/checkmake/releases/download/0.2.2/checkmake-0.2.2.linux.amd64 \
+	HL_BIN=/usr/local/bin/hadolint \
+	HL_URL=https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64 \
 	TIME_ZONE=Asia/Jerusalem \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
@@ -33,7 +35,8 @@ RUN \
 		&& cp /usr/share/zoneinfo/$TIME_ZONE /etc/localtime \
 		&& printf %s "$TIME_ZONE" > /etc/timezone \
 		&& curl --location --output "$CM_BIN" --silent "$CM_URL" \
-		&& chmod +x "$CM_BIN" \
+		&& curl --location --output "$HL_BIN" --silent "$HL_URL" \
+		&& chmod +x "$CM_BIN" "$HL_BIN" \
 		&& goredo -symlinks
 USER "$USER"
 WORKDIR /home/"$USER"
