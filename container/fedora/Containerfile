@@ -2,6 +2,9 @@ FROM ghcr.io/rdavid/goredoer:0.9.20230808 as goredoer
 FROM fedora:40
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
+	CM_BIN=/usr/local/bin/checkmake \
+	CM_URL=https://github.com/mrtazz/checkmake/releases/download/0.2.2/checkmake-0.2.2.linux.amd64 \
+	TIME_ZONE=Asia/Jerusalem \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
@@ -14,6 +17,7 @@ RUN \
 	&& rm --force --recursive /var/cache/yum \
 	&& dnf install --assumeyes \
 		bash \
+		curl \
 		findutils \
 		hadolint \
 		perl-Digest-SHA \
@@ -27,6 +31,10 @@ RUN \
 		1>/dev/null 2>&1 \
 	&& dnf clean all \
 	&& useradd --create-home "$USER" \
+	&& cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime \
+	&& printf %s "$TIME_ZONE" > /etc/timezone \
+	&& curl --location --output "$CM_BIN" --silent "$CM_URL" \
+	&& chmod +x "$CM_BIN" \
 	&& goredo -symlinks
 USER "$USER"
 WORKDIR /home/"$USER"
