@@ -2,6 +2,7 @@ FROM ghcr.io/rdavid/goredoer:0.9.20230808 as goredoer
 FROM archlinux:base
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
+	TIME_ZONE=Asia/Jerusalem \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
@@ -29,6 +30,8 @@ RUN \
 		>/dev/null 2>&1 \
 	&& useradd --create-home "$USER" \
 		>/dev/null 2>&1 \
+	&& cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime \
+	&& printf %s "$TIME_ZONE" > /etc/timezone \
 	&& goredo -symlinks
 USER "$USER"
 WORKDIR /home/"$USER"
