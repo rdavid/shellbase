@@ -29,15 +29,15 @@ RUN \
 		yamllint~=1.31 \
 		yash~=2.54 \
 		1>/dev/null 2>&1 \
-		&& rm -rf /var/cache/apk/* \
-		&& addgroup -S "$USER" \
-		&& adduser -S "$USER" -G "$USER" \
-		&& cp /usr/share/zoneinfo/$TIME_ZONE /etc/localtime \
-		&& printf %s "$TIME_ZONE" > /etc/timezone \
-		&& curl --location --output "$CM_BIN" --silent "$CM_URL" \
-		&& curl --location --output "$HL_BIN" --silent "$HL_URL" \
-		&& chmod +x "$CM_BIN" "$HL_BIN" \
-		&& goredo -symlinks
+	&& rm -rf /var/cache/apk/* \
+	&& addgroup -S "$USER" \
+	&& adduser -S "$USER" -G "$USER" \
+	&& cp /usr/share/zoneinfo/$TIME_ZONE /etc/localtime \
+	&& printf %s "$TIME_ZONE" > /etc/timezone \
+	&& curl --location --output "$CM_BIN" --silent "$CM_URL" \
+	&& curl --location --output "$HL_BIN" --silent "$HL_URL" \
+	&& chmod +x "$CM_BIN" "$HL_BIN" \
+	&& goredo -symlinks
 USER "$USER"
 WORKDIR /home/"$USER"
 COPY \
