@@ -19,7 +19,7 @@ cmd_exists shellcheck && shellcheck ./*.do app/* lib/*
 cmd_exists shfmt && shfmt -d ./*.do app/* lib/*
 cmd_exists typos && typos
 cmd_exists vale && {
-	vale sync
+	vale sync >/dev/null 2>&1 || :
 	vale README.adoc
 }
 cmd_exists yamllint && yamllint .github/*.yml .github/workflows/*.yml
