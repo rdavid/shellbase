@@ -2,7 +2,12 @@ FROM ghcr.io/rdavid/goredoer:0.9.20230808 as goredoer
 FROM debian:bullseye
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
+	CM_BIN=/usr/local/bin/checkmake \
+	CM_URL=https://github.com/mrtazz/checkmake/releases/download/0.2.2/checkmake-0.2.2.linux.amd64 \
 	DEBCONF_NOWARNINGS=yes \
+	HL_BIN=/usr/local/bin/hadolint \
+	HL_URL=https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64 \
+	TIME_ZONE=Asia/Jerusalem \
 	USER=shellbase
 COPY LICENSE /licenses/LICENSE
 WORKDIR /bin
@@ -14,6 +19,7 @@ RUN \
 	&& apt-get upgrade --assume-yes \
 	&& apt-get install --assume-yes --no-install-recommends \
 		bash \
+		ca-certificates \
 		curl \
 		dash \
 		fish \
@@ -29,6 +35,11 @@ RUN \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& useradd --create-home "$USER" \
+	&& cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime \
+	&& printf %s "$TIME_ZONE" > /etc/timezone \
+	&& curl --location --output "$CM_BIN" --silent "$CM_URL" \
+	&& curl --location --output "$HL_BIN" --silent "$HL_URL" \
+	&& chmod +x "$CM_BIN" "$HL_BIN" \
 	&& goredo -symlinks
 USER "$USER"
 WORKDIR /home/"$USER"
