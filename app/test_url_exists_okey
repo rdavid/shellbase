@@ -4,5 +4,5 @@
 # shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 url_exists \
-	1.1.1.1 \
-	http://google.com/
+	facebook.com \
+	google.com
