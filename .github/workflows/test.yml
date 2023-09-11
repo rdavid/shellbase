@@ -44,7 +44,6 @@ jobs:
             goredo \
             grep \
             hadolint \
-            podman \
             shellcheck \
             shfmt \
             typos-cli \
@@ -52,6 +51,5 @@ jobs:
             yamllint \
             yash
           vale sync
-          podman machine init
           export PATH=/usr/local/opt/grep/libexec/gnubin:"$PATH"
-          redo -xx
+          redo -xx lint test
