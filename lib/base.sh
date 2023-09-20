@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230817
+BASE_VERSION=0.9.20230920
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -591,7 +591,7 @@ yes_to_continue() {
 		kid \
 		msg \
 		tmo=20
-	arc="$(stty -g)"
+	arc="$(stty -g 2>&1)" || die "$arc"
 
 	# The trap returns tty settings, adds the new line before any printing to
 	# compensate the question without a new line.
