@@ -46,19 +46,19 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230920
+BASE_VERSION=0.9.20230922
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
 # directories.
 aud_only() {
-	local ans keep
+	local ans old
 	find . -type f \
 		! \( -name \*.mp3 -o -name \*.m4a -o -name \*.flac \)
-	keep=$(stty -g)
+	old="$(stty -g 2>&1)" || die "$old"
 	stty raw -echo
-	ans=$(head -c 1)
-	stty "$keep"
+	ans=$(head -c 1 2>&1) || die "$ans"
+	stty "$old"
 	printf \\n
 	printf %s "$ans" | grep -iq ^y || return
 	find . -type f \
