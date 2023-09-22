@@ -15,7 +15,6 @@ COPY --from=goredoer /goredo .
 # hadolint ignore=DL3041
 RUN \
 	dnf update --assumeyes \
-		1>/dev/null 2>&1 \
 	&& rm --force --recursive /var/cache/yum \
 	&& dnf install --assumeyes \
 		bash \
@@ -30,7 +29,6 @@ RUN \
 		util-linux \
 		yamllint \
 		yash \
-		1>/dev/null 2>&1 \
 	&& dnf clean all \
 	&& useradd --create-home "$USER" \
 	&& cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime \
