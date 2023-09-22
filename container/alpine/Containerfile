@@ -14,7 +14,7 @@ COPY --from=goredoer /goredo .
 RUN \
 	apk add --no-cache --update \
 		bash~=5.2 \
-		curl~=8.2 \
+		curl~=8.3 \
 		dash~=0.5 \
 		fish~=3.6 \
 		grep~=3.10 \
