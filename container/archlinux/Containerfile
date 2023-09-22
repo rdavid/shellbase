@@ -15,9 +15,9 @@ COPY --from=goredoer /goredo .
 # Multiple redirections compete for stdout.
 # hadolint ignore=SC2261
 RUN \
-	pacman-key --init >/dev/null 2>&1 \
-	&& pacman --noconfirm --refresh --sync archlinux-keyring >/dev/null 2>&1 \
-	&& pacman --noconfirm --refresh --sync --sysupgrade >/dev/null 2>&1 \
+	pacman-key --init \
+	&& pacman --noconfirm --refresh --sync archlinux-keyring \
+	&& pacman --noconfirm --refresh --sync --sysupgrade \
 	&& pacman --noconfirm --sync \
 		bash>=5.1 \
 		dash>=0.5 \
@@ -29,11 +29,8 @@ RUN \
 		tcsh>=6.24 \
 		yamllint>=1.31 \
 		zsh>=r5.9 \
-		>/dev/null 2>&1 \
 	&& ln -s /usr/bin/core_perl/shasum /usr/bin/shasum \
-		>/dev/null 2>&1 \
 	&& useradd --create-home "$USER" \
-		>/dev/null 2>&1 \
 	&& cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime \
 	&& printf %s "$TIME_ZONE" > /etc/timezone \
 	&& curl --location --output "$CM_BIN" --silent "$CM_URL" \

@@ -22,7 +22,6 @@ RUN \
 		shadow-utils-2:4.9 \
 		tzdata-2023c \
 		util-linux \
-		1>/dev/null 2>&1 \
 	&& microdnf clean all --disableplugin=subscription-manager \
 	&& useradd --create-home "$USER" \
 	&& curl --location --output "$CM_BIN" --silent "$CM_URL" \
