@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20230922
+BASE_VERSION=0.9.20231010
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -446,7 +446,7 @@ timestamp() {
 	printf %s "$tms"
 }
 
-# Redirects input to logger line by line. It is usefull for logging multiple
+# Redirects input to logger line by line. It is useful for logging multiple
 # lines output. In order to handle error and standard outputs, use following
 # trick:
 # {
