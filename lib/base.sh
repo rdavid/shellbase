@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231010
+BASE_VERSION=0.9.20231013
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -77,8 +77,8 @@ beuser() {
 	cmd_exists id || return $?
 	local ask cur usr="$1"
 	user_exists "$usr" || die "$usr": No such user.
-	cur="$(id -u)"
-	ask="$(id -u "$usr")"
+	cur="$(id -u)" || die "$cur"
+	ask="$(id -u "$usr")" || die "$ask"
 	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."
 	log "You are $usr ($cur)."
 }
