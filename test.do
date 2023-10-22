@@ -5,10 +5,9 @@ redo-ifchange app/* lib/*
 
 # shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/lib/base.sh
-readonly shs='ash bash dash fish ksh tcsh yash zsh'
 
 # Redo logic requires redirection stderr to stdout.
-for sh in $shs; do
+for sh in ash bash dash fish ksh tcsh yash zsh; do
 	cmd_exists "$sh" 2>&1 || continue
 	for ok in app/*-ok; do
 		"$sh" -c "$ok 2>&1" || die "$ok" on "$sh" returns negative.
