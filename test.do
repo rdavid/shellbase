@@ -5,13 +5,16 @@ redo-ifchange app/* lib/*
 
 # shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/lib/base.sh
-readonly SHELLS='ash bash dash fish ksh tcsh yash zsh'
-for shell in $SHELLS; do
-	cmd_exists "$shell" || continue
-	for okey in app/*_okey; do
-		"$shell" -c "$okey 2>&1"
+readonly shs='ash bash dash fish ksh tcsh yash zsh'
+
+# Redo logic requires redirection stderr to stdout.
+for sh in $shs; do
+	cmd_exists "$sh" 2>&1 || continue
+	for ok in app/*_okey; do
+		"$sh" -c "$ok 2>&1" || die "$ok" on "$sh" returns negative.
 	done
-	for fail in app/*_fail; do
-		"$shell" -c "$fail 2>&1 || :"
+	for no in app/*_fail; do
+		# shellcheck disable=SC2015 # A && B || C.
+		"$sh" -c "$no 2>&1" && die "$no" on "$sh" returns positive. || :
 	done
 done
