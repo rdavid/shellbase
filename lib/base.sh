@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231013
+BASE_VERSION=0.9.20231022
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -558,11 +558,16 @@ var_exists() {
 	return $ret
 }
 
-# Compares two versions, return true if the first parameter is greater or equal
-# to the second parameter. See more:
+# Compares two versions and returns 0 (true) if the first parameter is greater
+# or equal to the second parameter, otherwise 1 (false). In case of an error,
+# it reports it and returns 0 (true). This function uses one-letter command
+# line parameters in sort for compatibility. For more information, see:
 #  https://unix.stackexchange.com/questions/285924/how-to-compare-a-programs-version-in-a-shell-script
 ver_ge() {
-	printf %s\\n "$2" "$1" | sort -V >/dev/null 2>&1
+	printf %s\\n "$2" "$1" | sort -cV >/dev/null 2>&1
+	local err=$?
+	[ $err -lt 2 ] && return $err
+	loge ver_ge: sort failed with $err.
 }
 
 # Converts all video files in current directory to MP3 files.
