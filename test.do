@@ -10,10 +10,10 @@ readonly shs='ash bash dash fish ksh tcsh yash zsh'
 # Redo logic requires redirection stderr to stdout.
 for sh in $shs; do
 	cmd_exists "$sh" 2>&1 || continue
-	for ok in app/*_okey; do
+	for ok in app/*-ok; do
 		"$sh" -c "$ok 2>&1" || die "$ok" on "$sh" returns negative.
 	done
-	for no in app/*_fail; do
+	for no in app/*-no; do
 		# shellcheck disable=SC2015 # A && B || C.
 		"$sh" -c "$no 2>&1" && die "$no" on "$sh" returns positive. || :
 	done
