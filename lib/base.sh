@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231022
+BASE_VERSION=0.9.20231103
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -617,18 +617,18 @@ yes_to_continue() {
 	printf %s\ [y/N]\  "$msg"
 	stty raw -echo
 
-	# Runs child process to read first character from stdin.
-	ans=$(head -c 1)
+	# Runs a child process to read the first character from stdin.
+	ans="$(head -c 1 2>&1)" || die "$ans"
 	stty "$arc"
 	trap base_sig_cleanup TERM
 
 	# Adds the new line before any printing to compensate the question without a
 	# new line.
 	printf \\n
-	log Killing watchdog kid "$kid".
+	log Terminating the watchdog process "$kid".
 	kill "$kid"
 
-	# Command wait could return an error code, temporarily disables exit on
+	# Command 'wait' could return an error code, temporarily disables exit on
 	# error.
 	set +o errexit
 	wait "$kid" 2>/dev/null
@@ -637,7 +637,7 @@ yes_to_continue() {
 		log Stop working.
 		exit 0
 	}
-	log Continue working.
+	log Keep working.
 }
 
 # Downloads a video from YouTube.
