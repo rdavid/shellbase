@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231103
+BASE_VERSION=0.9.20231110
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -77,8 +77,8 @@ beuser() {
 	cmd_exists id || return $?
 	local ask cur usr="$1"
 	user_exists "$usr" || die "$usr": No such user.
-	cur="$(id -u)" || die "$cur"
-	ask="$(id -u "$usr")" || die "$ask"
+	cur="$(id -u 2>&1)" || die "$cur"
+	ask="$(id -u "$usr" 2>&1)" || die "$ask"
 	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."
 	log "You are $usr ($cur)."
 }
@@ -401,8 +401,8 @@ prettyuptime() {
 # Returns absolute directory of a file, see description of realpath.
 realdir() {
 	local dir str="$1"
-	dir="$(dirname -- "$str" 2>&1)" || die "$dir".
-	dir="$(CDPATH='' \cd -- "$dir" 2>&1 && pwd -P)" || die "$dir".
+	dir="$(dirname -- "$str" 2>&1)" || die "$dir"
+	dir="$(CDPATH='' \cd -- "$dir" 2>&1 && pwd -P)" || die "$dir"
 	printf %s "$dir"
 }
 
@@ -411,7 +411,7 @@ realdir() {
 realpath() {
 	local dir nme str="$1"
 	dir="$(realdir "$str")" || die
-	nme="$(basename -- "$str" 2>&1)" || die "$nme".
+	nme="$(basename -- "$str" 2>&1)" || die "$nme"
 	[ / = "$dir" ] && printf /%s "$nme" || printf %s/%s "$dir" "$nme"
 }
 
@@ -577,7 +577,7 @@ vid2aud() {
 	find . -type f -maxdepth 1 \
 		\( -name \*.mp4 -o -name \*.m4v -o -name \*.avi -o -name \*.mkv \) |
 		while read -r src; do
-			src="$(basename -- "$src")"
+			src="$(basename -- "$src" 2>&1)" || die "$src"
 			dst="${src%.*}".mp3
 			log Convert "$src" to "$dst".
 			ffmpeg -nostdin -i "$src" -vn -ar 44100 -ac 2 -ab 320k -f mp3 "$dst"
