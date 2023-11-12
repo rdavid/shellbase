@@ -19,6 +19,7 @@ RUN \
 		fish~=3.6 \
 		grep~=3.10 \
 		loksh~=7.3 \
+		oksh~=7.3 \
 		perl-utils~=5.36 \
 		shellcheck~=0.9 \
 		shfmt~=3.6 \
