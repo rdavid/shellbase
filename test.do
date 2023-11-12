@@ -7,7 +7,7 @@ redo-ifchange app/* lib/*
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/lib/base.sh
 
 # Redo logic requires redirection stderr to stdout.
-for sh in ash bash dash fish ksh tcsh yash zsh; do
+for sh in ash bash dash fish ksh oksh tcsh yash zsh; do
 	cmd_exists "$sh" 2>&1 || continue
 	for ok in app/*-ok; do
 		"$sh" -c "$ok 2>&1" || die "$ok" on "$sh" returns negative.

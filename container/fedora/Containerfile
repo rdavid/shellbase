@@ -22,6 +22,7 @@ RUN \
 		findutils \
 		hadolint \
 		perl-Digest-SHA \
+		oksh \
 		shadow-utils \
 		shellcheck \
 		shfmt \
