@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231111
+BASE_VERSION=0.9.20231115
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -467,9 +467,23 @@ tologe() {
 	while IFS= read -r lne; do loge "$lne"; done
 }
 
-# Renames files in a current directory to lower case.
+# Renames files and directories recursively in the current directory to
+# lowercase.
 tolower() {
-	rename -f y/A-Z/a-z/ ./*
+	local dst out src
+	find . -not -path . -not -path '*/.*' -depth |
+		while IFS= read -r src; do
+			dst="$(printf %s "$src" | tr '[:upper:]' '[:lower:]' 2>&1)" || die "$dst"
+			if [ "$src" != "$dst" ]; then
+				if out="$(mv -f "$src" "$dst" 2>&1)"; then
+					log "$src->$dst."
+				else
+					loge "$src->$dst: $out."
+				fi
+			else
+				log "$src"
+			fi
+		done
 }
 
 # Redirects input to tsout line by line.

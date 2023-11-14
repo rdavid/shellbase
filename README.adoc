@@ -84,18 +84,18 @@ The public functions are, in alphabetical order:
 {url-base}#L439[`timestamp`],
 {url-base}#L459[`tolog`],
 {url-base}#L465[`tologe`],
-{url-base}#L471[`tolower`],
-{url-base}#L476[`totsout`],
-{url-base}#L482[`tsout`],
-{url-base}#L490[`url_exists`],
-{url-base}#L514[`user_exists`],
-{url-base}#L530[`validate_cmd`],
-{url-base}#L537[`validate_var`],
-{url-base}#L544[`var_exists`],
-{url-base}#L566[`ver_ge`],
-{url-base}#L574[`vid2aud`],
-{url-base}#L590[`yes_to_continue`],
-{url-base}#L644[`ytda`].
+{url-base}#L472[`tolower`],
+{url-base}#L490[`totsout`],
+{url-base}#L496[`tsout`],
+{url-base}#L504[`url_exists`],
+{url-base}#L528[`user_exists`],
+{url-base}#L544[`validate_cmd`],
+{url-base}#L551[`validate_var`],
+{url-base}#L558[`var_exists`],
+{url-base}#L580[`ver_ge`],
+{url-base}#L588[`vid2aud`],
+{url-base}#L604[`yes_to_continue`],
+{url-base}#L658[`ytda`].
 
 Global variables have `BASE_` prefix and clients could use them.
 Clients should place temporary files under `$BASE_WIP`.
