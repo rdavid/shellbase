@@ -14,8 +14,8 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 # The script uses local variables which are not POSIX but supported by most
-# shells, see more:
-#  https://stackoverflow.com/questions/18597697/posix-compliant-way-to-scope-variables-to-a-function-in-a-shell-script
+# shells, see:
+#  https://stackoverflow.com/q/18597697
 # shellcheck disable=SC2039,SC3043 # Uses local variables.
 #
 # The shellbase framework serves as a foundation for Unix shell scripts. This
@@ -163,8 +163,8 @@ grbt() {
 		git push origin +"$br"
 }
 
-# Ignores exit code 141 from command pipes, see more:
-#  https://stackoverflow.com/questions/22464786/ignoring-bash-pipefail-for-error-code-141
+# Ignores exit code 141 from command pipes, see:
+#  https://stackoverflow.com/q/22464786
 handle_pipefails() {
 	[ "$1" -eq 141 ] || return "$1"
 	logw Ignore the pipe failure with the error code 141.
@@ -192,7 +192,7 @@ inside() {
 	return 1
 }
 
-# Decides if a directory is empty. See more:
+# Decides if a directory is empty, see:
 #  https://www.etalabs.net/sh_tricks.html
 isempty() {
 	[ -z "${1-}" ] || [ $# -gt 1 ] && die Usage: isempty dir.
@@ -207,7 +207,7 @@ isempty() {
 }
 
 # Determines whether a shell function with a given name exists, see:
-#  https://stackoverflow.com/questions/35818555/how-to-determine-whether-a-function-exists-in-a-posix-shell
+#  https://stackoverflow.com/q/35818555
 isfunc() {
 	case "$(type "$1" 2>/dev/null)" in
 	*function*) return 0 ;;
@@ -384,8 +384,8 @@ prettytable() {
 		sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g"
 }
 
-# Displays uptime in a human-readable format, see details:
-#  https://stackoverflow.com/questions/28353409/bash-format-uptime-to-show-days-hours-minutes
+# Displays uptime in a human-readable format, see:
+#  https://stackoverflow.com/q/28353409
 prettyuptime() {
 	cmd_exists sed tr uptime || {
 		local err=$?
@@ -408,7 +408,7 @@ prettyuptime() {
 	' | tr -d \\n
 }
 
-# Returns absolute directory of a file, see description of realpath.
+# Returns the absolute directory of a file. See the description of realpath.
 realdir() {
 	local dir str="$1"
 	dir="$(dirname -- "$str" 2>&1)" || die "$dir"
@@ -417,7 +417,7 @@ realdir() {
 }
 
 # Returns absolute path to a file, see:
-#  https://stackoverflow.com/questions/3915040/how-to-obtain-the-absolute-path-of-a-file-via-shell-bash-zsh-sh
+#  https://stackoverflow.com/q/3915040
 realpath() {
 	local dir nme str="$1"
 	dir="$(realdir "$str")" || die
@@ -425,7 +425,8 @@ realpath() {
 	[ / = "$dir" ] && printf /%s "$nme" || printf %s/%s "$dir" "$nme"
 }
 
-# Extracts semantic versioning from a string, see https://semver.org:
+# Extracts semantic versioning from a string, see:
+#  https://semver.org
 #  1.2.3
 #  1.2.3+meta
 #  1.2.3-4-alpha
@@ -464,8 +465,8 @@ timestamp() {
 #			2>&1 1>&3 3>&- | tologe
 # } \
 # 	3>&1 1>&2 | tolog
-# Order will always be indeterminate, see more details:
-#  https://stackoverflow.com/questions/9112979/pipe-stdout-and-stderr-to-two-different-processes-in-shell-script
+# Order will always be indeterminate, see:
+#  https://stackoverflow.com/q/9112979
 tolog() {
 	local lne
 	while IFS= read -r lne; do log "$lne"; done
@@ -586,7 +587,7 @@ var_exists() {
 # or equal to the second parameter, otherwise 1 (false). In case of an error,
 # it reports it and returns 0 (true). This function uses one-letter command
 # line parameters in sort for compatibility. For more information, see:
-#  https://unix.stackexchange.com/questions/285924/how-to-compare-a-programs-version-in-a-shell-script
+#  https://unix.stackexchange.com/q/285924
 ver_ge() {
 	printf %s\\n "$2" "$1" | sort -cV >/dev/null 2>&1
 	local err=$?
@@ -913,7 +914,7 @@ base_main() {
 		BASE_WIP
 	base_hi
 
-	# Handles signals, see more:
+	# Handles signals, see:
 	#  https://mywiki.wooledge.org/SignalTrap
 	trap base_cleanup EXIT
 	trap base_sig_cleanup HUP INT QUIT TERM
@@ -960,8 +961,8 @@ base_prettytable_separator() {
 	printf '\t+\n'
 }
 
-# Prevents double cleanup, see more:
-#  https://unix.stackexchange.com/questions/57940/trap-int-term-exit-really-necessary
+# Prevents double cleanup, see:
+#  https://unix.stackexchange.com/q/57940
 base_sig_cleanup() {
 	local err=$?
 
