@@ -28,11 +28,11 @@
 # base_ prefix are public and could be used by clients. The public functions
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, cmd_exists, die, echo, file_exists,
-# handle_pipefails, heic2jpg, grbt, inside, isempty, isfunc, isreadable,
-# issolid, iswritable, log, loge, logw, pdf2jpg, pdf2png, prettytable,
-# prettyuptime, realdir, realpath, semver, timestamp, tolog, tologe, tolower,
-# totsout, tsout, url_exists, user_exists, validate_cmd, validate_var,
-# var_exists, ver_ge, vid2aud, yes_to_continue, ytda.
+# handle_pipefails, heic2jpg, grbt, inside, isempty, isfunc, isnumber,
+# isreadable, issolid, iswritable, log, loge, logw, pdf2jpg, pdf2png,
+# prettytable, prettyuptime, realdir, realpath, semver, timestamp, tolog,
+# tologe, tolower, totsout, tsout, url_exists, user_exists, validate_cmd,
+# validate_var, var_exists, ver_ge, vid2aud, yes_to_continue, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place temporary files under $BASE_WIP. All functions started with base_
@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231115
+BASE_VERSION=0.9.20231119
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in current directory. Removes empty
@@ -213,6 +213,16 @@ isfunc() {
 	*function*) return 0 ;;
 	esac
 	return 1
+}
+
+# Determines whether a variable is a number. This rejects empty strings and
+# strings containing non-digits while accepting everything else, see:
+#  https://stackoverflow.com/q/806906
+isnumber() {
+	case "$1" in
+	'' | *[!0-9]*) return 1 ;;
+	esac
+	return 0
 }
 
 # Verifies that all parameters are readable files.
