@@ -1,0 +1,9 @@
+#!/bin/sh
+# vi:et lbr noet sw=2 ts=2 tw=79 wrap
+# Copyright 2023 David Rabkin
+# shellcheck disable=SC1090,SC1091 # File not following.
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+isnumber 0 || die 0 is not a number.
+isnumber 9 || die 9 is not a number.
+isnumber 10 || die 10 is not a number.
+isnumber 42 || die 42 is not a number.

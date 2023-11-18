@@ -68,34 +68,35 @@ The public functions are, in alphabetical order:
 {url-base}#L189[`inside`],
 {url-base}#L197[`isempty`],
 {url-base}#L211[`isfunc`],
-{url-base}#L219[`isreadable`],
-{url-base}#L234[`issolid`],
-{url-base}#L268[`iswritable`],
-{url-base}#L293[`log`],
-{url-base}#L302[`loge`],
-{url-base}#L310[`logw`],
-{url-base}#L319[`pdf2jpg`],
-{url-base}#L329[`pdf2png`],
-{url-base}#L353[`prettytable`],
-{url-base}#L379[`prettyuptime`],
-{url-base}#L402[`realdir`],
-{url-base}#L411[`realpath`],
-{url-base}#L423[`semver`],
-{url-base}#L439[`timestamp`],
-{url-base}#L459[`tolog`],
-{url-base}#L465[`tologe`],
-{url-base}#L472[`tolower`],
-{url-base}#L490[`totsout`],
-{url-base}#L496[`tsout`],
-{url-base}#L504[`url_exists`],
-{url-base}#L528[`user_exists`],
-{url-base}#L544[`validate_cmd`],
-{url-base}#L551[`validate_var`],
-{url-base}#L558[`var_exists`],
-{url-base}#L580[`ver_ge`],
-{url-base}#L588[`vid2aud`],
-{url-base}#L604[`yes_to_continue`],
-{url-base}#L658[`ytda`].
+{url-base}#L221[`isnumber`],
+{url-base}#L229[`isreadable`],
+{url-base}#L244[`issolid`],
+{url-base}#L278[`iswritable`],
+{url-base}#L303[`log`],
+{url-base}#L312[`loge`],
+{url-base}#L320[`logw`],
+{url-base}#L329[`pdf2jpg`],
+{url-base}#L339[`pdf2png`],
+{url-base}#L363[`prettytable`],
+{url-base}#L389[`prettyuptime`],
+{url-base}#L412[`realdir`],
+{url-base}#L421[`realpath`],
+{url-base}#L433[`semver`],
+{url-base}#L449[`timestamp`],
+{url-base}#L469[`tolog`],
+{url-base}#L475[`tologe`],
+{url-base}#L482[`tolower`],
+{url-base}#L500[`totsout`],
+{url-base}#L506[`tsout`],
+{url-base}#L514[`url_exists`],
+{url-base}#L538[`user_exists`],
+{url-base}#L554[`validate_cmd`],
+{url-base}#L561[`validate_var`],
+{url-base}#L568[`var_exists`],
+{url-base}#L590[`ver_ge`],
+{url-base}#L598[`vid2aud`],
+{url-base}#L614[`yes_to_continue`],
+{url-base}#L668[`ytda`].
 
 Global variables have `BASE_` prefix and clients could use them.
 Clients should place temporary files under `$BASE_WIP`.
@@ -165,7 +166,7 @@ eval "$(
 log I\'m using the shellbase.
 ----
 
-{url-base}#L353[`prettytable`] example:
+{url-base}#L363[`prettytable`] example:
 
 [,sh]
 ----
