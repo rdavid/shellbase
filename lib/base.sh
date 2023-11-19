@@ -770,6 +770,8 @@ base_display_banner() {
 
 # Prints the usage instructions for shellbase and terminates the program.
 base_display_usage() {
+	base_display_banner
+	printf \\n
 	local use
 	use="$(
 		cat <<-EOM 2>&1
@@ -806,6 +808,8 @@ base_display_version() {
 
 # Prints shellbase warranty.
 base_display_warranty() {
+	base_display_banner
+	printf \\n
 	local war
 	war="$(
 		cat <<-EOM 2>&1
