@@ -669,7 +669,7 @@ yes_to_continue() {
 	# Prints the question without a new line allows to print an answer on the
 	# same line. The question is not logged.
 	msg="${*:-Do you want to continue?}"
-	printf %s\ [y/N]\  "$msg"
+	printf '%s [y/N] ' "$msg"
 	stty raw -echo
 
 	# Runs a child process to read the first character from stdin.
