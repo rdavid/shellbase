@@ -46,25 +46,55 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231120
+BASE_VERSION=0.9.20231202
 BASE_YES_TO_CONT=false
 
-# Removes any file besides mp3, m4a, flac in current directory. Removes empty
-# directories.
+# Removes any file besides mp3, m4a, flac in the current directory.
+# Removes empty directories.
 aud_only() {
-	local ans old
-	find . -type f \
-		! \( -name \*.mp3 -o -name \*.m4a -o -name \*.flac \)
+	local ans cnt err fil lst old out
+	lst=$(
+		find . -type f \
+			! \( -name \*.mp3 -o -name \*.m4a -o -name \*.flac \) 2>&1
+	) || {
+		err=$?
+		loge "$lst"
+		return $err
+	}
+
+	# xargs handles white spaces.
+	cnt="$(printf %s "$lst" | wc -l | xargs)" || {
+		err=$?
+		loge Something went wrong.
+		return $err
+	}
+	[ "$cnt" = 0 ] && {
+		log Nothing to remove.
+		return 0
+	}
+	printf "Remove the following:\n%s\nTotal %s files? [y/N] " "$lst" "$cnt" 2>&1
 	old="$(stty -g 2>&1)" || die "$old"
 	stty raw -echo
 	ans=$(head -c 1 2>&1) || die "$ans"
 	stty "$old"
 	printf \\n
-	printf %s "$ans" | grep -iq ^y || return
-	find . -type f \
-		! \( -name \*.mp3 -o -name \*.m4a -o -name \*.flac \) \
-		-exec rm -f {} +
-	find . -type d -empty -delete
+	printf %s "$ans" | grep -iq ^y || return 0
+	out="$(
+		find . -type f \
+			! \( -name \*.mp3 -o -name \*.m4a -o -name \*.flac \) \
+			-exec rm -f {} + 2>&1
+	)" || {
+		err=$?
+		loge "$out"
+		return $err
+	}
+
+	# Removes empty directories if they exist.
+	out="$(find . -type d -empty -delete 2>&1)" || {
+		err=$?
+		loge "$out"
+		return $err
+	}
 }
 
 # Checks if the script is run by the root user.
