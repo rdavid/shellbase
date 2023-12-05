@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231202
+BASE_VERSION=0.9.20231205
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -790,7 +790,10 @@ base_cleanup() {
 	fi
 }
 
-# Displays the shellbase banner.
+# Displays the shellbase banner. The width is set to 79 characters, and the
+# height is 8 lines. An ASCII art generator is used with the specific font
+# Georgia 11 by Richard Sabey <cryptic_fan@hotmail.com> 9.2003:
+#  http://patorjk.com/software/taag/#p=display&f=Georgia11&t=shellbase
 base_display_banner() {
 	cmd_exists base64 || return $?
 	printf \
