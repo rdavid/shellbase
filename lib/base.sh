@@ -46,13 +46,13 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231205
+BASE_VERSION=0.9.20231206
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
 aud_only() {
-	local ans cnt err fil lst old out
+	local ans cnt err lst old out
 	lst=$(
 		find . -type f \
 			! \( -name \*.mp3 -o -name \*.m4a -o -name \*.flac \) 2>&1
@@ -275,33 +275,33 @@ issolid() {
 	cmd_exists awk head grep shasum || return $?
 	local \
 		err \
-		file="$0" \
-		hash \
-		line \
-		temp="$BASE_WIP"/hashless \
-		patt=^BASE_APP_HASH
-	isreadable "$file" || die File "$file" is not readable.
-	line="$(
-		grep --regexp "$patt" "$file"
+		fle="$0" \
+		hsh \
+		lne \
+		tmp="$BASE_WIP"/hashless \
+		pat=^BASE_APP_HASH
+	isreadable "$fle" || die File "$fle" is not readable.
+	lne="$(
+		grep --regexp "$pat" "$fle"
 	)" || {
 		err=$?
-		loge File "$file" doesn\'t have a hash.
+		loge File "$fle" doesn\'t have a hash.
 		return $err
 	}
-	hash="$(
-		printf %s "$line" | head -1 | awk -F = '{print $2}'
+	hsh="$(
+		printf %s "$lne" | head -1 | awk -F = '{print $2}'
 	)" || {
 		err=$?
-		loge File "$file" has hash with unknown format: "$line".
+		loge File "$fle" has hash with unknown format: "$lne".
 		return $err
 	}
-	grep --invert-match --regexp "$patt" "$file" >"$temp"
-	printf %s\ \ %s "$hash" "$temp" | shasum --check --status || {
+	grep --invert-match --regexp "$pat" "$fle" >"$tmp"
+	printf %s\ \ %s "$hsh" "$tmp" | shasum --check --status || {
 		err=$?
-		loge Hash of "$file" does not match "$hash"
+		loge Hash of "$fle" does not match "$hsh"
 		return $err
 	}
-	log File "$file" is solid.
+	log File "$fle" is solid.
 }
 
 # Verifies that all parameters are writable files or do not exist.
@@ -358,20 +358,20 @@ logw() {
 # Converts all PDF files in current directory to JPG files.
 pdf2jpg() {
 	cmd_exists sips || return $?
-	local fil
-	for fil in *.pdf; do
-		sips -s format jpeg "$fil" --out "$fil.jpg"
-		log Converted "$fil" to JPG.
+	local fle
+	for fle in *.pdf; do
+		sips -s format jpeg "$fle" --out "$fle.jpg"
+		log Converted "$fle" to JPG.
 	done
 }
 
 # Converts all PDF files in current directory to PNG files.
 pdf2png() {
 	cmd_exists pdftoppm || return $?
-	local fil
-	for fil in *.pdf; do
-		pdftoppm "$fil" "${fil%.*}" -png
-		log Converted "$fil" to PNG.
+	local fle
+	for fle in *.pdf; do
+		pdftoppm "$fle" "${fle%.*}" -png
+		log Converted "$fle" to PNG.
 	done
 }
 
