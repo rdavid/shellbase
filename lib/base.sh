@@ -27,9 +27,9 @@
 # The shellbase defines global variables and functions. All functions without
 # base_ prefix are public and could be used by clients. The public functions
 # are, in alphabetical order:
-# aud_only, beroot, beuser, bomb, cheat, cmd_exists, die, echo, file_exists,
-# handle_pipefails, heic2jpg, grbt, inside, isempty, isfunc, isnumber,
-# isreadable, issolid, iswritable, log, loge, logw, pdf2jpg, pdf2png,
+# aud_only, beroot, beuser, bomb, cheat, cmd_exists, cya, die, echo,
+# file_exists, handle_pipefails, heic2jpg, grbt, inside, isempty, isfunc,
+# isnumber, isreadable, issolid, iswritable, log, loge, logw, pdf2jpg, pdf2png,
 # prettytable, prettyuptime, realdir, realpath, semver, timestamp, tolog,
 # tologe, tolower, totsout, tsout, url_exists, user_exists, validate_cmd,
 # validate_var, var_exists, ver_ge, vid2aud, yes_to_continue, ytda.
@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231206
+BASE_VERSION=0.9.20231208
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -137,6 +137,12 @@ cmd_exists() {
 		}
 	done
 	return $ret
+}
+
+# Prints all parameters to the log and exits with a success code.
+cya() {
+	[ $# = 0 ] || log "$@"
+	base_is_interactive && log You\'re immortal! || exit 0
 }
 
 # Prints all parameters as an error message, and exits with the error code.
