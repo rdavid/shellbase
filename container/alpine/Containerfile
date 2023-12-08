@@ -1,5 +1,5 @@
 FROM ghcr.io/rdavid/goredoer:0.9.20231111 as goredoer
-FROM alpine:3.18.5
+FROM alpine:3.19.0
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	CM_BIN=/usr/local/bin/checkmake \
@@ -14,22 +14,22 @@ COPY --from=goredoer /goredo .
 RUN \
 	apk add --no-cache --update \
 		bash~=5.2 \
-		coreutils~=9.3 \
-		curl~=8.4 \
+		coreutils~=9.4 \
+		curl~=8.5 \
 		dash~=0.5 \
 		fish~=3.6 \
-		grep~=3.10 \
-		loksh~=7.3 \
-		oksh~=7.3 \
-		perl-utils~=5.36 \
+		grep~=3.11 \
+		loksh~=7.4 \
+		oksh~=7.4 \
+		perl-utils~=5.38 \
 		shellcheck~=0.9 \
-		shfmt~=3.6 \
+		shfmt~=3.7 \
 		tcsh~=6.24 \
 		tzdata~=2023 \
 		zsh~=5.9 \
 		util-linux~=2 \
-		yamllint~=1.31 \
-		yash~=2.54 \
+		yamllint~=1.33 \
+		yash~=2.55 \
 	&& rm -rf /var/cache/apk/* \
 	&& addgroup -S "$USER" \
 	&& adduser -S "$USER" -G "$USER" \
