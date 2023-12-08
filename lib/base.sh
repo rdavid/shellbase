@@ -694,10 +694,7 @@ yes_to_continue() {
 	set +o errexit
 	wait "$kid" 2>/dev/null
 	set -o errexit
-	printf %s "$ans" | grep -i -q ^y || {
-		log Stop working.
-		exit 0
-	}
+	printf %s "$ans" | grep -i -q ^y || cya Stop working.
 	log Keep working.
 }
 
