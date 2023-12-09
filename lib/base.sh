@@ -46,7 +46,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231208
+BASE_VERSION=0.9.20231209
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -972,15 +972,15 @@ base_main() {
 	# The usage has higher priority over version in case both options are set.
 	[ false = $use ] || {
 		base_display_usage
-		exit 0
+		cya
 	}
 	[ false = $ver ] || {
 		base_display_version
-		exit 0
+		cya
 	}
 	[ false = $war ] || {
 		base_display_warranty
-		exit 0
+		cya
 	}
 }
 
