@@ -139,7 +139,9 @@ cmd_exists() {
 	return $ret
 }
 
-# Prints all parameters to the log and exits with a success code.
+# Prints all parameters to the log and exits with a success code. oh-my-zsh has
+# lol plugin, which defines an alias to cya, remove the plugin:
+#  https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/lol
 cya() {
 	[ $# = 0 ] || log "$@"
 	base_is_interactive && log You\'re immortal! || exit 0
