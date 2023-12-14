@@ -24,8 +24,8 @@ BASE_APP_USAGE="$(
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
 	BASE_APP_USAGE \
-	BASE_APP_VERSION=0.9.20230707 \
-	BASE_MIN_VERSION=0.9.20230405 \
+	BASE_APP_VERSION=0.9.20231214 \
+	BASE_MIN_VERSION=0.9.20231212 \
 	BSH \
 	TGT=README.adoc
 
@@ -79,14 +79,8 @@ parse() {
 
 # Compares new README and current, updates if needed.
 update() {
-	if cmp --quiet "$OUT" "$TGT"; then
-		log "$TGT" is updated.
-		return
-	fi
-	if [ "$ACT" = false ]; then
-		logw "$TGT" should be updated.
-		exit 1
-	fi
+	cmp --quiet "$OUT" "$TGT" && cya "$TGT" is updated.
+	[ "$ACT" = false ] && die "$TGT" should be updated.
 	iswritable "$TGT" || die
 	cp -f "$OUT" "$TGT" || die Unable to update "$TGT".
 	log "$TGT" has been updated.
