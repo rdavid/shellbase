@@ -29,10 +29,11 @@
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, cmd_exists, cya, die, echo,
 # file_exists, handle_pipefails, heic2jpg, grbt, inside, isempty, isfunc,
-# isnumber, isreadable, issolid, iswritable, log, loge, logw, pdf2jpg, pdf2png,
-# prettytable, prettyuptime, realdir, realpath, semver, timestamp, tolog,
-# tologe, tolower, totsout, tsout, url_exists, user_exists, validate_cmd,
-# validate_var, var_exists, ver_ge, vid2aud, yes_to_continue, ytda.
+# isnumber, isreadable, issolid, istty, iswritable, log, loge, logw, pdf2jpg,
+# pdf2png, prettytable, prettyuptime, realdir, realpath, semver, timestamp,
+# tolog, tologe, tolower, totsout, tsout, url_exists, user_exists,
+# validate_cmd, validate_var, var_exists, ver_ge, vid2aud, yes_to_continue,
+# ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place temporary files under $BASE_WIP. All functions started with base_
@@ -46,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231212
+BASE_VERSION=0.9.20231214
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -311,6 +312,18 @@ issolid() {
 	}
 	log File "$fle" is solid.
 }
+
+# The [ -t 1 ] check only works when the function is not called from a
+# subshell. The function returns false when stdout is not a tty.
+if [ -t 1 ]; then
+	istty() {
+		true
+	}
+else
+	istty() {
+		false
+	}
+fi
 
 # Verifies that all parameters are writable files or do not exist.
 iswritable() {
