@@ -14,7 +14,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 # The script uses local variables which are not POSIX but supported by most
-# shells, see:
+# shells. See:
 #  https://stackoverflow.com/q/18597697
 # shellcheck disable=SC2039,SC3043 # Uses local variables.
 #
@@ -157,7 +157,7 @@ die() {
 	base_is_interactive && log You\'re immortal! || exit $err
 }
 
-# Enhances the behavior of the command to ensure it behaves more reliably, see:
+# Enhances the behavior of the command to ensure it behaves more reliably. See:
 #  http://www.etalabs.net/sh_tricks.html
 echo() {
 	local end=\\n fmt=%s IFS=' '
@@ -202,7 +202,7 @@ grbt() {
 		git push origin +"$br"
 }
 
-# Ignores exit code 141 from command pipes, see:
+# Ignores exit code 141 from command pipes. See:
 #  https://stackoverflow.com/q/22464786
 handle_pipefails() {
 	[ "$1" -eq 141 ] || return "$1"
@@ -247,7 +247,7 @@ isempty() {
 	return 0
 }
 
-# Determines whether a shell function with a given name exists, see:
+# Determines whether a shell function with a given name exists. See:
 #  https://stackoverflow.com/q/35818555
 isfunc() {
 	local str
@@ -260,7 +260,7 @@ isfunc() {
 }
 
 # Determines whether a variable is a number. This rejects empty strings and
-# strings containing non-digits while accepting everything else, see:
+# strings containing non-digits while accepting everything else. See:
 #  https://stackoverflow.com/q/806906
 isnumber() {
 	case "$1" in
@@ -415,7 +415,7 @@ prettytable() {
 	col="$(printf %s "$hdr" | awk -F\\t '{print NF-1}')"
 	col=$((col + 1))
 
-	# Expects column separated by tab, see column -s. Double quates in sed's
+	# Expects column separated by tab. See column -s. Double quotes in sed's
 	# regex are needed.
 	{
 		base_prettytable_separator "$col"
@@ -428,7 +428,7 @@ prettytable() {
 		sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g"
 }
 
-# Displays uptime in a human-readable format, see:
+# Displays uptime in a human-readable format. See:
 #  https://stackoverflow.com/q/28353409
 prettyuptime() {
 	cmd_exists sed tr uptime || {
@@ -460,7 +460,7 @@ realdir() {
 	printf %s "$dir"
 }
 
-# Returns absolute path to a file, see:
+# Returns absolute path to a file. See:
 #  https://stackoverflow.com/q/3915040
 realpath() {
 	local dir nme str="$1"
@@ -469,7 +469,7 @@ realpath() {
 	[ / = "$dir" ] && printf /%s "$nme" || printf %s/%s "$dir" "$nme"
 }
 
-# Extracts semantic versioning from a string, see:
+# Extracts semantic versioning from a string. See:
 #  https://semver.org
 #  1.2.3
 #  1.2.3+meta
@@ -509,7 +509,7 @@ timestamp() {
 #			2>&1 1>&3 3>&- | tologe
 # } \
 # 	3>&1 1>&2 | tolog
-# Order will always be indeterminate, see:
+# Order will always be indeterminate. See:
 #  https://stackoverflow.com/q/9112979
 tolog() {
 	local lne
@@ -672,7 +672,7 @@ yes_to_continue() {
 	trap 'stty "$arc"; printf \\n; die "Timed out in $tmo seconds".' TERM
 
 	# Runs watchdog process that kills dad and kids proceeses with common unique
-	# process group ID, see minus before dad PID.
+	# process group ID: minus before dad PID.
 	(
 		sleep "$tmo"
 		kill -- -$dad
@@ -973,7 +973,7 @@ base_main() {
 		BASE_WIP
 	base_hi
 
-	# Handles signals, see:
+	# Handles signals. See:
 	#  https://mywiki.wooledge.org/SignalTrap
 	trap base_cleanup EXIT
 	trap base_sig_cleanup HUP INT QUIT TERM
@@ -1020,7 +1020,7 @@ base_prettytable_separator() {
 	printf '\t+\n'
 }
 
-# Prevents double cleanup, see:
+# Prevents double cleanup. See:
 #  https://unix.stackexchange.com/q/57940
 base_sig_cleanup() {
 	local err=$?
