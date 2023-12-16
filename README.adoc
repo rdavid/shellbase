@@ -72,32 +72,32 @@ The public functions are, in alphabetical order:
 {url-base}#L260[`isnumber`],
 {url-base}#L268[`isreadable`],
 {url-base}#L283[`issolid`],
-{url-base}#L329[`iswritable`],
-{url-base}#L354[`log`],
-{url-base}#L363[`loge`],
-{url-base}#L371[`logw`],
-{url-base}#L380[`pdf2jpg`],
-{url-base}#L390[`pdf2png`],
-{url-base}#L414[`prettytable`],
-{url-base}#L440[`prettyuptime`],
-{url-base}#L463[`realdir`],
-{url-base}#L472[`realpath`],
-{url-base}#L485[`semver`],
-{url-base}#L501[`timestamp`],
-{url-base}#L521[`tolog`],
-{url-base}#L527[`tologe`],
-{url-base}#L534[`tolower`],
-{url-base}#L552[`totsout`],
-{url-base}#L558[`tsout`],
-{url-base}#L566[`url_exists`],
-{url-base}#L590[`user_exists`],
-{url-base}#L606[`validate_cmd`],
-{url-base}#L613[`validate_var`],
-{url-base}#L620[`var_exists`],
-{url-base}#L642[`ver_ge`],
-{url-base}#L650[`vid2aud`],
-{url-base}#L666[`yes_to_continue`],
-{url-base}#L717[`ytda`].
+{url-base}#L317[`iswritable`],
+{url-base}#L342[`log`],
+{url-base}#L351[`loge`],
+{url-base}#L359[`logw`],
+{url-base}#L368[`pdf2jpg`],
+{url-base}#L378[`pdf2png`],
+{url-base}#L402[`prettytable`],
+{url-base}#L428[`prettyuptime`],
+{url-base}#L451[`realdir`],
+{url-base}#L460[`realpath`],
+{url-base}#L473[`semver`],
+{url-base}#L489[`timestamp`],
+{url-base}#L509[`tolog`],
+{url-base}#L515[`tologe`],
+{url-base}#L522[`tolower`],
+{url-base}#L540[`totsout`],
+{url-base}#L546[`tsout`],
+{url-base}#L554[`url_exists`],
+{url-base}#L578[`user_exists`],
+{url-base}#L594[`validate_cmd`],
+{url-base}#L601[`validate_var`],
+{url-base}#L608[`var_exists`],
+{url-base}#L630[`ver_ge`],
+{url-base}#L638[`vid2aud`],
+{url-base}#L654[`yes_to_continue`],
+{url-base}#L705[`ytda`].
 
 Global variables have `BASE_` prefix and clients could use them.
 Clients should place temporary files under `$BASE_WIP`.
@@ -167,7 +167,7 @@ eval "$(
 log I\'m using the shellbase.
 ----
 
-{url-base}#L414[`prettytable`] example:
+{url-base}#L402[`prettytable`] example:
 
 [,sh]
 ----
