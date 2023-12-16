@@ -226,16 +226,18 @@ heic2jpg() {
 # From here:
 #  https://www.grymoire.com/Unix/Sh.html
 inside() {
-	[ $# -lt 2 ] && die Usage: inside body element.
 	case "$1" in *$2*) return 0 ;; esac
 	return 1
 }
 
-# Decides if a directory is empty, see:
+# Determines whether a directory is empty. See:
 #  https://www.etalabs.net/sh_tricks.html
 isempty() {
-	[ -z "${1-}" ] || [ $# -gt 1 ] && die Usage: isempty dir.
-	cd "$1" >/dev/null 2>&1 || die Directory is not accessible: "$1".
+	cd "$1" >/dev/null 2>&1 || {
+		local err=$?
+		loge The directory is not accessible: "$1", err=$err.
+		return $err
+	}
 	set -- .[!.]*
 	test -f "$1" && return 1
 	set -- ..?*
@@ -248,10 +250,13 @@ isempty() {
 # Determines whether a shell function with a given name exists, see:
 #  https://stackoverflow.com/q/35818555
 isfunc() {
-	case "$(type "$1" 2>/dev/null)" in
-	*function*) return 0 ;;
-	esac
-	return 1
+	local str
+	str="$(type "$1" 2>&1)" || {
+		local err=$?
+		loge "$str"
+		return $err
+	}
+	inside "$str" function
 }
 
 # Determines whether a variable is a number. This rejects empty strings and
@@ -914,8 +919,7 @@ base_hi() {
 
 # Determines if the shell is running in interactive mode.
 base_is_interactive() {
-	case "$-" in *i*) return 0 ;; esac
-	return 1
+	inside "$-" i
 }
 
 # The [ -t 1 ] check only works when the function is not called from a

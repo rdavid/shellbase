@@ -67,37 +67,37 @@ The public functions are, in alphabetical order:
 {url-base}#L207[`handle_pipefails`],
 {url-base}#L213[`heic2jpg`],
 {url-base}#L228[`inside`],
-{url-base}#L236[`isempty`],
-{url-base}#L250[`isfunc`],
-{url-base}#L260[`isnumber`],
-{url-base}#L268[`isreadable`],
-{url-base}#L283[`issolid`],
-{url-base}#L317[`iswritable`],
-{url-base}#L342[`log`],
-{url-base}#L351[`loge`],
-{url-base}#L359[`logw`],
-{url-base}#L368[`pdf2jpg`],
-{url-base}#L378[`pdf2png`],
-{url-base}#L402[`prettytable`],
-{url-base}#L428[`prettyuptime`],
-{url-base}#L451[`realdir`],
-{url-base}#L460[`realpath`],
-{url-base}#L473[`semver`],
-{url-base}#L489[`timestamp`],
-{url-base}#L509[`tolog`],
-{url-base}#L515[`tologe`],
-{url-base}#L522[`tolower`],
-{url-base}#L540[`totsout`],
-{url-base}#L546[`tsout`],
-{url-base}#L554[`url_exists`],
-{url-base}#L578[`user_exists`],
-{url-base}#L594[`validate_cmd`],
-{url-base}#L601[`validate_var`],
-{url-base}#L608[`var_exists`],
-{url-base}#L630[`ver_ge`],
-{url-base}#L638[`vid2aud`],
-{url-base}#L654[`yes_to_continue`],
-{url-base}#L705[`ytda`].
+{url-base}#L235[`isempty`],
+{url-base}#L252[`isfunc`],
+{url-base}#L265[`isnumber`],
+{url-base}#L273[`isreadable`],
+{url-base}#L288[`issolid`],
+{url-base}#L322[`iswritable`],
+{url-base}#L347[`log`],
+{url-base}#L356[`loge`],
+{url-base}#L364[`logw`],
+{url-base}#L373[`pdf2jpg`],
+{url-base}#L383[`pdf2png`],
+{url-base}#L407[`prettytable`],
+{url-base}#L433[`prettyuptime`],
+{url-base}#L456[`realdir`],
+{url-base}#L465[`realpath`],
+{url-base}#L478[`semver`],
+{url-base}#L494[`timestamp`],
+{url-base}#L514[`tolog`],
+{url-base}#L520[`tologe`],
+{url-base}#L527[`tolower`],
+{url-base}#L545[`totsout`],
+{url-base}#L551[`tsout`],
+{url-base}#L559[`url_exists`],
+{url-base}#L583[`user_exists`],
+{url-base}#L599[`validate_cmd`],
+{url-base}#L606[`validate_var`],
+{url-base}#L613[`var_exists`],
+{url-base}#L635[`ver_ge`],
+{url-base}#L643[`vid2aud`],
+{url-base}#L659[`yes_to_continue`],
+{url-base}#L710[`ytda`].
 
 Global variables have `BASE_` prefix and clients could use them.
 Clients should place temporary files under `$BASE_WIP`.
@@ -167,7 +167,7 @@ eval "$(
 log I\'m using the shellbase.
 ----
 
-{url-base}#L402[`prettytable`] example:
+{url-base}#L407[`prettytable`] example:
 
 [,sh]
 ----
