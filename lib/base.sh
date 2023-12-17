@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231216
+BASE_VERSION=0.9.20231218
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -918,9 +918,15 @@ base_hi() {
 }
 
 # Determines if the shell is running in interactive mode.
-base_is_interactive() {
-	inside "$-" i
-}
+if inside "$-" i; then
+	base_is_interactive() {
+		true
+	}
+else
+	base_is_interactive() {
+		false
+	}
+fi
 
 # The [ -t 1 ] check only works when the function is not called from a
 # subshell. The function returns false when stdout is not a tty.
