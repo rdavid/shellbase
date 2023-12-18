@@ -931,11 +931,11 @@ fi
 # The [ -t 1 ] check only works when the function is not called from a
 # subshell. The function returns false when stdout is not a tty.
 if [ -t 1 ]; then
-	base_istty() {
+	base_is_tty() {
 		true
 	}
 else
-	base_istty() {
+	base_is_tty() {
 		false
 	}
 fi
