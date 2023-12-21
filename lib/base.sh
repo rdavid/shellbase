@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231218
+BASE_VERSION=0.9.20231221
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -348,7 +348,7 @@ log() {
 	local tms
 	tms="$(timestamp)" || exit $?
 	[ "$BASE_QUIET" = false ] &&
-		printf >&2 '\033[0;32m%s\033[0m %s\n' "$tms" "$*"
+		printf >&2 '%s%s%s %s\n' "$BASE_FMT_GREEN" "$tms" "$BASE_FMT_RESET" "$*"
 	base_is_interactive || base_write_to_file "$tms" I "$*"
 }
 
@@ -356,7 +356,7 @@ log() {
 loge() {
 	local tms
 	tms="$(timestamp)" || exit $?
-	printf >&2 '\033[0;31m%s\033[0m %s\n' "$tms" "$*"
+	printf >&2 '%s%s%s %s\n' "$BASE_FMT_RED" "$tms" "$BASE_FMT_RESET" "$*"
 	base_is_interactive || base_write_to_file "$tms" E "$*"
 }
 
@@ -365,7 +365,7 @@ logw() {
 	local tms
 	tms="$(timestamp)" || exit $?
 	[ "$BASE_QUIET" = false ] &&
-		printf >&2 '\033[0;33m%s\033[0m %s\n' "$tms" "$*"
+		printf >&2 '%s%s%s %s\n' "$BASE_FMT_YELLOW" "$tms" "$BASE_FMT_RESET" "$*"
 	base_is_interactive || base_write_to_file "$tms" W "$*"
 }
 
@@ -929,12 +929,21 @@ else
 fi
 
 # The [ -t 1 ] check only works when the function is not called from a
-# subshell. The function returns false when stdout is not a tty.
+# subshell. The function returns false when stdout is not a tty. Only use
+# colors if connected to a terminal.
 if [ -t 1 ]; then
+	BASE_FMT_GREEN=$(printf '\033[32m')
+	BASE_FMT_RED=$(printf '\033[31m')
+	BASE_FMT_RESET=$(printf '\033[0m')
+	BASE_FMT_YELLOW=$(printf '\033[33m')
 	base_is_tty() {
 		true
 	}
 else
+	BASE_FMT_GREEN=''
+	BASE_FMT_RED=''
+	BASE_FMT_RESET=''
+	BASE_FMT_YELLOW=''
 	base_is_tty() {
 		false
 	}
