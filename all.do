@@ -3,4 +3,4 @@
 # Copyright 2022-2023 David Rabkin
 redo-ifchange lint
 redo-ifchange test
-redo-ifchange test_container
+redo-ifchange test-container
