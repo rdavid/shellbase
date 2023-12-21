@@ -846,7 +846,7 @@ base_display_version() {
 	var_exists BASE_APP_VERSION >/dev/null 2>&1 &&
 		printf \
 			'shellbase %s\n%s %s\n' \
-			"$BASE_VERSION" "$BASE_IAM" "$BASE_APP_VERSION" ||
+			"$BASE_VERSION" "$BASE_IAM" "$BASE_APP_VERSION" | sort ||
 		printf shellbase\ %s\\n "$BASE_VERSION"
 }
 
