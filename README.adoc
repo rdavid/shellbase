@@ -200,7 +200,7 @@ You can install Sergey Matveev's {url-goredo}[`goredo`] implementation.
 {url-shellcheck}[`shellcheck`], {url-shfmt}[`shfmt`], {url-typos}[`typos`],
 {url-vale}[`vale`], {url-yamllint}[`yamllint`].
 `redo test` runs unit tests in installed shells.
-`redo test_container` runs the tests across various shells in containers.
+`redo test-container` runs the tests across various shells in containers.
 It uses {url-cv}[David Rabkin]'s {url-goredoer}[`goredoer`] to build
 {url-goredo}[`goredo`].
 

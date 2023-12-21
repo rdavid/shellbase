@@ -3,4 +3,4 @@
 clean
 lint
 test
-test_container
+test-container
