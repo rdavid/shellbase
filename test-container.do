@@ -14,7 +14,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20231221 \
+	BASE_APP_VERSION=0.9.20231224 \
 	BASE_MIN_VERSION=0.9.20231212 \
 	BSH
 
@@ -23,21 +23,21 @@ readonly \
 validate_cmd podman
 out="$(podman machine start 2>&1)" || {
 	[ $? = 125 ] || die "$out"
-	log VM already running or starting.
+	printf >&2 'VM already running or starting.\n'
 }
+
+# The build is executed silently, resulting in a container hash. Runs a
+# container and automatically removes it after it stops.
 for f in container/*/Containerfile; do
-	log Test "$(printf %s "$f" | awk -F / '{print $2}')".
-
-	# The build is executed silently, resulting in a container hash.
-	out="$(podman build --file "$f" --quiet . 2>&1)" || die "$out"
-
-	# Runs a container and automatically removes it after it stops.
+	hsh="$(podman build --file "$f" --quiet . 2>&1)" || die "$hsh"
+	nme="$(printf %s "$f" | awk -F / '{print $2}' 2>&1)" || die "$nme"
+	printf >&2 'Run %s %s.\n' "$hsh" "$nme"
 	{
 		podman run \
 			--rm \
 			--rmi \
 			--tty \
-			"$out" \
+			"$hsh" \
 			2>&1 1>&3 3>&- | tologe
 	} \
 		3>&1 1>&2 | tolog
