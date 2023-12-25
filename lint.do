@@ -10,9 +10,23 @@ redo-ifchange \
 	lib/* \
 	Makefile \
 	README.adoc
+BSH="$(
+	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
+)"/lib/base.sh || {
+	err=$?
+	printf >&2 %s\\n "$BSH"
+	exit $err
+}
 
-# shellcheck disable=SC1090,SC1091 # File not following.
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/lib/base.sh
+# shellcheck disable=SC2034 # Variable appears unused.
+readonly \
+	BASE_APP_VERSION=0.9.20231225 \
+	BASE_MIN_VERSION=0.9.20231212 \
+	BSH
+set -- "$@" --quiet
+
+# shellcheck disable=SC1090 # File not following.
+. "$BSH"
 cmd_exists checkmake && checkmake Makefile
 cmd_exists hadolint && hadolint container/*/Containerfile
 cmd_exists shellcheck && shellcheck ./*.do app/* lib/*

@@ -19,6 +19,7 @@ RUN \
 	&& dnf install --assumeyes \
 		bash \
 		curl \
+		diffutils \
 		findutils \
 		hadolint \
 		perl-Digest-SHA \
@@ -43,5 +44,4 @@ WORKDIR /home/"$USER"
 COPY \
 	--chown="$USER":"$USER" \
 	. .
-CMD \
-	[ "redo", "-j=10", "-xx", "test" ]
+ENTRYPOINT [ "redo", "-j=10" ]
