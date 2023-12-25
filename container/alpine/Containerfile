@@ -44,5 +44,4 @@ WORKDIR /home/"$USER"
 COPY \
 	--chown="$USER":"$USER" \
 	. .
-CMD \
-	[ "redo", "-j=10", "-xx", "lint", "test" ]
+ENTRYPOINT [ "redo", "-j=10" ]

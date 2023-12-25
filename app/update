@@ -28,6 +28,7 @@ readonly \
 	BASE_MIN_VERSION=0.9.20231212 \
 	BSH \
 	TGT=README.adoc
+set -- "$@" --quiet
 
 # shellcheck disable=SC1090 # File not following.
 . "$BSH"

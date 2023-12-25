@@ -21,6 +21,7 @@ RUN \
 	&& pacman --noconfirm --sync \
 		bash>=5.1 \
 		dash>=0.5 \
+		diffutils>=3.10.3 \
 		fish>=3.6 \
 		ksh>=2020 \
 		perl \
@@ -42,5 +43,4 @@ WORKDIR /home/"$USER"
 COPY \
 	--chown="$USER":"$USER" \
 	. .
-CMD \
-	[ "redo", "-j=10", "-xx", "test" ]
+ENTRYPOINT [ "redo", "-j=10" ]
