@@ -1,0 +1,14 @@
+#!/bin/sh
+# vi:et lbr noet sw=2 ts=2 tw=79 wrap
+# Copyright 2023 David Rabkin
+# shellcheck disable=SC1090,SC1091 # File not following.
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+map_put a key1 val1
+map_put a key2 val2
+val1="$(map_get a key1)" || die
+val2="$(map_get a key2)" || die
+[ "$val1" = val1 ] || die val1.
+[ "$val2" = val2 ] || die val2.
+map_del a key1
+map_del a key2
+log a[key1]="$val1", a[key2]="$val2".

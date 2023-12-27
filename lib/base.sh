@@ -29,11 +29,11 @@
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, cmd_exists, cya, die, echo,
 # file_exists, handle_pipefails, heic2jpg, grbt, inside, isempty, isfunc,
-# isnumber, isreadable, issolid, iswritable, log, loge, logw, pdf2jpg,
-# pdf2png, prettytable, prettyuptime, realdir, realpath, semver, timestamp,
-# tolog, tologe, tolower, totsout, tsout, url_exists, user_exists,
-# validate_cmd, validate_var, var_exists, ver_ge, vid2aud, yes_to_continue,
-# ytda.
+# isnumber, isreadable, issolid, iswritable, log, loge, logw, map_del, map_get,
+# map_put, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir, realpath,
+# semver, timestamp, tolog, tologe, tolower, totsout, tsout, url_exists,
+# user_exists, validate_cmd, validate_var, var_exists, ver_ge, vid2aud,
+# yes_to_continue, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place temporary files under $BASE_WIP. All functions started with base_
@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231221
+BASE_VERSION=0.9.20231227
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -367,6 +367,61 @@ logw() {
 	[ "$BASE_QUIET" = false ] &&
 		printf >&2 '%s%s%s %s\n' "$BASE_FMT_YELLOW" "$tms" "$BASE_FMT_RESET" "$*"
 	base_is_interactive || base_write_to_file "$tms" W "$*"
+}
+
+# Deletes from key-value store.
+map_del() {
+	local \
+		dir="$BASE_WIP"/map \
+		err \
+		key="$2" \
+		nme="$1"
+	local fle="$dir/$nme/$key"
+	file_exists "$fle" || {
+		err=$?
+		loge Unable to delete "$fle".
+		return $err
+	}
+	rm "$fle"
+	log Removed "$fle".
+	isempty "$dir/$nme" || return 0
+	rmdir "$dir/$nme"
+	log Removed "$dir/$nme".
+	isempty "$dir" || return 0
+	rmdir "$dir"
+	log Removed "$dir".
+}
+
+# Reads from key-value store.
+map_get() {
+	local \
+		dir="$BASE_WIP"/map \
+		err \
+		key="$2" \
+		nme="$1" \
+		val
+	local fle="$dir/$nme/$key"
+	isreadable "$fle" || {
+		err=$?
+		loge Unable to read "$fle".
+		return $err
+	}
+	val="$(cat "$fle" 2>&1)" || die "$val"
+	log map_get "$nme"["$key"]="$val".
+	printf %s "$val"
+}
+
+# Adds to key-value store.
+map_put() {
+	local \
+		dir="$BASE_WIP"/map \
+		key="$2" \
+		nme="$1" \
+		val="$3"
+	[ -d "$dir" ] || mkdir "$dir"
+	[ -d "$dir/$nme" ] || mkdir "$dir/$nme"
+	printf %s "$val" >"$dir/$nme/$key"
+	log map_put "$nme"["$key"]="$val".
 }
 
 # Converts all PDF files in current directory to JPG files.
