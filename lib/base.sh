@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231227
+BASE_VERSION=0.9.20231228
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -1003,6 +1003,11 @@ else
 		false
 	}
 fi
+readonly \
+	BASE_FMT_GREEN \
+	BASE_FMT_RED \
+	BASE_FMT_RESET \
+	BASE_FMT_YELLOW
 
 # Loops through the function arguments before any log. Handles only arguments
 # with 'do and exit' logic. Sets global variables.
