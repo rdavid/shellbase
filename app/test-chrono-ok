@@ -1,0 +1,17 @@
+#!/bin/sh
+# vi:et lbr noet sw=2 ts=2 tw=79 wrap
+# Copyright 2021-2023 David Rabkin
+# shellcheck disable=SC1090,SC1091 # File not following.
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+chrono_sta foo
+chrono_sta bar
+chrono_sta foobar
+dur="$(chrono_sto foo)" || die
+log Foo in "$dur".
+
+# A stopwatch with the same name is legitimate and functions as a reset.
+chrono_sta foobar
+dur="$(chrono_sto bar)" || die
+log Bar in "$dur".
+dur="$(chrono_sto foobar)" || die
+log Foobar in "$dur".

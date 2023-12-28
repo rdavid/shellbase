@@ -27,13 +27,13 @@
 # The shellbase defines global variables and functions. All functions without
 # base_ prefix are public and could be used by clients. The public functions
 # are, in alphabetical order:
-# aud_only, beroot, beuser, bomb, cheat, cmd_exists, cya, die, echo,
-# file_exists, handle_pipefails, heic2jpg, grbt, inside, isempty, isfunc,
-# isnumber, isreadable, issolid, iswritable, log, loge, logw, map_del, map_get,
-# map_put, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir, realpath,
-# semver, timestamp, tolog, tologe, tolower, totsout, tsout, url_exists,
-# user_exists, validate_cmd, validate_var, var_exists, ver_ge, vid2aud,
-# yes_to_continue, ytda.
+# aud_only, beroot, beuser, bomb, cheat, chrono_sta, chrono_sto, cmd_exists,
+# cya, die, echo, file_exists, handle_pipefails, heic2jpg, grbt, inside,
+# isempty, isfunc, isnumber, isreadable, issolid, iswritable, log, loge, logw,
+# map_del, map_get, map_put, pdf2jpg, pdf2png, prettytable, prettyuptime,
+# realdir, realpath, semver, timestamp, tolog, tologe, tolower, totsout, tsout,
+# url_exists, user_exists, validate_cmd, validate_var, var_exists, ver_ge,
+# vid2aud, yes_to_continue, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place temporary files under $BASE_WIP. All functions started with base_
@@ -138,6 +138,50 @@ cmd_exists() {
 		}
 	done
 	return $ret
+}
+
+# Marks the begging of a period of time. The single parameter is a name of the
+# stop watch.
+chrono_sta() {
+	local nme="$1" now
+	now="$(date +%s 2>&1)" || die "$now"
+	map_put "$nme" sta "$now"
+}
+
+# Calculates a duration from the start and cleans inner data.
+chrono_sto() {
+	local \
+		beg \
+		day \
+		dur \
+		hou \
+		min \
+		nme="$1" \
+		now \
+		sec
+	now="$(date +%s 2>&1)" || die "$now"
+	beg="$(map_get "$nme" sta)" || return $?
+	map_del "$nme" sta || return $?
+	dur="$((now - beg))"
+	day="$(base_time_title $((dur / 86400)) day)"
+	hou="$(base_time_title $((dur % 86400 / 3600)) hour)"
+	min="$(base_time_title $((dur % 86400 % 3600 / 60)) minute)"
+	sec="$(base_time_title $((dur % 60)) second)"
+	if [ -n "$day" ]; then
+		printf %s "$day" "$(base_time_separator "$hou" "$min" "$sec")"
+	fi
+	if [ -n "$hou" ]; then
+		printf %s "$hou" "$(base_time_separator "$min" "$sec")"
+	fi
+	if [ -n "$min" ]; then
+		printf %s "$min" "$(base_time_separator "$sec")"
+	fi
+	if [ -n "$sec" ]; then
+		printf %s "$sec"
+	fi
+	if [ -z "$day" ] && [ -z "$hou" ] && [ -z "$min" ] && [ -z "$sec" ]; then
+		printf 'less than a second'
+	fi
 }
 
 # Prints all parameters to the log and exits with a success code. oh-my-zsh has
