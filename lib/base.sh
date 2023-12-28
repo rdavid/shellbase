@@ -243,7 +243,7 @@ isempty() {
 	set -- ..?*
 	test -f "$1" && return 1
 	set -- *
-	test -f "$1" && return 1
+	[ -f "$1" ] || [ -d "$1" ] && return 1
 	return 0
 }
 
