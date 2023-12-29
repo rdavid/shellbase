@@ -12,8 +12,8 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20231225 \
-	BASE_MIN_VERSION=0.9.20231212 \
+	BASE_APP_VERSION=0.9.20231230 \
+	BASE_MIN_VERSION=0.9.20231228 \
 	BSH
 set -- "$@" --quiet
 
@@ -21,7 +21,7 @@ set -- "$@" --quiet
 . "$BSH"
 for sh in ash bash dash fish ksh oksh tcsh yash zsh; do
 	cmd_exists "$sh" || continue
-	beg="$(date +%s 2>&1)" || die "$beg"
+	chrono_sta run || die
 	for ok in app/*-ok; do
 		"$sh" -c "$ok 2>&1" || die "$ok" on "$sh" returns negative.
 	done
@@ -29,5 +29,6 @@ for sh in ash bash dash fish ksh oksh tcsh yash zsh; do
 		# shellcheck disable=SC2015 # A && B || C.
 		"$sh" -c "$no 2>&1" && die "$no" on "$sh" returns positive. || :
 	done
-	printf >&2 '%4s %s.\n' "$sh" "$(base_duration "$beg")"
+	dur="$(chrono_sto run)" || die
+	printf >&2 '%4s %s.\n' "$sh" "$dur"
 done
