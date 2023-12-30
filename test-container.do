@@ -36,7 +36,7 @@ for f in container/*/Containerfile; do
 	hsh="$(podman build --file "$f" --quiet . 2>&1)" || die "$hsh"
 	nme="$(printf %s "$f" | awk -F / '{print $2}' 2>&1)" || die "$nme"
 	printf >&2 %s...\\n "$nme"
-	podman run --rm "$hsh" "$EXE" lint test
+	podman run --rm --rmi "$hsh" "$EXE" lint test
 	dur="$(chrono_sto run)" || die
 	printf >&2 %s\ %s.\\n "$nme" "$dur"
 done
