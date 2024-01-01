@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20231228
+BASE_VERSION=0.9.20240101
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -148,7 +148,8 @@ chrono_sta() {
 	map_put "$nme" sta "$now"
 }
 
-# Calculates a duration from the start and cleans inner data.
+# Calculates a duration from the start and cleans inner data. 86400 seconds in
+# a day, 3600 seconds in an hour, 60 seconds in a minute.
 chrono_sto() {
 	local \
 		beg \
@@ -829,9 +830,10 @@ base_bomb() {
 }
 
 # Right before a program exiting, it prints a program name and and its
-# lifespan.
+# lifespan. Avoid using die() to prevent potential recursion.
 base_bye() {
-	log "$BASE_IAM $$ says bye after $(base_duration "$BASE_BEG")."
+	dur="$(chrono_sto lifespan)" || dur=err
+	log "$BASE_IAM $$ says bye after $dur."
 }
 
 # Asks to continue if multiple instances.
@@ -978,42 +980,10 @@ base_display_warranty() {
 		printf %s\\n "$war"
 }
 
-# Calculates duration time for report. The first parameter is a start time.
-# 86400 seconds in a day, 3600 seconds in an hour, 60 seconds in a minute.
-base_duration() {
-	local \
-		day \
-		dur \
-		hou \
-		min \
-		now \
-		sec
-	now="$(date +%s 2>&1)" || die "$now"
-	dur="$((now - $1))"
-	day="$(base_time_title $((dur / 86400)) day)"
-	hou="$(base_time_title $((dur % 86400 / 3600)) hour)"
-	min="$(base_time_title $((dur % 86400 % 3600 / 60)) minute)"
-	sec="$(base_time_title $((dur % 60)) second)"
-	if [ -n "$day" ]; then
-		printf %s "$day" "$(base_time_separator "$hou" "$min" "$sec")"
-	fi
-	if [ -n "$hou" ]; then
-		printf %s "$hou" "$(base_time_separator "$min" "$sec")"
-	fi
-	if [ -n "$min" ]; then
-		printf %s "$min" "$(base_time_separator "$sec")"
-	fi
-	if [ -n "$sec" ]; then
-		printf %s "$sec"
-	fi
-	if [ -z "$day" ] && [ -z "$hou" ] && [ -z "$min" ] && [ -z "$sec" ]; then
-		printf 'less than a second'
-	fi
-}
-
 # The initial command log.
 base_hi() {
 	log "$BASE_IAM $$" says hi.
+	chrono_sta lifespan || die
 }
 
 # Determines if the shell is running in interactive mode.
@@ -1064,11 +1034,6 @@ base_main() {
 		-w | --warranty) war=true ;;
 		esac
 	done
-	BASE_BEG="$(date +%s 2>&1)" || {
-		err=$?
-		printf >&2 %s\\n "$BASE_BEG"
-		exit $err
-	}
 	BASE_IAM="$(basename -- "$0" 2>&1)" || {
 		err=$?
 		printf >&2 %s\\n "$BASE_IAM"
@@ -1086,7 +1051,6 @@ base_main() {
 	}
 	BASE_LOG="$BASE_WIP"/log
 	readonly \
-		BASE_BEG \
 		BASE_IAM \
 		BASE_LOG \
 		BASE_WIP
