@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2020-2023 David Rabkin
+# Copyright 2020-2024 David Rabkin
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted.
@@ -977,7 +977,7 @@ base_display_warranty() {
 			Shellbase is copyright David Rabkin and available under a Zero-Clause BSD
 			license.
 
-			Copyright 2020-2023 David Rabkin
+			Copyright 2020-2024 David Rabkin
 
 			Permission to use, copy, modify, and/or distribute this software for any
 			purpose with or without fee is hereby granted.
