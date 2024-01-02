@@ -27,13 +27,13 @@
 # The shellbase defines global variables and functions. All functions without
 # base_ prefix are public and could be used by clients. The public functions
 # are, in alphabetical order:
-# aud_only, beroot, beuser, bomb, cheat, chrono_sta, chrono_sto, cmd_exists,
-# cya, die, echo, file_exists, handle_pipefails, heic2jpg, grbt, inside,
-# isempty, isfunc, isnumber, isreadable, issolid, iswritable, log, loge, logw,
-# map_del, map_get, map_put, pdf2jpg, pdf2png, prettytable, prettyuptime,
-# realdir, realpath, semver, timestamp, tolog, tologe, tolower, totsout, tsout,
-# url_exists, user_exists, validate_cmd, validate_var, var_exists, ver_ge,
-# vid2aud, yes_to_continue, ytda.
+# aud_only, beroot, beuser, bomb, cheat, chrono_get, chrono_sta, chrono_sto,
+# cmd_exists, cya, die, echo, file_exists, handle_pipefails, heic2jpg, grbt,
+# inside, isempty, isfunc, isnumber, isreadable, issolid, iswritable, log,
+# loge, logw, map_del, map_get, map_put, pdf2jpg, pdf2png, prettytable,
+# prettyuptime, realdir, realpath, semver, timestamp, tolog, tologe, tolower,
+# totsout, tsout, url_exists, user_exists, validate_cmd, validate_var,
+# var_exists, ver_ge, vid2aud, yes_to_continue, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place temporary files under $BASE_WIP. All functions started with base_
@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20240101
+BASE_VERSION=0.9.20240102
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -140,19 +140,12 @@ cmd_exists() {
 	return $ret
 }
 
-# Marks the begging of a period of time. The single parameter is a name of the
-# stop watch.
-chrono_sta() {
-	local nme="$1" now
-	now="$(date +%s 2>&1)" || die "$now"
-	map_put "$nme" sta "$now"
-}
-
-# Calculates a duration from the start and cleans inner data. 86400 seconds in
-# a day, 3600 seconds in an hour, 60 seconds in a minute.
-chrono_sto() {
+# Calculates a duration from the start. 86400 seconds in a day, 3600 seconds
+# in an hour, 60 seconds in a minute.
+chrono_get() {
 	local \
 		beg \
+		err \
 		day \
 		dur \
 		hou \
@@ -160,9 +153,12 @@ chrono_sto() {
 		nme="$1" \
 		now \
 		sec
-	now="$(date +%s 2>&1)" || die "$now"
+	now="$(date +%s 2>&1)" || {
+		err=$?
+		loge "$now"
+		return $err
+	}
 	beg="$(map_get "$nme" sta)" || return $?
-	map_del "$nme" sta || return $?
 	dur="$((now - beg))"
 	day="$(base_time_title $((dur / 86400)) day)"
 	hou="$(base_time_title $((dur % 86400 / 3600)) hour)"
@@ -183,6 +179,26 @@ chrono_sto() {
 	if [ -z "$day" ] && [ -z "$hou" ] && [ -z "$min" ] && [ -z "$sec" ]; then
 		printf 'less than a second'
 	fi
+}
+
+# Marks the begging of a period of time. The single parameter is a name of the
+# stop watch.
+chrono_sta() {
+	local err nme="$1" now
+	now="$(date +%s 2>&1)" || {
+		err=$?
+		loge "$now"
+		return $err
+	}
+	map_put "$nme" sta "$now"
+}
+
+# Calculates a duration from the start and cleans inner data.
+chrono_sto() {
+	local dur nme="$1"
+	dur="$(chrono_get "$nme")" || return $?
+	map_del "$nme" sta || return $?
+	printf %s "$dur"
 }
 
 # Prints all parameters to the log and exits with a success code. oh-my-zsh has
