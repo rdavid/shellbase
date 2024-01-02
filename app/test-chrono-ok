@@ -6,12 +6,16 @@
 chrono_sta foo
 chrono_sta bar
 chrono_sta foobar
+dur="$(chrono_get foo)" || die
+log Foo get in "$dur".
+dur="$(chrono_get foo)" || die
+log Foo get in "$dur".
 dur="$(chrono_sto foo)" || die
-log Foo in "$dur".
+log Foo sto in "$dur".
 
 # A stopwatch with the same name is legitimate and functions as a reset.
 chrono_sta foobar
 dur="$(chrono_sto bar)" || die
-log Bar in "$dur".
+log Bar sto in "$dur".
 dur="$(chrono_sto foobar)" || die
-log Foobar in "$dur".
+log Foobar sto in "$dur".
