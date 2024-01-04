@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20240102
+BASE_VERSION=0.9.20240104
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -444,13 +444,10 @@ map_del() {
 		return $err
 	}
 	rm "$fle"
-	log Removed "$fle".
 	isempty "$dir/$nme" || return 0
 	rmdir "$dir/$nme"
-	log Removed "$dir/$nme".
 	isempty "$dir" || return 0
 	rmdir "$dir"
-	log Removed "$dir".
 }
 
 # Reads from key-value store.
@@ -468,7 +465,6 @@ map_get() {
 		return $err
 	}
 	val="$(cat "$fle" 2>&1)" || die "$val"
-	log map_get "$nme"["$key"]="$val".
 	printf %s "$val"
 }
 
@@ -482,7 +478,6 @@ map_put() {
 	[ -d "$dir" ] || mkdir "$dir"
 	[ -d "$dir/$nme" ] || mkdir "$dir/$nme"
 	printf %s "$val" >"$dir/$nme/$key"
-	log map_put "$nme"["$key"]="$val".
 }
 
 # Converts all PDF files in current directory to JPG files.

@@ -80,30 +80,30 @@ The public functions are, in alphabetical order:
 {url-base}#L417[`loge`],
 {url-base}#L425[`logw`],
 {url-base}#L434[`map_del`],
-{url-base}#L457[`map_get`],
-{url-base}#L476[`map_put`],
-{url-base}#L489[`pdf2jpg`],
-{url-base}#L499[`pdf2png`],
-{url-base}#L523[`prettytable`],
-{url-base}#L549[`prettyuptime`],
-{url-base}#L572[`realdir`],
-{url-base}#L581[`realpath`],
-{url-base}#L594[`semver`],
-{url-base}#L610[`timestamp`],
-{url-base}#L630[`tolog`],
-{url-base}#L636[`tologe`],
-{url-base}#L643[`tolower`],
-{url-base}#L661[`totsout`],
-{url-base}#L667[`tsout`],
-{url-base}#L675[`url_exists`],
-{url-base}#L699[`user_exists`],
-{url-base}#L715[`validate_cmd`],
-{url-base}#L722[`validate_var`],
-{url-base}#L729[`var_exists`],
-{url-base}#L751[`ver_ge`],
-{url-base}#L759[`vid2aud`],
-{url-base}#L775[`yes_to_continue`],
-{url-base}#L826[`ytda`].
+{url-base}#L454[`map_get`],
+{url-base}#L472[`map_put`],
+{url-base}#L484[`pdf2jpg`],
+{url-base}#L494[`pdf2png`],
+{url-base}#L518[`prettytable`],
+{url-base}#L544[`prettyuptime`],
+{url-base}#L567[`realdir`],
+{url-base}#L576[`realpath`],
+{url-base}#L589[`semver`],
+{url-base}#L605[`timestamp`],
+{url-base}#L625[`tolog`],
+{url-base}#L631[`tologe`],
+{url-base}#L638[`tolower`],
+{url-base}#L656[`totsout`],
+{url-base}#L662[`tsout`],
+{url-base}#L670[`url_exists`],
+{url-base}#L694[`user_exists`],
+{url-base}#L710[`validate_cmd`],
+{url-base}#L717[`validate_var`],
+{url-base}#L724[`var_exists`],
+{url-base}#L746[`ver_ge`],
+{url-base}#L754[`vid2aud`],
+{url-base}#L770[`yes_to_continue`],
+{url-base}#L821[`ytda`].
 
 Global variables have `BASE_` prefix and clients could use them.
 Clients should place temporary files under `$BASE_WIP`.
@@ -173,7 +173,7 @@ eval "$(
 log I\'m using the shellbase.
 ----
 
-{url-base}#L523[`prettytable`] example:
+{url-base}#L518[`prettytable`] example:
 
 [,sh]
 ----
