@@ -240,16 +240,10 @@ echo() {
 # with each argument representing a file name. Fails if any of the specified
 # files do not exist.
 file_exists() {
-	local arg ret=0
+	local arg
 	for arg; do
-		if ls "$arg" >/dev/null 2>&1; then
-			log File "$arg" exists.
-		else
-			ret=$?
-			logw File "$arg" does not exist.
-		fi
+		ls "$arg" >/dev/null 2>&1 || return $?
 	done
-	return $ret
 }
 
 # Generates a temporary commit, performs a rebase, and pushes the changes.
@@ -332,16 +326,10 @@ isnumber() {
 
 # Verifies that all parameters are readable files.
 isreadable() {
-	local arg ret=0
+	local arg
 	for arg; do
-		if [ -r "$arg" ]; then
-			log File or directory "$arg" is readable.
-		else
-			ret=1
-			logw File or directory "$arg" is not readable.
-		fi
+		[ -r "$arg" ] || return 1
 	done
-	return $ret
 }
 
 # Verifies that a content of a running script has a written inside the script
@@ -381,26 +369,15 @@ issolid() {
 
 # Verifies that all parameters are writable files or do not exist.
 iswritable() {
-	local arg ret=0
+	local arg
 	for arg; do
-		if file_exists "$arg" >/dev/null 2>&1; then
-			if [ -w "$arg" ]; then
-				log File "$arg" is writable.
-			else
-				ret=1
-				logw File "$arg" is not writable.
-			fi
+		if file_exists "$arg"; then
+			[ -w "$arg" ] || return 1
 		else
-			if touch "$arg" 2>/dev/null; then
-				rm "$arg"
-				log File "$arg" is accessible.
-			else
-				ret=$?
-				logw File "$arg" is not accessible.
-			fi
+			touch "$arg" 2>/dev/null || return $?
+			rm "$arg"
 		fi
 	done
-	return $ret
 }
 
 # All log messages go to stderr. Information logger doesn't print to stderr
@@ -440,7 +417,7 @@ map_del() {
 	local fle="$dir/$nme/$key"
 	file_exists "$fle" || {
 		err=$?
-		loge Unable to delete "$fle".
+		loge "$fle": No such file.
 		return $err
 	}
 	rm "$fle"
