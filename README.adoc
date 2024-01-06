@@ -44,7 +44,8 @@ toc::[]
 == About
 
 The `shellbase` framework serves as a foundation for Unix shell scripts.
-This framework is mostly POSIX-compliant, ensuring compatibility across
+This framework is mostly POSIX-compliant,
+`Portable Operating System Interface for uniX`, ensuring compatibility across
 Unix-like systems.
 It offers a range of essential services, including public functions such as
 logger and multiple validations, signal handling, garbage collection, and
