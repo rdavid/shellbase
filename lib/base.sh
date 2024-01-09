@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20240104
+BASE_VERSION=0.9.20240110
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -441,7 +441,11 @@ map_get() {
 		loge Unable to read "$fle".
 		return $err
 	}
-	val="$(cat "$fle" 2>&1)" || die "$val"
+	val="$(cat "$fle" 2>&1)" || {
+		err=$?
+		loge "$val"
+		return $err
+	}
 	printf %s "$val"
 }
 
