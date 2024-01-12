@@ -12,7 +12,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20240110 \
+	BASE_APP_VERSION=0.9.20240113 \
 	BASE_MIN_VERSION=0.9.20231228 \
 	BSH
 set -- "$@" --quiet
@@ -32,10 +32,10 @@ inside "$-" x && EXE=-xx || EXE=''
 # The build is executed silently, resulting in a container hash. Runs a
 # container and automatically removes it after it stops.
 for f in container/*/Containerfile; do
+	nme="$(printf %s "$f" | awk -F / '{print $2}' 2>&1)" || die "$nme"
 	printf >&2 %s...\\n "$nme"
 	chrono_sta run || die Unable to start timer.
 	hsh="$(podman build --file "$f" --quiet . 2>&1)" || die "$hsh"
-	nme="$(printf %s "$f" | awk -F / '{print $2}' 2>&1)" || die "$nme"
 	podman run --rm --rmi "$hsh" "$EXE" lint test
 	dur="$(chrono_sto run)" || die Unable to stop timer.
 	printf >&2 %s\ %s.\\n "$nme" "$dur"
