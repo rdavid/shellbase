@@ -1,6 +1,6 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2022-2023 David Rabkin
+# Copyright 2022-2024 David Rabkin
 # shellcheck disable=SC2039,SC3043 # Uses local variables.
 # shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
@@ -17,7 +17,6 @@ foo() {
 		echo d
 		echo d >&2
 		i=$((i + 1))
-		sleep 1
 	done
 }
 { foo 2>&1 1>&3 3>&- | tologe; } 3>&1 1>&2 | tolog
