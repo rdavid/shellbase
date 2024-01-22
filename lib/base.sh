@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20240110
+BASE_VERSION=0.9.20240123
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -286,20 +286,27 @@ inside() {
 }
 
 # Determines whether a directory is empty. See:
-#  https://www.etalabs.net/sh_tricks.html
+#  https://unix.stackexchange.com/q/202243
 isempty() {
 	cd "$1" >/dev/null 2>&1 || {
 		local err=$?
 		loge The directory is not accessible: "$1", err=$err.
 		return $err
 	}
-	set -- .[!.]*
-	test -f "$1" && return 1
-	set -- ..?*
-	test -f "$1" && return 1
-	set -- *
-	[ -f "$1" ] || [ -d "$1" ] && return 1
-	return 0
+	local ret
+	set +o nounset -- ./* ./.[!.]* ./..?*
+	if [ -n "$4" ] ||
+		for e; do
+			[ -L "$e" ] ||
+				[ -e "$e" ] && break
+		done; then
+		ret=1
+	else
+		ret=0
+	fi
+	set -o nounset
+	cd "$OLDPWD"
+	return $ret
 }
 
 # Determines whether a shell function with a given name exists. See:
