@@ -92,6 +92,7 @@ update() {
 validate() {
 	isreadable "$BSH" "$TGT" || die
 	validate_cmd awk cat cmp cut grep head rev sed tail
+	grep --help >/dev/null 2>&1 || die GNU grep is required.
 }
 
 # Starting point.
