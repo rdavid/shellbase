@@ -277,9 +277,8 @@ heic2jpg() {
 #  echo $1 | grep -qs "$2"
 # or expr:
 #  expr "$1" : ".*$2" >/dev/null && return 0 # true
-# but case does not require another shell process.
-# From here:
-#  https://www.grymoire.com/Unix/Sh.html
+# but case does not require another shell process. See:
+#  https://www.grymoire.com/Unix/Sh.html#toc-uh-96
 inside() {
 	case "$1" in *$2*) return 0 ;; esac
 	return 1

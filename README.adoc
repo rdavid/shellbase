@@ -12,6 +12,9 @@
 :url-goredo: http://www.goredo.cypherpunks.ru/Install.html
 :url-goredoer: https://github.com/rdavid/goredoer
 :url-redo: http://cr.yp.to/redo.html
+:url-sh0: http://www.etalabs.net/sh_tricks.html
+:url-sh1: https://mywiki.wooledge.org/SignalTrap
+:url-sh2: https://www.grymoire.com/Unix/Sh.html
 :url-shellcheck: https://github.com/koalaman/shellcheck
 :url-shfmt: https://github.com/mvdan/sh
 :url-toolbox: https://github.com/rdavid/toolbox
@@ -70,41 +73,41 @@ The public functions are, in alphabetical order:
 {url-base}#L250[`grbt`],
 {url-base}#L262[`handle_pipefails`],
 {url-base}#L268[`heic2jpg`],
-{url-base}#L283[`inside`],
-{url-base}#L290[`isempty`],
-{url-base}#L314[`isfunc`],
-{url-base}#L327[`isnumber`],
-{url-base}#L335[`isreadable`],
-{url-base}#L344[`issolid`],
-{url-base}#L378[`iswritable`],
-{url-base}#L392[`log`],
-{url-base}#L401[`loge`],
-{url-base}#L409[`logw`],
-{url-base}#L418[`map_del`],
-{url-base}#L438[`map_get`],
-{url-base}#L460[`map_put`],
-{url-base}#L472[`pdf2jpg`],
-{url-base}#L482[`pdf2png`],
-{url-base}#L506[`prettytable`],
-{url-base}#L532[`prettyuptime`],
-{url-base}#L555[`realdir`],
-{url-base}#L564[`realpath`],
-{url-base}#L577[`semver`],
-{url-base}#L593[`timestamp`],
-{url-base}#L613[`tolog`],
-{url-base}#L619[`tologe`],
-{url-base}#L626[`tolower`],
-{url-base}#L644[`totsout`],
-{url-base}#L650[`tsout`],
-{url-base}#L658[`url_exists`],
-{url-base}#L682[`user_exists`],
-{url-base}#L698[`validate_cmd`],
-{url-base}#L705[`validate_var`],
-{url-base}#L712[`var_exists`],
-{url-base}#L734[`ver_ge`],
-{url-base}#L742[`vid2aud`],
-{url-base}#L758[`yes_to_continue`],
-{url-base}#L809[`ytda`].
+{url-base}#L282[`inside`],
+{url-base}#L289[`isempty`],
+{url-base}#L313[`isfunc`],
+{url-base}#L326[`isnumber`],
+{url-base}#L334[`isreadable`],
+{url-base}#L343[`issolid`],
+{url-base}#L377[`iswritable`],
+{url-base}#L391[`log`],
+{url-base}#L400[`loge`],
+{url-base}#L408[`logw`],
+{url-base}#L417[`map_del`],
+{url-base}#L437[`map_get`],
+{url-base}#L459[`map_put`],
+{url-base}#L471[`pdf2jpg`],
+{url-base}#L481[`pdf2png`],
+{url-base}#L505[`prettytable`],
+{url-base}#L531[`prettyuptime`],
+{url-base}#L554[`realdir`],
+{url-base}#L563[`realpath`],
+{url-base}#L576[`semver`],
+{url-base}#L592[`timestamp`],
+{url-base}#L612[`tolog`],
+{url-base}#L618[`tologe`],
+{url-base}#L625[`tolower`],
+{url-base}#L643[`totsout`],
+{url-base}#L649[`tsout`],
+{url-base}#L657[`url_exists`],
+{url-base}#L681[`user_exists`],
+{url-base}#L697[`validate_cmd`],
+{url-base}#L704[`validate_var`],
+{url-base}#L711[`var_exists`],
+{url-base}#L733[`ver_ge`],
+{url-base}#L741[`vid2aud`],
+{url-base}#L757[`yes_to_continue`],
+{url-base}#L808[`ytda`].
 
 Global variables have `BASE_` prefix and clients could use them.
 Clients should place temporary files under `$BASE_WIP`.
@@ -174,7 +177,7 @@ eval "$(
 log I\'m using the shellbase.
 ----
 
-{url-base}#L506[`prettytable`] example:
+{url-base}#L505[`prettytable`] example:
 
 [,sh]
 ----
@@ -210,6 +213,12 @@ You can install Sergey Matveev's {url-goredo}[`goredo`] implementation.
 `redo test-container` runs the tests across various shells in containers.
 It uses {url-cv}[David Rabkin]'s {url-goredoer}[`goredoer`] to build
 {url-goredo}[`goredo`].
+
+== Links
+
+- {url-sh0}[Rich’s sh (POSIX shell) tricks]
+- {url-sh1}[Sending and Trapping Signals]
+- {url-sh2}[Sh - the POSIX Shell]
 
 == License
 
