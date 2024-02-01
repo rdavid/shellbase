@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20240128
+BASE_VERSION=0.9.20240202
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
