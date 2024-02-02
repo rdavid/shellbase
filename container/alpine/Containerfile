@@ -25,7 +25,7 @@ RUN \
 		shellcheck~=0.9 \
 		shfmt~=3.7 \
 		tcsh~=6.24 \
-		tzdata~=2023 \
+		tzdata~=2024 \
 		zsh~=5.9 \
 		util-linux~=2 \
 		yamllint~=1.33 \
