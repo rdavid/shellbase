@@ -3,7 +3,7 @@ REDO ?= redo
 .PHONY: all clean test
 
 warning:
-	@echo WARNING: Just proxying commands to redo command.
+	@echo WARNING: Acting as a proxy for redo commands.
 
 all: warning
 	$(REDO) $@
