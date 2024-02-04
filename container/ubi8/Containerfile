@@ -1,4 +1,4 @@
-FROM ghcr.io/rdavid/goredoer:0.9.20240202 as goredoer
+FROM ghcr.io/rdavid/goredoer:0.9.20240204 as goredoer
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.9-1108.1705420507
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
