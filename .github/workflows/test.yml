@@ -32,7 +32,7 @@ jobs:
           file_or_dir: .github/*.yml .github/workflows/*.yml
           strict: true
       - run: ./app/update
-  test-macos:
+  test-macos-latest:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -52,4 +52,25 @@ jobs:
             yash
           vale sync
           export PATH=/usr/local/opt/grep/libexec/gnubin:"$PATH"
+          redo -xx lint test
+  test-macos-14:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          brew install \
+            asciidoctor \
+            checkmake \
+            fish \
+            goredo \
+            grep \
+            hadolint \
+            shellcheck \
+            shfmt \
+            typos-cli \
+            vale \
+            yamllint \
+            yash
+          vale sync
+          export PATH=/opt/homebrew/opt/grep/libexec/gnubin:"$PATH"
           redo -xx lint test
