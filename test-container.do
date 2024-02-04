@@ -12,7 +12,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20240113 \
+	BASE_APP_VERSION=0.9.20240204 \
 	BASE_MIN_VERSION=0.9.20231228 \
 	BSH
 set -- "$@" --quiet
@@ -28,10 +28,15 @@ out="$(podman machine start 2>&1)" || {
 # If the test is run in a mode of the shell where all executed commands are
 # printed to the terminal, pass the mode further.
 inside "$-" x && EXE=-xx || EXE=''
+inside "$(uname -m)" arm64 && ARM=true || ARM=false
 
 # The build is executed silently, resulting in a container hash. Runs a
 # container and automatically removes it after it stops.
 for f in container/*/Containerfile; do
+	[ "$ARM" = true ] && inside "$f" archlinux && {
+		printf >&2 'Arch Linux does not currently support ARM architecture.\n'
+		continue
+	}
 	nme="$(printf %s "$f" | awk -F / '{print $2}' 2>&1)" || die "$nme"
 	printf >&2 %s...\\n "$nme"
 	chrono_sta run || die Unable to start timer.

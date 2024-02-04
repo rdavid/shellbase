@@ -1,4 +1,4 @@
-FROM ghcr.io/rdavid/goredoer:0.9.20240202 as goredoer
+FROM ghcr.io/rdavid/goredoer:0.9.20240204 as goredoer
 FROM fedora:40
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
