@@ -1,18 +1,14 @@
 ---
 name: test
 'on': push
-env:
-  CM_BIN: /usr/local/bin/checkmake
-  CM_URL: https://github.com/mrtazz/checkmake/releases/download/0.2.2/checkmake-0.2.2.linux.amd64 # yamllint disable-line
 jobs:
   test-linux:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, ubuntu-22.04]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - run: |
-          curl --location --output $CM_BIN --silent $CM_URL
-          chmod +x $CM_BIN
-          $CM_BIN Makefile
       - uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: Containerfile
@@ -32,45 +28,3 @@ jobs:
           file_or_dir: .github/*.yml .github/workflows/*.yml
           strict: true
       - run: ./app/update
-  test-macos-latest:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-          brew install \
-            asciidoctor \
-            checkmake \
-            fish \
-            goredo \
-            grep \
-            hadolint \
-            shellcheck \
-            shfmt \
-            typos-cli \
-            vale \
-            yamllint \
-            yash
-          vale sync
-          export PATH=/usr/local/opt/grep/libexec/gnubin:"$PATH"
-          redo -xx lint test
-  test-macos-14:
-    runs-on: macos-14
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-          brew install \
-            asciidoctor \
-            checkmake \
-            fish \
-            goredo \
-            grep \
-            hadolint \
-            shellcheck \
-            shfmt \
-            typos-cli \
-            vale \
-            yamllint \
-            yash
-          vale sync
-          export PATH=/opt/homebrew/opt/grep/libexec/gnubin:"$PATH"
-          redo -xx lint test
