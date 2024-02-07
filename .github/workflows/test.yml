@@ -28,3 +28,28 @@ jobs:
           file_or_dir: .github/*.yml .github/workflows/*.yml
           strict: true
       - run: ./app/update
+  test-macos:
+    strategy:
+      matrix:
+        os: [macos-12, macos-14]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          brew install \
+            asciidoctor \
+            checkmake \
+            fish \
+            goredo \
+            grep \
+            hadolint \
+            shellcheck \
+            shfmt \
+            typos-cli \
+            vale \
+            yamllint \
+            yash
+          vale sync
+          export PATH=/usr/local/opt/grep/libexec/gnubin:"$PATH"
+          export PATH=/opt/homebrew/opt/grep/libexec/gnubin:"$PATH"
+          redo -xx lint test
