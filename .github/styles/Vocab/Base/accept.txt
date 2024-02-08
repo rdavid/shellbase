@@ -1,4 +1,1 @@
-Matveev
-Rabkin
-Sergey
-Shellbase
+../../config/vocabularies/Base/accept.txt
