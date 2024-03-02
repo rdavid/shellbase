@@ -1,8 +1,9 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2022-2023 David Rabkin
+# Copyright 2022-2024 David Rabkin
 # shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+grep --help >/dev/null 2>&1 || cya GNU grep is required.
 ver="$(semver 'I am 1.2.3')" || die
 log "$ver"
 inside "$ver" 0.0.0+nil && die
