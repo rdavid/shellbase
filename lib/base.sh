@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20240224
+BASE_VERSION=0.9.20240302
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -830,6 +830,7 @@ base_bomb() {
 # Right before a program exiting, it prints a program name and and its
 # lifespan. Avoid using die() to prevent potential recursion.
 base_bye() {
+	local dur
 	dur="$(chrono_sto lifespan)" || dur=err
 	log "$BASE_IAM $$ says bye after $dur."
 }
