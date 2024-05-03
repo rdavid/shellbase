@@ -1,5 +1,5 @@
 FROM ghcr.io/rdavid/goredoer:0.9.20240303 as goredoer
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.9-1137
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.9-1161
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	CM_BIN=/usr/local/bin/checkmake \
