@@ -5,8 +5,6 @@ updates:
     directory: /container
     schedule:
       interval: daily
-    commit-message:
-      prefix: '[docker] '
   - package-ecosystem: github-actions
     directory: /
     schedule:
