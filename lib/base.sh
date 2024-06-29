@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20240303
+BASE_VERSION=0.9.20240629
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -267,7 +267,24 @@ handle_pipefails() {
 # Converts Apple's HEIC files in a current directory to JPEG.
 heic2jpg() {
 	cmd_exists magick || return $?
-	magick mogrify -format jpg -monitor ./*.[hH][eE][iI][cC]
+	find . \
+		-maxdepth 1 \
+		-type f \
+		-name '*.[hH][eE][iI][cC]' \
+		-exec magick mogrify -format jpg -monitor {} +
+	printf 'Remove the source files? [y/N] '
+	local ans old
+	old="$(stty -g 2>&1)" || die "$old"
+	stty raw -echo
+	ans=$(head -c 1 2>&1) || die "$ans"
+	stty "$old"
+	printf \\n
+	printf %s "$ans" | grep -iq ^y || return 0
+	find . \
+		-maxdepth 1 \
+		-type f \
+		-name '*.[hH][eE][iI][cC]' \
+		-exec rm -f {} +
 }
 
 # Returns a TRUE if $2 is inside $1. I'll use a case statement, because this is
