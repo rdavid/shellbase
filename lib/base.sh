@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20240707
+BASE_VERSION=0.9.20240721
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -205,17 +205,19 @@ chrono_sto() {
 # lol plugin, which defines an alias to cya, remove the plugin:
 #  https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/lol
 cya() {
+	local err=$?
 	[ $# = 0 ] || log "$@"
-	base_is_interactive && log You\'re immortal! || exit 0
+	[ $err = 0 ] || logw Cya with error code $err.
+	base_exit
 }
 
 # Prints all parameters as an error message, and exits with the error code.
 # It attempts to retain the original error code; otherwise, it returns ten.
 die() {
 	local err=$?
-	[ $err != 0 ] || err=10
 	[ $# = 0 ] || loge "$@"
-	base_is_interactive && log You\'re immortal! || exit $err
+	[ $err != 0 ] || err=10
+	(exit $err) || base_exit
 }
 
 # Enhances the behavior of the command to ensure it behaves more reliably. See:
@@ -994,6 +996,14 @@ base_display_warranty() {
 	var_exists BASE_APP_WARRANTY 2>/dev/null &&
 		printf '%s\n\n%s\n' "$war" "$BASE_APP_WARRANTY" ||
 		printf %s\\n "$war"
+}
+
+# Exits with an error code, which could be zero. It is called from cya() and
+# die().
+base_exit() {
+	local err=$?
+	log Exit with error code $err.
+	base_is_interactive && log You\'re immortal! || exit $err
 }
 
 # The initial command log.
