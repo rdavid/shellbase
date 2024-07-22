@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20240721
+BASE_VERSION=0.9.20240723
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -851,7 +851,7 @@ base_bomb() {
 base_bye() {
 	local dur
 	dur="$(chrono_sto lifespan)" || dur=err
-	log "$BASE_IAM $$ says bye after $dur."
+	log "$BASE_IAM $$ says bye after $dur, err=$1."
 }
 
 # Asks to continue if multiple instances.
@@ -902,15 +902,15 @@ base_cleanup() {
 		}
 		wip="${BASE_WIP%.*}_$who"
 		if out="$(rm -fr "$wip" 2>&1)"; then
-			base_bye
+			base_bye $err
 			mv "$BASE_WIP" "$wip" || :
 		else
 			loge "$out".
-			base_bye
+			base_bye $err
 			rm -fr "$BASE_WIP" || :
 		fi
 	else
-		base_bye
+		base_bye $err
 		rm -fr "$BASE_WIP" || :
 	fi
 
@@ -1002,8 +1002,7 @@ base_display_warranty() {
 # die().
 base_exit() {
 	local err=$?
-	log Exit with error code $err.
-	base_is_interactive && log You\'re immortal! || exit $err
+	base_is_interactive && log You\'re immortal, err=$err. || exit $err
 }
 
 # The initial command log.
