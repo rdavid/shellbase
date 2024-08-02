@@ -1,5 +1,5 @@
 FROM ghcr.io/rdavid/goredoer:0.9.20240707 as goredoer
-FROM alpine:3.20.1
+FROM alpine:3.20.2
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	CM_BIN=/usr/local/bin/checkmake \
@@ -15,7 +15,7 @@ RUN \
 	apk add --no-cache --update \
 		bash~=5.2 \
 		coreutils~=9.5 \
-		curl~=8.8 \
+		curl~=8.9 \
 		dash~=0.5 \
 		fish~=3.7 \
 		grep~=3.11 \
