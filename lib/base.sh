@@ -830,10 +830,10 @@ yes_to_continue() {
 ytda() {
 	cmd_exists renamr yt-dlp || return $?
 	yt-dlp \
-		--output "%(uploader)s-%(upload_date)s-%(title)s.%(ext)s" \
-		--format bestvideo+bestaudio \
-		--merge-output-format mp4 \
 		--add-metadata \
+		--format bestaudio+bestvideo/best \
+		--merge-output-format mp4 \
+		--output "%(uploader)s-%(upload_date)s-%(title)s.%(ext)s" \
 		"$@" &&
 		renamr -a
 }
