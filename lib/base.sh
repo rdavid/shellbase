@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20240723
+BASE_VERSION=0.9.20240803
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -207,8 +207,9 @@ chrono_sto() {
 cya() {
 	local err=$?
 	[ $# = 0 ] || log "$@"
-	[ $err = 0 ] || logw Cya with error code $err.
-	base_exit
+
+	# shellcheck disable=SC2015 # Note that A && B || C is not if-then-else.
+	(exit $err) && base_exit || base_exit
 }
 
 # Prints all parameters as an error message, and exits with the error code.
@@ -217,6 +218,8 @@ die() {
 	local err=$?
 	[ $# = 0 ] || loge "$@"
 	[ $err != 0 ] || err=10
+
+	# The err is always not null.
 	(exit $err) || base_exit
 }
 
@@ -849,9 +852,12 @@ base_bomb() {
 # Right before a program exiting, it prints a program name and and its
 # lifespan. Avoid using die() to prevent potential recursion.
 base_bye() {
-	local dur
+	local err=$? dur msg
 	dur="$(chrono_sto lifespan)" || dur=err
-	log "$BASE_IAM $$ says bye after $dur, err=$1."
+	msg="$BASE_IAM $$ says bye after $dur"
+
+	# shellcheck disable=SC2015 # Note that A && B || C is not if-then-else.
+	[ $err -eq 0 ] && log "$msg." || logw "$msg, err=$err."
 }
 
 # Asks to continue if multiple instances.
@@ -891,6 +897,7 @@ base_check_instances() {
 # General exit handler, it is called on EXIT. Any first parameter means no
 # exit. Keeps WIP directory of last finished instance. Calls base_bye right
 # before WIP moving or deleting.
+# shellcheck disable=SC2015 # Note that A && B || C is not if-then-else.
 base_cleanup() {
 	local err=$?
 	trap - HUP EXIT INT QUIT TERM
@@ -902,15 +909,15 @@ base_cleanup() {
 		}
 		wip="${BASE_WIP%.*}_$who"
 		if out="$(rm -fr "$wip" 2>&1)"; then
-			base_bye $err
+			(exit $err) && base_bye || base_bye
 			mv "$BASE_WIP" "$wip" || :
 		else
 			loge "$out".
-			base_bye $err
+			(exit $err) && base_bye || base_bye
 			rm -fr "$BASE_WIP" || :
 		fi
 	else
-		base_bye $err
+		(exit $err) && base_bye || base_bye
 		rm -fr "$BASE_WIP" || :
 	fi
 
@@ -1001,8 +1008,11 @@ base_display_warranty() {
 # Exits with an error code, which could be zero. It is called from cya() and
 # die().
 base_exit() {
-	local err=$?
-	base_is_interactive && log You\'re immortal, err=$err. || exit $err
+	local err=$? msg=You\'re\ immortal
+	base_is_interactive || exit $err
+
+	# shellcheck disable=SC2015 # Note that A && B || C is not if-then-else.
+	[ $err -eq 0 ] && log "$msg." || logw "$msg, err=$err."
 }
 
 # The initial command log.
