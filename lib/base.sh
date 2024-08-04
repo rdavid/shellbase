@@ -62,16 +62,16 @@ aud_only() {
 		loge "$lst"
 		return $err
 	}
+	[ -z "$lst" ] && {
+		log Nothing to remove.
+		return 0
+	}
 
 	# xargs handles white spaces.
-	cnt="$(printf %s "$lst" | wc -l | xargs)" || {
+	cnt="$(printf %s\\n "$lst" | wc -l | xargs)" || {
 		err=$?
 		loge Something went wrong.
 		return $err
-	}
-	[ "$cnt" = 0 ] && {
-		log Nothing to remove.
-		return 0
 	}
 	base_should_continue "Remove the following files:
 $lst
