@@ -47,13 +47,13 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20240803
+BASE_VERSION=0.9.20240804
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
 aud_only() {
-	local ans cnt err lst old out
+	local cnt err lst out
 	lst=$(
 		find . -type f \
 			! \( -name \*.mp3 -o -name \*.m4a -o -name \*.flac \) 2>&1
@@ -73,13 +73,10 @@ aud_only() {
 		log Nothing to remove.
 		return 0
 	}
-	printf "Remove the following:\n%s\nTotal %s files? [y/N] " "$lst" "$cnt" 2>&1
-	old="$(stty -g 2>&1)" || die "$old"
-	stty raw -echo
-	ans=$(head -c 1 2>&1) || die "$ans"
-	stty "$old"
-	printf \\n
-	printf %s "$ans" | grep -iq ^y || return 0
+	base_should_continue "Remove the following files:
+$lst
+Total $cnt files" || return 0
+	log Removing "$cnt" files.
 	out="$(
 		find . -type f \
 			! \( -name \*.mp3 -o -name \*.m4a -o -name \*.flac \) \
@@ -277,14 +274,7 @@ heic2jpg() {
 		-type f \
 		-name '*.[hH][eE][iI][cC]' \
 		-exec magick mogrify -format jpg -monitor {} +
-	printf 'Remove the source files? [y/N] '
-	local ans old
-	old="$(stty -g 2>&1)" || die "$old"
-	stty raw -echo
-	ans=$(head -c 1 2>&1) || die "$ans"
-	stty "$old"
-	printf \\n
-	printf %s "$ans" | grep -iq ^y || return 0
+	base_should_continue 'Remove the source files' || return 0
 	find . \
 		-maxdepth 1 \
 		-type f \
@@ -1142,6 +1132,22 @@ base_sig_cleanup() {
 	trap - EXIT
 	base_cleanup 1
 	exit $err
+}
+
+# Asks if the process should continue.
+base_should_continue() {
+	local ans msg old
+	msg="${*:-Do you want to continue}"
+
+	# Prints the question without a new line allows to print an answer on the
+	# same line. The question is not logged.
+	printf '%s? [y/N] ' "$msg"
+	old="$(stty -g 2>&1)" || die "$old"
+	stty raw -echo
+	ans=$(head -c 1 2>&1) || die "$ans"
+	stty "$old"
+	printf \\n
+	printf %s "$ans" | grep -iq ^y
 }
 
 # Calculates a separator for time titles based on amount of non-empty
