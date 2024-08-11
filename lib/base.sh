@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20240804
+BASE_VERSION=0.9.20240811
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -1136,17 +1136,44 @@ base_sig_cleanup() {
 
 # Asks if the process should continue.
 base_should_continue() {
-	local ans msg old
-	msg="${*:-Do you want to continue}"
+	local ans dad="$$" kid msg old tmo=20
+	old="$(stty -g 2>&1)" || die "$old"
+
+	# The trap returns tty settings, adds the new line before any printing to
+	# compensate the question without a new line.
+	trap 'stty "$old"; printf \\n; loge Timed out in $tmo seconds.; return' TERM
+
+	# Runs watchdog process that kills dad and kids proceeses with common unique
+	# process group ID: minus before dad PID.
+	set +m
+	(
+		sleep "$tmo"
+		kill $dad
+		log Exiting the watchdog process "$$".
+	) &
+	kid="$!"
+	set -m
+	log "PIDs: dad $dad, kid $kid."
 
 	# Prints the question without a new line allows to print an answer on the
 	# same line. The question is not logged.
+	msg="${*:-Do you want to continue}"
 	printf '%s? [y/N] ' "$msg"
-	old="$(stty -g 2>&1)" || die "$old"
 	stty raw -echo
+
+	# Runs a child process to read the first character from stdin.
 	ans=$(head -c 1 2>&1) || die "$ans"
 	stty "$old"
+	trap base_sig_cleanup TERM
+
+	# Adds the new line before any printing to compensate the question without a
+	# new line. Command wait could return an error code.
 	printf \\n
+	log Terminating the watchdog process "$kid".
+	kill "$kid"
+	set +m
+	wait "$kid" || :
+	set -m
 	printf %s "$ans" | grep -iq ^y
 }
 
