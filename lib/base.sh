@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20240811
+BASE_VERSION=0.9.20240812
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -1134,26 +1134,32 @@ base_sig_cleanup() {
 	exit $err
 }
 
-# Asks if the process should continue.
+# Asks the user for permission to continue; returns an error code if the input
+# is not 'y' or if no input is detected after a timeout. If exists uses
+# parameters as a question, otherwise uses default message.
 base_should_continue() {
-	local ans dad="$$" kid msg old tmo=20
+	local ans dad="$$" dog msg old tmo=20
 	old="$(stty -g 2>&1)" || die "$old"
 
 	# The trap returns tty settings, adds the new line before any printing to
 	# compensate the question without a new line.
-	trap 'stty "$old"; printf \\n; loge Timed out in $tmo seconds.; return' TERM
+	trap '
+		stty "$old"
+		printf \\n
+		logw Dad $$ is timed out in $tmo seconds.
+		return 13
+	' TERM
 
-	# Runs watchdog process that kills dad and kids proceeses with common unique
+	# Runs watchdog process that kills dad and dog processes with common unique
 	# process group ID: minus before dad PID.
 	set +m
 	(
 		sleep "$tmo"
-		kill $dad
-		log Exiting the watchdog process "$$".
+		kill -- -$dad
 	) &
-	kid="$!"
+	dog="$!"
 	set -m
-	log "PIDs: dad $dad, kid $kid."
+	log "PIDs: dad $dad, dog $dog."
 
 	# Prints the question without a new line allows to print an answer on the
 	# same line. The question is not logged.
@@ -1169,10 +1175,10 @@ base_should_continue() {
 	# Adds the new line before any printing to compensate the question without a
 	# new line. Command wait could return an error code.
 	printf \\n
-	log Terminating the watchdog process "$kid".
-	kill "$kid"
+	log Terminating dog "$dog".
+	kill "$dog"
 	set +m
-	wait "$kid" || :
+	wait "$dog" || :
 	set -m
 	printf %s "$ans" | grep -iq ^y
 }
