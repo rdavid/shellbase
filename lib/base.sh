@@ -768,51 +768,7 @@ vid2aud() {
 # uses default message.
 yes_to_continue() {
 	[ $BASE_YES_TO_CONT = true ] && return 0
-	local \
-		ans \
-		arc \
-		dad="$$" \
-		kid \
-		msg \
-		tmo=20
-	arc="$(stty -g 2>&1)" || die "$arc"
-
-	# The trap returns tty settings, adds the new line before any printing to
-	# compensate the question without a new line.
-	trap 'stty "$arc"; printf \\n; die "Timed out in $tmo seconds".' TERM
-
-	# Runs watchdog process that kills dad and kids proceeses with common unique
-	# process group ID: minus before dad PID.
-	(
-		sleep "$tmo"
-		kill -- -$dad
-	) &
-	kid="$!"
-	log "PIDs: dad $dad, kid $kid."
-
-	# Prints the question without a new line allows to print an answer on the
-	# same line. The question is not logged.
-	msg="${*:-Do you want to continue?}"
-	printf '%s [y/N] ' "$msg"
-	stty raw -echo
-
-	# Runs a child process to read the first character from stdin.
-	ans="$(head -c 1 2>&1)" || die "$ans"
-	stty "$arc"
-	trap base_sig_cleanup TERM
-
-	# Adds the new line before any printing to compensate the question without a
-	# new line.
-	printf \\n
-	log Terminating the watchdog process "$kid".
-	kill "$kid"
-
-	# Command 'wait' could return an error code, temporarily disables exit on
-	# error.
-	set +o errexit
-	wait "$kid" 2>/dev/null
-	set -o errexit
-	printf %s "$ans" | grep -iq ^y || cya Stop working.
+	base_should_continue "$@" || cya Stop working.
 	log Keep working.
 }
 
