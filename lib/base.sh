@@ -47,7 +47,7 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20240812
+BASE_VERSION=0.9.20240813
 BASE_YES_TO_CONT=false
 
 # Removes any file besides mp3, m4a, flac in the current directory.
@@ -1097,17 +1097,20 @@ base_should_continue() {
 	local ans dad="$$" dog msg old tmo=20
 	old="$(stty -g 2>&1)" || die "$old"
 
-	# The trap returns tty settings, adds the new line before any printing to
-	# compensate the question without a new line.
+	# The trap callback restores the default base_sig_cleanup trap callback,
+	# reverts the default TTY settings, and adds a newline before any output to
+	# compensate for the missing newline after the prompt.
 	trap '
+		trap base_sig_cleanup TERM
 		stty "$old"
 		printf \\n
-		logw Dad $$ is timed out in $tmo seconds.
+		logw User did not respond.
 		return 13
 	' TERM
 
-	# Runs watchdog process that kills dad and dog processes with common unique
-	# process group ID: minus before dad PID.
+	# Runs a watchdog process that terminates the parent process and its child
+	# processes using a common unique process group ID, identified by the
+	# negative parent PID.
 	set +m
 	(
 		sleep "$tmo"
@@ -1115,7 +1118,7 @@ base_should_continue() {
 	) &
 	dog="$!"
 	set -m
-	log "PIDs: dad $dad, dog $dog."
+	log "Parent process $dad created watchdog process $dog."
 
 	# Prints the question without a new line allows to print an answer on the
 	# same line. The question is not logged.
@@ -1123,20 +1126,25 @@ base_should_continue() {
 	printf '%s? [y/N] ' "$msg"
 	stty raw -echo
 
-	# Runs a child process to read the first character from stdin.
+	# Runs a child process to read the first character from stdin. This process
+	# may be interrupted after a timeout.
 	ans=$(head -c 1 2>&1) || die "$ans"
-	stty "$old"
 	trap base_sig_cleanup TERM
+	stty "$old"
 
 	# Adds the new line before any printing to compensate the question without a
 	# new line. Command wait could return an error code.
 	printf \\n
-	log Terminating dog "$dog".
 	kill "$dog"
 	set +m
 	wait "$dog" || :
 	set -m
-	printf %s "$ans" | grep -iq ^y
+	log "Parent process $dad terminated watchdog process $dog."
+	printf %s "$ans" | grep -iq ^y || {
+		log User chose not to continue.
+		return 14
+	}
+	log User chose to continue.
 }
 
 # Calculates a separator for time titles based on amount of non-empty
