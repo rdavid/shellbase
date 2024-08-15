@@ -47,8 +47,8 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_VERSION=0.9.20240813
-BASE_YES_TO_CONT=false
+BASE_SHOULD_CONT=false
+BASE_VERSION=0.9.20240815
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -767,7 +767,6 @@ vid2aud() {
 # input is not detected. If exists uses parameters as a question, otherwise
 # uses default message.
 yes_to_continue() {
-	[ $BASE_YES_TO_CONT = true ] && return 0
 	base_should_continue "$@" || cya Stop working.
 	log Keep working.
 }
@@ -1094,6 +1093,7 @@ base_sig_cleanup() {
 # is not 'y' or if no input is detected after a timeout. If exists uses
 # parameters as a question, otherwise uses default message.
 base_should_continue() {
+	[ $BASE_SHOULD_CONT = true ] && return 0
 	local ans dad="$$" dog msg old tmo=20
 	old="$(stty -g 2>&1)" || die "$old"
 
@@ -1237,7 +1237,7 @@ for arg; do
 	-q | --quiet) cnt=$((cnt + 1)) ;;
 	-t | --trace) cnt=$((cnt - 1)) ;;
 	-x | --execute) set -x ;;
-	-y | --yes) BASE_YES_TO_CONT=true ;;
+	-y | --yes) BASE_SHOULD_CONT=true ;;
 	*)
 		# If an argument is not skipped, sets it back to all.
 		if [ $skp = false ]; then
@@ -1258,6 +1258,6 @@ readonly \
 	BASE_FMT_YELLOW \
 	BASE_KEEP_WIP \
 	BASE_QUIET \
-	BASE_VERSION \
-	BASE_YES_TO_CONT
+	BASE_SHOULD_CONT \
+	BASE_VERSION
 base_main "$@"
