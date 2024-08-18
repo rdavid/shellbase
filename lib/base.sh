@@ -75,7 +75,7 @@ aud_only() {
 	}
 	should_continue "Remove the following files:
 $lst
-Total $cnt files" || return 0
+Total $cnt files" || return $?
 	log Removing "$cnt" files.
 	out="$(
 		find . -type f \
@@ -113,7 +113,7 @@ beuser() {
 
 # Requests permission to execute the fork bomb.
 bomb() {
-	should_continue 'Throw the fork bomb' || return 0
+	should_continue 'Throw the fork bomb' || return $?
 	base_bomb
 }
 
@@ -274,7 +274,7 @@ heic2jpg() {
 		-type f \
 		-name '*.[hH][eE][iI][cC]' \
 		-exec magick mogrify -format jpg -monitor {} +
-	should_continue 'Remove the source files' || return 0
+	should_continue 'Remove the source files' || return $?
 	find . \
 		-maxdepth 1 \
 		-type f \
