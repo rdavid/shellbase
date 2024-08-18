@@ -3,7 +3,7 @@
 # Copyright 2024 David Rabkin
 # shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
-base_should_continue || cya Stopped first.
+should_continue || cya Stopped first.
 log Continued first.
-base_should_continue You\'re "$USER", continue || cya Stopped second.
+should_continue You\'re "$USER", continue || cya Stopped second.
 log Continued second.
