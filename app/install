@@ -13,7 +13,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20240812 \
+	BASE_APP_VERSION=0.9.20240818 \
 	BASE_MIN_VERSION=0.9.20230405 \
 	BSH \
 	DST=/usr/local/bin \
@@ -34,7 +34,7 @@ main() {
 		[ "$old" = "$new" ] &&
 			msg="$new is already installed in $DST. Continue anyway" ||
 			msg="$old is installed in $DST. Update to $new"
-		yes_to_continue "$msg"
+		should_continue "$msg" || cya
 		cp -f "$BSH" $TGT || die Unable to copy "$BSH" to $TGT.
 		printf '%s is updated to %s in %s.\n' "$old" "$new" $DST
 	else

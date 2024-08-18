@@ -113,7 +113,7 @@ beuser() {
 
 # Requests permission to execute the fork bomb.
 bomb() {
-	yes_to_continue Throw the fork bomb?
+	should_continue 'Throw the fork bomb' || return 0
 	base_bomb
 }
 
@@ -825,6 +825,7 @@ vid2aud() {
 # input is not detected. If exists uses parameters as a question, otherwise
 # uses default message.
 yes_to_continue() {
+	logw 'yes_to_continue() is a deprecated, using should_continue() instead.'
 	should_continue "$@" || cya Stop working.
 	log Keep working.
 }
@@ -894,7 +895,7 @@ base_check_instances() {
 		end=e
 		vrb=is
 	fi
-	yes_to_continue $ins instanc$end of "$BASE_IAM" $vrb running, continue?
+	should_continue "$ins instanc$end of $BASE_IAM $vrb running, continue" || cya
 }
 
 # General exit handler, it is called on EXIT. Any first parameter means no
@@ -961,7 +962,7 @@ base_display_usage() {
 			  -v, --version     Displays the version number.
 			  -w, --warranty    Outputs the warranty statement to stdout.
 			  -x, --execute     Prints each command before its execution.
-			  -y, --yes         Automatically responds yes to the yes_to_continue
+			  -y, --yes         Automatically responds yes to the should_continue
 			                    prompt without interruption.
 		EOM
 	)" || die "$use"
