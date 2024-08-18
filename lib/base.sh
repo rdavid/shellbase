@@ -31,9 +31,9 @@
 # cmd_exists, cya, die, echo, file_exists, handle_pipefails, heic2jpg, grbt,
 # inside, isempty, isfunc, isnumber, isreadable, issolid, iswritable, log,
 # loge, logw, map_del, map_get, map_put, pdf2jpg, pdf2png, prettytable,
-# prettyuptime, realdir, realpath, semver, timestamp, tolog, tologe, tolower,
-# totsout, tsout, url_exists, user_exists, validate_cmd, validate_var,
-# var_exists, ver_ge, vid2aud, yes_to_continue, ytda.
+# prettyuptime, realdir, realpath, semver, should_continue, timestamp, tolog,
+# tologe, tolower, totsout, tsout, url_exists, user_exists, validate_cmd,
+# validate_var, var_exists, ver_ge, vid2aud, yes_to_continue, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place temporary files under $BASE_WIP. All functions started with base_
@@ -48,7 +48,7 @@ BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
 BASE_SHOULD_CONT=false
-BASE_VERSION=0.9.20240815
+BASE_VERSION=0.9.20240818
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -73,7 +73,7 @@ aud_only() {
 		loge Something went wrong.
 		return $err
 	}
-	base_should_continue "Remove the following files:
+	should_continue "Remove the following files:
 $lst
 Total $cnt files" || return 0
 	log Removing "$cnt" files.
@@ -274,7 +274,7 @@ heic2jpg() {
 		-type f \
 		-name '*.[hH][eE][iI][cC]' \
 		-exec magick mogrify -format jpg -monitor {} +
-	base_should_continue 'Remove the source files' || return 0
+	should_continue 'Remove the source files' || return 0
 	find . \
 		-maxdepth 1 \
 		-type f \
@@ -600,6 +600,64 @@ semver() {
 	return $ret
 }
 
+# Asks the user for permission to continue; returns an error code if the input
+# is not 'y' or if no input is detected after a timeout. If exists uses
+# parameters as a question, otherwise uses default message.
+should_continue() {
+	[ $BASE_SHOULD_CONT = true ] && return 0
+	local ans dad="$$" dog msg old tmo=20
+	old="$(stty -g 2>&1)" || die "$old"
+
+	# The trap callback restores the default base_sig_cleanup trap callback,
+	# reverts the default TTY settings, and adds a newline before any output to
+	# compensate for the missing newline after the prompt.
+	trap '
+		trap base_sig_cleanup TERM
+		stty "$old"
+		printf \\n
+		logw User did not respond.
+		return 13
+	' TERM
+
+	# Runs a watchdog process that terminates the parent process and its child
+	# processes using a common unique process group ID, identified by the
+	# negative parent PID.
+	set +m
+	(
+		sleep "$tmo"
+		kill -- -$dad
+	) &
+	dog="$!"
+	set -m
+	log "Parent process $dad created watchdog process $dog."
+
+	# Prints the question without a new line allows to print an answer on the
+	# same line. The question is not logged.
+	msg="${*:-Do you want to continue}"
+	printf '%s? [y/N] ' "$msg"
+	stty raw -echo
+
+	# Runs a child process to read the first character from stdin. This process
+	# may be interrupted after a timeout.
+	ans=$(head -c 1 2>&1) || die "$ans"
+	trap base_sig_cleanup TERM
+	stty "$old"
+
+	# Adds the new line before any printing to compensate the question without a
+	# new line. Command wait could return an error code.
+	printf \\n
+	kill "$dog"
+	set +m
+	wait "$dog" || :
+	set -m
+	log "Parent process $dad terminated watchdog process $dog."
+	printf %s "$ans" | grep -iq ^y || {
+		log User chose not to continue.
+		return 14
+	}
+	log User chose to continue.
+}
+
 # Returns current time in form of timestamp.
 timestamp() {
 	local err tms
@@ -767,7 +825,7 @@ vid2aud() {
 # input is not detected. If exists uses parameters as a question, otherwise
 # uses default message.
 yes_to_continue() {
-	base_should_continue "$@" || cya Stop working.
+	should_continue "$@" || cya Stop working.
 	log Keep working.
 }
 
@@ -1087,64 +1145,6 @@ base_sig_cleanup() {
 	trap - EXIT
 	base_cleanup 1
 	exit $err
-}
-
-# Asks the user for permission to continue; returns an error code if the input
-# is not 'y' or if no input is detected after a timeout. If exists uses
-# parameters as a question, otherwise uses default message.
-base_should_continue() {
-	[ $BASE_SHOULD_CONT = true ] && return 0
-	local ans dad="$$" dog msg old tmo=20
-	old="$(stty -g 2>&1)" || die "$old"
-
-	# The trap callback restores the default base_sig_cleanup trap callback,
-	# reverts the default TTY settings, and adds a newline before any output to
-	# compensate for the missing newline after the prompt.
-	trap '
-		trap base_sig_cleanup TERM
-		stty "$old"
-		printf \\n
-		logw User did not respond.
-		return 13
-	' TERM
-
-	# Runs a watchdog process that terminates the parent process and its child
-	# processes using a common unique process group ID, identified by the
-	# negative parent PID.
-	set +m
-	(
-		sleep "$tmo"
-		kill -- -$dad
-	) &
-	dog="$!"
-	set -m
-	log "Parent process $dad created watchdog process $dog."
-
-	# Prints the question without a new line allows to print an answer on the
-	# same line. The question is not logged.
-	msg="${*:-Do you want to continue}"
-	printf '%s? [y/N] ' "$msg"
-	stty raw -echo
-
-	# Runs a child process to read the first character from stdin. This process
-	# may be interrupted after a timeout.
-	ans=$(head -c 1 2>&1) || die "$ans"
-	trap base_sig_cleanup TERM
-	stty "$old"
-
-	# Adds the new line before any printing to compensate the question without a
-	# new line. Command wait could return an error code.
-	printf \\n
-	kill "$dog"
-	set +m
-	wait "$dog" || :
-	set -m
-	log "Parent process $dad terminated watchdog process $dog."
-	printf %s "$ans" | grep -iq ^y || {
-		log User chose not to continue.
-		return 14
-	}
-	log User chose to continue.
 }
 
 # Calculates a separator for time titles based on amount of non-empty
