@@ -48,7 +48,10 @@ BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
 BASE_SHOULD_CONT=false
-BASE_VERSION=0.9.20240818
+readonly \
+	BASE_RC_CONT_NO=14 \
+	BASE_RC_CONT_TO=13 \
+	BASE_VERSION=0.9.20240819
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -616,7 +619,7 @@ should_continue() {
 		stty "$old"
 		printf \\n
 		logw User did not respond.
-		return 13
+		return $BASE_RC_CONT_TO
 	' TERM
 
 	# Runs a watchdog process that terminates the parent process and its child
@@ -653,7 +656,7 @@ should_continue() {
 	log "Parent process $dad terminated watchdog process $dog."
 	printf %s "$ans" | grep -iq ^y || {
 		log User chose not to continue.
-		return 14
+		return $BASE_RC_CONT_NO
 	}
 	log User chose to continue.
 }
@@ -1259,6 +1262,5 @@ readonly \
 	BASE_FMT_YELLOW \
 	BASE_KEEP_WIP \
 	BASE_QUIET \
-	BASE_SHOULD_CONT \
-	BASE_VERSION
+	BASE_SHOULD_CONT
 base_main "$@"
