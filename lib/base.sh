@@ -49,9 +49,12 @@ BASE_KEEP_WIP=false
 BASE_QUIET=false
 BASE_SHOULD_CONT=false
 readonly \
+	BASE_RC_ARG_NO=11 \
+	BASE_RC_ARG_WA=12 \
 	BASE_RC_CONT_NO=14 \
 	BASE_RC_CONT_TO=13 \
-	BASE_VERSION=0.9.20240819
+	BASE_RC_DIE_NO=10 \
+	BASE_VERSION=0.9.20240821
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -217,7 +220,7 @@ cya() {
 die() {
 	local err=$?
 	[ $# = 0 ] || loge "$@"
-	[ $err != 0 ] || err=10
+	[ $err != 0 ] || err=$BASE_RC_DIE_NO
 
 	# The err is always not null.
 	(exit $err) || base_exit
@@ -1227,12 +1230,12 @@ for arg; do
 		set +o nounset
 		[ -n "$1" ] || {
 			printf >&2 -- '--dir-wip requires a non-empty argument.'
-			exit 11
+			exit $BASE_RC_ARG_NO
 		}
 		set -o nounset
 		[ -w "$1" ] || {
 			printf >&2 'Unable to write to %s.\n' "$1"
-			exit 12
+			exit $BASE_RC_ARG_WA
 		}
 		BASE_DIR_WIP="$1"
 		skp=true
