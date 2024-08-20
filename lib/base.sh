@@ -41,20 +41,20 @@
 # alphabetical order.
 #
 # Following variables could be changed by command line parameters. They will be
-# declared readonly after the parsing of command line parameters. BASE_VERSION
-# should be declared writable in case of double sourcing in interactive mode.
+# declared readonly after the parsing of command line parameters. BASE_RC_...
+# and BASE_VERSION should be declared writable in case of double sourcing in
+# interactive mode. Probably there is a better solution.
 BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
+BASE_RC_ARG_NO=11
+BASE_RC_ARG_WA=12
+BASE_RC_CON_NO=14
+BASE_RC_CON_TO=13
+BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-readonly \
-	BASE_RC_ARG_NO=11 \
-	BASE_RC_ARG_WA=12 \
-	BASE_RC_CON_NO=14 \
-	BASE_RC_CON_TO=13 \
-	BASE_RC_DIE_NO=10 \
-	BASE_VERSION=0.9.20240821
+BASE_VERSION=0.9.20240821
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -1265,5 +1265,11 @@ readonly \
 	BASE_FMT_YELLOW \
 	BASE_KEEP_WIP \
 	BASE_QUIET \
-	BASE_SHOULD_CON
+	BASE_RC_ARG_NO \
+	BASE_RC_ARG_WA \
+	BASE_RC_CON_NO \
+	BASE_RC_CON_TO \
+	BASE_RC_DIE_NO \
+	BASE_SHOULD_CON \
+	BASE_VERSION
 base_main "$@"
