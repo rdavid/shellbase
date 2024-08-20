@@ -47,12 +47,12 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
-BASE_SHOULD_CONT=false
+BASE_SHOULD_CON=false
 readonly \
 	BASE_RC_ARG_NO=11 \
 	BASE_RC_ARG_WA=12 \
-	BASE_RC_CONT_NO=14 \
-	BASE_RC_CONT_TO=13 \
+	BASE_RC_CON_NO=14 \
+	BASE_RC_CON_TO=13 \
 	BASE_RC_DIE_NO=10 \
 	BASE_VERSION=0.9.20240821
 
@@ -610,7 +610,7 @@ semver() {
 # is not 'y' or if no input is detected after a timeout. If exists uses
 # parameters as a question, otherwise uses default message.
 should_continue() {
-	[ $BASE_SHOULD_CONT = true ] && return 0
+	[ $BASE_SHOULD_CON = true ] && return 0
 	local ans dad="$$" dog msg old tmo=20
 	old="$(stty -g 2>&1)" || die "$old"
 
@@ -622,7 +622,7 @@ should_continue() {
 		stty "$old"
 		printf \\n
 		logw User did not respond.
-		return $BASE_RC_CONT_TO
+		return $BASE_RC_CON_TO
 	' TERM
 
 	# Runs a watchdog process that terminates the parent process and its child
@@ -659,7 +659,7 @@ should_continue() {
 	log "Parent process $dad terminated watchdog process $dog."
 	printf %s "$ans" | grep -iq ^y || {
 		log User chose not to continue.
-		return $BASE_RC_CONT_NO
+		return $BASE_RC_CON_NO
 	}
 	log User chose to continue.
 }
@@ -1244,7 +1244,7 @@ for arg; do
 	-q | --quiet) cnt=$((cnt + 1)) ;;
 	-t | --trace) cnt=$((cnt - 1)) ;;
 	-x | --execute) set -x ;;
-	-y | --yes) BASE_SHOULD_CONT=true ;;
+	-y | --yes) BASE_SHOULD_CON=true ;;
 	*)
 		# If an argument is not skipped, sets it back to all.
 		if [ $skp = false ]; then
@@ -1265,5 +1265,5 @@ readonly \
 	BASE_FMT_YELLOW \
 	BASE_KEEP_WIP \
 	BASE_QUIET \
-	BASE_SHOULD_CONT
+	BASE_SHOULD_CON
 base_main "$@"
