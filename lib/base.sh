@@ -54,7 +54,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20240821
+BASE_VERSION=0.9.20240831
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -277,14 +277,14 @@ heic2jpg() {
 	cmd_exists magick || return $?
 	find . \
 		-maxdepth 1 \
-		-type f \
 		-name '*.[hH][eE][iI][cC]' \
+		-type f \
 		-exec magick mogrify -format jpg -monitor {} +
 	should_continue 'Remove the source files' || return $?
 	find . \
 		-maxdepth 1 \
-		-type f \
 		-name '*.[hH][eE][iI][cC]' \
+		-type f \
 		-exec rm -f {} +
 }
 
