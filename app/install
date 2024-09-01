@@ -13,8 +13,8 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20240824 \
-	BASE_MIN_VERSION=0.9.20230405 \
+	BASE_APP_VERSION=0.9.20240902 \
+	BASE_MIN_VERSION=0.9.20240831 \
 	BSH \
 	DST=/usr/local/bin \
 	TGT=/usr/local/bin/base.sh
