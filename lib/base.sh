@@ -33,7 +33,7 @@
 # loge, logw, map_del, map_get, map_put, pdf2jpg, pdf2png, prettytable,
 # prettyuptime, realdir, realpath, semver, should_continue, timestamp, tolog,
 # tologe, tolower, totsout, tsout, url_exists, user_exists, validate_cmd,
-# validate_var, var_exists, ver_ge, vid2aud, yes_to_continue, ytda.
+# validate_var, var_exists, ver_ge, vid2aud, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place temporary files under $BASE_WIP. All functions started with base_
@@ -54,7 +54,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20240909
+BASE_VERSION=0.9.20240918
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -827,15 +827,6 @@ vid2aud() {
 		done
 }
 
-# Asks a user permission to continue, exits if not 'y'. Exits by timeout if any
-# input is not detected. If exists uses parameters as a question, otherwise
-# uses default message.
-yes_to_continue() {
-	logw 'yes_to_continue() is a deprecated, using should_continue() instead.'
-	should_continue "$@" || cya Stop working.
-	log Keep working.
-}
-
 # Downloads a video from YouTube.
 ytda() {
 	cmd_exists renamr yt-dlp || return $?
@@ -901,7 +892,8 @@ base_check_instances() {
 		end=e
 		vrb=is
 	fi
-	should_continue "$ins instanc$end of $BASE_IAM $vrb running, continue" || cya
+	should_continue "$ins instanc$end of $BASE_IAM $vrb running, continue" ||
+		cya Stop working.
 }
 
 # General exit handler, it is called on EXIT. Any first parameter means no
