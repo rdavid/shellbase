@@ -24,7 +24,7 @@ BASE_APP_USAGE="$(
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
 	BASE_APP_USAGE \
-	BASE_APP_VERSION=0.9.20240127 \
+	BASE_APP_VERSION=0.9.20241006 \
 	BASE_MIN_VERSION=0.9.20231212 \
 	BSH \
 	TGT=README.adoc
@@ -92,7 +92,10 @@ update() {
 validate() {
 	isreadable "$BSH" "$TGT" || die
 	validate_cmd awk cat cmp cut grep head rev sed tail
-	grep --help >/dev/null 2>&1 || die GNU grep is required.
+	grep --help >/dev/null 2>&1 || {
+		logw update: Stopped, GNU grep is required.
+		cya
+	}
 }
 
 # Starting point.
