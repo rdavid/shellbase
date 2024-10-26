@@ -5,10 +5,11 @@ jobs:
   test-linux:
     strategy:
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - run: sudo apt-get install asciidoctor
       - uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: Containerfile
@@ -31,7 +32,7 @@ jobs:
   test-macos:
     strategy:
       matrix:
-        os: [macos-12, macos-14]
+        os: [macos-12, macos-13, macos-14, macos-15]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
