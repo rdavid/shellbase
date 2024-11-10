@@ -3,7 +3,10 @@
 # Copyright 2022-2024 David Rabkin
 # shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
-grep --help >/dev/null 2>&1 || cya GNU grep is required.
+grep --help >/dev/null 2>&1 || {
+	logw test-semver-ok: Skipped, GNU grep is required.
+	cya
+}
 ver="$(semver 'I am 1.2.3')" || die
 log "$ver"
 inside "$ver" 0.0.0+nil && die
