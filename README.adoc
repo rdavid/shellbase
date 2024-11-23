@@ -12,9 +12,10 @@
 :url-goredo: http://www.goredo.cypherpunks.ru/Install.html
 :url-goredoer: https://github.com/rdavid/goredoer
 :url-redo: http://cr.yp.to/redo.html
-:url-sh0: http://www.etalabs.net/sh_tricks.html
-:url-sh1: https://mywiki.wooledge.org/SignalTrap
-:url-sh2: https://www.grymoire.com/Unix/Sh.html
+:url-sh0: https://mywiki.wooledge.org/BashPitfalls
+:url-sh1: http://www.etalabs.net/sh_tricks.html
+:url-sh2: https://mywiki.wooledge.org/SignalTrap
+:url-sh3: https://www.grymoire.com/Unix/Sh.html
 :url-shellcheck: https://github.com/koalaman/shellcheck
 :url-shfmt: https://github.com/mvdan/sh
 :url-toolbox: https://github.com/rdavid/toolbox
@@ -215,9 +216,10 @@ It uses {url-cv}[David Rabkin]'s {url-goredoer}[`goredoer`] to build
 
 == Links
 
-- {url-sh0}[Rich’s sh (POSIX shell) tricks]
-- {url-sh1}[Sending and Trapping Signals]
-- {url-sh2}[Sh - the POSIX Shell]
+- {url-sh0}[Bash Pitfalls]
+- {url-sh1}[Rich’s sh (POSIX shell) tricks]
+- {url-sh2}[Sending and Trapping Signals]
+- {url-sh3}[Sh - the POSIX Shell]
 
 == License
 
