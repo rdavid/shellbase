@@ -9,7 +9,7 @@
 :url-hadolint: https://github.com/hadolint/hadolint
 :url-license: https://github.com/rdavid/shellbase/blob/master/LICENSE
 :url-gento: https://github.com/rdavid/gento
-:url-goredo: http://www.goredo.cypherpunks.ru/Install.html
+:url-goredo: http://www.goredo.cypherpunks.su/Install.html
 :url-goredoer: https://github.com/rdavid/goredoer
 :url-redo: http://cr.yp.to/redo.html
 :url-sh0: https://mywiki.wooledge.org/BashPitfalls
