@@ -1,4 +1,4 @@
-FROM ghcr.io/rdavid/goredoer:0.9.20241212 as goredoer
+FROM ghcr.io/rdavid/goredoer:0.9.20250202 as goredoer
 FROM alpine:3.21.2
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
