@@ -15,7 +15,7 @@ RUN \
 	apk add --no-cache --update \
 		bash~=5.2 \
 		coreutils~=9.5 \
-		curl~=8.11 \
+		curl~=8.12 \
 		dash~=0.5 \
 		fish~=3.7 \
 		grep~=3.11 \
@@ -25,7 +25,7 @@ RUN \
 		shellcheck~=0.10 \
 		shfmt~=3.8 \
 		tcsh~=6.24 \
-		tzdata~=2024 \
+		tzdata~=2025 \
 		zsh~=5.9 \
 		util-linux~=2 \
 		yamllint~=1.35 \

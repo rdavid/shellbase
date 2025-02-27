@@ -1,5 +1,5 @@
 FROM ghcr.io/rdavid/goredoer:0.9.20250202 as goredoer
-FROM registry.access.redhat.com/ubi9/ubi-minimal:9.5-1738643652
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.5-1739420147
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	CM_BIN=/usr/local/bin/checkmake \
@@ -21,7 +21,7 @@ RUN \
 		perl-Digest-SHA \
 		procps-ng-3.3.17 \
 		shadow-utils-2:4.9 \
-		tzdata-2024b \
+		tzdata-2025a \
 		util-linux \
 	&& microdnf clean all --disableplugin=subscription-manager \
 	&& useradd --create-home "$USER" \
