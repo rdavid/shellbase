@@ -148,6 +148,8 @@ curl --location --silent $SRC |
     shellbase-$REL/lib/base.sh
 ----
 
+== Using
+
 Verify `/usr/local/bin` is in your `PATH`.
 Then your script can use `shellbase`:
 
