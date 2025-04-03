@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2022-2024 David Rabkin
+# Copyright 2022-2025 David Rabkin
 redo-ifchange app/* lib/*
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
@@ -12,7 +12,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20240204 \
+	BASE_APP_VERSION=0.9.20250404 \
 	BASE_MIN_VERSION=0.9.20231228 \
 	BSH
 set -- "$@" --quiet
