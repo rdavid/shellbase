@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2020-2024 David Rabkin
+# Copyright 2020-2025 David Rabkin
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted.
@@ -54,7 +54,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20241111
+BASE_VERSION=0.9.20250403
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -988,7 +988,7 @@ base_display_warranty() {
 			Shellbase is copyright David Rabkin and available under a Zero-Clause BSD
 			license.
 
-			Copyright 2020-2024 David Rabkin
+			Copyright 2020-2025 David Rabkin
 
 			Permission to use, copy, modify, and/or distribute this software for any
 			purpose with or without fee is hereby granted.
