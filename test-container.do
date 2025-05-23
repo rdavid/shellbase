@@ -37,10 +37,6 @@ for f in container/*/Containerfile; do
 		printf >&2 'Arch Linux does not currently support ARM architecture.\n'
 		continue
 	}
-	[ "$ARM" = true ] && inside "$f" fedora && {
-		printf >&2 'Fedora is skipped.\n'
-		continue
-	}
 	nme="$(printf %s "$f" | awk -F / '{print $2}' 2>&1)" || die "$nme"
 	printf >&2 %s...\\n "$nme"
 	chrono_sta run || die Unable to start timer.

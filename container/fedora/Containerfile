@@ -21,6 +21,7 @@ RUN \
 		curl \
 		diffutils \
 		findutils \
+		gawk \
 		hadolint \
 		perl-Digest-SHA \
 		oksh \
