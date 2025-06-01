@@ -1,0 +1,21 @@
+#!/bin/bash
+# vi:et lbr noet sw=2 ts=2 tw=79 wrap
+# Copyright 2025 David Rabkin
+# shellcheck disable=SC1090,SC1091 # File not following.
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+inp='Hello, world.'
+out="$(ellipsize "$inp" 13)"
+printf %s=%s\\n "$inp" "$out"
+[ "$inp" = "$out" ]
+out="$(ellipsize "$inp" 12)"
+printf %s\\n "$out"
+[ "$out" = 'Hello...rld.' ]
+out="$(ellipsize "$inp" 4)"
+printf %s\\n "$out"
+[ "$out" = 'H...' ]
+out="$(ellipsize "$inp" 3)"
+printf %s\\n "$out"
+[ "$out" = '...' ]
+out="$(ellipsize "$inp" 2)"
+printf %s\\n "$out"
+[ "$out" = '...' ]
