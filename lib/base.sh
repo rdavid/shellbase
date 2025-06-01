@@ -28,12 +28,12 @@
 # base_ prefix are public and could be used by clients. The public functions
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, chrono_get, chrono_sta, chrono_sto,
-# cmd_exists, cya, die, echo, file_exists, handle_pipefails, heic2jpg, grbt,
-# inside, isempty, isfunc, isnumber, isreadable, issolid, iswritable, log,
-# loge, logw, map_del, map_get, map_put, pdf2jpg, pdf2png, prettytable,
-# prettyuptime, realdir, realpath, semver, should_continue, timestamp, tolog,
-# tologe, tolower, totsout, tsout, url_exists, user_exists, validate_cmd,
-# validate_var, var_exists, ver_ge, vid2aud, ytda.
+# cmd_exists, cya, die, echo, ellipsize, file_exists, handle_pipefails,
+# heic2jpg, grbt, inside, isempty, isfunc, isnumber, isreadable, issolid,
+# iswritable, log, loge, logw, map_del, map_get, map_put, pdf2jpg, pdf2png,
+# prettytable, prettyuptime, realdir, realpath, semver, should_continue,
+# timestamp, tolog, tologe, tolower, totsout, tsout, url_exists, user_exists,
+# validate_cmd, validate_var, var_exists, ver_ge, vid2aud, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place temporary files under $BASE_WIP. All functions started with base_
@@ -54,7 +54,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20250404
+BASE_VERSION=0.9.20250602
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -242,6 +242,27 @@ echo() {
 
 	# shellcheck disable=SC2059 # Uses variables in the printf format string.
 	printf "$fmt$end" "$*"
+}
+
+# Truncates a string to specified maximum length, inserting ellipsis in the
+# middle if necessary. The resulting string will never be longer than the
+# specified maximum length. The original string is returned if it is already
+# shorter than or equal to the maximum length.
+# The origin of the idea:
+#  https://github.com/yegor256/ellipsized
+ellipsize() {
+	local beg max="$2" str="$1" end
+	[ "${#str}" -le "$max" ] && {
+		printf %s "$str"
+		return
+	}
+	beg=$(((max - 3) / 2))
+	end=$beg
+	[ $((beg + end + 3)) -lt "$max" ] && beg=$((beg + 1))
+	[ "$beg" -gt "$max" ] && beg=$max
+
+	# shellcheck disable=SC3057
+	printf %s "${str:0:beg}...${str:$((${#str} - end))}"
 }
 
 # Verifies the existence of all files. Iterates through the arguments,
