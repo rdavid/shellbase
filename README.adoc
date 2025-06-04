@@ -7,7 +7,7 @@
 :url-cv: http://cv.rabkin.co.il
 :url-dotfiles: https://github.com/rdavid/dotfiles
 :url-hadolint: https://github.com/hadolint/hadolint
-:url-license: https://github.com/rdavid/shellbase/blob/master/LICENSE
+:url-license: https://github.com/rdavid/shellbase/blob/master/LICENSES/0BSD.txt
 :url-gento: https://github.com/rdavid/gento
 :url-goredo: http://www.goredo.cypherpunks.su/Install.html
 :url-goredoer: https://github.com/rdavid/goredoer
@@ -41,7 +41,7 @@
 image:https://github.com/rdavid/shellbase/actions/workflows/test.yml/badge.svg[test,link=https://github.com/rdavid/shellbase/actions/workflows/test.yml]
 image:https://hitsofcode.com/github/rdavid/shellbase?branch=master&label=hits%20of%20code[hits of code,link=https://hitsofcode.com/view/github/rdavid/shellbase?branch=master]
 image:https://img.shields.io/github/v/release/rdavid/shellbase?color=blue&label=%20&logo=semver&logoColor=white&style=flat[release),link=https://github.com/rdavid/shellbase/releases]
-image:https://img.shields.io/github/license/rdavid/shellbase?color=blue&labelColor=gray&logo=freebsd&logoColor=lightgray&style=flat[license,link=https://github.com/rdavid/shellbase/blob/master/LICENSE]
+image:https://img.shields.io/github/license/rdavid/shellbase?color=blue&labelColor=gray&logo=freebsd&logoColor=lightgray&style=flat[license,link=https://github.com/rdavid/shellbase/blob/master/LICENSES/0BSD.txt]
 
 toc::[]
 

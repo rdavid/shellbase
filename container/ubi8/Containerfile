@@ -10,7 +10,7 @@ ENV \
 	HL_URL=https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64 \
 	TZ=Asia/Jerusalem \
 	USER=shellbase
-COPY LICENSE /licenses/LICENSE
+COPY LICENSES/0BSD.txt /licenses/
 WORKDIR /bin
 COPY --from=goredoer /goredo .
 RUN \
