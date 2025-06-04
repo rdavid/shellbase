@@ -1,11 +1,12 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2022-2023 David Rabkin
+# SPDX-FileCopyrightText: 2022-2025 David Rabkin
+# SPDX-License-Identifier: 0BSD
 BASE="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 
 # shellcheck disable=SC1090 # File not following.
 . "$BASE"
 
 # shellcheck disable=SC2034 # Appears unused.
-BASE_APP_HASH=1d3d981b40e1a006d7be46dc1ee10a81cb7a2359f1aefa2fdf24ada5765f3a55
+BASE_APP_HASH=81cd2bd85f4cc67edcc89e292ba1c759837a663c856c8a56722f94cfad6381e4
 issolid

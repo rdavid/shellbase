@@ -1,6 +1,7 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2023-2025 David Rabkin
+# SPDX-FileCopyrightText: 2023-2025 David Rabkin
+# SPDX-License-Identifier: 0BSD
 # shellcheck disable=SC2034 # Variable appears unused.
 BASE_APP_WARRANTY="$(
 	cat <<-EOM

@@ -1,6 +1,7 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2022-2023 David Rabkin
+# SPDX-FileCopyrightText: 2022-2025 David Rabkin
+# SPDX-License-Identifier: 0BSD
 BASE="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 
 # shellcheck disable=SC1090 # File not following.
