@@ -1,22 +1,7 @@
 # shellcheck shell=sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2020-2025 David Rabkin
-#
-# Permission to use, copy, modify, and/or distribute this software for any
-# purpose with or without fee is hereby granted.
-#
-# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-#
-# The script uses local variables which are not POSIX but supported by most
-# shells. See:
-#  https://stackoverflow.com/q/18597697
-# shellcheck disable=SC2039,SC3043 # Uses local variables.
+# SPDX-FileCopyrightText: 2020-2025 David Rabkin
+# SPDX-License-Identifier: 0BSD
 #
 # The shellbase framework serves as a foundation for Unix shell scripts. This
 # framework is mostly POSIX-compliant, ensuring compatibility across Unix-like
@@ -44,6 +29,11 @@
 # declared readonly after the parsing of command line parameters. BASE_RC_...
 # and BASE_VERSION should be declared writable in case of double sourcing in
 # interactive mode. Probably there is a better solution.
+#
+# The script uses local variables which are not POSIX but supported by most
+# shells. See:
+#  https://stackoverflow.com/q/18597697
+# shellcheck disable=SC2039,SC3043 # Uses local variables.
 BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
@@ -54,7 +44,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20250602
+BASE_VERSION=0.9.20250604
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
