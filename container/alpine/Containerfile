@@ -24,6 +24,7 @@ RUN \
 		loksh~=7.6 \
 		oksh~=7.5 \
 		perl-utils~=5.40 \
+		reuse~=5.0 \
 		shellcheck~=0.10 \
 		shfmt~=3.8 \
 		tcsh~=6.24 \
