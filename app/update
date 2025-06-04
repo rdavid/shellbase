@@ -1,9 +1,12 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# Copyright 2023-2024 David Rabkin
-# shellcheck disable=SC2039,SC3043 # Uses local variables.
+# SPDX-FileCopyrightText: 2023-2025 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
 # Updates README.adoc with actual links to the public functions. By default
 # doesn't update the file, works as a linter.
+#
+# shellcheck disable=SC2039,SC3043 # Uses local variables.
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
 )"/../lib/base.sh || {
@@ -24,7 +27,7 @@ BASE_APP_USAGE="$(
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
 	BASE_APP_USAGE \
-	BASE_APP_VERSION=0.9.20241006 \
+	BASE_APP_VERSION=0.9.20250604 \
 	BASE_MIN_VERSION=0.9.20231212 \
 	BSH \
 	TGT=README.adoc

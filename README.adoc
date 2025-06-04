@@ -12,6 +12,7 @@
 :url-goredo: http://www.goredo.cypherpunks.su/Install.html
 :url-goredoer: https://github.com/rdavid/goredoer
 :url-redo: http://cr.yp.to/redo.html
+:url-reuse: https://github.com/fsfe/reuse-action
 :url-sh0: https://mywiki.wooledge.org/BashPitfalls
 :url-sh1: http://www.etalabs.net/sh_tricks.html
 :url-sh2: https://mywiki.wooledge.org/SignalTrap
@@ -209,7 +210,7 @@ Output:
 The project uses Daniel J. Bernstein's build system {url-redo}[`redo`].
 You can install Sergey Matveev's {url-goredo}[`goredo`] implementation.
 `redo lint` applies the following linters to the source files:
-{url-checkmake}[`checkmake`], {url-hadolint}[`hadolint`],
+{url-checkmake}[`checkmake`], {url-hadolint}[`hadolint`], {url-reuse}[`reuse`],
 {url-shellcheck}[`shellcheck`], {url-shfmt}[`shfmt`], {url-typos}[`typos`],
 {url-vale}[`vale`], {url-yamllint}[`yamllint`].
 `redo test` runs unit tests in installed shells.

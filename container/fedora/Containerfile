@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2023-2025 David Rabkin
+# SPDX-License-Identifier: 0BSD
 FROM ghcr.io/rdavid/goredoer:0.9.20250404 as goredoer
 FROM fedora:42
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>

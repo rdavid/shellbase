@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2023-2025 David Rabkin
+# SPDX-License-Identifier: 0BSD
 ---
 name: test
 'on': push
@@ -16,6 +18,7 @@ jobs:
         with:
           dockerfile: Containerfile
           recursive: true
+      - uses: fsfe/reuse-action@v5
       - uses: ludeeus/action-shellcheck@master
         with:
           additional_files: ./*.do app/* lib/*
@@ -49,6 +52,7 @@ jobs:
             goredo \
             grep \
             hadolint \
+            reuse \
             shellcheck \
             shfmt \
             typos-cli \

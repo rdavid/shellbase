@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2023-2025 David Rabkin
+# SPDX-License-Identifier: 0BSD
 [default.extend-words]
 doas = "doas"
 noet = "noet"
