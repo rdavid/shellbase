@@ -13,7 +13,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20250604 \
+	BASE_APP_VERSION=0.9.20250617 \
 	BASE_MIN_VERSION=0.9.20231228 \
 	BSH
 set -- "$@" --quiet
@@ -21,9 +21,11 @@ set -- "$@" --quiet
 # shellcheck disable=SC1090 # File not following.
 . "$BSH"
 validate_cmd podman
+STOP_VM=YES
 out="$(podman machine start 2>&1)" || {
 	[ $? = 125 ] || die "$out"
 	printf >&2 'VM already running or starting.\n'
+	STOP_VM=NO
 }
 
 # If the test is run in a mode of the shell where all executed commands are
@@ -46,3 +48,6 @@ for f in container/*/Containerfile; do
 	dur="$(chrono_sto run)" || die Unable to stop timer.
 	printf >&2 %s\ %s.\\n "$nme" "$dur"
 done
+
+# shellcheck disable=SC2015 # A && B || C is not if-then-else.
+[ "$STOP_VM" = YES ] && podman machine stop || :
