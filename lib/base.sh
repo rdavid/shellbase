@@ -16,9 +16,10 @@
 # cmd_exists, cya, die, echo, ellipsize, file_exists, handle_pipefails,
 # heic2jpg, grbt, inside, isempty, isfunc, isnumber, isreadable, issolid,
 # iswritable, log, loge, logw, map_del, map_get, map_put, pdf2jpg, pdf2png,
-# prettytable, prettyuptime, realdir, realpath, semver, should_continue,
-# timestamp, tolog, tologe, tolower, totsout, tsout, url_exists, user_exists,
-# validate_cmd, validate_var, var_exists, ver_ge, vid2aud, ytda.
+# prettytable, prettyuptime, raw2jpg, realdir, realpath, semver,
+# should_continue, timestamp, tolog, tologe, tolower, totsout, tsout,
+# url_exists, user_exists, validate_cmd, validate_var, var_exists, ver_ge,
+# vid2aud, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place temporary files under $BASE_WIP. All functions started with base_
@@ -45,7 +46,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20250609
+BASE_VERSION=0.9.20250623
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -284,20 +285,11 @@ handle_pipefails() {
 	logw Ignore the pipe failure with the error code 141.
 }
 
-# Converts Apple's HEIC files in a current directory to JPEG.
+# Deprecated function. Use raw2jpg instead. This wrapper exists for backward
+# compatibility.
 heic2jpg() {
-	cmd_exists magick || return $?
-	find . \
-		-maxdepth 1 \
-		-name '*.[hH][eE][iI][cC]' \
-		-type f \
-		-exec magick mogrify -format jpg -monitor {} +
-	should_continue 'Remove the source files' || return $?
-	find . \
-		-maxdepth 1 \
-		-name '*.[hH][eE][iI][cC]' \
-		-type f \
-		-exec rm -f {} +
+	logw heic2jpg is deprecated, use raw2jpg.
+	raw2jpg
 }
 
 # Returns a TRUE if $2 is inside $1. I'll use a case statement, because this is
@@ -578,6 +570,31 @@ prettyuptime() {
 		s/, *[[:digit:]]* users?.*//
 		s/^/↑ /
 	' | tr -d \\n
+}
+
+# Converts DNG and HEIC files in the current directory to JPEG. Note: the
+# -iname find's option is not POSIX-compliant.
+raw2jpg() {
+	cmd_exists magick || return $?
+	find . \
+		-maxdepth 1 \
+		\( \
+		-name '*.[dD][nN][gG]' \
+		-o \
+		-name '*.[hH][eE][iI][cC]' \
+		\) \
+		-type f \
+		-exec magick mogrify -format jpg -monitor {} +
+	should_continue 'Remove the source files' || return $?
+	find . \
+		-maxdepth 1 \
+		\( \
+		-name '*.[dD][nN][gG]' \
+		-o \
+		-name '*.[hH][eE][iI][cC]' \
+		\) \
+		-type f \
+		-exec rm -f {} +
 }
 
 # Returns the absolute directory of a file. See the description of realpath.
