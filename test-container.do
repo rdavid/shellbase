@@ -43,7 +43,8 @@ for f in container/*/Containerfile; do
 	nme="$(printf %s "$f" | awk -F / '{print $2}' 2>&1)" || die "$nme"
 	printf >&2 %s...\\n "$nme"
 	chrono_sta run || die Unable to start timer.
-	hsh="$(podman build --file "$f" --quiet . 2>&1)" || die "$hsh"
+	hsh="$(podman build --file "$f" --format docker --quiet . 2>&1)" ||
+		die "$hsh"
 	podman run --rm --rmi "$hsh" "$EXE" lint test
 	dur="$(chrono_sto run)" || die Unable to stop timer.
 	printf >&2 %s\ %s.\\n "$nme" "$dur"
