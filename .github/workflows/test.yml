@@ -33,7 +33,6 @@ jobs:
         with:
           fail_on_error: true
           files: README.adoc
-      - run: ./app/update
   test-macos:
     strategy:
       matrix:
