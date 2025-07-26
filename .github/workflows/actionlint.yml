@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: 0BSD
 ---
 name: actionlint
-# yamllint disable rule:line-length
 'on':
   push:
     branches:
@@ -10,6 +9,8 @@ name: actionlint
   pull_request:
     branches:
       - master
+env:
+  URL: https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash # yamllint disable-line
 jobs:
   actionlint:
     timeout-minutes: 15
@@ -18,8 +19,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Download actionlint
         id: get_actionlint
-        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
-        shell: bash
+        run: bash <(curl "$URL")
       - name: Check workflow files
         run: ${{ steps.get_actionlint.outputs.executable }} -color
-        shell: bash
