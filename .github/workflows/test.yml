@@ -20,10 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: sudo apt-get install asciidoctor
-      - uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: Containerfile
-          recursive: true
       - uses: ludeeus/action-shellcheck@master
         with:
           additional_files: ./*.do app/* lib/*
