@@ -1,5 +1,6 @@
-# SPDX-FileCopyrightText: 2023-2025 David Rabkin
+# SPDX-FileCopyrightText: 2025 David Rabkin
 # SPDX-License-Identifier: 0BSD
+# This workflow has limitation -- macOS cannot run containers natively.
 ---
 name: container
 'on':
@@ -11,20 +12,20 @@ name: container
       - master
 jobs:
   container:
+    name: Test ${{ matrix.img }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        container:
-          - {fle: ./container/alpine/Containerfile, img: alpine}
-          - {fle: ./container/archlinux/Containerfile, img: archlinux}
-          - {fle: ./container/debian/Containerfile, img: debian}
-          - {fle: ./container/fedora/Containerfile, img: fedora}
-          - {fle: ./container/ubi8/Containerfile, img: ubi8}
-          - {fle: ./container/ubi9/Containerfile, img: ubi9}
+        img:
+          - alpine
+          - archlinux
+          - debian
+          - fedora
+          - ubi8
+          - ubi9
         os:
           - ubuntu-22.04
           - ubuntu-24.04
-    name: Test ${{ matrix.container.img }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - run: |
@@ -32,8 +33,8 @@ jobs:
           sudo apt install --yes podman
       - uses: redhat-actions/buildah-build@v2
         with:
-          containerfiles: ${{ matrix.container.fle }}
-          image: ${{ matrix.container.img }}
+          containerfiles: ./container/${{ matrix.img }}/Containerfile
+          image: ${{ matrix.img }}
           tags: latest
       - run: |
-          podman run --rm --rmi ${{ matrix.container.img }}:latest lint test
+          podman run --rm ${{ matrix.img }}:latest lint test
