@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: 2023-2025 David Rabkin
+# SPDX-License-Identifier: 0BSD
+---
+name: container
+'on':
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  container:
+    strategy:
+      matrix:
+        container:
+          - {fle: ./container/alpine/Containerfile, img: alpine}
+          - {fle: ./container/archlinux/Containerfile, img: archlinux}
+          - {fle: ./container/debian/Containerfile, img: debian}
+          - {fle: ./container/fedora/Containerfile, img: fedora}
+          - {fle: ./container/ubi8/Containerfile, img: ubi8}
+          - {fle: ./container/ubi9/Containerfile, img: ubi9}
+        os:
+          - ubuntu-22.04
+          - ubuntu-24.04
+    name: Build ${{ matrix.container.img }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt update
+          sudo apt install --yes podman
+      - uses: redhat-actions/buildah-build@v2
+        with:
+          containerfiles: ${{ matrix.container.fle }}
+          image: ${{ matrix.container.img }}
+          tags: latest
+      - run: |
+          podman run --rm --rmi ${{ matrix.container.img }}:latest lint test

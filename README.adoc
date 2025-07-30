@@ -2,6 +2,7 @@
 :toc: macro
 :!toc-title:
 // URLs:
+:img-container: https://github.com/rdavid/shellbase/actions/workflows/container.yml/badge.svg
 :img-hoc: https://hitsofcode.com/github/rdavid/shellbase?branch=master&label=hits%20of%20code
 :img-license: https://img.shields.io/github/license/rdavid/shellbase?color=blue&labelColor=gray&logo=freebsd&logoColor=lightgray&style=flat
 :img-releases: https://img.shields.io/github/v/release/rdavid/shellbase?color=blue&label=%20&logo=semver&logoColor=white&style=flat
@@ -10,6 +11,7 @@
 :url-base: https://github.com/rdavid/shellbase/blob/master/lib/base.sh
 :url-checkmake: https://github.com/mrtazz/checkmake
 :url-cv: http://cv.rabkin.co.il
+:url-container: https://github.com/rdavid/shellbase/actions/workflows/container.yml
 :url-dotfiles: https://github.com/rdavid/dotfiles
 :url-hadolint: https://github.com/hadolint/hadolint
 :url-hoc: https://hitsofcode.com/view/github/rdavid/shellbase?branch=master
@@ -47,6 +49,7 @@
 ----
 
 image:{img-test}[test,link={url-test}]
+image:{img-container}[container,link={url-container}]
 image:{img-hoc}[hits of code,link={url-hoc}]
 image:{img-releases}[release),link={url-releases}]
 image:{img-license}[license,link={url-license}]
