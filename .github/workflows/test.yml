@@ -1,5 +1,7 @@
 # SPDX-FileCopyrightText: 2023-2025 David Rabkin
 # SPDX-License-Identifier: 0BSD
+# This workflow has limitations -- Ubuntu lacks a redo package, and macOS
+# cannot run containers natively.
 ---
 name: test
 'on':
@@ -11,14 +13,14 @@ name: test
       - master
 jobs:
   test:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os:
           - macos-13
           - macos-14
           - macos-15
-    name: Test on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - run: |
@@ -28,4 +30,4 @@ jobs:
             grep \
             yash
           export PATH=/opt/homebrew/opt/grep/libexec/gnubin:"$PATH"
-          redo -xx test
+          redo -xx lint test
