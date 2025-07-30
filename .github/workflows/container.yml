@@ -23,7 +23,7 @@ jobs:
         os:
           - ubuntu-22.04
           - ubuntu-24.04
-    name: Build ${{ matrix.container.img }} on ${{ matrix.os }}
+    name: Test ${{ matrix.container.img }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
