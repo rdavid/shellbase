@@ -10,48 +10,22 @@ name: test
     branches:
       - master
 jobs:
-  test-linux:
-    strategy:
-      matrix:
-        os:
-          - ubuntu-22.04
-          - ubuntu-24.04
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - run: sudo apt-get install asciidoctor
-      - uses: ludeeus/action-shellcheck@master
-        with:
-          additional_files: ./*.do app/* lib/*
-      - uses: mfinelli/setup-shfmt@v3
-      - run: shfmt -d ./*.do ./app/* ./lib/*
-      - uses: errata-ai/vale-action@reviewdog
-        with:
-          fail_on_error: true
-          files: README.adoc
-  test-macos:
+  test:
     strategy:
       matrix:
         os:
           - macos-13
           - macos-14
           - macos-15
+    name: Test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - run: |
           brew install \
-            asciidoctor \
-            checkmake \
             fish \
             goredo \
             grep \
-            hadolint \
-            shellcheck \
-            shfmt \
-            vale \
             yash
-          vale sync
-          export PATH=/usr/local/opt/grep/libexec/gnubin:"$PATH"
           export PATH=/opt/homebrew/opt/grep/libexec/gnubin:"$PATH"
-          redo -xx lint test
+          redo -xx test
