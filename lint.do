@@ -21,13 +21,14 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20250604 \
+	BASE_APP_VERSION=0.9.20250730 \
 	BASE_MIN_VERSION=0.9.20231212 \
 	BSH
 set -- "$@" --quiet
 
 # shellcheck disable=SC1090 # File not following.
 . "$BSH"
+cmd_exists actionlint && actionlint
 cmd_exists checkmake && checkmake Makefile
 cmd_exists hadolint && hadolint container/*/Containerfile
 cmd_exists reuse && reuse lint
