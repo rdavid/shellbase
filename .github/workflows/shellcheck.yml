@@ -17,4 +17,4 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ludeeus/action-shellcheck@master
         with:
-          additional_files: ./*.do app/* lib/*
+          additional_files: ./*.do ./app/* ./lib/*
