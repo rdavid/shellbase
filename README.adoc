@@ -13,12 +13,12 @@
 :url-cv: http://cv.rabkin.co.il
 :url-container: https://github.com/rdavid/shellbase/actions/workflows/container.yml
 :url-dotfiles: https://github.com/rdavid/dotfiles
-:url-hadolint: https://github.com/hadolint/hadolint
-:url-hoc: https://hitsofcode.com/view/github/rdavid/shellbase?branch=master
-:url-license: https://github.com/rdavid/shellbase/blob/master/LICENSES/0BSD.txt
 :url-gento: https://github.com/rdavid/gento
 :url-goredo: http://www.goredo.cypherpunks.su/Install.html
 :url-goredoer: https://github.com/rdavid/goredoer
+:url-hadolint: https://github.com/hadolint/hadolint
+:url-hoc: https://hitsofcode.com/view/github/rdavid/shellbase?branch=master
+:url-license: https://github.com/rdavid/shellbase/blob/master/LICENSES/0BSD.txt
 :url-redo: http://cr.yp.to/redo.html
 :url-releases: https://github.com/rdavid/shellbase/releases
 :url-reuse: https://github.com/fsfe/reuse-action
