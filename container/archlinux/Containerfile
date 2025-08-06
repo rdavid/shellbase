@@ -21,6 +21,8 @@ RUN \
 	&& pacman --noconfirm --refresh --sync archlinux-keyring \
 	&& pacman --noconfirm --refresh --sync --sysupgrade \
 	&& pacman --noconfirm --sync \
+		actionlint>=1.7 \
+		asciidoctor >=2.0 \
 		bash>=5.1 \
 		dash>=0.5 \
 		diffutils>=3.10.3 \
@@ -30,6 +32,8 @@ RUN \
 		shellcheck>=0.9 \
 		shfmt>=3.6 \
 		tcsh>=6.24 \
+		typos>=1.35 \
+		vale>=3.12 \
 		yamllint>=1.31 \
 		zsh>=r5.9 \
 	&& ln -s /usr/bin/core_perl/shasum /usr/bin/shasum \
