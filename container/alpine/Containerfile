@@ -15,6 +15,7 @@ WORKDIR /bin
 COPY --from=goredoer /goredo .
 RUN \
 	apk add --no-cache --update \
+		actionlint~=1.7 \
 		bash~=5.2 \
 		coreutils~=9.7 \
 		curl~=8.14 \
@@ -28,11 +29,13 @@ RUN \
 		shellcheck~=0.10 \
 		shfmt~=3.11 \
 		tcsh~=6.24 \
+		typos~=1.35 \
 		tzdata~=2025 \
-		zsh~=5.9 \
 		util-linux~=2 \
+		vale-doc~=3.11 \
 		yamllint~=1.37 \
 		yash~=2.58 \
+		zsh~=5.9 \
 	&& rm -rf /var/cache/apk/* \
 	&& addgroup -S "$USER" \
 	&& adduser -S "$USER" -G "$USER" \
