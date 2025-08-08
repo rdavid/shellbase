@@ -46,7 +46,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20250623
+BASE_VERSION=0.9.20250808
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
