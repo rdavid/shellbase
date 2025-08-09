@@ -13,13 +13,12 @@
 # base_ prefix are public and could be used by clients. The public functions
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, chrono_get, chrono_sta, chrono_sto,
-# cmd_exists, cya, die, echo, ellipsize, file_exists, handle_pipefails,
-# heic2jpg, grbt, inside, isempty, isfunc, isnumber, isreadable, issolid,
-# iswritable, log, loge, logw, map_del, map_get, map_put, pdf2jpg, pdf2png,
-# prettytable, prettyuptime, raw2jpg, realdir, realpath, semver,
-# should_continue, timestamp, tolog, tologe, tolower, totsout, tsout,
-# url_exists, user_exists, validate_cmd, validate_var, var_exists, ver_ge,
-# vid2aud, ytda.
+# cmd_exists, cya, die, echo, ellipsize, file_exists, handle_pipefails, grbt,
+# inside, isempty, isfunc, isnumber, isreadable, issolid, iswritable, log,
+# loge, logw, map_del, map_get, map_put, pdf2jpg, pdf2png, prettytable,
+# prettyuptime, raw2jpg, realdir, realpath, semver, should_continue, timestamp,
+# tolog, tologe, tolower, totsout, tsout, url_exists, user_exists,
+# validate_cmd, validate_var, var_exists, ver_ge, vid2aud, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place temporary files under $BASE_WIP. All functions started with base_
@@ -46,7 +45,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20250808
+BASE_VERSION=0.9.20250810
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -283,13 +282,6 @@ grbt() {
 handle_pipefails() {
 	[ "$1" -eq 141 ] || return "$1"
 	logw Ignore the pipe failure with the error code 141.
-}
-
-# Deprecated function. Use raw2jpg instead. This wrapper exists for backward
-# compatibility.
-heic2jpg() {
-	logw heic2jpg is deprecated, use raw2jpg.
-	raw2jpg
 }
 
 # Returns a TRUE if $2 is inside $1. I'll use a case statement, because this is
