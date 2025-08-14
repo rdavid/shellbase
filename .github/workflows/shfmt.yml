@@ -5,8 +5,8 @@ name: shfmt
 'on': [pull_request, push]
 jobs:
   shfmt:
-    timeout-minutes: 15
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
       - uses: mfinelli/setup-shfmt@v3
