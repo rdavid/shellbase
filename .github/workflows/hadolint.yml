@@ -5,8 +5,8 @@ name: hadolint
 'on': [pull_request, push]
 jobs:
   hadolint:
-    timeout-minutes: 15
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
       - uses: hadolint/hadolint-action@v3.1.0
