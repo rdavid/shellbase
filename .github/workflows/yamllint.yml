@@ -2,13 +2,7 @@
 # SPDX-License-Identifier: 0BSD
 ---
 name: yamllint
-'on':
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+'on': [pull_request, push]
 jobs:
   yamllint:
     timeout-minutes: 15

@@ -4,13 +4,7 @@
 # cannot run containers natively.
 ---
 name: test
-'on':
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+'on': [pull_request, push]
 jobs:
   test:
     name: Test on ${{ matrix.os }}

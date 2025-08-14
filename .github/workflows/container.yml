@@ -3,13 +3,7 @@
 # This workflow has limitation -- macOS cannot run containers natively.
 ---
 name: container
-'on':
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+'on': [pull_request, push]
 jobs:
   container:
     name: Test ${{ matrix.img }} on ${{ matrix.os }}

@@ -2,13 +2,7 @@
 # SPDX-License-Identifier: 0BSD
 ---
 name: shfmt
-'on':
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+'on': [pull_request, push]
 jobs:
   shfmt:
     timeout-minutes: 15
