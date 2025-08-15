@@ -3,10 +3,10 @@
 # This workflow has limitations -- Ubuntu lacks a redo package, and macOS
 # cannot run containers natively.
 ---
-name: test
+name: test-mac
 'on': [pull_request, push]
 jobs:
-  test:
+  test-mac:
     name: Test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15

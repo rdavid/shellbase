@@ -1,11 +1,10 @@
 # SPDX-FileCopyrightText: 2025 David Rabkin
 # SPDX-License-Identifier: 0BSD
-# This workflow has limitation -- macOS cannot run containers natively.
 ---
-name: container
+name: test-lnx
 'on': [pull_request, push]
 jobs:
-  container:
+  test-lnx:
     name: Test ${{ matrix.img }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
