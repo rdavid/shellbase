@@ -1,6 +1,5 @@
 # SPDX-FileCopyrightText: 2025 David Rabkin
 # SPDX-License-Identifier: 0BSD
-# This workflow has limitation -- macOS cannot run containers natively.
 ---
 name: container
 'on': [pull_request, push]
