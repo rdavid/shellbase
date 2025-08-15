@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: 2025 David Rabkin
+# SPDX-License-Identifier: 0BSD
+---
+name: test-bsd
+'on': [pull_request, push]
+jobs:
+  test-bsd:
+    name: Test BSD on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        os:
+          - ubuntu-22.04
+          - ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: vmactions/freebsd-vm@v1.2.1
+        with:
+          prepare: |
+            pkg update
+            pkg install -y \
+              goredo
+            cd /usr/local/bin
+            goredo -symlinks
+            cd -
+          run: |
+            redo -xx lint
