@@ -2,16 +2,16 @@
 :toc: macro
 :!toc-title:
 // URLs:
-:img-container: https://github.com/rdavid/shellbase/actions/workflows/container.yml/badge.svg
 :img-hoc: https://hitsofcode.com/github/rdavid/shellbase?branch=master&label=hits%20of%20code
 :img-license: https://img.shields.io/github/license/rdavid/shellbase?color=blue&labelColor=gray&logo=freebsd&logoColor=lightgray&style=flat
 :img-releases: https://img.shields.io/github/v/release/rdavid/shellbase?color=blue&label=%20&logo=semver&logoColor=white&style=flat
-:img-test: https://github.com/rdavid/shellbase/actions/workflows/test.yml/badge.svg
+:img-test-bsd: https://github.com/rdavid/shellbase/actions/workflows/test-bsd.yml/badge.svg
+:img-test-lnx: https://github.com/rdavid/shellbase/actions/workflows/test-lnx.yml/badge.svg
+:img-test-mac: https://github.com/rdavid/shellbase/actions/workflows/test-mac.yml/badge.svg
 :url-actionlint: https://github.com/rhysd/actionlint
 :url-base: https://github.com/rdavid/shellbase/blob/master/lib/base.sh
 :url-checkmake: https://github.com/mrtazz/checkmake
 :url-cv: http://cv.rabkin.co.il
-:url-container: https://github.com/rdavid/shellbase/actions/workflows/container.yml
 :url-dotfiles: https://github.com/rdavid/dotfiles
 :url-gento: https://github.com/rdavid/gento
 :url-goredo: http://www.goredo.cypherpunks.su/Install.html
@@ -28,7 +28,9 @@
 :url-sh3: https://www.grymoire.com/Unix/Sh.html
 :url-shellcheck: https://github.com/koalaman/shellcheck
 :url-shfmt: https://github.com/mvdan/sh
-:url-test: https://github.com/rdavid/shellbase/actions/workflows/test.yml
+:url-test-bsd: https://github.com/rdavid/shellbase/actions/workflows/test-bsd.yml
+:url-test-lnx: https://github.com/rdavid/shellbase/actions/workflows/test-lnx.yml
+:url-test-mac: https://github.com/rdavid/shellbase/actions/workflows/test-mac.yml
 :url-toolbox: https://github.com/rdavid/toolbox
 :url-typos: https://github.com/crate-ci/typos
 :url-vale: https://vale.sh
@@ -48,8 +50,9 @@
     M9mmmP'.JMML  JMML.`Mbmmd'.JMML..JMML.P^YbmdP'  `Moo9^Yo.M9mmmP'  `Mbmmd' 
 ----
 
-image:{img-test}[test,link={url-test}]
-image:{img-container}[container,link={url-container}]
+image:{img-test-bsd}[text bsd,link={url-test-bsd}]
+image:{img-test-lnx}[text lnx,link={url-test-lnx}]
+image:{img-test-mac}[test mac,link={url-test-mac}]
 image:{img-hoc}[hits of code,link={url-hoc}]
 image:{img-releases}[release),link={url-releases}]
 image:{img-license}[license,link={url-license}]
