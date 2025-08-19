@@ -3,4 +3,4 @@
 # SPDX-FileCopyrightText: 2023-2025 David Rabkin
 # SPDX-License-Identifier: 0BSD
 podman system prune --all --force && podman rmi --all --force
-rm -f 1 clean lint test test_container
+rm -f ./1 ./clean ./lint ./test ./test_container

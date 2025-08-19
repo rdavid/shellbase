@@ -2,7 +2,7 @@
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2022-2025 David Rabkin
 # SPDX-License-Identifier: 0BSD
-redo-ifchange app/* lib/*
+redo-ifchange ./app/* ./lib/*
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
 )"/lib/base.sh || {
@@ -13,7 +13,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20250617 \
+	BASE_APP_VERSION=0.9.20250819 \
 	BASE_MIN_VERSION=0.9.20231228 \
 	BSH
 set -- "$@" --quiet
@@ -35,7 +35,7 @@ inside "$(uname -m)" arm64 && ARM=true || ARM=false
 
 # The build is executed silently, resulting in a container hash. Runs a
 # container and automatically removes it after it stops.
-for f in container/*/Containerfile; do
+for f in ./container/*/Containerfile; do
 	[ "$ARM" = true ] && inside "$f" archlinux && {
 		printf >&2 'Arch Linux does not currently support ARM architecture.\n'
 		continue

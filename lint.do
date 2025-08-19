@@ -3,14 +3,14 @@
 # SPDX-FileCopyrightText: 2022-2025 David Rabkin
 # SPDX-License-Identifier: 0BSD
 redo-ifchange \
+	./.github/*.yml \
+	./.github/workflows/*.yml \
+	./app/* \
+	./container/*/Containerfile \
+	./lib/* \
 	./*.do \
-	.github/*.yml \
-	.github/workflows/*.yml \
-	app/* \
-	container/*/Containerfile \
-	lib/* \
-	Makefile \
-	README.adoc
+	./Makefile \
+	./README.adoc
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
 )"/lib/base.sh || {
@@ -21,7 +21,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20250803 \
+	BASE_APP_VERSION=0.9.20250819 \
 	BASE_MIN_VERSION=0.9.20231212 \
 	BSH
 set -- "$@" --quiet
