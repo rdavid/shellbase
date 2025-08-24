@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: 0BSD
 # shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+[ "$(id -u)" -eq 0 ] && die Skip run as root.
 touch /tmp/1 /tmp/2
 chmod a-r /tmp/1
 isreadable /tmp/1 /tmp/2 /tmp && ret=0 || ret=1

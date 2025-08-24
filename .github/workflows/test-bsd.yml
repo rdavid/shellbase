@@ -20,9 +20,13 @@ jobs:
           prepare: |
             pkg update
             pkg install -y \
-              goredo
+              bash \
+              curl \
+              goredo \
+              p5-Digest-SHA
             cd /usr/local/bin
             goredo -symlinks
             cd -
+            ln -s /usr/local/bin/bash /bin/bash
           run: |
-            redo -xx lint
+            redo -xx lint test
