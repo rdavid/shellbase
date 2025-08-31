@@ -11,8 +11,6 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
-      - name: Download actionlint
-        id: get_actionlint
-        run: bash <(curl "$URL")
-      - name: Check workflow files
-        run: ${{ steps.get_actionlint.outputs.executable }} -color
+      - id: get
+        run: bash <(curl --silent "$URL")
+      - run: ${{ steps.get.outputs.executable }}
