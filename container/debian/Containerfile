@@ -35,7 +35,8 @@ RUN \
 		zsh \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* \
-	&& useradd --create-home "$USER" \
+	&& groupadd --gid 1001 "$USER" \
+	&& useradd --create-home --gid 1001 --uid 1001 "$USER" \
 	&& cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime \
 	&& printf %s "$TIME_ZONE" > /etc/timezone \
 	&& curl --location --output "$CM_BIN" --silent "$CM_URL" \
