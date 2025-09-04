@@ -20,11 +20,10 @@ RUN \
 		bash-4.4.20 \
 		diffutils-3.6 \
 		findutils-4.6.0 \
-		perl-Digest-SHA \
+		perl-Digest-SHA-6.02 \
 		procps-ng-3.3.15 \
-		shadow-utils-2:4.6 \
 		tzdata-2025b \
-		util-linux \
+		util-linux-2.32.1 \
 	&& microdnf clean all --disableplugin=subscription-manager \
 	&& useradd --create-home "$USER" \
 	&& curl --location --output "$CM_BIN" --silent "$CM_URL" \
