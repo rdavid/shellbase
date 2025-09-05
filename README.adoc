@@ -19,6 +19,7 @@
 :url-hadolint: https://github.com/hadolint/hadolint
 :url-hoc: https://hitsofcode.com/view/github/rdavid/shellbase?branch=master
 :url-license: https://github.com/rdavid/shellbase/blob/master/LICENSES/0BSD.txt
+:url-pulse: https://github.com/rdavid/pulse
 :url-redo: http://cr.yp.to/redo.html
 :url-releases: https://github.com/rdavid/shellbase/releases
 :url-reuse: https://github.com/fsfe/reuse-action
@@ -131,9 +132,12 @@ All functions started with `base_` prefix are internal and should not be used
 by clients.
 The names are arranged in alphabetical order.
 
-See {url-dotfiles}[`dotfiles`], {url-gento}[`gento`], and
-{url-toolbox}[`toolbox`] as examples of projects that utilize this
-framework.
+See
+{url-dotfiles}[`dotfiles`],
+{url-gento}[`gento`],
+{url-pulse}[`pulse`], and
+{url-toolbox}[`toolbox`]
+as examples of projects that utilize this framework.
 
 == Install
 
