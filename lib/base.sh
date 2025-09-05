@@ -14,8 +14,8 @@
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, chrono_get, chrono_sta, chrono_sto,
 # cmd_exists, cya, die, echo, ellipsize, file_exists, handle_pipefails, grbt,
-# inside, isempty, isfunc, isnumber, isreadable, issolid, iswritable, log,
-# loge, logw, map_del, map_get, map_put, pdf2jpg, pdf2png, prettytable,
+# inside, isempty, isfunc, isnumber, isreadable, isroot, issolid, iswritable,
+# log, loge, logw, map_del, map_get, map_put, pdf2jpg, pdf2png, prettytable,
 # prettyuptime, raw2jpg, realdir, realpath, semver, should_continue, timestamp,
 # tolog, tologe, tolower, totsout, tsout, url_exists, user_exists,
 # validate_cmd, validate_var, var_exists, ver_ge, vid2aud, ytda.
@@ -45,7 +45,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20250810
+BASE_VERSION=0.9.20250906
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -350,6 +350,18 @@ isreadable() {
 	for arg; do
 		[ -r "$arg" ] || return 1
 	done
+}
+
+# Checks if the current user is root. Uses `id -u` to get the numeric UID.
+# Returns success (0) if UID == 0 (root), otherwise failure (1).
+isroot() {
+	local err num
+	num="$(id -u 2>&1)" || {
+		err=$?
+		loge "$num"
+		return $err
+	}
+	[ "$num" -eq 0 ]
 }
 
 # Verifies that a content of a running script has a written inside the script
