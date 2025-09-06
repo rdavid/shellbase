@@ -21,8 +21,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20250819 \
-	BASE_MIN_VERSION=0.9.20231212 \
+	BASE_APP_VERSION=0.9.20250906 \
 	BSH
 set -- "$@" --quiet
 
@@ -39,5 +38,8 @@ cmd_exists vale && {
 	vale sync >/dev/null 2>&1 || :
 	vale ./README.adoc
 }
-cmd_exists yamllint && yamllint ./.github/*.yml ./.github/workflows/*.yml
+cmd_exists yamllint &&
+	yamllint \
+		./.github/*.yml \
+		./.github/workflows/*.yml
 ./app/update
