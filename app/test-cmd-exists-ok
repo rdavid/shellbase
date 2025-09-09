@@ -4,6 +4,8 @@
 # SPDX-License-Identifier: 0BSD
 # shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+cmd_exists
+cmd_exists -q
 cmd_exists \
 	find \
 	grep \
