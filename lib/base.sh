@@ -45,7 +45,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20250906
+BASE_VERSION=0.9.20250910
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -120,18 +120,34 @@ cheat() {
 	curl https://cht.sh/"$1"
 }
 
-# Checks whether all commands exits. Loops over the arguments, each one is a
-# command name. The presence of a command is a frequent occurrence, and the
-# event is not logged.
+# Checks whether all specified commands exist and are executable. Loops over
+# the arguments, each one is a command name. The presence of a command is a
+# frequent occurrence, and the event is not logged. Returns 0 if all commands
+# exist, non-zero otherwise.
+# Usage: cmd_exists [-q] cmd1 [cmd2 ...]
+# Options: -q (quiet mode - suppress warnings)
 cmd_exists() {
-	local arg ret=0
-	for arg; do
-		command -v "$arg" >/dev/null 2>&1 || {
-			ret=$?
-			logw Command "$arg" does not exist.
+	local cmd cnt=0 err qui=false
+	[ $# -eq 0 ] && {
+		logw No commands specified to check.
+		return 0
+	}
+	[ "$1" = -q ] && {
+		qui=true
+		shift
+	}
+	[ $# -eq 0 ] && {
+		[ "$qui" = false ] && logw No commands specified to check.
+		return 0
+	}
+	for cmd; do
+		command -v "$cmd" >/dev/null 2>&1 || {
+			err=$?
+			[ "$qui" = false ] && logw Command "$cmd" not found, err=$err.
+			cnt=$((cnt + 1))
 		}
 	done
-	return $ret
+	return $cnt
 }
 
 # Calculates a duration from the start. 86400 seconds in a day, 3600 seconds

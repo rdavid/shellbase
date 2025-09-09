@@ -5,7 +5,10 @@
 # shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 cmd_exists \
+	-q \
 	find \
-	foobar_c0mmand \
+	find_c0mmand \
 	grep \
-	ls
+	grep_c0mmand \
+	ls \
+	ls_c0mmand
