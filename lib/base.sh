@@ -45,7 +45,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20250910
+BASE_VERSION=0.9.20250922
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -509,24 +509,14 @@ map_put() {
 	printf %s "$val" >"$dir/$nme/$key"
 }
 
-# Converts all PDF files in current directory to JPG files.
+# Converts all PDF files in current directory to JPEG files.
 pdf2jpg() {
-	cmd_exists sips || return $?
-	local fle
-	for fle in *.pdf; do
-		sips -s format jpeg "$fle" --out "$fle.jpg"
-		log Converted "$fle" to JPG.
-	done
+	base_pdf2img -jpeg
 }
 
 # Converts all PDF files in current directory to PNG files.
 pdf2png() {
-	cmd_exists pdftoppm || return $?
-	local fle
-	for fle in *.pdf; do
-		pdftoppm "$fle" "${fle%.*}" -png
-		log Converted "$fle" to PNG.
-	done
+	base_pdf2img -png
 }
 
 # Draws ASCII table with sizing columns. Expects input as:
@@ -1156,6 +1146,36 @@ base_main() {
 		base_display_warranty
 		cya
 	}
+}
+
+# Converts all PDF files in the current directory to image files. The
+# function requires one parameter specifying the desired image format.
+base_pdf2img() {
+	cmd_exists pdftoppm sed || return $?
+	[ $# -eq 0 ] && {
+		loge No format specified to convert.
+		return 1
+	}
+	local dst fle fmt="$1" msg
+	case "$fmt" in
+	-jpeg) log Convert PDF files to JPEG. ;;
+	-png) log Convert PDF files to PNG. ;;
+	*)
+		loge Unable to convert PDF files to unsupported format "$fmt".
+		return 2
+		;;
+	esac
+	for fle in *.pdf; do
+		dst="$(printf %s "$fle" | sed 2>&1 's/\.[^.]*$//')" || {
+			loge NO: "$fle": "$dst".
+			continue
+		}
+		msg="$(pdftoppm 2>&1 "$fle" "$dst" "$fmt")" || {
+			loge NO: "$fle": "$msg".
+			continue
+		}
+		log OK: "$fle".
+	done
 }
 
 # Adds vertical borders. Double quates are needed.
