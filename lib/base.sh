@@ -13,12 +13,13 @@
 # base_ prefix are public and could be used by clients. The public functions
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, chrono_get, chrono_sta, chrono_sto,
-# cmd_exists, cya, die, echo, ellipsize, file_exists, handle_pipefails, grbt,
-# inside, isempty, isfunc, isnumber, isreadable, isroot, issolid, iswritable,
-# log, loge, logw, map_del, map_get, map_put, pdf2jpg, pdf2png, prettytable,
-# prettyuptime, raw2jpg, realdir, realpath, semver, should_continue, timestamp,
-# tolog, tologe, tolower, totsout, tsout, url_exists, user_exists,
-# validate_cmd, validate_var, var_exists, ver_ge, vid2aud, ytda.
+# cmd_exists, cya, die, echo, ellipsize, file_exists, handle_pipefails, gitlog,
+# grbt, inside, isempty, isfunc, isnumber, isreadable, isroot, issolid,
+# iswritable, log, loge, logw, map_del, map_get, map_put, pdf2jpg, pdf2png,
+# prettytable, prettyuptime, raw2jpg, realdir, realpath, semver,
+# should_continue, timestamp, tolog, tologe, tolower, totsout, tsout,
+# url_exists, user_exists, validate_cmd, validate_var, var_exists, ver_ge,
+# vid2aud, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place temporary files under $BASE_WIP. All functions started with base_
@@ -45,7 +46,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20250922
+BASE_VERSION=0.9.20250929
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -280,6 +281,30 @@ file_exists() {
 	for arg; do
 		ls "$arg" >/dev/null 2>&1 || return $?
 	done
+}
+
+# Allows users to navigate the history of commits in a Git repository.
+gitlog() {
+	cmd_exists fzf git grep head less xargs || return $?
+	git log \
+		--color=always \
+		--format="%C(auto)%h%d %s %C(black)%C(bold)%cr" \
+		--graph \
+		"$@" |
+		fzf \
+			--ansi \
+			--bind=ctrl-s:toggle-sort \
+			--no-sort \
+			--reverse \
+			--tiebreak=index \
+			--bind "ctrl-m:execute:
+			(
+				grep -o '[a-f0-9]\{7\}' |
+				head -1 |
+				xargs -I % sh -c 'git show --color=always % | less -R'
+			) << FZF-EOF
+			{}
+FZF-EOF"
 }
 
 # Generates a temporary commit, performs a rebase, and pushes the changes.
