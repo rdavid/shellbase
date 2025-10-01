@@ -13,11 +13,11 @@
 # base_ prefix are public and could be used by clients. The public functions
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, chrono_get, chrono_sta, chrono_sto,
-# cmd_exists, cya, die, echo, ellipsize, file_exists, handle_pipefails, gitlog,
-# grbt, inside, isempty, isfunc, isnumber, isreadable, isroot, issolid,
-# iswritable, log, loge, logw, map_del, map_get, map_put, pdf2jpg, pdf2png,
-# prettytable, prettyuptime, raw2jpg, realdir, realpath, semver,
-# should_continue, timestamp, tolog, tologe, tolower, totsout, tsout,
+# cmd_exists, cya, die, dng2jpg, echo, ellipsize, file_exists,
+# handle_pipefails, heic2jpg, gitlog, grbt, inside, isempty, isfunc, isnumber,
+# isreadable, isroot, issolid, iswritable, log, loge, logw, map_del, map_get,
+# map_put, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir, realpath,
+# semver, should_continue, timestamp, tolog, tologe, tolower, totsout, tsout,
 # url_exists, user_exists, validate_cmd, validate_var, var_exists, ver_ge,
 # vid2aud, ytda.
 #
@@ -46,7 +46,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20250929
+BASE_VERSION=0.9.20251001
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -234,6 +234,11 @@ die() {
 	(exit $err) || base_exit
 }
 
+# Converts DNG files in the current directory to JPEG.
+dng2jpg() {
+	base_img2jpg '*.[dD][nN][gG]'
+}
+
 # Enhances the behavior of the command to ensure it behaves more reliably. See:
 #  http://www.etalabs.net/sh_tricks.html
 echo() {
@@ -323,6 +328,11 @@ grbt() {
 handle_pipefails() {
 	[ "$1" -eq 141 ] || return "$1"
 	logw Ignore the pipe failure with the error code 141.
+}
+
+# Converts HEIC files in the current directory to JPEG.
+heic2jpg() {
+	base_img2jpg '*.[hH][eE][iI][cC]'
 }
 
 # Returns a TRUE if $2 is inside $1. I'll use a case statement, because this is
@@ -607,29 +617,12 @@ prettyuptime() {
 	' | tr -d \\n
 }
 
-# Converts DNG and HEIC files in the current directory to JPEG. Note: the
-# -iname find's option is not POSIX-compliant.
+# This function is deprecated. It exists as a wrapper for backward
+# compatibility and will be removed soon.
 raw2jpg() {
-	cmd_exists magick || return $?
-	find . \
-		-maxdepth 1 \
-		\( \
-		-name '*.[dD][nN][gG]' \
-		-o \
-		-name '*.[hH][eE][iI][cC]' \
-		\) \
-		-type f \
-		-exec magick mogrify -format jpg -monitor {} +
-	should_continue 'Remove the source files' || return $?
-	find . \
-		-maxdepth 1 \
-		\( \
-		-name '*.[dD][nN][gG]' \
-		-o \
-		-name '*.[hH][eE][iI][cC]' \
-		\) \
-		-type f \
-		-exec rm -f {} +
+	logw raw2jpg is deprecated, please use dng2jpg or heic2jpg instead.
+	dng2jpg
+	heic2jpg
 }
 
 # Returns the absolute directory of a file. See the description of realpath.
@@ -1076,6 +1069,27 @@ base_exit() {
 base_hi() {
 	log "$BASE_IAM $$" says hi.
 	chrono_sta lifespan || die
+}
+
+# Converts files matching the defined pattern in the current directory to JPEG.
+base_img2jpg() {
+	cmd_exists find magick || return $?
+	[ $# -eq 0 ] && {
+		loge No file pattern specified for conversion.
+		return $BASE_RC_ARG_NO
+	}
+	local pat="$1"
+	find . \
+		-maxdepth 1 \
+		-name "$pat" \
+		-type f \
+		-exec magick mogrify -format jpg -monitor {} +
+	should_continue 'Remove the source files' || return $?
+	find . \
+		-maxdepth 1 \
+		-name "$pat" \
+		-type f \
+		-exec rm -f {} +
 }
 
 # Determines if the shell is running in interactive mode.
