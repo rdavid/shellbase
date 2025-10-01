@@ -46,7 +46,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20251001
+BASE_VERSION=0.9.20251002
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -123,23 +123,23 @@ cheat() {
 
 # Checks whether all specified commands exist and are executable. Loops over
 # the arguments, each one is a command name. The presence of a command is a
-# frequent occurrence, and the event is not logged. Returns 0 if all commands
-# exist, non-zero otherwise.
+# frequent occurrence, and the event is not logged. The function returns 0 if
+# all commands exist, or the number of missing commands otherwise.
 # Usage: cmd_exists [-q] cmd1 [cmd2 ...]
-# Options: -q (quiet mode - suppress warnings)
+# Options: -q (quiet mode - suppress warnings and errors)
 cmd_exists() {
 	local cmd cnt=0 err qui=false
 	[ $# -eq 0 ] && {
-		logw No commands specified to check.
-		return 0
+		loge No commands specified to check.
+		return $BASE_RC_ARG_NO
 	}
 	[ "$1" = -q ] && {
 		qui=true
 		shift
 	}
 	[ $# -eq 0 ] && {
-		[ "$qui" = false ] && logw No commands specified to check.
-		return 0
+		[ "$qui" = false ] && loge No commands specified to check.
+		return $BASE_RC_ARG_NO
 	}
 	for cmd; do
 		command -v "$cmd" >/dev/null 2>&1 || {
@@ -1193,7 +1193,7 @@ base_pdf2img() {
 	cmd_exists pdftoppm sed || return $?
 	[ $# -eq 0 ] && {
 		loge No format specified to convert.
-		return 1
+		return $BASE_RC_ARG_NO
 	}
 	local dst fle fmt="$1" msg
 	case "$fmt" in
@@ -1201,7 +1201,7 @@ base_pdf2img() {
 	-png) log Convert PDF files to PNG. ;;
 	*)
 		loge Unable to convert PDF files to unsupported format "$fmt".
-		return 2
+		return $BASE_RC_ARG_NO
 		;;
 	esac
 	for fle in *.pdf; do
