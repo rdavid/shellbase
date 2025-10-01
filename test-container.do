@@ -13,8 +13,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20250819 \
-	BASE_MIN_VERSION=0.9.20231228 \
+	BASE_APP_VERSION=0.9.20251002 \
 	BSH
 set -- "$@" --quiet
 
@@ -40,7 +39,7 @@ for f in ./container/*/Containerfile; do
 		printf >&2 'Arch Linux does not currently support ARM architecture.\n'
 		continue
 	}
-	nme="$(printf %s "$f" | awk -F / '{print $2}' 2>&1)" || die "$nme"
+	nme="$(printf %s "$f" | awk -F / '{print $3}' 2>&1)" || die "$nme"
 	printf >&2 %s...\\n "$nme"
 	chrono_sta run || die Unable to start timer.
 	hsh="$(podman build --file "$f" --format docker --quiet . 2>&1)" ||
