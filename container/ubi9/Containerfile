@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2023-2025 David Rabkin
 # SPDX-License-Identifier: 0BSD
-FROM ghcr.io/rdavid/goredoer:0.9.20250808 as goredoer
+FROM ghcr.io/rdavid/goredoer:0.9.20251010 as goredoer
 FROM registry.access.redhat.com/ubi9/ubi-minimal:9.6-1758184547
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
