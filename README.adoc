@@ -39,6 +39,10 @@
 
 = Shellbase
 
+// The width is set to 79 characters, and the height is 8 lines. An ASCII art
+// generator is used with the specific font Georgia 11 by Richard Sabey
+// <cryptic_fan@hotmail.com> 9.2003:
+//  http://patorjk.com/software/taag/#p=display&f=Georgia11&t=shellbase
 [,sh]
 ----
              ,,                 ,,    ,,  ,,                                  
