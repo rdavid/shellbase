@@ -46,7 +46,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20251010
+BASE_VERSION=0.9.20251027
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -615,14 +615,6 @@ prettyuptime() {
 		s/, *[[:digit:]]* users?.*//
 		s/^/↑ /
 	' | tr -d \\n
-}
-
-# This function is deprecated. It exists as a wrapper for backward
-# compatibility and will be removed soon.
-raw2jpg() {
-	logw raw2jpg is deprecated, please use dng2jpg or heic2jpg instead.
-	dng2jpg
-	heic2jpg
 }
 
 # Returns the absolute directory of a file. See the description of realpath.
