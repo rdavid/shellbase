@@ -15,7 +15,7 @@ jobs:
           - ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
-      - uses: vmactions/freebsd-vm@v1.2.5
+      - uses: vmactions/freebsd-vm@v1.2.6
         with:
           prepare: |
             pkg update
