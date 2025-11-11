@@ -164,7 +164,7 @@ Some operating systems demands administrative rights to install to
 
 [,sh]
 ----
-REL=0.9.20251010
+REL=0.9.20251111
 SRC=https://github.com/rdavid/shellbase/archive/refs/tags/v$REL.tar.gz
 curl --location --silent $SRC |
   tar \
@@ -193,7 +193,7 @@ You can try `shellbase` without installation:
 [,sh]
 ----
 #!/bin/sh
-REL=0.9.20251010
+REL=0.9.20251111
 SRC=https://github.com/rdavid/shellbase/archive/refs/tags/v$REL.tar.gz
 eval "$(
   curl --location --silent $SRC |
