@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2023-2025 David Rabkin
 # SPDX-License-Identifier: 0BSD
-FROM ghcr.io/rdavid/goredoer:0.9.20251010 as goredoer
+FROM ghcr.io/rdavid/goredoer:0.9.20251111 as goredoer
 FROM alpine:3.22.2
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
