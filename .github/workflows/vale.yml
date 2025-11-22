@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - run: sudo apt-get install asciidoctor
       - uses: errata-ai/vale-action@reviewdog
         with:
