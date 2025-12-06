@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2023-2025 David Rabkin
 # SPDX-License-Identifier: 0BSD
 FROM ghcr.io/rdavid/goredoer:0.9.20251111 as goredoer
-FROM alpine:3.22.2
+FROM alpine:3.23.0
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	CM_BIN=/usr/local/bin/checkmake \
@@ -15,7 +15,7 @@ WORKDIR /bin
 COPY --from=goredoer /goredo .
 RUN \
 	apk add --no-cache --update \
-#		actionlint~=1.7 \
+# 		actionlint~=1.7 \
 		bash~=5.2 \
 		coreutils~=9.7 \
 		curl~=8.14 \
