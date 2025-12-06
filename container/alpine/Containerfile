@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2023-2025 David Rabkin
 # SPDX-License-Identifier: 0BSD
 FROM ghcr.io/rdavid/goredoer:0.9.20251111 as goredoer
-FROM alpine:3.22.2
+FROM alpine:3.23.0
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	CM_BIN=/usr/local/bin/checkmake \
@@ -15,26 +15,26 @@ WORKDIR /bin
 COPY --from=goredoer /goredo .
 RUN \
 	apk add --no-cache --update \
-#		actionlint~=1.7 \
-		bash~=5.2 \
-		coreutils~=9.7 \
-		curl~=8.14 \
+ 		actionlint~=1.7 \
+		bash~=5.3 \
+		coreutils~=9.8 \
+		curl~=8.17 \
 		dash~=0.5 \
 		fish~=4.0 \
 		grep~=3.12 \
-		loksh~=7.7 \
-		oksh~=7.7 \
-		perl-utils~=5.40 \
-		reuse~=5.0 \
-		shellcheck~=0.10 \
+		loksh~=7.8 \
+		oksh~=7.8 \
+		perl-utils~=5.42 \
+		reuse~=5.1 \
+		shellcheck~=0.11 \
 		shfmt~=3.11 \
 		tcsh~=6.24 \
 		typos~=1.40 \
 		tzdata~=2025 \
 		util-linux~=2 \
-		vale-doc~=3.11 \
+		vale-doc~=3.13 \
 		yamllint~=1.37 \
-		yash~=2.58 \
+		yash~=2.60 \
 		zsh~=5.9 \
 	&& rm -rf /var/cache/apk/* \
 	&& adduser -D -u 1001 "$USER" "$USER" \
