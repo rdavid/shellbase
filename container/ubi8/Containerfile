@@ -22,7 +22,7 @@ RUN \
 		findutils-4.6.0 \
 		perl-Digest-SHA-6.02 \
 		procps-ng-3.3.15 \
-		tzdata-2025b \
+		tzdata-2025c \
 		util-linux-2.32.1 \
 	&& microdnf clean all --disableplugin=subscription-manager \
 	&& useradd --create-home "$USER" \
