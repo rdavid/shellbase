@@ -14,7 +14,7 @@
 :url-cv: http://cv.rabkin.co.il
 :url-dotfiles: https://github.com/rdavid/dotfiles
 :url-gento: https://github.com/rdavid/gento
-:url-goredo: http://www.goredo.cypherpunks.su/Install.html
+:url-goredo: http://www.goredo.cypherpunks.su/INSTALL.html
 :url-goredoer: https://github.com/rdavid/goredoer
 :url-hadolint: https://github.com/hadolint/hadolint
 :url-hoc: https://hitsofcode.com/view/github/rdavid/shellbase?branch=master
