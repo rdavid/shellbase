@@ -59,7 +59,7 @@ image:{img-test-bsd}[text bsd,link={url-test-bsd}]
 image:{img-test-lnx}[text lnx,link={url-test-lnx}]
 image:{img-test-mac}[test mac,link={url-test-mac}]
 image:{img-hoc}[hits of code,link={url-hoc}]
-image:{img-releases}[release),link={url-releases}]
+image:{img-releases}[release,link={url-releases}]
 image:{img-license}[license,link={url-license}]
 
 toc::[]
@@ -67,12 +67,10 @@ toc::[]
 == About
 
 The `shellbase` framework serves as a foundation for Unix shell scripts.
-This framework is mostly POSIX-compliant,
-`Portable Operating System Interface for uniX`, ensuring compatibility across
-Unix-like systems.
-It offers a range of essential services, including public functions such as
-logger and multiple validations, signal handling, garbage collection, and
-support for multiple instances.
+It is mostly POSIX-compliant (`Portable Operating System Interface for uniX`),
+which helps keep it compatible across Unix-like systems.
+It offers essential services, including logging, validation helpers, signal
+handling, garbage collection, and support for multiple instances.
 
 `shellbase` defines global variables and functions.
 All functions without the `base_` prefix are public and can be used by clients.
@@ -136,16 +134,15 @@ The public functions are, in alphabetical order:
 Global variables have the `BASE_` prefix and can be used by clients.
 Clients should place temporary files under `$BASE_WIP`.
 All functions starting with the `base_` prefix are internal and should not be
-used
-by clients.
-The names are arranged in alphabetical order.
+used by clients.
+Names are listed in alphabetical order.
 
 See
 {url-dotfiles}[`dotfiles`],
 {url-gento}[`gento`],
 {url-pulse}[`pulse`], and
 {url-toolbox}[`toolbox`]
-as examples of projects that utilize this framework.
+as example projects that use this framework.
 
 == Install
 
@@ -161,7 +158,7 @@ git clone git@github.com:rdavid/shellbase.git &&
 
 Install the file from the released version.
 Some operating systems demand administrative rights to install to
-`/usr/local/bin`, use `sudo` or `doas` before `tar`:
+`/usr/local/bin`; use `sudo` or `doas` before `tar`:
 
 [,sh]
 ----
