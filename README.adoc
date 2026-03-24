@@ -74,8 +74,8 @@ It offers a range of essential services, including public functions such as
 logger and multiple validations, signal handling, garbage collection, and
 support for multiple instances.
 
-The `shellbase` defines global variables and functions.
-All functions without `base_` prefix are public and could be used by clients.
+`shellbase` defines global variables and functions.
+All functions without the `base_` prefix are public and can be used by clients.
 The public functions are, in alphabetical order:
 {url-base}#L53[`aud_only`],
 {url-base}#L97[`beroot`],
@@ -133,9 +133,10 @@ The public functions are, in alphabetical order:
 {url-base}#L866[`vid2aud`],
 {url-base}#L880[`ytda`].
 
-Global variables have `BASE_` prefix and clients could use them.
+Global variables have the `BASE_` prefix and can be used by clients.
 Clients should place temporary files under `$BASE_WIP`.
-All functions started with `base_` prefix are internal and should not be used
+All functions starting with the `base_` prefix are internal and should not be
+used
 by clients.
 The names are arranged in alphabetical order.
 
@@ -159,7 +160,7 @@ git clone git@github.com:rdavid/shellbase.git &&
 ----
 
 Install the file from the released version.
-Some operating systems demands administrative rights to install to
+Some operating systems demand administrative rights to install to
 `/usr/local/bin`, use `sudo` or `doas` before `tar`:
 
 [,sh]
