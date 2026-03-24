@@ -5,12 +5,12 @@
 
 ## Project Structure & Module Organization
 
-`lib/base.sh` is the core POSIX-oriented library and the main artifact shipped by
-this repository. `app/` contains helper scripts such as `install`, `update`, and
-the executable test cases named `test-*-ok` and `test-*-no`. Container coverage
-lives under `container/<distro>/Containerfile`, and CI/lint configuration lives
-in `.github/workflows/` and `.github/styles/`. Treat `.redo/` as build metadata
-for the `redo` workflow rather than hand-edited source.
+`lib/base.sh` is the core POSIX-oriented library and the main artifact shipped
+by this repository. `app/` contains helper scripts such as `install`, `update`,
+and executable test cases named `test-*-ok` and `test-*-no`. Container
+coverage lives under `container/<distro>/Containerfile`, and CI/lint
+configuration lives in `.github/workflows/` and `.github/styles/`. Treat
+`.redo/` as build metadata for the `redo` workflow, not hand-edited source.
 
 ## Build, Test, and Development Commands
 
@@ -29,7 +29,7 @@ Use `make test` only if you need the compatibility wrapper.
 
 ## Coding Style & Naming Conventions
 
-Write shell as portable `sh` first; keep Bash-specific features out unless the
+Write shell as portable `sh` first. Keep Bash-specific features out unless the
 file already depends on them. Follow the existing editor hints: 2-space
 indentation, no tabs, and an approximately 79-character text width. Public
 functions in `lib/base.sh` are unprefixed, internal helpers use `base_`, and
