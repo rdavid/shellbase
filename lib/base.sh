@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# SPDX-FileCopyrightText: 2020-2025 David Rabkin
+# SPDX-FileCopyrightText: 2020-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 #
 # The shellbase framework serves as a foundation for Unix shell scripts. This
@@ -46,7 +46,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20251111
+BASE_VERSION=0.9.20260324
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -881,6 +881,7 @@ ytda() {
 	cmd_exists renamr yt-dlp || return $?
 	yt-dlp \
 		--add-metadata \
+		--cookies-from-browser chrome \
 		--format bestaudio+bestvideo/best \
 		--merge-output-format mp4 \
 		--output "%(uploader)s-%(upload_date)s-%(title)s.%(ext)s" \
