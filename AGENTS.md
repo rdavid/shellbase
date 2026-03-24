@@ -46,9 +46,9 @@ with multiple Unix-like shells.
 
 ## Commit & Pull Request Guidelines
 
-Recent history uses Conventional Commit style, especially scoped forms such as
-`build(deps): ...` and `chore(deps): ...`. Prefer concise, imperative subjects
-with a meaningful scope when one exists. Pull requests should explain the user-
-visible change, note any portability implications, and confirm the relevant
-`redo lint` and `redo test` results. Link related issues when applicable; UI
-screenshots are usually unnecessary for this repository.
+Use Conventional Commits for all commits created by the agent, especially
+scoped forms such as `build(deps): ...` and `chore(deps): ...`. Prefer concise,
+imperative subjects with a meaningful scope when one exists. Pull requests
+should explain the user-visible change, note any portability implications, and
+confirm the relevant `redo lint` and `redo test` results. Link related issues
+when applicable; UI screenshots are usually unnecessary for this repository.
