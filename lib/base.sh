@@ -1038,7 +1038,7 @@ base_display_warranty() {
 	local war
 	war="$(
 		cat <<-EOM 2>&1
-			Copyright 2020-2025 David Rabkin
+			Copyright 2020-2026 David Rabkin
 
 			Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted.
 
