@@ -1,6 +1,6 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# SPDX-FileCopyrightText: 2022-2025 David Rabkin
+# SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 # shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
@@ -8,3 +8,6 @@ file_exists /tmp && log /tmp exists.
 file_exists /tmp1 || log /tmp1 does not exist.
 file_exists /tmp/* && log /tmp/\* exists.
 file_exists /tmp1/* || log /tmp1/\* does not exist.
+fle="$BASE_WIP/-dash-file"
+touch "$fle" || die "$fle"
+file_exists "$fle" && log "$fle" exists.
