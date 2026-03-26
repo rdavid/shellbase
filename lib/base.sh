@@ -40,13 +40,14 @@ BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_QUIET=false
+BASE_RC_ARG_NE=15
 BASE_RC_ARG_NO=11
 BASE_RC_ARG_WA=12
 BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260324
+BASE_VERSION=0.9.20260326
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -283,8 +284,9 @@ ellipsize() {
 # files do not exist.
 file_exists() {
 	local arg
+	[ $# -gt 0 ] || return $BASE_RC_ARG_NO
 	for arg; do
-		ls "$arg" >/dev/null 2>&1 || return $?
+		[ -e "$arg" ] || [ -L "$arg" ] || return $BASE_RC_ARG_NE
 	done
 }
 
@@ -1349,6 +1351,7 @@ readonly \
 	BASE_FMT_YELLOW \
 	BASE_KEEP_WIP \
 	BASE_QUIET \
+	BASE_RC_ARG_NE \
 	BASE_RC_ARG_NO \
 	BASE_RC_ARG_WA \
 	BASE_RC_CON_NO \
