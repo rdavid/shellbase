@@ -1,7 +1,7 @@
-# SPDX-FileCopyrightText: 2023-2025 David Rabkin
+# SPDX-FileCopyrightText: 2023-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 FROM ghcr.io/rdavid/goredoer:0.9.20251111 as goredoer
-FROM fedora:42
+FROM fedora:45
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	CM_BIN=/usr/local/bin/checkmake \
@@ -29,7 +29,6 @@ RUN \
 		oksh \
 		shadow-utils \
 		shellcheck \
-		shfmt \
 		procps \
 		util-linux \
 		yamllint \
