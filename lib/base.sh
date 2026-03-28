@@ -838,15 +838,27 @@ validate_var() {
 var_exists() {
 	local arg ret=0 var
 	for arg; do
-		set +o nounset
-		eval "var=\${$arg}"
-		set -o nounset
+		# Accepts only POSIX identifiers: [A-Za-z_][A-Za-z0-9_]*.
+		case "$arg" in
+		'' | [!A-Za-z_]* | *[!A-Za-z0-9_]*)
+			logw "Invalid variable name: $arg."
+			ret=$BASE_RC_ARG_NE
+			continue
+			;;
+		esac
+		# ${name-} expands to empty when name is undefined and avoids nounset
+		# failures under set -o nounset.
+		eval "var=\${$arg-}" || {
+			logw "Failed to read variable: $arg."
+			ret=$BASE_RC_ARG_NE
+			continue
+		}
 
 		# An absence of a variable is a very common case. Does not log the event.
 		if [ -n "$var" ]; then
 			log "Variable $arg is set to $var."
 		else
-			ret=1
+			ret=$BASE_RC_ARG_NO
 		fi
 	done
 	return $ret
