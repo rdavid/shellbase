@@ -1,0 +1,12 @@
+#!/bin/sh
+# vi:et lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+# shellcheck disable=SC1090,SC1091 # File not following.
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+fle="$BASE_WIP/shellbase-injected-$$"
+pay="PATH}\$(touch $fle)#"
+var_exists "$pay"
+ret=$?
+file_exists "$fle" && die Injection detected: "$fle"
+exit $ret
