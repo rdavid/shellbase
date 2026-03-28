@@ -147,6 +147,13 @@ cmd_exists() {
 			err=$?
 			[ "$qui" = false ] && logw Command "$cmd" not found, err=$err.
 			cnt=$((cnt + 1))
+
+			# Shell return codes are limited to 0..255.
+			[ "$cnt" -lt 255 ] || {
+				[ "$qui" = false ] &&
+					logw "Missing command count is capped at 255."
+				break
+			}
 		}
 	done
 	return $cnt
