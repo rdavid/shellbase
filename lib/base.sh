@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260326
+BASE_VERSION=0.9.20260328
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -1295,8 +1295,11 @@ base_write_to_file() {
 	printf %s\\n "$*" >>"$BASE_LOG"
 }
 
-# Starting point. Stops right away if it has ran in interactive mode.
-base_is_interactive && return 0
+# Starting point. Prints banner and stops right away in interactive mode.
+base_is_interactive && {
+	base_display_banner || :
+	return 0
+}
 set -o errexit -o nounset
 
 # If supported, pipefail will be set, and it will become POSIX-compliant in the
