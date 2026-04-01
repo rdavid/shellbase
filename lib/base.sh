@@ -16,10 +16,10 @@
 # cmd_exists, cya, die, dng2jpg, echo, ellipsize, file_exists,
 # handle_pipefails, heic2jpg, gitlog, grbt, inside, isempty, isfunc, isnumber,
 # isreadable, isroot, issolid, iswritable, log, loge, logw, map_del, map_get,
-# map_put, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir, realpath,
-# semver, should_continue, timestamp, tolog, tologe, tolower, totsout, tsout,
-# url_exists, user_exists, validate_cmd, validate_var, var_exists, ver_ge,
-# vid2aud, ytda.
+# map_put, nmea2gpx, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir,
+# realpath, semver, should_continue, timestamp, tolog, tologe, tolower,
+# totsout, tsout, url_exists, user_exists, validate_cmd, validate_var,
+# var_exists, ver_ge, vid2aud, ytda.
 #
 # Global variables have BASE_ prefix and clients could use them. Clients should
 # place temporary files under $BASE_WIP. All functions started with base_
@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260328
+BASE_VERSION=0.9.20260402
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -551,6 +551,25 @@ map_put() {
 	[ -d "$dir" ] || mkdir "$dir"
 	[ -d "$dir/$nme" ] || mkdir "$dir/$nme"
 	printf %s "$val" >"$dir/$nme/$key"
+}
+
+# Converts all .log files in the current directory to .gpx files.
+nmea2gpx() {
+	local fle
+	cmd_exists gpsbabel || return $?
+	for fle in ./*.log; do
+
+		# Skips unmatched glob literals and broken paths.
+		[ -e "$fle" ] || [ -L "$fle" ] || continue
+		log "Converting $fle to ${fle%.log}.gpx."
+
+		# gpsbabel may not support long option names.
+		gpsbabel \
+			-i nmea \
+			-f "$fle" \
+			-o gpx \
+			-F "${fle%.log}.gpx" || return $?
+	done
 }
 
 # Converts all PDF files in current directory to JPEG files.
