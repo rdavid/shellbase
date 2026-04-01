@@ -125,7 +125,8 @@ cheat() {
 # Checks whether all specified commands exist and are executable. Loops over
 # the arguments, each one is a command name. The presence of a command is a
 # frequent occurrence, and the event is not logged. The function returns 0 if
-# all commands exist, or the number of missing commands otherwise.
+# all commands exist, or the number of missing commands (capped at 255)
+# otherwise.
 # Usage: cmd_exists [-q] cmd1 [cmd2 ...]
 # Options: -q (quiet mode - suppress warnings and errors)
 cmd_exists() {
@@ -200,8 +201,7 @@ chrono_get() {
 	fi
 }
 
-# Marks the begging of a period of time. The single parameter is a name of the
-# stop watch.
+# Marks the beginning of a period. The only parameter is the stopwatch name.
 chrono_sta() {
 	local err nme="$1" now
 	now="$(date +%s 2>&1)" || {
@@ -238,7 +238,7 @@ die() {
 	[ $# = 0 ] || loge "$@"
 	[ $err != 0 ] || err=$BASE_RC_DIE_NO
 
-	# The err is always not null.
+	# err is always non-empty.
 	(exit $err) || base_exit
 }
 
@@ -424,8 +424,8 @@ isroot() {
 	[ "$num" -eq 0 ]
 }
 
-# Verifies that a content of a running script has a written inside the script
-# hash (SHA-256). It doesn't consider a line where the hash is defined.
+# Verifies that a running script content matches the script hash (SHA-256).
+# It ignores the line where the hash is defined.
 issolid() {
 	cmd_exists awk head grep shasum || return $?
 	local \
@@ -472,8 +472,8 @@ iswritable() {
 	done
 }
 
-# All log messages go to stderr. Information logger doesn't print to stderr
-# with --quite flag.
+# All log messages go to stderr. The information logger is silent with the
+# --quiet flag.
 log() {
 	local tms
 	tms="$(timestamp)" || exit $?
@@ -490,7 +490,7 @@ loge() {
 	base_is_interactive || base_write_to_file "$tms" E "$*"
 }
 
-# Warning logger doesn't print to stderr with --quite flag.
+# The warning logger is silent with the --quiet flag.
 logw() {
 	local tms
 	tms="$(timestamp)" || exit $?
@@ -559,11 +559,11 @@ nmea2gpx() {
 	cmd_exists gpsbabel || return $?
 	for fle in ./*.log; do
 
-		# Skips unmatched glob literals and broken paths.
+		# Skips unmatched glob literals and dangling links.
 		[ -e "$fle" ] || [ -L "$fle" ] || continue
 		log "Converting $fle to ${fle%.log}.gpx."
 
-		# gpsbabel may not support long option names.
+		# gpsbabel may reject long option names, so use short options.
 		gpsbabel \
 			-i nmea \
 			-f "$fle" \
@@ -684,8 +684,8 @@ semver() {
 }
 
 # Asks the user for permission to continue; returns an error code if the input
-# is not 'y' or if no input is detected after a timeout. If exists uses
-# parameters as a question, otherwise uses default message.
+# is not 'y' or if no input is detected after a timeout. If provided, parameters
+# are used as the question; otherwise, the default message is used.
 should_continue() {
 	[ $BASE_SHOULD_CON = true ] && return 0
 	local ans dad="$$" dog msg old tmo=20
@@ -714,8 +714,8 @@ should_continue() {
 	set -m
 	log "Parent process $dad created watchdog process $dog."
 
-	# Prints the question without a new line allows to print an answer on the
-	# same line. The question is not logged.
+	# Prints the question without a newline so the answer stays on the same
+	# line. The question is not logged.
 	msg="${*:-Do you want to continue}"
 	printf '%s? [y/N] ' "$msg"
 	stty raw -echo
@@ -940,7 +940,7 @@ base_bomb() {
 	base_bomb | base_bomb &
 }
 
-# Right before a program exiting, it prints a program name and and its
+# Right before a program exits, it prints a program name and its
 # lifespan. Avoid using die() to prevent potential recursion.
 base_bye() {
 	local err=$? dur msg
@@ -1250,7 +1250,7 @@ base_pdf2img() {
 	done
 }
 
-# Adds vertical borders. Double quates are needed.
+# Adds vertical borders. Double quotes are needed.
 base_prettytable_prettify() {
 	cat - | sed "s/^/|/;s/\$/	/;s/	/	|/g"
 }
