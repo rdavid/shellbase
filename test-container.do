@@ -27,13 +27,12 @@ out="$(podman machine start 2>&1)" || {
 	STOP_VM=NO
 }
 
-# If the test is run in a mode of the shell where all executed commands are
-# printed to the terminal, pass the mode further.
+# If tests run in shell tracing mode, pass the mode to the container run.
 inside "$-" x && EXE=-xx || EXE=''
 inside "$(uname -m)" arm64 && ARM=true || ARM=false
 
-# The build is executed silently, resulting in a container hash. Runs a
-# container and automatically removes it after it stops.
+# The image build runs silently and returns a container hash. Then it runs the
+# container and removes it automatically after exit.
 for f in ./container/*/Containerfile; do
 	[ "$ARM" = true ] && inside "$f" archlinux && {
 		printf >&2 'Arch Linux does not currently support ARM architecture.\n'
