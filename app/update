@@ -10,24 +10,24 @@
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
 )"/../lib/base.sh || {
-	local err=$?
+	err=$?
 	printf >&2 %s\\n "$BSH"
-	exit $err
+	exit "$err"
 }
 BASE_APP_USAGE="$(
 	cat <<-EOM 2>&1
 		  -a, --action      Replaces README with updated version.
 	EOM
 )" || {
-	local err=$?
+	err=$?
 	printf >&2 %s\\n "$BASE_APP_USAGE"
-	exit $err
+	exit "$err"
 }
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
 	BASE_APP_USAGE \
-	BASE_APP_VERSION=0.9.20250604 \
+	BASE_APP_VERSION=0.9.20260408 \
 	BASE_MIN_VERSION=0.9.20231212 \
 	BSH \
 	TGT=README.adoc
