@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260404
+BASE_VERSION=0.9.20260407
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -272,7 +272,16 @@ echo() {
 # The origin of the idea:
 #  https://github.com/yegor256/ellipsized
 ellipsize() {
-	local beg max="$2" str="$1" end
+	local beg end max="$2" str="$1"
+	[ $# -eq 2 ] || {
+		loge ellipsize: expected 2 arguments, got "$#".
+		return $BASE_RC_ARG_NO
+	}
+	isnumber "$max" || {
+		loge ellipsize: max is not numeric: "$max".
+		return $BASE_RC_ARG_NO
+	}
+	cmd_exists awk || return $?
 	[ "${#str}" -le "$max" ] && {
 		printf %s "$str"
 		return
@@ -281,9 +290,16 @@ ellipsize() {
 	end=$beg
 	[ $((beg + end + 3)) -lt "$max" ] && beg=$((beg + 1))
 	[ "$beg" -gt "$max" ] && beg=$max
-
-	# shellcheck disable=SC3057
-	printf %s "${str:0:beg}...${str:$((${#str} - end))}"
+	awk \
+		-v b="$beg" \
+		-v e="$end" \
+		-v s="$str" \
+		'BEGIN {
+			n = length(s)
+			p = (b > 0) ? substr(s, 1, b) : ""
+			q = (e > 0) ? substr(s, n - e + 1) : ""
+			printf "%s...%s", p, q
+		}'
 }
 
 # Verifies the existence of all files. Iterates through the arguments,
