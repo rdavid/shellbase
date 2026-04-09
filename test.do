@@ -13,7 +13,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20250819 \
+	BASE_APP_VERSION=0.9.20260409 \
 	BASE_MIN_VERSION=0.9.20231228 \
 	BSH
 set -- "$@" --quiet
@@ -27,6 +27,7 @@ for sh in ash bash dash fish ksh oksh tcsh yash zsh; do
 		"$sh" -c "$ok 2>&1" || die "$ok" on "$sh" returns negative.
 	done
 	for no in ./app/*-no; do
+
 		# shellcheck disable=SC2015 # A && B || C.
 		"$sh" -c "$no 2>&1" && die "$no" on "$sh" returns positive. || :
 	done

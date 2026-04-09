@@ -7,7 +7,8 @@ set -- "$@" --quiet
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
 )"/../lib/base.sh || {
-	# Capture status before printf; local is invalid outside functions.
+
+	# Captures status before printf; local is invalid outside functions.
 	err=$?
 	printf >&2 %s\\n "$BSH"
 	exit "$err"
@@ -15,7 +16,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20260402 \
+	BASE_APP_VERSION=0.9.20260409 \
 	BASE_MIN_VERSION=0.9.20240831 \
 	BSH \
 	DST=/usr/local/bin \

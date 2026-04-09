@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260407
+BASE_VERSION=0.9.20260409
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -880,6 +880,7 @@ validate_var() {
 var_exists() {
 	local arg ret=0 var
 	for arg; do
+
 		# Accepts only POSIX identifiers: [A-Za-z_][A-Za-z0-9_]*.
 		case "$arg" in
 		'' | [!A-Za-z_]* | *[!A-Za-z0-9_]*)
@@ -888,6 +889,7 @@ var_exists() {
 			continue
 			;;
 		esac
+
 		# ${name-} expands to empty when name is undefined and avoids nounset
 		# failures under set -o nounset.
 		eval "var=\${$arg-}" || {
@@ -1389,6 +1391,7 @@ for arg; do
 	-x | --execute) set -x ;;
 	-y | --yes) BASE_SHOULD_CON=true ;;
 	*)
+
 		# If an argument is not skipped, sets it back to all.
 		if [ $skp = false ]; then
 			set -- "$@" "$arg"
