@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260421
+BASE_VERSION=0.9.20260422
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -683,32 +683,50 @@ realpath() {
 # falls back to a safer set of options supported by older rsync.
 rsyncx() {
 	cmd_exists awk rsync || return $?
-	local maj min rst ver
-	ver="$(rsync --version | awk 'NR==1 {print $3}')"
+	local err maj min rst ver
+	ver="$(rsync --version | awk 'NR==1 {print $3}')" || {
+		err=$?
+		loge Unable to get rsync versions.
+		return $err
+	}
 	maj="${ver%%.*}"
 	rst=${ver#*.}
 	min="${rst%%.*}"
+	var_exists maj min rst || {
+		err=$?
+		loge Unable to parse rsync versions "$ver".
+		return $err
+	}
 	if [ "$maj" -gt 3 ] || { [ "$maj" -eq 3 ] && [ "$min" -ge 1 ]; }; then
-		rsync \
-			--append-verify \
-			--archive \
-			--compress \
-			--human-readable \
-			--info=progress2 \
-			--partial \
-			--timeout=300 \
-			--verbose \
-			"$@"
+		log rsync version "$ver" is installed.
+		{
+			rsync \
+				--append-verify \
+				--archive \
+				--compress \
+				--human-readable \
+				--info=progress2 \
+				--partial \
+				--timeout=300 \
+				--verbose \
+				"$@" \
+				2>&1 1>&3 3>&- | tologe
+		} \
+			3>&1 1>&2 | tolog
 	else
 		logw Old rsync version "$ver" is installed.
-		rsync \
-			--archive \
-			--compress \
-			--human-readable \
-			--partial \
-			--timeout=300 \
-			--verbose \
-			"$@"
+		{
+			rsync \
+				--archive \
+				--compress \
+				--human-readable \
+				--partial \
+				--timeout=300 \
+				--verbose \
+				"$@" \
+				2>&1 1>&3 3>&- | tologe
+		} \
+			3>&1 1>&2 | tolog
 	fi
 }
 
