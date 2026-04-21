@@ -17,7 +17,7 @@
 # handle_pipefails, heic2jpg, gitlog, grbt, inside, isempty, isfunc, isnumber,
 # isreadable, isroot, issolid, iswritable, log, loge, logw, map_del, map_get,
 # map_put, nmea2gpx, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir,
-# realpath, semver, should_continue, timestamp, tolog, tologe, tolower,
+# realpath, rsyncx, semver, should_continue, timestamp, tolog, tologe, tolower,
 # totsout, tsout, url_exists, user_exists, validate_cmd, validate_var,
 # var_exists, ver_ge, vid2aud, ytda.
 #
@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260409
+BASE_VERSION=0.9.20260421
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -676,6 +676,40 @@ realpath() {
 	dir="$(realdir "$str")" || die
 	nme="$(basename -- "$str" 2>&1)" || die "$nme"
 	[ / = "$dir" ] && printf /%s "$nme" || printf %s/%s "$dir" "$nme"
+}
+
+# Wrapper around rsync that checks the installed rsync version. If rsync is new
+# enough, it uses append-resume and overall progress output. Otherwise, it
+# falls back to a safer set of options supported by older rsync.
+rsyncx() {
+	cmd_exists awk rsync || return $?
+	local maj min rst ver
+	ver="$(rsync --version | awk 'NR==1 {print $3}')"
+	maj="${ver%%.*}"
+	rst=${ver#*.}
+	min="${rst%%.*}"
+	if [ "$maj" -gt 3 ] || { [ "$maj" -eq 3 ] && [ "$min" -ge 1 ]; }; then
+		rsync \
+			--append-verify \
+			--archive \
+			--compress \
+			--human-readable \
+			--info=progress2 \
+			--partial \
+			--timeout=300 \
+			--verbose \
+			"$@"
+	else
+		logw Old rsync version "$ver" is installed.
+		rsync \
+			--archive \
+			--compress \
+			--human-readable \
+			--partial \
+			--timeout=300 \
+			--verbose \
+			"$@"
+	fi
 }
 
 # Extracts semantic versioning from a string. See:
