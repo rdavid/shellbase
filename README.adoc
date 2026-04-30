@@ -154,7 +154,7 @@ Install the file from the repository:
 
 [,sh]
 ----
-git clone git@github.com:rdavid/shellbase.git &&
+git clone https://github.com/rdavid/shellbase.git &&
   ./shellbase/app/install
 ----
 
