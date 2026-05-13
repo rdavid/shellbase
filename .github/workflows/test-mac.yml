@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-2025 David Rabkin
+# SPDX-FileCopyrightText: 2023-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 # This workflow has limitations -- Ubuntu lacks a redo package, and macOS
 # cannot run containers natively.
@@ -15,7 +15,9 @@ jobs:
         os:
           - macos-14
           - macos-15
-          # - macos-15-intel
+          - macos-15-intel
+          - macos-26
+          - macos-26-intel
     steps:
       - uses: actions/checkout@v6
       - run: |

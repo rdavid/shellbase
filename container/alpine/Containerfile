@@ -15,7 +15,6 @@ WORKDIR /bin
 COPY --from=goredoer /goredo .
 RUN \
 	apk add --no-cache --update \
- 		actionlint~=1.7 \
 		bash~=5.3 \
 		coreutils~=9.8 \
 		curl~=8.17 \
