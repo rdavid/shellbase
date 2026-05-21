@@ -17,7 +17,7 @@ RUN \
 	apk add --no-cache --update \
 		bash~=5.3 \
 		coreutils~=9.8 \
-		curl~=8.17 \
+		curl~=8.19 \
 		dash~=0.5 \
 		fish~=4.0 \
 		grep~=3.12 \
