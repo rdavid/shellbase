@@ -135,7 +135,7 @@ The public functions are, in alphabetical order:
 
 Global variables have the `BASE_` prefix; clients may use them.
 Clients should place temporary files under `$BASE_WIP`.
-All functions starting with the `base_` prefix are internal; clients shouldn't
+All functions starting with the `base_` prefix are internal; clients should not
 use them.
 Names appear in alphabetical order.
 
