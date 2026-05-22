@@ -67,13 +67,13 @@ toc::[]
 == About
 
 The `shellbase` framework serves as a foundation for Unix shell scripts.
-It is mostly POSIX-compliant (`Portable Operating System Interface for uniX`),
+It's POSIX-compliant (`Portable Operating System Interface for uniX`),
 which helps keep it compatible across Unix-like systems.
 It offers essential services, including logging, validation helpers, signal
-handling, garbage collection, and support for multiple instances.
+handling, garbage collection, and support for concurrent instances.
 
 `shellbase` defines global variables and functions.
-All functions without the `base_` prefix are public and can be used by clients.
+All functions without the `base_` prefix are public; clients may use them.
 The public functions are, in alphabetical order:
 {url-base}#L54[`aud_only`],
 {url-base}#L98[`beroot`],
@@ -133,11 +133,11 @@ The public functions are, in alphabetical order:
 {url-base}#L976[`vid2aud`],
 {url-base}#L990[`ytda`].
 
-Global variables have the `BASE_` prefix and can be used by clients.
+Global variables have the `BASE_` prefix; clients may use them.
 Clients should place temporary files under `$BASE_WIP`.
-All functions starting with the `base_` prefix are internal and should not be
-used by clients.
-Names are listed in alphabetical order.
+All functions starting with the `base_` prefix are internal; clients shouldn't
+use them.
+Names appear in alphabetical order.
 
 See
 {url-dotfiles}[`dotfiles`],
