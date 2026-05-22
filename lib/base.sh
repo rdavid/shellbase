@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260422
+BASE_VERSION=0.9.20260522
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -1351,30 +1351,17 @@ base_sig_cleanup() {
 # Calculates a separator for time titles based on amount of non-empty
 # parameters.
 base_time_separator() {
-	local cnt=0
-	case "$#" in
-	1)
-		[ -n "$1" ] && cnt=$((cnt + 1))
-		;;
-	2)
-		[ -n "$1" ] && cnt=$((cnt + 1))
-		[ -n "$2" ] && cnt=$((cnt + 1))
-		;;
-	3)
-		[ -n "$1" ] && cnt=$((cnt + 1))
-		[ -n "$2" ] && cnt=$((cnt + 1))
-		[ -n "$3" ] && cnt=$((cnt + 1))
-		;;
-	*)
-		loge Wrong param number "$#".
-		return 0
-		;;
-	esac
+	[ "$#" -gt 3 ] && loge Wrong param number "$#". && return 1
+	local arg cnt=0
+
+	# Iterates over positional parameters via for without in.
+	for arg; do
+		[ -n "$arg" ] && cnt=$((cnt + 1))
+	done
 	case "$cnt" in
 	0) ;;
 	1) printf ' and ' ;;
-	2 | 3) printf ', ' ;;
-	*) loge Wrong number "$cnt". ;;
+	*) printf ', ' ;;
 	esac
 }
 
