@@ -616,7 +616,7 @@ pdf2png() {
 prettytable() {
 	cmd_exists column sed || return $?
 	local bdy col hdr inp
-	inp="$(cat -)"
+	inp="$(cat)"
 	hdr="$(printf %s "$inp" | head -n1)" || handle_pipefails $?
 	bdy="$(printf %s "$inp" | tail -n+2)" || handle_pipefails $?
 
@@ -1322,7 +1322,7 @@ base_pdf2img() {
 
 # Adds vertical borders. Double quotes are needed.
 base_prettytable_prettify() {
-	cat - | sed "s/^/|/;s/\$/	/;s/	/	|/g"
+	sed "s/^/|/;s/\$/	/;s/	/	|/g"
 }
 
 # Adds horizontal line with columns separator. The input parameter is a number
