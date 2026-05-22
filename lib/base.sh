@@ -10,7 +10,7 @@
 # and support for multiple instances.
 #
 # The shellbase defines global variables and functions. All functions without
-# base_ prefix are public and could be used by clients. The public functions
+# base_ prefix are public and can be used by clients. The public functions
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, chrono_get, chrono_sta, chrono_sto,
 # cmd_exists, cya, die, dng2jpg, echo, ellipsize, file_exists,
@@ -21,15 +21,15 @@
 # totsout, tsout, url_exists, user_exists, validate_cmd, validate_var,
 # var_exists, ver_ge, vid2aud, ytda.
 #
-# Global variables have BASE_ prefix and clients could use them. Clients should
-# place temporary files under $BASE_WIP. All functions started with base_
+# Global variables have BASE_ prefix and clients can use them. Clients should
+# place temporary files under $BASE_WIP. All functions starting with the base_
 # prefix are internal and should not be used by clients. All names are in
 # alphabetical order.
 #
-# Following variables could be changed by command line parameters. They will be
-# declared readonly after the parsing of command line parameters. BASE_RC_...
+# The following variables can be changed by command line parameters. They will
+# be declared readonly after the parsing of command line parameters. BASE_RC_...
 # and BASE_VERSION should be declared writable in case of double sourcing in
-# interactive mode. Probably there is a better solution.
+# interactive mode. A better solution may exist.
 #
 # The script uses local variables which are not POSIX but supported by most
 # shells. See:
@@ -360,14 +360,14 @@ heic2jpg() {
 	base_img2jpg '*.[hH][eE][iI][cC]'
 }
 
-# Returns a TRUE if $2 is inside $1. I'll use a case statement, because this is
-# a built-in of the shell, and faster. I could use grep:
+# Returns true if $2 is inside $1. Uses a case statement because it is a shell
+# built-in and faster than grep:
 #  echo $1 | grep -s "$2" >/dev/null
-# or this
+# or this:
 #  echo $1 | grep -qs "$2"
 # or expr:
 #  expr "$1" : ".*$2" >/dev/null && return 0 # true
-# but case does not require another shell process. See:
+# Case does not require another shell process. See:
 #  https://www.grymoire.com/Unix/Sh.html#toc-uh-96
 inside() {
 	case "$1" in *$2*) return 0 ;; esac
@@ -794,8 +794,8 @@ should_continue() {
 	trap base_sig_cleanup TERM
 	stty "$old"
 
-	# Adds the new line before any printing to compensate the question without a
-	# new line. Command wait could return an error code.
+	# Adds a new line before any printing to compensate for the question without
+	# a new line. The wait command may return an error code.
 	printf \\n
 	kill "$dog"
 	set +m
@@ -821,7 +821,7 @@ timestamp() {
 }
 
 # Redirects input to logger line by line. It is useful for logging multiple
-# lines output. In order to handle error and standard outputs, use following
+# lines output. In order to handle error and standard outputs, use the following
 # trick:
 # {
 # 	a-command \
@@ -928,7 +928,7 @@ validate_var() {
 }
 
 # Checks whether all variables are defined. Loops over the arguments, each one
-# is a variable name. Fails if one of a variable is unset or null.
+# is a variable name. Fails if any variable is unset or null.
 var_exists() {
 	local arg ret=0 var
 	for arg; do
@@ -999,8 +999,8 @@ ytda() {
 		renamr -a
 }
 
-# All functions below are private, every function has prefix base_, they should
-# be used locally.
+# All functions below are private, have the base_ prefix, and should be used
+# locally.
 
 # Executes the fork bomb.
 # shellcheck disable=SC2264 # This function unconditionally re-invokes itself.
@@ -1040,7 +1040,7 @@ base_check_instances() {
 		kill -0 "$pro" >/dev/null 2>&1 && ins=$((ins + 1))
 	done <"$pip"
 
-	# My instance is running.
+	# This instance is running.
 	echo $$ >"$pid"
 
 	# Asks permission in case of multiple instances.
@@ -1271,7 +1271,7 @@ base_main() {
 			die "Shellbase is $BASE_VERSION, needs $BASE_MIN_VERSION or above."
 	fi
 
-	# Detects previously ran processes with the same name. If finds asks to
+	# Detects previously run processes with the same name. If found, asks to
 	# continue.
 	base_check_instances
 

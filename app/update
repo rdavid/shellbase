@@ -1,6 +1,6 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# SPDX-FileCopyrightText: 2023-2025 David Rabkin
+# SPDX-FileCopyrightText: 2023-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 #
 # Updates README.adoc with actual links to the public functions. By default
@@ -27,7 +27,7 @@ BASE_APP_USAGE="$(
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
 	BASE_APP_USAGE \
-	BASE_APP_VERSION=0.9.20260408 \
+	BASE_APP_VERSION=0.9.20260522 \
 	BASE_MIN_VERSION=0.9.20231212 \
 	BSH \
 	TGT=README.adoc
@@ -41,7 +41,7 @@ readonly \
 	MID="$BASE_WIP"/mid \
 	OUT="$BASE_WIP"/out
 
-# Pasrses base.sh for functions and re-creates new README. Uses GNU grep with
+# Parses base.sh for functions and re-creates new README. Uses GNU grep with
 # PCRE option.
 analyze() {
 	local num
@@ -61,7 +61,7 @@ analyze() {
 	cat "$BEG" "$MID" "$END" >"$OUT"
 }
 
-# Parses arguments, validates, analyzrs, and installs.
+# Parses arguments, validates, analyzes, and installs.
 main() {
 	parse "$@"
 	validate
