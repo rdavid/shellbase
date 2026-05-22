@@ -129,13 +129,13 @@ The public functions are, in alphabetical order:
 {url-base}#L918[`validate_cmd`],
 {url-base}#L925[`validate_var`],
 {url-base}#L932[`var_exists`],
-{url-base}#L968[`ver_ge`],
-{url-base}#L976[`vid2aud`],
-{url-base}#L990[`ytda`].
+{url-base}#L967[`ver_ge`],
+{url-base}#L975[`vid2aud`],
+{url-base}#L989[`ytda`].
 
 Global variables have the `BASE_` prefix; clients may use them.
 Clients should place temporary files under `$BASE_WIP`.
-All functions starting with the `base_` prefix are internal; clients should not
+All functions starting with the `base_` prefix are internal; clients shouldn't
 use them.
 Names appear in alphabetical order.
 
