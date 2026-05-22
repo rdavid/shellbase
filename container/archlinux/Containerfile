@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-2025 David Rabkin
+# SPDX-FileCopyrightText: 2023-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 FROM ghcr.io/rdavid/goredoer:0.9.20260404 as goredoer
 FROM archlinux:base
@@ -22,7 +22,7 @@ RUN \
 	&& pacman --noconfirm --refresh --sync --sysupgrade \
 	&& pacman --noconfirm --sync \
 		actionlint>=1.7 \
-		asciidoctor >=2.0 \
+		asciidoctor>=2.0 \
 		bash>=5.1 \
 		dash>=0.5 \
 		diffutils>=3.10.3 \

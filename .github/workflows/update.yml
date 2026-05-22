@@ -1,7 +1,7 @@
-# SPDX-FileCopyrightText: 2025 David Rabkin
+# SPDX-FileCopyrightText: 2025-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 ---
-name: typos
+name: update
 'on': [pull_request, push]
 jobs:
   typos:

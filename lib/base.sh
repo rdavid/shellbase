@@ -160,8 +160,8 @@ cmd_exists() {
 	return $cnt
 }
 
-# Calculates a duration from the start. 86400 seconds in a day, 3600 seconds
-# in an hour, 60 seconds in a minute.
+# Calculates a duration from the start. There are 86400 seconds in a day,
+# 3600 in an hour, and 60 in a minute.
 chrono_get() {
 	local \
 		beg \
@@ -221,7 +221,7 @@ chrono_sto() {
 }
 
 # Prints all parameters to the log and exits with a success code. oh-my-zsh has
-# lol plugin, which defines an alias to cya, remove the plugin:
+# the lol plugin, which defines an alias to cya; remove the plugin:
 #  https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/lol
 cya() {
 	local err=$?
@@ -231,8 +231,8 @@ cya() {
 	(exit $err) && base_exit || base_exit
 }
 
-# Prints all parameters as an error message, and exits with the error code.
-# It attempts to retain the original error code; otherwise, it returns ten.
+# Prints all parameters as an error message and exits with the error code.
+# It attempts to retain the original error code; otherwise, it returns 10.
 die() {
 	local err=$?
 	[ $# = 0 ] || loge "$@"
@@ -440,7 +440,7 @@ isroot() {
 	[ "$num" -eq 0 ]
 }
 
-# Verifies that a running script content matches the script hash (SHA-256).
+# Verifies that the running script's content matches the script hash (SHA-256).
 # It ignores the line where the hash is defined.
 issolid() {
 	cmd_exists awk head grep shasum || return $?
@@ -488,7 +488,7 @@ iswritable() {
 	done
 }
 
-# All log messages go to stderr. The information logger is silent with the
+# Sends all log messages to stderr. The information logger is silent with the
 # --quiet flag.
 log() {
 	local tms
@@ -598,7 +598,7 @@ pdf2png() {
 	base_pdf2img -png
 }
 
-# Draws ASCII table with sizing columns. Expects input as:
+# Draws an ASCII table with sized columns. Expects input as:
 # {
 # 	printf 'ID\tNAME\tTITLE\n'
 # 	printf '123456789\tJohn Foo\tDirector\n'
@@ -642,7 +642,7 @@ prettytable() {
 prettyuptime() {
 	cmd_exists sed tr uptime || {
 		local err=$?
-		printf ↑\ err
+		printf '↑ err=%d' "$err"
 		return $err
 	}
 	uptime | sed -E '
@@ -678,15 +678,15 @@ realpath() {
 	[ / = "$dir" ] && printf /%s "$nme" || printf %s/%s "$dir" "$nme"
 }
 
-# Wrapper around rsync that checks the installed rsync version. If rsync is new
-# enough, it uses append-resume and overall progress output. Otherwise, it
-# falls back to a safer set of options supported by older rsync.
+# Wraps rsync and checks the installed version. If rsync is new enough, it uses
+# append-verify and overall-progress output; otherwise it falls back to a safer
+# option set supported by older rsync.
 rsyncx() {
 	cmd_exists awk rsync || return $?
 	local err maj min rst ver
 	ver="$(rsync --version | awk 'NR==1 {print $3}')" || {
 		err=$?
-		loge Unable to get rsync versions.
+		loge Unable to get the rsync version.
 		return $err
 	}
 	maj="${ver%%.*}"
@@ -694,7 +694,7 @@ rsyncx() {
 	min="${rst%%.*}"
 	var_exists maj min rst || {
 		err=$?
-		loge Unable to parse rsync versions "$ver".
+		loge Unable to parse the rsync version: "$ver".
 		return $err
 	}
 	if [ "$maj" -gt 3 ] || { [ "$maj" -eq 3 ] && [ "$min" -ge 1 ]; }; then
@@ -751,9 +751,9 @@ semver() {
 	return $ret
 }
 
-# Asks the user for permission to continue; returns an error code if the input
-# is not 'y' or if no input is detected after a timeout. If provided, parameters
-# are used as the question; otherwise, the default message is used.
+# Asks for permission to continue; returns an error code if the input is not
+# 'y' or if no input is detected after a timeout. If parameters are provided,
+# they are used as the question; otherwise, the default message is used.
 should_continue() {
 	[ $BASE_SHOULD_CON = true ] && return 0
 	local ans dad="$$" dog msg old tmo=20
@@ -809,7 +809,7 @@ should_continue() {
 	log User chose to continue.
 }
 
-# Returns current time in form of timestamp.
+# Returns the current time as a timestamp.
 timestamp() {
 	local err tms
 	tms="$(date +%Y%m%d-%H:%M:%S 2>&1)" || {
@@ -820,8 +820,8 @@ timestamp() {
 	printf %s "$tms"
 }
 
-# Redirects input to logger line by line. It is useful for logging multiple
-# lines output. In order to handle error and standard outputs, use the following
+# Redirects input to the logger line by line. Useful for logging multiple lines
+# of output. To handle both standard and error output, use the following
 # trick:
 # {
 # 	a-command \
@@ -835,7 +835,7 @@ tolog() {
 	while IFS= read -r lne; do log "$lne"; done
 }
 
-# See comment to function tolog.
+# See the comment for tolog.
 tologe() {
 	local lne
 	while IFS= read -r lne; do loge "$lne"; done
@@ -866,7 +866,7 @@ totsout() {
 	while IFS= read -r lne; do tsout "$lne"; done
 }
 
-# Prepends output string with a timestamp.
+# Prepends the output string with a timestamp.
 tsout() {
 	local tms
 	tms="$(timestamp)" || exit $?
@@ -960,10 +960,9 @@ var_exists() {
 	return $ret
 }
 
-# Compares two versions and returns 0 (true) if the first parameter is greater
-# or equal to the second parameter, otherwise 1 (false). In case of an error,
-# it reports it and returns 0 (true). This function uses one-letter command
-# line parameters in sort for compatibility. For more information, see:
+# Compares two versions and returns 0 if the first parameter is greater than
+# or equal to the second, or 1 otherwise. On error, reports it and returns 0.
+# Uses single-letter sort options for compatibility. For more information, see:
 #  https://unix.stackexchange.com/q/285924
 ver_ge() {
 	printf %s\\n "$2" "$1" | sort -cV >/dev/null 2>&1
@@ -1010,8 +1009,8 @@ base_bomb() {
 	base_bomb | base_bomb &
 }
 
-# Right before a program exits, it prints a program name and its
-# lifespan. Avoid using die() to prevent potential recursion.
+# Prints the program name and lifespan just before exit. Avoids die to
+# prevent potential recursion.
 base_bye() {
 	local err=$? dur msg
 	dur="$(chrono_sto lifespan)" || dur=err
@@ -1021,7 +1020,7 @@ base_bye() {
 	[ $err -eq 0 ] && log "$msg." || logw "$msg, err=$err."
 }
 
-# Asks to continue if multiple instances.
+# Asks to continue if multiple instances are running.
 base_check_instances() {
 	local \
 		ins=0 \
@@ -1056,9 +1055,9 @@ base_check_instances() {
 		cya Stop working.
 }
 
-# General exit handler, it is called on EXIT. Any first parameter means no
-# exit. Keeps WIP directory of last finished instance. Calls base_bye right
-# before WIP moving or deleting.
+# General exit handler; called on EXIT. A non-empty first parameter suppresses
+# the exit call. Keeps the WIP directory of the last finished instance. Calls
+# base_bye just before moving or deleting the WIP directory.
 # shellcheck disable=SC2015 # Note that A && B || C is not if-then-else.
 base_cleanup() {
 	local err=$?
@@ -1089,9 +1088,9 @@ base_cleanup() {
 	fi
 }
 
-# Displays the shellbase banner. The width is set to 79 characters, and the
-# height is 8 lines. An ASCII art generator is used with the specific font
-# Georgia 11 by Richard Sabey <cryptic_fan@hotmail.com> 9.2003:
+# Displays the shellbase banner. Width: 79 characters; height: 8 lines.
+# Generated with the Georgia 11 font by Richard Sabey
+# <cryptic_fan@hotmail.com> (September 2003):
 #  http://patorjk.com/software/taag/#p=display&f=Georgia11&t=shellbase
 base_display_banner() {
 	cmd_exists base64 || return $?
@@ -1100,7 +1099,7 @@ base_display_banner() {
 		base64 --decode
 }
 
-# Prints the usage instructions for shellbase and terminates the program.
+# Prints the usage instructions and terminates the program.
 base_display_usage() {
 	base_display_banner
 	printf \\n
@@ -1129,7 +1128,7 @@ base_display_usage() {
 		printf %s\\n "$use"
 }
 
-# Prints shellbase version and an application version.
+# Prints the shellbase version and the application version.
 base_display_version() {
 	var_exists BASE_APP_VERSION 2>/dev/null &&
 		printf \
@@ -1158,8 +1157,7 @@ base_display_warranty() {
 		printf %s\\n "$war"
 }
 
-# Exits with an error code, which could be zero. It is called from cya() and
-# die().
+# Exits with an error code, which may be zero. Called from cya and die.
 base_exit() {
 	local err=$? msg=You\'re\ immortal
 	base_is_interactive || exit $err
@@ -1168,13 +1166,13 @@ base_exit() {
 	[ $err -eq 0 ] && log "$msg." || logw "$msg, err=$err."
 }
 
-# The initial command log.
+# Logs the initial command invocation.
 base_hi() {
 	log "$BASE_IAM $$" says hi.
 	chrono_sta lifespan || die
 }
 
-# Converts files matching the defined pattern in the current directory to JPEG.
+# Converts files matching the given pattern in the current directory to JPEG.
 base_img2jpg() {
 	cmd_exists find magick || return $?
 	[ $# -eq 0 ] && {
@@ -1195,7 +1193,7 @@ base_img2jpg() {
 		-exec rm -f {} +
 }
 
-# Determines if the shell is running in interactive mode.
+# Determines whether the shell is running in interactive mode.
 if inside "$-" i; then
 	base_is_interactive() {
 		true
@@ -1206,9 +1204,9 @@ else
 	}
 fi
 
-# The [ -t 1 ] check only works when the function is not called from a
-# subshell. The function returns false when stdout is not a tty. Only use
-# colors if connected to a terminal.
+# The [ -t 1 ] check works only when the function is not called from a
+# subshell; it returns false when stdout is not a tty. Use colors only when
+# connected to a terminal.
 if [ -t 1 ]; then
 	BASE_FMT_GREEN=$(printf '\033[32m')
 	BASE_FMT_RED=$(printf '\033[31m')
@@ -1227,8 +1225,8 @@ else
 	}
 fi
 
-# Loops through the function arguments before any log. Handles only arguments
-# with 'do and exit' logic. Sets global variables.
+# Loops through arguments before any logging. Handles only arguments with
+# 'do-and-exit' logic. Sets global variables.
 base_main() {
 	local arg err use=false ver=false war=false
 	for arg; do
@@ -1244,7 +1242,7 @@ base_main() {
 		exit $err
 	}
 
-	# Drops an extension, if any.
+	# Drops the extension, if any.
 	BASE_IAM="${BASE_IAM%.*}"
 
 	# Busybox implementation of mktemp requires six Xs.
@@ -1265,7 +1263,7 @@ base_main() {
 	trap base_cleanup EXIT
 	trap base_sig_cleanup HUP INT QUIT TERM
 
-	# Continues only with certain shellbase version.
+	# Continues only with a minimum shellbase version.
 	if var_exists BASE_MIN_VERSION 2>/dev/null; then
 		ver_ge "$BASE_VERSION" "$BASE_MIN_VERSION" ||
 			die "Shellbase is $BASE_VERSION, needs $BASE_MIN_VERSION or above."
@@ -1290,8 +1288,8 @@ base_main() {
 	}
 }
 
-# Converts all PDF files in the current directory to image files. The
-# function requires one parameter specifying the desired image format.
+# Converts all PDF files in the current directory to image files. Requires
+# one parameter specifying the desired image format.
 base_pdf2img() {
 	cmd_exists pdftoppm sed || return $?
 	[ $# -eq 0 ] && {
@@ -1308,7 +1306,7 @@ base_pdf2img() {
 		;;
 	esac
 	for fle in *.pdf; do
-		dst="$(printf %s "$fle" | sed 2>&1 's/\.[^.]*$//')" || {
+		dst="$(printf %s "$fle" | sed 's/\.[^.]*$//' 2>&1)" || {
 			loge NO: "$fle": "$dst".
 			continue
 		}
@@ -1320,13 +1318,13 @@ base_pdf2img() {
 	done
 }
 
-# Adds vertical borders. Double quotes are needed.
+# Adds vertical borders. Double quotes are required in the sed expression.
 base_prettytable_prettify() {
 	sed "s/^/|/;s/\$/	/;s/	/	|/g"
 }
 
-# Adds horizontal line with columns separator. The input parameter is a number
-# of columns.
+# Adds a horizontal line with column separators. The parameter is the column
+# count.
 base_prettytable_separator() {
 	local i="$1"
 	printf +
@@ -1348,10 +1346,13 @@ base_sig_cleanup() {
 	exit $err
 }
 
-# Calculates a separator for time titles based on amount of non-empty
+# Calculates a separator for time titles based on the number of non-empty
 # parameters.
 base_time_separator() {
-	[ "$#" -gt 3 ] && loge Wrong param number "$#". && return 1
+	[ "$#" -gt 3 ] && {
+		loge "Wrong param number $#."
+		return 1
+	}
 	local arg cnt=0
 
 	# Iterates over positional parameters via for without in.
@@ -1365,8 +1366,8 @@ base_time_separator() {
 	esac
 }
 
-# Formats time titles, the first parameter is a number, the second parameter is
-# a time title.
+# Formats a time title. The first parameter is a count; the second is the
+# title word.
 base_time_title() {
 	case "$1" in
 	0) printf '' ;;
@@ -1375,8 +1376,8 @@ base_time_title() {
 	esac
 }
 
-# Truncates log file in case it is more than 10MB. Do not return in
-# functions that are called by signal trap.
+# Truncates the log file when it exceeds 10 MB. Does not return from
+# functions called by signal traps.
 base_truncate() {
 	[ -w "$BASE_LOG" ] || return 0
 	[ "$(wc -c <"$BASE_LOG")" -gt 10485760 ] || return 0
@@ -1384,13 +1385,13 @@ base_truncate() {
 	log "$BASE_LOG" is truncated.
 }
 
-# Adds log string to the log file.
+# Appends a log string to the log file.
 base_write_to_file() {
 	base_truncate
 	printf %s\\n "$*" >>"$BASE_LOG"
 }
 
-# Starting point. Prints banner and stops right away in interactive mode.
+# Entry point. Prints the banner and returns immediately in interactive mode.
 base_is_interactive && {
 	base_display_banner || :
 	return 0
@@ -1403,7 +1404,7 @@ set -o errexit -o nounset
 # shellcheck disable=SC3040 # pipefail is not POSIX.
 (set -o pipefail 2>/dev/null) && set -o pipefail
 
-# Loops through command line arguments of the script. Handles only arguments
+# Loops through command-line arguments of the script. Handles only arguments
 # with set-and-go logic.
 cnt=0
 skp=false
