@@ -48,6 +48,10 @@ with multiple Unix-like shells.
 
 ## Commit & Pull Request Guidelines
 
+Before committing, update `BASE_VERSION` in `lib/base.sh`,
+`BASE_APP_VERSION` in every other changed file that declares it, and the
+`SPDX-FileCopyrightText` year in every changed file.
+
 Use Conventional Commits for all commits created by the agent, especially
 scoped forms such as `build(deps): ...` and `chore(deps): ...`. Prefer concise,
 imperative subjects with a meaningful scope when one exists. Pull requests
