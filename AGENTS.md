@@ -54,7 +54,9 @@ Before committing, update `BASE_VERSION` in `lib/base.sh`,
 
 Use Conventional Commits for all commits created by the agent, especially
 scoped forms such as `build(deps): ...` and `chore(deps): ...`. Prefer concise,
-imperative subjects with a meaningful scope when one exists. Pull requests
-should explain the user-visible change, note any portability implications, and
-confirm the relevant `redo lint` and `redo test` results. Link related issues
-when applicable; UI screenshots are usually unnecessary for this repository.
+imperative subjects with a meaningful scope when one exists. Do not add AI
+attribution, tool signatures, generated-by trailers, or AI co-author metadata
+to commits, pull requests, issues, or code comments. Pull requests should
+explain the user-visible change, note any portability implications, and confirm
+the relevant `redo lint` and `redo test` results. Link related issues when
+applicable; UI screenshots are usually unnecessary for this repository.
