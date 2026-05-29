@@ -17,8 +17,8 @@
 # handle_pipefails, heic2jpg, gitlog, grbt, inside, isempty, isfunc, isnumber,
 # isreadable, isroot, issolid, iswritable, log, loge, logw, map_del, map_get,
 # map_put, nmea2gpx, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir,
-# realpath, rsyncx, semver, should_continue, timestamp, tolog, tologe, tolower,
-# totsout, tsout, url_exists, user_exists, validate_cmd, validate_var,
+# realpath, retry, rsyncx, semver, should_continue, timestamp, tolog, tologe,
+# tolower, totsout, tsout, url_exists, user_exists, validate_cmd, validate_var,
 # var_exists, ver_ge, vid2aud, ytda.
 #
 # Global variables have BASE_ prefix and clients can use them. Clients should
@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260522
+BASE_VERSION=0.9.20260529
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -676,6 +676,23 @@ realpath() {
 	dir="$(realdir "$str")" || die
 	nme="$(basename -- "$str" 2>&1)" || die "$nme"
 	[ / = "$dir" ] && printf /%s "$nme" || printf %s/%s "$dir" "$nme"
+}
+
+# Runs a command until it succeeds. Logs every attempt with a counter and logs
+# failed attempts with the command exit code.
+retry() {
+	[ $# -gt 0 ] || {
+		loge No command specified to retry.
+		return $BASE_RC_ARG_NO
+	}
+	local cnt=1 err
+	while :; do
+		log Retry "$cnt": "$@"
+		"$@" && return 0
+		err=$?
+		logw Retry "$cnt" failed, err="$err".
+		cnt=$((cnt + 1))
+	done
 }
 
 # Wraps rsync and checks the installed version. If rsync is new enough, it uses
