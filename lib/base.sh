@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260529
+BASE_VERSION=0.9.20260530
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -678,21 +678,26 @@ realpath() {
 	[ / = "$dir" ] && printf /%s "$nme" || printf %s/%s "$dir" "$nme"
 }
 
-# Runs a command until it succeeds. Logs every attempt with a counter and logs
-# failed attempts with the command exit code.
+# Runs a command up to 5 times with exponential backoff (1 s, 2 s, 4 s, 8 s).
+# Logs every attempt, failed exit codes, and a final error if all retries are
+# exhausted.
 retry() {
 	[ $# -gt 0 ] || {
 		loge No command specified to retry.
 		return $BASE_RC_ARG_NO
 	}
-	local cnt=1 err
-	while :; do
-		log Retry "$cnt": "$@"
+	local cnt=1 dly=1 err max=5
+	while [ "$cnt" -le "$max" ]; do
+		log Retry "$cnt"/"$max": "$@"
 		"$@" && return 0
 		err=$?
 		logw Retry "$cnt" failed, err="$err".
+		[ "$cnt" -lt "$max" ] && sleep "$dly"
+		dly=$((dly * 2))
 		cnt=$((cnt + 1))
 	done
+	loge All "$max" retries exhausted.
+	return $err
 }
 
 # Wraps rsync and checks the installed version. If rsync is new enough, it uses

@@ -14,7 +14,7 @@ out="$(
 		[ \"\$cnt\" -ge 3 ]
 	" sh "$fle" 2>&1
 )" || die "$out"
-inside "$out" 'Retry 1:' || die "$out"
+inside "$out" 'Retry 1/5:' || die "$out"
 inside "$out" 'Retry 2 failed, err=1.' || die "$out"
-inside "$out" 'Retry 3:' || die "$out"
+inside "$out" 'Retry 3/5:' || die "$out"
 [ "$(cat "$fle")" -eq 3 ] || die "$(cat "$fle")"
