@@ -824,11 +824,13 @@ should_continue() {
 	wait "$dog" || :
 	set -m
 	log "Parent process $dad terminated watchdog process $dog."
-	printf %s "$ans" | grep -iq ^y || {
+	case "$ans" in
+	[yY]) log User chose to continue. ;;
+	*)
 		log User chose not to continue.
 		return $BASE_RC_CON_NO
-	}
-	log User chose to continue.
+		;;
+	esac
 }
 
 # Returns the current time as a timestamp.
@@ -1000,7 +1002,7 @@ vid2aud() {
 	find . -type f -maxdepth 1 \
 		\( -name \*.mp4 -o -name \*.m4v -o -name \*.avi -o -name \*.mkv \) |
 		while read -r src; do
-			src="$(basename -- "$src" 2>&1)" || die "$src"
+			src="${src#./}"
 			dst="${src%.*}".mp3
 			log Convert "$src" to "$dst".
 			ffmpeg -nostdin -i "$src" -vn -ar 44100 -ac 2 -ab 320k -f mp3 "$dst"
@@ -1328,10 +1330,7 @@ base_pdf2img() {
 		;;
 	esac
 	for fle in *.pdf; do
-		dst="$(printf %s "$fle" | sed 's/\.[^.]*$//' 2>&1)" || {
-			loge NO: "$fle": "$dst".
-			continue
-		}
+		dst="${fle%.*}"
 		msg="$(pdftoppm 2>&1 "$fle" "$dst" "$fmt")" || {
 			loge NO: "$fle": "$msg".
 			continue
