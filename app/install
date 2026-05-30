@@ -16,7 +16,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20260522 \
+	BASE_APP_VERSION=0.9.20260531 \
 	BASE_MIN_VERSION=0.9.20240831 \
 	BSH \
 	DST=/usr/local/bin \
@@ -58,5 +58,5 @@ validate() {
 	file_exists "$DST" || die "$DST": No such directory.
 }
 
-# Starting point.
+# Entry point.
 main "$@"
