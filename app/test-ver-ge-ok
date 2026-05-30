@@ -1,10 +1,10 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# SPDX-FileCopyrightText: 2023-2025 David Rabkin
+# SPDX-FileCopyrightText: 2023-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 # shellcheck disable=SC1090,SC1091,SC2034 # File not following, appears unused.
 readonly BASE_MIN_VERSION=0.9.20230311
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 for v in 1.2.3 1.2.3-alpha 1.2.4; do
-	ver_ge $v 1.2.3 || die $v
+	ver_ge "$v" 1.2.3 || die "$v"
 done

@@ -1,12 +1,14 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# SPDX-FileCopyrightText: 2021-2025 David Rabkin
+# SPDX-FileCopyrightText: 2021-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 # shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 isroot && die Skip run as root.
-touch /tmp/1 /tmp/2
-chmod a-r /tmp/1
-isreadable /tmp/1 /tmp/2 /tmp && ret=0 || ret=1
-rm /tmp/1 /tmp/2
+fle1="$BASE_WIP/1"
+fle2="$BASE_WIP/2"
+touch "$fle1" "$fle2"
+chmod a-r "$fle1"
+isreadable "$fle1" "$fle2" /tmp && ret=0 || ret=1
+rm "$fle1" "$fle2"
 exit "$ret"

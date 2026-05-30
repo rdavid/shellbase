@@ -1,10 +1,11 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# SPDX-FileCopyrightText: 2022-2025 David Rabkin
+# SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 # shellcheck disable=SC1090,SC1091 # File not following.
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
-mkdir /tmp/empty-dir
+dir="$BASE_WIP/empty-dir"
+mkdir "$dir"
 isempty /tmp || log /tmp is not empty.
-isempty /tmp/empty-dir && log /tmp/empty-dir is empty.
-rmdir /tmp/empty-dir
+isempty "$dir" && log "$dir" is empty.
+rmdir "$dir"
