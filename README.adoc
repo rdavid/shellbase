@@ -67,13 +67,14 @@ toc::[]
 == About
 
 The `shellbase` framework serves as a foundation for Unix shell scripts.
-It's POSIX-compliant (`Portable Operating System Interface for uniX`),
-which helps keep it compatible across Unix-like systems.
+The framework stays POSIX-compliant (`Portable Operating System Interface for uniX`)
+and runs across Unix-like systems.
 It offers essential services, including logging, validation helpers, signal
 handling, garbage collection, and support for concurrent instances.
 
 `shellbase` defines global variables and functions.
-All functions without the `base_` prefix are public; clients may use them.
+All functions without the `base_` prefix are public.
+Clients may use them.
 The public functions are, in alphabetical order:
 {url-base}#L54[`aud_only`],
 {url-base}#L98[`beroot`],
@@ -134,10 +135,10 @@ The public functions are, in alphabetical order:
 {url-base}#L999[`vid2aud`],
 {url-base}#L1013[`ytda`].
 
-Global variables have the `BASE_` prefix; clients may use them.
-Clients should place temporary files under `$BASE_WIP`.
-All functions starting with the `base_` prefix are internal; clients shouldn't
-use them.
+Global variables have the `BASE_` prefix.
+Clients may use them and should place temporary files under `$BASE_WIP`.
+All functions starting with the `base_` prefix stay internal.
+Clients shouldn't use them.
 Names appear in alphabetical order.
 
 See
@@ -149,7 +150,7 @@ as example projects that use this framework.
 
 == Install
 
-The artifact is a single non-executable POSIX-compliant shell script file
+The artifact consists of a single non-executable POSIX-compliant shell script file
 {url-base}[`base.sh`].
 Install the file from the repository:
 
@@ -161,7 +162,8 @@ git clone https://github.com/rdavid/shellbase.git &&
 
 Install the file from a release.
 Some operating systems demand administrative rights to install to
-`/usr/local/bin`; use `sudo` or `doas` before `tar`:
+`/usr/local/bin`.
+Use `sudo` or `doas` before `tar`:
 
 [,sh]
 ----
@@ -178,7 +180,7 @@ curl --location --silent $SRC |
 
 == Using
 
-Verify `/usr/local/bin` is in your `PATH`.
+Verify `/usr/local/bin` appears in your `PATH`.
 Then your script can use `shellbase`:
 
 [,sh]
@@ -259,5 +261,5 @@ The project uses {url-cv}[David Rabkin]'s {url-goredoer}[`goredoer`] to build
 
 == License
 
-`shellbase` is copyright {url-cv}[David Rabkin] and available under a
+`shellbase` belongs to {url-cv}[David Rabkin] and uses a
 {url-license}[Zero-Clause BSD license].
