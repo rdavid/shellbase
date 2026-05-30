@@ -27,7 +27,7 @@ BASE_APP_USAGE="$(
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
 	BASE_APP_USAGE \
-	BASE_APP_VERSION=0.9.20260522 \
+	BASE_APP_VERSION=0.9.20260531 \
 	BASE_MIN_VERSION=0.9.20231212 \
 	BSH \
 	TGT=README.adoc
@@ -101,5 +101,5 @@ validate() {
 	}
 }
 
-# Starting point.
+# Entry point.
 main "$@"
