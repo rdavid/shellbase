@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 David Rabkin
+# SPDX-FileCopyrightText: 2025-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 ---
 name: vale
@@ -10,6 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: sudo apt-get install asciidoctor
-      - uses: errata-ai/vale-action@reviewdog
+      - uses: vale-cli/vale-action@v2.1.1
         with:
           fail_on_error: true
