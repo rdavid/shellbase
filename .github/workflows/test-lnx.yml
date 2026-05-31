@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 David Rabkin
+# SPDX-FileCopyrightText: 2025-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 ---
 name: test-lnx
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v6
       - run: |
           sudo apt update
-          sudo apt install --yes podman
+          sudo apt install --no-install-recommends --yes podman
       - uses: redhat-actions/buildah-build@v2
         with:
           containerfiles: ./container/${{ matrix.img }}/Containerfile
