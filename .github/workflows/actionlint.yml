@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 David Rabkin
+# SPDX-FileCopyrightText: 2025-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 ---
 name: actionlint
@@ -12,5 +12,5 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - id: get
-        run: bash <(curl --silent "$URL")
+        run: curl --fail --location --silent --show-error "$URL" | bash
       - run: ${{ steps.get.outputs.executable }}
