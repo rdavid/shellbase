@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260530
+BASE_VERSION=0.9.20260601
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -1033,12 +1033,13 @@ base_bomb() {
 	base_bomb | base_bomb &
 }
 
-# Prints the program name and lifespan just before exit. Avoids die to
-# prevent potential recursion.
+# Logs the program name, process ID, user name, and lifespan before exit.
+# Avoids calling die() because this function runs during exit handling.
 base_bye() {
-	local err=$? dur msg
+	local err=$? dur msg usr
 	dur="$(chrono_sto lifespan)" || dur=err
-	msg="$BASE_IAM $$ says bye after $dur"
+	usr="$(id -nu 2>&1)" || :
+	msg="${BASE_IAM}[$$] $usr: bye after $dur"
 
 	# shellcheck disable=SC2015 # Note that A && B || C is not if-then-else.
 	[ $err -eq 0 ] && log "$msg." || logw "$msg, err=$err."
@@ -1190,9 +1191,11 @@ base_exit() {
 	[ $err -eq 0 ] && log "$msg." || logw "$msg, err=$err."
 }
 
-# Logs the initial command invocation.
+# Logs the program name, process ID, and user name at startup.
 base_hi() {
-	log "$BASE_IAM $$" says hi.
+	local usr
+	usr="$(id -nu 2>&1)" || die "$usr"
+	log "${BASE_IAM}[$$] $usr: hi."
 	chrono_sta lifespan || die
 }
 
