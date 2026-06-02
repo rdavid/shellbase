@@ -10,6 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: sudo apt-get install asciidoctor
-      - uses: vale-cli/vale-action@v2.1.1
+      - uses: vale-cli/vale-action@2.1.2
         with:
           fail_on_error: true
