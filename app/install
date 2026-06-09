@@ -16,7 +16,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20260531 \
+	BASE_APP_VERSION=0.9.20260609 \
 	BASE_MIN_VERSION=0.9.20240831 \
 	BSH \
 	DST=/usr/local/bin \
@@ -24,11 +24,6 @@ readonly \
 
 # shellcheck disable=SC1090 # File not following.
 . "$BSH"
-
-# Checks if the destination directory is writable.
-dst_avail() {
-	iswritable "$DST" || die "$DST" is not writable.
-}
 
 # Validates and installs.
 main() {
@@ -51,6 +46,11 @@ main() {
 		cp "$BSH" "$TGT" || die Unable to copy "$BSH" to "$TGT".
 		printf '%s is installed in %s.\n' "$new" "$DST"
 	fi
+}
+
+# Checks if the destination directory is writable.
+dst_avail() {
+	iswritable "$DST" || die "$DST" is not writable.
 }
 
 # Checks the environment.
