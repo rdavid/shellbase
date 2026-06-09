@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260601
+BASE_VERSION=0.9.20260609
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -894,7 +894,7 @@ totsout() {
 tsout() {
 	local tms
 	tms="$(timestamp)" || exit $?
-	printf %s\ %s\\n "$tms" "$*"
+	printf '%s %s\n' "$tms" "$*"
 }
 
 # Checks whether all URLs exist, any returned HTTP code is OK. In case of error
@@ -1159,7 +1159,7 @@ base_display_version() {
 		printf \
 			'shellbase %s\n%s %s\n' \
 			"$BASE_VERSION" "$BASE_IAM" "$BASE_APP_VERSION" | sort ||
-		printf shellbase\ %s\\n "$BASE_VERSION"
+		printf 'shellbase %s\n' "$BASE_VERSION"
 }
 
 # Prints the license text. The 0BSD license is intentionally written without
