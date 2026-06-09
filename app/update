@@ -27,7 +27,7 @@ BASE_APP_USAGE="$(
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
 	BASE_APP_USAGE \
-	BASE_APP_VERSION=0.9.20260531 \
+	BASE_APP_VERSION=0.9.20260609 \
 	BASE_MIN_VERSION=0.9.20231212 \
 	BSH \
 	TGT=README.adoc
@@ -40,6 +40,14 @@ readonly \
 	END="$BASE_WIP"/end \
 	MID="$BASE_WIP"/mid \
 	OUT="$BASE_WIP"/out
+
+# Parses arguments, validates the environment, analyzes the source, and updates.
+main() {
+	parse "$@"
+	validate
+	analyze
+	update
+}
 
 # Parses base.sh for functions and re-creates new README. Uses GNU grep with
 # PCRE option.
@@ -59,14 +67,6 @@ analyze() {
 	num=$((num - 1))
 	tail -n +"$num" "$TGT" >"$END"
 	cat "$BEG" "$MID" "$END" >"$OUT"
-}
-
-# Parses arguments, validates the environment, analyzes the source, and updates.
-main() {
-	parse "$@"
-	validate
-	analyze
-	update
 }
 
 # Parses command line arguments.
