@@ -38,6 +38,16 @@ current pattern, for example `app/test-realpath-ok`. Write comments in
 third-person singular, start every comment with a capital letter, and place a
 vertical gap before standalone comment lines inside function bodies.
 
+For `printf` format strings, stay with backslash-escape form (e.g.
+`printf %s\\n`) only when it takes less source characters than the
+single-quoted form (e.g. `printf '%s\n'`). When both forms are the same
+length or the quoted form is shorter, prefer the quoted form for
+readability.
+
+Order function definitions with `main()` first (immediately after the
+script-level setup), then the remaining functions in strict
+alphabetical order by name.
+
 ## Testing Guidelines
 
 Add or update an executable script in `app/` for every behavior change. Use
@@ -50,7 +60,10 @@ with multiple Unix-like shells.
 
 Before committing, update `BASE_VERSION` in `lib/base.sh`,
 `BASE_APP_VERSION` in every other changed file that declares it, and the
-`SPDX-FileCopyrightText` year in every changed file.
+`SPDX-FileCopyrightText` year in every changed file. Only when the file
+has a substantive change — never bump the year or version by itself. If a
+refactor pass ends up making no meaningful change to a file, revert the
+year/version edit too; a metadata-only diff is noise.
 
 Use Conventional Commits for all commits created by the agent, especially
 scoped forms such as `build(deps): ...` and `chore(deps): ...`. Prefer concise,
