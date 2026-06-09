@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+FROM ghcr.io/rdavid/goredoer:0.9.20260404 as goredoer
+FROM registry.access.redhat.com/ubi10/ubi-minimal:10.2-1780550715
+LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
+ENV \
+	CM_BIN=/usr/local/bin/checkmake \
+	CM_URL=https://github.com/mrtazz/checkmake/releases/download/0.2.2/checkmake-0.2.2.linux.amd64 \
+	HL_BIN=/usr/local/bin/hadolint \
+	HL_URL=https://github.com/hadolint/hadolint/releases/download/v2.14.0/hadolint-Linux-x86_64 \
+	TZ=Asia/Jerusalem \
+	USER=shellbase
+COPY LICENSES/* /licenses/
+WORKDIR /bin
+COPY --from=goredoer /goredo .
+RUN \
+	microdnf update --assumeyes --disableplugin=subscription-manager \
+	&& rm --force --recursive /var/cache/yum \
+	&& microdnf install --assumeyes --disableplugin=subscription-manager \
+		bash-5.2.26 \
+		diffutils-3.10 \
+		findutils-4.10.0 \
+		perl-Digest-SHA-6.04 \
+		procps-ng-4.0.4 \
+		tzdata-2026b \
+		util-linux-2.40.2 \
+	&& microdnf clean all --disableplugin=subscription-manager \
+	&& useradd --create-home "$USER" \
+	&& curl --location --output "$CM_BIN" --silent "$CM_URL" \
+	&& curl --location --output "$HL_BIN" --silent "$HL_URL" \
+	&& chmod +x "$CM_BIN" "$HL_BIN" \
+	&& goredo -symlinks
+USER "$USER"
+WORKDIR /home/"$USER"
+COPY \
+	--chown="$USER":"$USER" \
+	. .
+ENTRYPOINT [ "redo", "-j=10" ]
