@@ -8,6 +8,9 @@ name: test-lnx
   pull_request:
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   test-lnx:
     name: Test ${{ matrix.img }} on ${{ matrix.os }}
