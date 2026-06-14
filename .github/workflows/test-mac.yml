@@ -5,9 +5,9 @@
 ---
 name: test-mac
 'on':
+  pull_request:
   push:
     branches: [master]
-  pull_request:
 permissions:
   contents: read
 concurrency:
