@@ -10,6 +10,9 @@ name: test-mac
   pull_request:
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   test-mac:
     name: Test on ${{ matrix.os }}
