@@ -3,6 +3,8 @@
 ---
 name: test-bsd
 'on': [pull_request, push]
+permissions:
+  contents: read
 jobs:
   test-bsd:
     name: Test BSD on ${{ matrix.os }}

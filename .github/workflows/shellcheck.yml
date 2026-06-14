@@ -3,6 +3,8 @@
 ---
 'on': [pull_request, push]
 name: shellcheck
+permissions:
+  contents: read
 jobs:
   shellcheck:
     runs-on: ubuntu-24.04

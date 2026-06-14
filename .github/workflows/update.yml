@@ -3,6 +3,8 @@
 ---
 name: update
 'on': [pull_request, push]
+permissions:
+  contents: read
 jobs:
   update:
     runs-on: ubuntu-24.04

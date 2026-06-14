@@ -5,6 +5,8 @@
 ---
 name: test-mac
 'on': [pull_request, push]
+permissions:
+  contents: read
 jobs:
   test-mac:
     name: Test on ${{ matrix.os }}
