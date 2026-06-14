@@ -3,6 +3,8 @@
 ---
 name: test-lnx
 'on': [pull_request, push]
+permissions:
+  contents: read
 jobs:
   test-lnx:
     name: Test ${{ matrix.img }} on ${{ matrix.os }}

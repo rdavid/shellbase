@@ -3,6 +3,8 @@
 ---
 name: actionlint
 'on': [pull_request, push]
+permissions:
+  contents: read
 env:
   URL: https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash # yamllint disable-line
 jobs:
