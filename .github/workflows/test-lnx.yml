@@ -24,11 +24,11 @@ jobs:
           - ubuntu-22.04
           - ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.3
       - run: |
           sudo apt update
           sudo apt install --no-install-recommends --yes podman
-      - uses: redhat-actions/buildah-build@v2
+      - uses: redhat-actions/buildah-build@v2.13
         with:
           containerfiles: ./container/${{ matrix.img }}/Containerfile
           image: ${{ matrix.img }}
