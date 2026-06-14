@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: 0BSD
 ---
 'on':
+  pull_request:
   push:
     branches: [master]
-  pull_request:
 name: shellcheck
 permissions:
   contents: read
