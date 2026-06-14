@@ -4,7 +4,10 @@
 # cannot run containers natively.
 ---
 name: test-mac
-'on': [pull_request, push]
+'on':
+  push:
+    branches: [master]
+  pull_request:
 permissions:
   contents: read
 jobs:
