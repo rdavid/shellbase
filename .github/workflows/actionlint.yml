@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.3
       - id: get
         run: curl --fail --location --silent --show-error "$URL" | bash
       - run: ${{ steps.get.outputs.executable }}
