@@ -39,6 +39,7 @@
 BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
+BASE_LOG_CAP=$((10 * 1024 * 1024))
 BASE_QUIET=false
 BASE_RC_ARG_NE=15
 BASE_RC_ARG_NO=11
@@ -47,7 +48,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260609
+BASE_VERSION=0.9.20260618
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -1400,11 +1401,11 @@ base_time_title() {
 	esac
 }
 
-# Truncates the log file when it exceeds 10 MB. Does not return from
-# functions called by signal traps.
+# Truncates the log file when it exceeds BASE_LOG_CAP. Does not return
+# from functions called by signal traps.
 base_truncate() {
 	[ -w "$BASE_LOG" ] || return 0
-	[ "$(wc -c <"$BASE_LOG")" -gt 10485760 ] || return 0
+	[ "$(wc -c <"$BASE_LOG")" -gt "$BASE_LOG_CAP" ] || return 0
 	: >"$BASE_LOG"
 	log "$BASE_LOG" is truncated.
 }
@@ -1449,7 +1450,10 @@ for arg; do
 		BASE_DIR_WIP="$1"
 		skp=true
 		;;
-	-k | --keep-wip) BASE_KEEP_WIP=true ;;
+	-k | --keep-wip)
+		BASE_KEEP_WIP=true
+		BASE_LOG_CAP=$((1024 * 1024 * 1024))
+		;;
 	-q | --quiet) cnt=$((cnt + 1)) ;;
 	-t | --trace) cnt=$((cnt - 1)) ;;
 	-x | --execute) set -x ;;
@@ -1474,6 +1478,7 @@ readonly \
 	BASE_FMT_RESET \
 	BASE_FMT_YELLOW \
 	BASE_KEEP_WIP \
+	BASE_LOG_CAP \
 	BASE_QUIET \
 	BASE_RC_ARG_NE \
 	BASE_RC_ARG_NO \
