@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: 2025-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 ---
+name: shellcheck
 'on':
   pull_request:
   push:
     branches: [master]
-name: shellcheck
 permissions:
   contents: read
 concurrency:
