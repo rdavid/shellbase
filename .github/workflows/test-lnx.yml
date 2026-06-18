@@ -31,7 +31,7 @@ jobs:
           - ubuntu-22.04
           - ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7.0.0
       - run: |
           sudo apt-get update
           sudo apt-get install --no-install-recommends --yes podman
