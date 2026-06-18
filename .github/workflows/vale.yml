@@ -17,7 +17,9 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6.0.3
-      - run: sudo apt-get install asciidoctor
+      - run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends --yes asciidoctor
       - uses: vale-cli/vale-action@2.1.2
         with:
           fail_on_error: true
