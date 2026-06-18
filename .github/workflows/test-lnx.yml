@@ -33,8 +33,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6.0.3
       - run: |
-          sudo apt update
-          sudo apt install --no-install-recommends --yes podman
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends --yes podman
       - uses: redhat-actions/buildah-build@v2.13
         with:
           containerfiles: ./container/${{ matrix.img }}/Containerfile
