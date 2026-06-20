@@ -23,7 +23,7 @@ jobs:
           - ubuntu-22.04
           - ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7.0.0
       - uses: vmactions/freebsd-vm@v1.4.6
         with:
           prepare: |

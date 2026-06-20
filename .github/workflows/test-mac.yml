@@ -28,7 +28,7 @@ jobs:
           - macos-26
           - macos-26-intel
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7.0.0
       - run: |
           brew install \
             goredo \
