@@ -191,17 +191,13 @@ chrono_sto() {
 # Checks whether all specified commands exist and are executable. Loops over
 # the arguments, each one is a command name. The presence of a command is a
 # frequent occurrence, and the event is not logged. The function returns 0 if
-# all commands exist, or the number of missing commands (capped at 255)
-# otherwise.
+# all commands exist, or the number of missing commands (capped at 255 because
+# shell return codes are limited to 0..255) otherwise.
 # Usage: cmd_exists [-q] cmd1 [cmd2 ...]
 # Options: -q (quiet mode - suppress warnings and errors)
 cmd_exists() {
-	local cmd cnt=0 err qui=false
-	[ $# -eq 0 ] && {
-		loge No commands specified to check.
-		return $BASE_RC_ARG_NO
-	}
-	[ "$1" = -q ] && {
+	local cmd cnt=0 max=255 qui=false
+	[ "${1-}" = -q ] && {
 		qui=true
 		shift
 	}
@@ -211,14 +207,11 @@ cmd_exists() {
 	}
 	for cmd; do
 		command -v "$cmd" >/dev/null 2>&1 || {
-			err=$?
-			[ "$qui" = false ] && logw Command "$cmd" not found, err=$err.
+			[ "$qui" = false ] && logw Command "$cmd" not found.
 			cnt=$((cnt + 1))
-
-			# Shell return codes are limited to 0..255.
-			[ "$cnt" -lt 255 ] || {
+			[ "$cnt" -lt "$max" ] || {
 				[ "$qui" = false ] &&
-					logw "Missing command count is capped at 255."
+					logw "Missing command count is capped at $max."
 				break
 			}
 		}
