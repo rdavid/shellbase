@@ -237,14 +237,13 @@ cya() {
 	(exit $err) && base_exit || base_exit
 }
 
-# Prints all parameters as an error message and exits with the error code.
-# It attempts to retain the original error code; otherwise, it returns 10.
+# Prints all parameters as an error message and exits with the error code. It
+# attempts to retain the original code; otherwise it uses BASE_RC_DIE_NO, so
+# err is always non-empty.
 die() {
 	local err=$?
 	[ $# = 0 ] || loge "$@"
-	[ $err != 0 ] || err=$BASE_RC_DIE_NO
-
-	# err is always non-empty.
+	[ $err -ne 0 ] || err=$BASE_RC_DIE_NO
 	(exit $err) || base_exit
 }
 
