@@ -14,7 +14,7 @@
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, chrono_get, chrono_sta, chrono_sto,
 # cmd_exists, cya, die, dng2jpg, echo, ellipsize, file_exists,
-# handle_pipefails, heic2jpg, gitlog, grbt, inside, isempty, isfunc, isnumber,
+# gitlog, grbt, handle_pipefails, heic2jpg, inside, isempty, isfunc, isnumber,
 # isreadable, isroot, issolid, iswritable, log, loge, logw, map_del, map_get,
 # map_put, nmea2gpx, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir,
 # realpath, retry, rsyncx, semver, should_continue, timestamp, tolog, tologe,
@@ -48,7 +48,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260618
+BASE_VERSION=0.9.20260621
 
 # Removes any file besides mp3, m4a, flac in the current directory.
 # Removes empty directories.
@@ -123,44 +123,6 @@ cheat() {
 	curl https://cht.sh/"$1"
 }
 
-# Checks whether all specified commands exist and are executable. Loops over
-# the arguments, each one is a command name. The presence of a command is a
-# frequent occurrence, and the event is not logged. The function returns 0 if
-# all commands exist, or the number of missing commands (capped at 255)
-# otherwise.
-# Usage: cmd_exists [-q] cmd1 [cmd2 ...]
-# Options: -q (quiet mode - suppress warnings and errors)
-cmd_exists() {
-	local cmd cnt=0 err qui=false
-	[ $# -eq 0 ] && {
-		loge No commands specified to check.
-		return $BASE_RC_ARG_NO
-	}
-	[ "$1" = -q ] && {
-		qui=true
-		shift
-	}
-	[ $# -eq 0 ] && {
-		[ "$qui" = false ] && loge No commands specified to check.
-		return $BASE_RC_ARG_NO
-	}
-	for cmd; do
-		command -v "$cmd" >/dev/null 2>&1 || {
-			err=$?
-			[ "$qui" = false ] && logw Command "$cmd" not found, err=$err.
-			cnt=$((cnt + 1))
-
-			# Shell return codes are limited to 0..255.
-			[ "$cnt" -lt 255 ] || {
-				[ "$qui" = false ] &&
-					logw "Missing command count is capped at 255."
-				break
-			}
-		}
-	done
-	return $cnt
-}
-
 # Calculates a duration from the start. There are 86400 seconds in a day,
 # 3600 in an hour, and 60 in a minute.
 chrono_get() {
@@ -219,6 +181,44 @@ chrono_sto() {
 	dur="$(chrono_get "$nme")" || return $?
 	map_del "$nme" sta || return $?
 	printf %s "$dur"
+}
+
+# Checks whether all specified commands exist and are executable. Loops over
+# the arguments, each one is a command name. The presence of a command is a
+# frequent occurrence, and the event is not logged. The function returns 0 if
+# all commands exist, or the number of missing commands (capped at 255)
+# otherwise.
+# Usage: cmd_exists [-q] cmd1 [cmd2 ...]
+# Options: -q (quiet mode - suppress warnings and errors)
+cmd_exists() {
+	local cmd cnt=0 err qui=false
+	[ $# -eq 0 ] && {
+		loge No commands specified to check.
+		return $BASE_RC_ARG_NO
+	}
+	[ "$1" = -q ] && {
+		qui=true
+		shift
+	}
+	[ $# -eq 0 ] && {
+		[ "$qui" = false ] && loge No commands specified to check.
+		return $BASE_RC_ARG_NO
+	}
+	for cmd; do
+		command -v "$cmd" >/dev/null 2>&1 || {
+			err=$?
+			[ "$qui" = false ] && logw Command "$cmd" not found, err=$err.
+			cnt=$((cnt + 1))
+
+			# Shell return codes are limited to 0..255.
+			[ "$cnt" -lt 255 ] || {
+				[ "$qui" = false ] &&
+					logw "Missing command count is capped at 255."
+				break
+			}
+		}
+	done
+	return $cnt
 }
 
 # Prints all parameters to the log and exits with a success code. oh-my-zsh has
