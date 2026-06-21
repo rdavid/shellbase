@@ -35,8 +35,9 @@ indentation, no tabs, and an approximately 79-character text width. Public
 functions in `lib/base.sh` are unprefixed, internal helpers use `base_`, and
 global variables use the `BASE_` prefix. Keep new test files aligned with the
 current pattern, for example `app/test-realpath-ok`. Write comments in
-third-person singular, start every comment with a capital letter, and place a
-vertical gap before standalone comment lines inside function bodies.
+third-person singular and start every comment with a capital letter. Do not
+place comments inside function bodies; keep all of a function's commentary in
+the single comment block immediately above its name.
 
 For `printf` format strings, stay with backslash-escape form (e.g.
 `printf %s\\n`) only when it takes less source characters than the
@@ -46,7 +47,9 @@ readability.
 
 Order function definitions with `main()` first (immediately after the
 script-level setup), then the remaining functions in strict
-alphabetical order by name.
+alphabetical order by name. This applies to both `lib/base.sh` (public
+functions alphabetical, then `base_` helpers alphabetical, with no
+`main`) and to app scripts that define their own `main()`.
 
 ## Testing Guidelines
 
