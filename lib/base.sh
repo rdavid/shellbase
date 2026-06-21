@@ -50,13 +50,18 @@ BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
 BASE_VERSION=0.9.20260621
 
-# Removes any file besides mp3, m4a, flac in the current directory.
-# Removes empty directories.
+# Removes any file besides mp3, m4a, flac in the current directory, then
+# removes empty directories if they exist. xargs handles white spaces while
+# counting the matched files.
 aud_only() {
 	local cnt err lst out
 	lst=$(
 		find . -type f \
-			! \( -name \*.mp3 -o -name \*.m4a -o -name \*.flac \) 2>&1
+			! \( \
+			-name '*.[Mm][Pp]3' -o \
+			-name '*.[Mm]4[Aa]' -o \
+			-name '*.[Ff][Ll][Aa][Cc]' \
+			\) 2>&1
 	) || {
 		err=$?
 		loge "$lst"
@@ -66,8 +71,6 @@ aud_only() {
 		log Nothing to remove.
 		return 0
 	}
-
-	# xargs handles white spaces.
 	cnt="$(printf %s\\n "$lst" | wc -l | xargs)" || {
 		err=$?
 		loge Something went wrong.
@@ -79,15 +82,17 @@ Total $cnt files" || return $?
 	log Removing "$cnt" files.
 	out="$(
 		find . -type f \
-			! \( -name \*.mp3 -o -name \*.m4a -o -name \*.flac \) \
+			! \( \
+			-name '*.[Mm][Pp]3' -o \
+			-name '*.[Mm]4[Aa]' -o \
+			-name '*.[Ff][Ll][Aa][Cc]' \
+			\) \
 			-exec rm -f {} + 2>&1
 	)" || {
 		err=$?
 		loge "$out"
 		return $err
 	}
-
-	# Removes empty directories if they exist.
 	out="$(find . -type d -empty -delete 2>&1)" || {
 		err=$?
 		loge "$out"

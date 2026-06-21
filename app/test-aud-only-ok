@@ -1,0 +1,18 @@
+#!/bin/sh
+# vi:et lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+# shellcheck disable=SC1090,SC1091 # File not following.
+set -- -y -q
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+dir="$BASE_WIP"/aud
+mkdir "$dir" || die 1
+cd "$dir" || die 2
+touch keep.mp3 keep.FLAC keep.M4a song.Flac drop.txt drop.jpg || die 3
+aud_only || die 4
+[ -f keep.mp3 ] || die 5
+[ -f keep.FLAC ] || die 6
+[ -f keep.M4a ] || die 7
+[ -f song.Flac ] || die 8
+[ ! -e drop.txt ] || die 9
+[ ! -e drop.jpg ] || die 10
