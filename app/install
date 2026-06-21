@@ -16,7 +16,7 @@ BSH="$(
 
 # shellcheck disable=SC2034 # Variable appears unused.
 readonly \
-	BASE_APP_VERSION=0.9.20260609 \
+	BASE_APP_VERSION=0.9.20260621 \
 	BASE_MIN_VERSION=0.9.20240831 \
 	BSH \
 	DST=/usr/local/bin \
@@ -25,12 +25,11 @@ readonly \
 # shellcheck disable=SC1090 # File not following.
 . "$BSH"
 
-# Validates and installs.
+# Validates and installs. The version string contains the program name and
+# version, e.g., shellbase 0.9.20230408.
 main() {
 	validate
 	local msg new old
-
-	# It contains the program name and version, e.g., shellbase 0.9.20230408.
 	new="$(sh "$BSH" --quiet --version 2>&1)" || die "$new"
 	if file_exists "$TGT"; then
 		old="$(sh "$TGT" --quiet --version 2>&1)" || die "$old"
