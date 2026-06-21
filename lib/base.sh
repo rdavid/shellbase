@@ -245,8 +245,11 @@ dng2jpg() {
 	base_img2jpg '*.[dD][nN][gG]'
 }
 
-# Enhances the behavior of the command to ensure it behaves more reliably. See:
+# Portable echo that handles -n, -e, and -ne consistently, unlike the built-in
+# whose flag handling varies between shells. See:
 #  http://www.etalabs.net/sh_tricks.html
+# Uses variables in the printf format string:
+#  shellcheck disable=SC2059
 echo() {
 	local end=\\n fmt=%s IFS=' '
 	while [ $# -gt 1 ]; do
@@ -258,8 +261,6 @@ echo() {
 		esac
 		shift
 	done
-
-	# shellcheck disable=SC2059 # Uses variables in the printf format string.
 	printf "$fmt$end" "$*"
 }
 
