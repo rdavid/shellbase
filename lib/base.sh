@@ -49,7 +49,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260622
+BASE_VERSION=0.9.20260623
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -569,22 +569,21 @@ map_put() {
 	printf %s "$val" >"$dir/$nme/$key"
 }
 
-# Converts all .log files in the current directory to .gpx files.
+# Converts all .log files in the current directory to .gpx files using
+# gpsbabel, skipping unmatched glob literals and dangling links. gpsbabel may
+# reject long option names, so the call uses short options.
 nmea2gpx() {
-	local fle
+	local fle out
 	cmd_exists gpsbabel || return $?
 	for fle in ./*.log; do
-
-		# Skips unmatched glob literals and dangling links.
 		[ -e "$fle" ] || [ -L "$fle" ] || continue
-		log "Converting $fle to ${fle%.log}.gpx."
-
-		# gpsbabel may reject long option names, so use short options.
+		out="${fle%.log}.gpx"
+		log "Converting $fle to $out."
 		gpsbabel \
 			-i nmea \
 			-f "$fle" \
 			-o gpx \
-			-F "${fle%.log}.gpx" || return $?
+			-F "$out" || return $?
 	done
 }
 
