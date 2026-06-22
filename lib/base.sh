@@ -13,12 +13,12 @@
 # base_ prefix are public and can be used by clients. The public functions
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, chrono_get, chrono_sta, chrono_sto,
-# cmd_exists, cya, die, dng2jpg, echo, ellipsize, file_exists,
-# gitlog, grbt, handle_pipefails, heic2jpg, inside, isempty, isfunc, isnumber,
-# isreadable, isroot, issolid, iswritable, log, loge, logw, map_del, map_get,
-# map_put, nmea2gpx, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir,
-# realpath, retry, rsyncx, semver, should_continue, timestamp, tolog, tologe,
-# tolower, totsout, tsout, url_exists, user_exists, validate_cmd, validate_var,
+# cmd_exists, cya, die, dng2jpg, echo, ellipsize, file_exists, gitlog, grbt,
+# handle_pipefails, heic2jpg, inside, isempty, isfunc, isnumber, isreadable,
+# isroot, issolid, iswritable, log, loge, logw, map_del, map_get, map_put,
+# nmea2gpx, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir, realpath,
+# retry, rsyncx, semver, should_continue, timestamp, tolog, tologe, tolower,
+# totsout, tsout, url_exists, user_exists, validate_cmd, validate_var,
 # var_exists, ver_ge, vid2aud, ytda.
 #
 # Global variables have BASE_ prefix and clients can use them. Clients should
