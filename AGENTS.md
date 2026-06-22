@@ -39,6 +39,12 @@ third-person singular and start every comment with a capital letter. Do not
 place comments inside function bodies; keep all of a function's commentary in
 the single comment block immediately above its name.
 
+Write a `shellcheck disable` directive on its own line rather than as a
+trailing comment, preceded by a description line ending with a colon, and
+indent the directive one extra space so it reads as subordinate to the
+description. For example, `# Uses variables in the printf format string:` is
+followed by `#  shellcheck disable=SC2059`.
+
 For `printf` format strings, stay with backslash-escape form (e.g.
 `printf %s\\n`) only when it takes less source characters than the
 single-quoted form (e.g. `printf '%s\n'`). When both forms are the same
