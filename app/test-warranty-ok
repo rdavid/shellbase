@@ -2,7 +2,8 @@
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2023-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
-# shellcheck disable=SC2034 # Variable appears unused.
+# Variable appears unused:
+#  shellcheck disable=SC2034
 BASE_APP_WARRANTY="$(
 	cat <<-EOM
 		Copyright 2023-2026 David Rabkin
@@ -14,5 +15,6 @@ BASE_APP_WARRANTY="$(
 )"
 set -- --warranty
 
-# shellcheck disable=SC1090,SC1091 # File not following.
+# File not following:
+#  shellcheck disable=SC1090,SC1091
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh

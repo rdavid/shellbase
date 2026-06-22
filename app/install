@@ -2,7 +2,8 @@
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
-# shellcheck disable=SC2039,SC3043 # Uses local variables.
+# Uses local variables:
+#  shellcheck disable=SC2039,SC3043
 set -- "$@" --quiet
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
@@ -14,15 +15,17 @@ BSH="$(
 	exit "$err"
 }
 
-# shellcheck disable=SC2034 # Variable appears unused.
+# Variable appears unused:
+#  shellcheck disable=SC2034
 readonly \
-	BASE_APP_VERSION=0.9.20260621 \
+	BASE_APP_VERSION=0.9.20260622 \
 	BASE_MIN_VERSION=0.9.20240831 \
 	BSH \
 	DST=/usr/local/bin \
 	TGT=/usr/local/bin/base.sh
 
-# shellcheck disable=SC1090 # File not following.
+# File not following:
+#  shellcheck disable=SC1090
 . "$BSH"
 
 # Validates and installs. The version string contains the program name and

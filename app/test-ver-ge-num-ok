@@ -2,7 +2,8 @@
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
-# shellcheck disable=SC1090,SC1091 # File not following.
+# File not following:
+#  shellcheck disable=SC1090,SC1091
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 for v in 1.2.10 1.10.0 10.0.0; do
 	ver_ge "$v" 1.2.9 || die "$v"

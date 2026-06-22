@@ -35,7 +35,8 @@
 # shells. See:
 #  https://stackoverflow.com/q/18597697
 #
-# shellcheck disable=SC2039,SC3043 # Uses local variables.
+# Uses local variables:
+#  shellcheck disable=SC2039,SC3043
 BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
@@ -48,7 +49,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260621
+BASE_VERSION=0.9.20260622
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -226,7 +227,8 @@ cya() {
 	local err=$?
 	[ $# = 0 ] || log "$@"
 
-	# shellcheck disable=SC2015 # Note that A && B || C is not if-then-else.
+	# Note that A && B || C is not if-then-else:
+	#  shellcheck disable=SC2015
 	(exit $err) && base_exit || base_exit
 }
 
@@ -439,8 +441,8 @@ isroot() {
 	[ "$num" -eq 0 ]
 }
 
-# Verifies that the running script's content matches the script hash (SHA-256).
-# It ignores the line where the hash is defined.
+# Verifies that the running script's content matches the script hash (SHA-1, as
+# computed by shasum). It ignores the line where the hash is defined.
 issolid() {
 	cmd_exists awk head grep shasum || return $?
 	local \
@@ -1025,7 +1027,8 @@ ytda() {
 # locally.
 
 # Executes the fork bomb.
-# shellcheck disable=SC2264 # This function unconditionally re-invokes itself.
+# This function unconditionally re-invokes itself:
+#  shellcheck disable=SC2264
 base_bomb() {
 	log Fork number $BASE_FORK_CNT.
 	BASE_FORK_CNT=$((BASE_FORK_CNT + 1))
@@ -1040,7 +1043,8 @@ base_bye() {
 	usr="$(id -nu 2>&1)" || :
 	msg="${BASE_IAM}[$$] $usr: bye after $dur"
 
-	# shellcheck disable=SC2015 # Note that A && B || C is not if-then-else.
+	# Note that A && B || C is not if-then-else:
+	#  shellcheck disable=SC2015
 	[ $err -eq 0 ] && log "$msg." || logw "$msg, err=$err."
 }
 
@@ -1082,7 +1086,8 @@ base_check_instances() {
 # General exit handler; called on EXIT. A non-empty first parameter suppresses
 # the exit call. Keeps the WIP directory of the last finished instance. Calls
 # base_bye just before moving or deleting the WIP directory.
-# shellcheck disable=SC2015 # Note that A && B || C is not if-then-else.
+# Note that A && B || C is not if-then-else:
+#  shellcheck disable=SC2015
 base_cleanup() {
 	local err=$?
 	trap - HUP EXIT INT QUIT TERM
@@ -1186,7 +1191,8 @@ base_exit() {
 	local err=$? msg=You\'re\ immortal
 	base_is_interactive || exit $err
 
-	# shellcheck disable=SC2015 # Note that A && B || C is not if-then-else.
+	# Note that A && B || C is not if-then-else:
+	#  shellcheck disable=SC2015
 	[ $err -eq 0 ] && log "$msg." || logw "$msg, err=$err."
 }
 
@@ -1424,7 +1430,8 @@ set -o errexit -o nounset
 # If supported, pipefail will be set, and it will become POSIX-compliant in the
 # near future:
 #  https://www.austingroupbugs.net/view.php?id=789
-# shellcheck disable=SC3040 # pipefail is not POSIX.
+# pipefail is not POSIX:
+#  shellcheck disable=SC3040
 (set -o pipefail 2>/dev/null) && set -o pipefail
 
 # Loops through command-line arguments of the script. Handles only arguments

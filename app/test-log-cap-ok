@@ -2,7 +2,8 @@
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
-# shellcheck disable=SC1090,SC1091 # File not following.
+# File not following:
+#  shellcheck disable=SC1090,SC1091
 set -- --keep-wip "$@"
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 [ "$BASE_LOG_CAP" -eq "$((1024 * 1024 * 1024))" ]

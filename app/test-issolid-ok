@@ -2,9 +2,11 @@
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
-# shellcheck disable=SC1090,SC1091 # File not following.
+# File not following:
+#  shellcheck disable=SC1090,SC1091
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 
-# shellcheck disable=SC2034 # Appears unused.
-BASE_APP_HASH=593128391639961746c3cb195a90ace4d7b09da7
+# Appears unused:
+#  shellcheck disable=SC2034
+BASE_APP_HASH=728c931cf9b5e2dd286b3e7d31ee87c72993cfa6
 issolid

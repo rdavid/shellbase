@@ -6,7 +6,8 @@
 # Updates README.adoc with current links to the public functions. By default
 # does not update the file and works as a linter.
 #
-# shellcheck disable=SC2039,SC3043 # Uses local variables.
+# Uses local variables:
+#  shellcheck disable=SC2039,SC3043
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
 )"/../lib/base.sh || {
@@ -24,16 +25,18 @@ BASE_APP_USAGE="$(
 	exit "$err"
 }
 
-# shellcheck disable=SC2034 # Variable appears unused.
+# Variable appears unused:
+#  shellcheck disable=SC2034
 readonly \
 	BASE_APP_USAGE \
-	BASE_APP_VERSION=0.9.20260609 \
+	BASE_APP_VERSION=0.9.20260622 \
 	BASE_MIN_VERSION=0.9.20231212 \
 	BSH \
 	TGT=README.adoc
 set -- "$@" --quiet
 
-# shellcheck disable=SC1090 # File not following.
+# File not following:
+#  shellcheck disable=SC1090
 . "$BSH"
 readonly \
 	BEG="$BASE_WIP"/beg \

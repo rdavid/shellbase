@@ -1,7 +1,8 @@
 #!/bin/sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# SPDX-FileCopyrightText: 2023-2025 David Rabkin
+# SPDX-FileCopyrightText: 2023-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
-# shellcheck disable=SC1090,SC1091 # File not following.
+# File not following:
+#  shellcheck disable=SC1090,SC1091
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 isnumber 1not2 || die 1not2 is not a number.

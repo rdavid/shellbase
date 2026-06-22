@@ -11,13 +11,15 @@ BSH="$(
 	exit $err
 }
 
-# shellcheck disable=SC2034 # Variable appears unused.
+# Variable appears unused:
+#  shellcheck disable=SC2034
 readonly \
-	BASE_APP_VERSION=0.9.20260522 \
+	BASE_APP_VERSION=0.9.20260622 \
 	BSH
 set -- "$@" --quiet
 
-# shellcheck disable=SC1090 # File not following.
+# File not following:
+#  shellcheck disable=SC1090
 . "$BSH"
 validate_cmd podman
 STOP_VM=YES
@@ -48,5 +50,6 @@ for f in ./container/*/Containerfile; do
 	printf >&2 %s\ %s.\\n "$nme" "$dur"
 done
 
-# shellcheck disable=SC2015 # A && B || C is not if-then-else.
+# A && B || C is not if-then-else:
+#  shellcheck disable=SC2015
 [ "$STOP_VM" = YES ] && podman machine stop || :

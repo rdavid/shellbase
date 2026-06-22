@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# SPDX-FileCopyrightText: 2022-2025 David Rabkin
+# SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 redo-ifchange \
 	./.github/*.yml \
@@ -19,13 +19,15 @@ BSH="$(
 	exit $err
 }
 
-# shellcheck disable=SC2034 # Variable appears unused.
+# Variable appears unused:
+#  shellcheck disable=SC2034
 readonly \
-	BASE_APP_VERSION=0.9.20250906 \
+	BASE_APP_VERSION=0.9.20260622 \
 	BSH
 set -- "$@" --quiet
 
-# shellcheck disable=SC1090 # File not following.
+# File not following:
+#  shellcheck disable=SC1090
 . "$BSH"
 cmd_exists actionlint && actionlint
 cmd_exists checkmake && checkmake ./Makefile

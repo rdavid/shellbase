@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 # vi:et lbr noet sw=2 ts=2 tw=79 wrap
-# SPDX-FileCopyrightText: 2022-2025 David Rabkin
+# SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 redo-ifchange ./app/* ./lib/*
 BSH="$(
@@ -11,14 +11,16 @@ BSH="$(
 	exit $err
 }
 
-# shellcheck disable=SC2034 # Variable appears unused.
+# Variable appears unused:
+#  shellcheck disable=SC2034
 readonly \
-	BASE_APP_VERSION=0.9.20260409 \
+	BASE_APP_VERSION=0.9.20260622 \
 	BASE_MIN_VERSION=0.9.20231228 \
 	BSH
 set -- "$@" --quiet
 
-# shellcheck disable=SC1090 # File not following.
+# File not following:
+#  shellcheck disable=SC1090
 . "$BSH"
 for sh in ash bash dash fish ksh oksh tcsh yash zsh; do
 	cmd_exists "$sh" || continue
@@ -28,7 +30,8 @@ for sh in ash bash dash fish ksh oksh tcsh yash zsh; do
 	done
 	for no in ./app/*-no; do
 
-		# shellcheck disable=SC2015 # A && B || C.
+		# A && B || C:
+		#  shellcheck disable=SC2015
 		"$sh" -c "$no 2>&1" && die "$no" on "$sh" returns positive. || :
 	done
 	dur="$(chrono_sto run)" || die
