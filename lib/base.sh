@@ -220,16 +220,15 @@ cmd_exists() {
 	return $cnt
 }
 
-# Prints all parameters to the log and exits with a success code. oh-my-zsh has
-# the lol plugin, which defines an alias to cya; remove the plugin:
+# Prints all parameters to the log and exits with a success code. The subshell
+# restores $? for base_exit, which reads it; err may be zero. oh-my-zsh has the
+# lol plugin, which defines an alias to cya; remove the plugin:
 #  https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/lol
 cya() {
 	local err=$?
 	[ $# = 0 ] || log "$@"
-
-	# Note that A && B || C is not if-then-else:
-	#  shellcheck disable=SC2015
-	(exit $err) && base_exit || base_exit
+	(exit $err)
+	base_exit
 }
 
 # Prints all parameters as an error message and exits with the error code. It
