@@ -17,9 +17,9 @@
 # handle_pipefails, heic2jpg, inside, isempty, isfunc, isnumber, isreadable,
 # isroot, issolid, iswritable, log, loge, logw, map_del, map_get, map_put,
 # nmea2gpx, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir, realpath,
-# retry, rsyncx, semver, should_continue, timestamp, tolog, tologe, tolower,
-# totsout, tsout, url_exists, user_exists, validate_cmd, validate_var,
-# var_exists, ver_ge, vid2aud, ytda.
+# retry, semver, should_continue, timestamp, tolog, tologe, tolower, totsout,
+# tsout, url_exists, user_exists, validate_cmd, validate_var, var_exists,
+# ver_ge, vid2aud, ytda.
 #
 # Global variables have BASE_ prefix and clients can use them. Clients should
 # place temporary files under $BASE_WIP. All functions starting with the base_
@@ -695,58 +695,6 @@ retry() {
 	done
 	loge All "$max" retries exhausted.
 	return $err
-}
-
-# Wraps rsync and checks the installed version. If rsync is new enough, it uses
-# append-verify and overall-progress output; otherwise it falls back to a safer
-# option set supported by older rsync.
-rsyncx() {
-	cmd_exists awk rsync || return $?
-	local err maj min rst ver
-	ver="$(rsync --version | awk 'NR==1 {print $3}')" || {
-		err=$?
-		loge Unable to get the rsync version.
-		return $err
-	}
-	maj="${ver%%.*}"
-	rst=${ver#*.}
-	min="${rst%%.*}"
-	var_exists maj min rst || {
-		err=$?
-		loge Unable to parse the rsync version: "$ver".
-		return $err
-	}
-	if [ "$maj" -gt 3 ] || { [ "$maj" -eq 3 ] && [ "$min" -ge 1 ]; }; then
-		log rsync version "$ver" is installed.
-		{
-			rsync \
-				--append-verify \
-				--archive \
-				--compress \
-				--human-readable \
-				--info=progress2 \
-				--partial \
-				--timeout=300 \
-				--verbose \
-				"$@" \
-				2>&1 1>&3 3>&- | tologe
-		} \
-			3>&1 1>&2 | tolog
-	else
-		logw Old rsync version "$ver" is installed.
-		{
-			rsync \
-				--archive \
-				--compress \
-				--human-readable \
-				--partial \
-				--timeout=300 \
-				--verbose \
-				"$@" \
-				2>&1 1>&3 3>&- | tologe
-		} \
-			3>&1 1>&2 | tolog
-	fi
 }
 
 # Extracts semantic versioning from a string. See:
