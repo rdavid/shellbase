@@ -34,8 +34,6 @@
 # The script uses local variables which are not POSIX but supported by most
 # shells. See:
 #  https://stackoverflow.com/q/18597697
-#
-# Uses local variables:
 #  shellcheck disable=SC2039,SC3043
 BASE_DIR_WIP=/tmp
 BASE_FORK_CNT=0
