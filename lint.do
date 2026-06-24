@@ -22,7 +22,7 @@ BSH="$(
 # Variable appears unused:
 #  shellcheck disable=SC2034
 readonly \
-	BASE_APP_VERSION=0.9.20260622 \
+	BASE_APP_VERSION=0.9.20260624 \
 	BSH
 set -- "$@" --quiet
 
@@ -44,4 +44,5 @@ cmd_exists yamllint &&
 	yamllint \
 		./.github/*.yml \
 		./.github/workflows/*.yml
+cmd_exists zizmor && zizmor --offline ./.github/
 ./app/update

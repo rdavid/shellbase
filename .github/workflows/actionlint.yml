@@ -18,10 +18,14 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.0
+        with:
+          persist-credentials: false
       - id: get
         run: |
           srv=https://raw.githubusercontent.com/rhysd/actionlint
           ver=1.7.12
           curl --fail --location --silent --show-error \
             "$srv/v$ver/scripts/download-actionlint.bash" | bash -s -- "$ver"
-      - run: ${{ steps.get.outputs.executable }}
+      - env:
+          exe: ${{ steps.get.outputs.executable }}
+        run: "$exe"

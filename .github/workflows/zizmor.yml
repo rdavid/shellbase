@@ -1,7 +1,7 @@
-# SPDX-FileCopyrightText: 2025-2026 David Rabkin
+# SPDX-FileCopyrightText: 2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 ---
-name: typos
+name: zizmor
 'on':
   pull_request:
   push:
@@ -13,11 +13,13 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  typos:
+  zizmor:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.0
         with:
           persist-credentials: false
-      - uses: crate-ci/typos@v1.47.2
+      - run: pipx run zizmor==1.26.1 .
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

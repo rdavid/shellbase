@@ -36,6 +36,7 @@
 :url-typos: https://github.com/crate-ci/typos
 :url-vale: https://vale.sh
 :url-yamllint: https://github.com/adrienverge/yamllint
+:url-zizmor: https://github.com/zizmorcore/zizmor
 
 = Shellbase
 
@@ -246,7 +247,8 @@ You can install Sergey Matveev's {url-goredo}[`goredo`] implementation.
 {url-shfmt}[`shfmt`],
 {url-typos}[`typos`],
 {url-vale}[`vale`],
-{url-yamllint}[`yamllint`].
+{url-yamllint}[`yamllint`],
+{url-zizmor}[`zizmor`].
 `redo test` runs unit tests across installed shells.
 `redo test-container` runs the tests across various shells in containers.
 The project uses {url-cv}[David Rabkin]'s {url-goredoer}[`goredoer`] to build

@@ -18,6 +18,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.0
+        with:
+          persist-credentials: false
       - uses: hadolint/hadolint-action@v3.3.0
         with:
           dockerfile: Containerfile
