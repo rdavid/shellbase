@@ -14,7 +14,7 @@ configuration lives in `.github/workflows/` and `.github/styles/`. Treat
 
 ## Build, Test, and Development Commands
 
-This project uses `redo` (or `goredo`) as the primary task runner; `make` is only
+This project uses `redo` (or `goredo`) as the primary task runner. `make` is only
 a thin proxy.
 
 - `redo all`: run the default build target.
@@ -36,8 +36,9 @@ functions in `lib/base.sh` are unprefixed, internal helpers use `base_`, and
 global variables use the `BASE_` prefix. Keep new test files aligned with the
 current pattern, for example `app/test-realpath-ok`. Write comments in
 third-person singular and start every comment with a capital letter. Do not
-place comments inside function bodies; keep all of a function's commentary in
-the single comment block immediately above its name.
+place comments inside function bodies. Keep all of a function's commentary in
+the single comment block immediately above its name. Avoid semicolons in
+comment and prose text. Split the clauses into separate sentences instead.
 
 Write a `shellcheck disable` directive on its own line rather than as a
 trailing comment, preceded by a description line ending with a colon, and
@@ -61,7 +62,7 @@ functions alphabetical, then `base_` helpers alphabetical, with no
 
 Add or update an executable script in `app/` for every behavior change. Use
 `*-ok` for success cases and `*-no` for failure paths. Run `redo test` before
-submitting; run `redo test-container` when changing portability-sensitive shell
+submitting. Run `redo test-container` when changing portability-sensitive shell
 logic, container files, or CI behavior. Keep tests deterministic and compatible
 with multiple Unix-like shells.
 
@@ -72,7 +73,7 @@ Before committing, update `BASE_VERSION` in `lib/base.sh`,
 `SPDX-FileCopyrightText` year in every changed file. Only when the file
 has a substantive change — never bump the year or version by itself. If a
 refactor pass ends up making no meaningful change to a file, revert the
-year/version edit too; a metadata-only diff is noise.
+year/version edit too. A metadata-only diff is noise.
 
 Use Conventional Commits for all commits created by the agent, especially
 scoped forms such as `build(deps): ...` and `chore(deps): ...`. Prefer concise,
@@ -81,4 +82,4 @@ attribution, tool signatures, generated-by trailers, or AI co-author metadata
 to commits, pull requests, issues, or code comments. Pull requests should
 explain the user-visible change, note any portability implications, and confirm
 the relevant `redo lint` and `redo test` results. Link related issues when
-applicable; UI screenshots are usually unnecessary for this repository.
+applicable. UI screenshots are usually unnecessary for this repository.
