@@ -41,10 +41,11 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install --no-install-recommends --yes podman
-      - uses: redhat-actions/buildah-build@v2.13
-        with:
-          containerfiles: ./container/${{ matrix.img }}/Containerfile
-          image: ${{ matrix.img }}
-          tags: latest
+      - run: |
+          podman build \
+            --file ./container/${{ matrix.img }}/Containerfile \
+            --format docker \
+            --tag ${{ matrix.img }}:latest \
+            .
       - run: |
           podman run --rm ${{ matrix.img }}:latest lint test
