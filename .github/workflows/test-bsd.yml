@@ -12,6 +12,9 @@ permissions:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+defaults:
+  run:
+    shell: sh
 jobs:
   test-bsd:
     name: Test BSD on ${{ matrix.os }}

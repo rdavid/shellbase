@@ -12,6 +12,9 @@ permissions:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+defaults:
+  run:
+    shell: sh
 jobs:
   actionlint:
     runs-on: ubuntu-24.04
