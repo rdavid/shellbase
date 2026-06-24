@@ -40,5 +40,6 @@ jobs:
             goredo \
             grep \
             yash
-          export PATH=/opt/homebrew/opt/grep/libexec/gnubin:"$PATH"
+          gnubin="$(brew --prefix grep)/libexec/gnubin"
+          export PATH="$gnubin:$PATH"
           redo -xx lint test
