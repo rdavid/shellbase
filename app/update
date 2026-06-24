@@ -29,7 +29,7 @@ BASE_APP_USAGE="$(
 #  shellcheck disable=SC2034
 readonly \
 	BASE_APP_USAGE \
-	BASE_APP_VERSION=0.9.20260622 \
+	BASE_APP_VERSION=0.9.20260625 \
 	BASE_MIN_VERSION=0.9.20231212 \
 	BSH \
 	TGT=README.adoc
@@ -85,7 +85,7 @@ parse() {
 	readonly ACT
 }
 
-# Compares the new README against the current one; updates if needed.
+# Compares the new README against the current one. Updates if needed.
 update() {
 	cmp --quiet "$OUT" "$TGT" && cya "$TGT" is updated.
 	[ "$ACT" = false ] && die "$TGT" should be updated.

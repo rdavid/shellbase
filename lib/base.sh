@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260624
+BASE_VERSION=0.9.20260625
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -219,8 +219,9 @@ cmd_exists() {
 }
 
 # Prints all parameters to the log and exits with a success code. The subshell
-# restores $? for base_exit, which reads it; err may be zero. oh-my-zsh has the
-# lol plugin, which defines an alias to cya; remove the plugin:
+# restores $? for base_exit, which reads it. The err value may be zero.
+# oh-my-zsh has the lol plugin, which defines an alias to cya. Remove the
+# plugin:
 #  https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/lol
 cya() {
 	local err=$?
@@ -230,7 +231,7 @@ cya() {
 }
 
 # Prints all parameters as an error message and exits with the error code. It
-# attempts to retain the original code; otherwise it uses BASE_RC_DIE_NO, so
+# attempts to retain the original code. Otherwise it uses BASE_RC_DIE_NO, so
 # err is always non-empty.
 die() {
 	local err=$?
@@ -718,9 +719,9 @@ semver() {
 	return $ret
 }
 
-# Asks for permission to continue; returns an error code if the input is not
+# Asks for permission to continue. Returns an error code if the input is not
 # 'y' or if no input is detected after a timeout. If parameters are provided,
-# they are used as the question; otherwise, the default message is used.
+# they are used as the question. Otherwise, the default message is used.
 should_continue() {
 	[ $BASE_SHOULD_CON = true ] && return 0
 	local ans dad="$$" dog msg old tmo=20
@@ -1029,7 +1030,7 @@ base_check_instances() {
 		cya Stop working.
 }
 
-# General exit handler; called on EXIT. A non-empty first parameter suppresses
+# General exit handler. Called on EXIT. A non-empty first parameter suppresses
 # the exit call. Keeps the WIP directory of the last finished instance. Calls
 # base_bye just before moving or deleting the WIP directory.
 # Note that A && B || C is not if-then-else:
@@ -1063,7 +1064,7 @@ base_cleanup() {
 	fi
 }
 
-# Displays the shellbase banner. Width: 79 characters; height: 8 lines.
+# Displays the shellbase banner. Width: 79 characters. Height: 8 lines.
 # Generated with the Georgia 11 font by Richard Sabey
 # <cryptic_fan@hotmail.com> (September 2003):
 #  http://patorjk.com/software/taag/#p=display&f=Georgia11&t=shellbase
@@ -1183,7 +1184,7 @@ else
 fi
 
 # The [ -t 1 ] check works only when the function is not called from a
-# subshell; it returns false when stdout is not a tty. Use colors only when
+# subshell. It returns false when stdout is not a tty. Use colors only when
 # connected to a terminal.
 if [ -t 1 ]; then
 	BASE_FMT_GREEN=$(printf '\033[32m')
@@ -1340,7 +1341,7 @@ base_time_separator() {
 	esac
 }
 
-# Formats a time title. The first parameter is a count; the second is the
+# Formats a time title. The first parameter is a count. The second is the
 # title word.
 base_time_title() {
 	case "$1" in
@@ -1351,7 +1352,7 @@ base_time_title() {
 }
 
 # Truncates the log file when it exceeds BASE_LOG_CAP. Assumes BASE_LOG is
-# writable; the caller guards that. Does not return from functions called by
+# writable. The caller guards that. Does not return from functions called by
 # signal traps.
 base_truncate() {
 	[ "$(wc -c <"$BASE_LOG")" -gt "$BASE_LOG_CAP" ] || return 0
