@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260623
+BASE_VERSION=0.9.20260624
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -1349,17 +1349,19 @@ base_time_title() {
 	esac
 }
 
-# Truncates the log file when it exceeds BASE_LOG_CAP. Does not return
-# from functions called by signal traps.
+# Truncates the log file when it exceeds BASE_LOG_CAP. Assumes BASE_LOG is
+# writable; the caller guards that. Does not return from functions called by
+# signal traps.
 base_truncate() {
-	[ -w "$BASE_LOG" ] || return 0
 	[ "$(wc -c <"$BASE_LOG")" -gt "$BASE_LOG_CAP" ] || return 0
 	: >"$BASE_LOG"
 	log "$BASE_LOG" is truncated.
 }
 
-# Appends a log string to the log file.
+# Appends a log string to the log file. Skips silently when the log is not
+# writable so logging never aborts the caller.
 base_write_to_file() {
+	[ -w "$BASE_LOG" ] || return 0
 	base_truncate
 	printf %s\\n "$*" >>"$BASE_LOG"
 }
