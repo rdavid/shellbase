@@ -1374,10 +1374,9 @@ base_is_interactive && {
 }
 set -o errexit -o nounset
 
-# If supported, pipefail will be set, and it will become POSIX-compliant in the
-# near future:
+# Enables pipefail only when the shell supports it. The option is not yet in
+# POSIX but is slated for inclusion:
 #  https://www.austingroupbugs.net/view.php?id=789
-# pipefail is not POSIX:
 #  shellcheck disable=SC3040
 (set -o pipefail 2>/dev/null) && set -o pipefail
 
