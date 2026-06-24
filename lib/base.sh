@@ -596,7 +596,8 @@ pdf2png() {
 	base_pdf2img -png
 }
 
-# Draws an ASCII table with sized columns. Expects input as:
+# Draws an ASCII table with sized columns. Columns are tab-separated. Expects
+# input as:
 # {
 # 	printf 'ID\tNAME\tTITLE\n'
 # 	printf '123456789\tJohn Foo\tDirector\n'
@@ -609,7 +610,8 @@ pdf2png() {
 # |123456789  |John Foo  |Director  |
 # |12         |Mike Bar  |Engineer  |
 # +-----------+----------+----------+
-# The implementation is inspired by Jakob Westhoff:
+# The sed script needs double quotes for its escaped last-line address. The
+# implementation is inspired by Jakob Westhoff:
 #  https://github.com/jakobwesthoff/prettytable.sh
 prettytable() {
 	cmd_exists column sed || return $?
@@ -617,13 +619,7 @@ prettytable() {
 	inp="$(cat)"
 	hdr="$(printf %s "$inp" | head -n1)" || handle_pipefails $?
 	bdy="$(printf %s "$inp" | tail -n+2)" || handle_pipefails $?
-
-	# Calculates number of columns, col=number-of-tabs+1.
-	col="$(printf %s "$hdr" | awk -F\\t '{print NF-1}')"
-	col=$((col + 1))
-
-	# Expects column separated by tab. See column -s. Double quotes in sed's
-	# regex are needed.
+	col="$(printf %s "$hdr" | awk -F\\t '{print NF}')"
 	{
 		base_prettytable_separator "$col"
 		printf %s\\n "$hdr" | base_prettytable_prettify
