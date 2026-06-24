@@ -28,7 +28,9 @@ jobs:
           srv=https://raw.githubusercontent.com/rhysd/actionlint
           ver=1.7.12
           curl --fail --location --silent --show-error \
-            "$srv/v$ver/scripts/download-actionlint.bash" | bash -s -- "$ver"
+            --output "$RUNNER_TEMP"/app \
+            "$srv/v$ver/scripts/download-actionlint.bash"
+          bash "$RUNNER_TEMP"/app "$ver"
       - env:
           exe: ${{ steps.get.outputs.executable }}
         run: "$exe"
