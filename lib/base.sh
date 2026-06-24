@@ -981,14 +981,16 @@ base_bomb() {
 
 # Logs the program name, process ID, user name, and lifespan before exit.
 # Avoids calling die() because this function runs during exit handling.
+# Note that A && B || C is not if-then-else:
+#  shellcheck disable=SC2015
 base_bye() {
 	local err=$? dur msg usr
 	dur="$(chrono_sto lifespan)" || dur=err
-	usr="$(id -nu 2>&1)" || :
+	usr="$(id -nu 2>&1)" || {
+		loge "$usr".
+		usr=err
+	}
 	msg="${BASE_IAM}[$$] $usr: bye after $dur"
-
-	# Note that A && B || C is not if-then-else:
-	#  shellcheck disable=SC2015
 	[ $err -eq 0 ] && log "$msg." || logw "$msg, err=$err."
 }
 
