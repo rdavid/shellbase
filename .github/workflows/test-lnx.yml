@@ -41,11 +41,15 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install --no-install-recommends --yes podman
-      - run: |
+      - env:
+          img: ${{ matrix.img }}
+        run: |
           podman build \
-            --file ./container/${{ matrix.img }}/Containerfile \
+            --file "./container/$img/Containerfile" \
             --format docker \
-            --tag ${{ matrix.img }}:latest \
+            --tag "$img:latest" \
             .
-      - run: |
-          podman run --rm ${{ matrix.img }}:latest lint test
+      - env:
+          img: ${{ matrix.img }}
+        run: |
+          podman run --rm "$img:latest" lint test
