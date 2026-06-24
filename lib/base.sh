@@ -1308,12 +1308,11 @@ base_prettytable_separator() {
 	printf '\t+\n'
 }
 
-# Prevents double cleanup. See:
+# Prevents double cleanup. Some shells call EXIT after the INT handler, so it
+# drops the EXIT trap before running the cleanup. See:
 #  https://unix.stackexchange.com/q/57940
 base_sig_cleanup() {
 	local err=$?
-
-	# Some shells will call EXIT after the INT handler.
 	trap - EXIT
 	base_cleanup 1
 	exit $err
