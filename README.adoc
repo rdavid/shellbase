@@ -192,6 +192,14 @@ Then your script can use `shellbase`:
 log I\'m using the shellbase.
 ----
 
+The framework provides three loggers:
+{url-base}#L492[`log`] for information,
+{url-base}#L501[`loge`] for errors, and
+{url-base}#L509[`logw`] for warnings.
+Each prints to standard error and, in non-interactive mode, appends the message
+to the log file under a single lowercase level tag: `i` for information, `e` for
+errors, and `w` for warnings.
+
 You can try `shellbase` without installation:
 
 [,sh]

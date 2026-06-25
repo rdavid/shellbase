@@ -494,7 +494,7 @@ log() {
 	tms="$(timestamp)" || exit $?
 	[ "$BASE_QUIET" = false ] &&
 		printf >&2 '%s%s%s %s\n' "$BASE_FMT_GREEN" "$tms" "$BASE_FMT_RESET" "$*"
-	base_is_interactive || base_write_to_file "$tms" I "$*"
+	base_is_interactive || base_write_to_file "$tms" i "$*"
 }
 
 # Error logger always prints to stderr.
@@ -502,7 +502,7 @@ loge() {
 	local tms
 	tms="$(timestamp)" || exit $?
 	printf >&2 '%s%s%s %s\n' "$BASE_FMT_RED" "$tms" "$BASE_FMT_RESET" "$*"
-	base_is_interactive || base_write_to_file "$tms" E "$*"
+	base_is_interactive || base_write_to_file "$tms" e "$*"
 }
 
 # The warning logger is silent with the --quiet flag.
@@ -511,7 +511,7 @@ logw() {
 	tms="$(timestamp)" || exit $?
 	[ "$BASE_QUIET" = false ] &&
 		printf >&2 '%s%s%s %s\n' "$BASE_FMT_YELLOW" "$tms" "$BASE_FMT_RESET" "$*"
-	base_is_interactive || base_write_to_file "$tms" W "$*"
+	base_is_interactive || base_write_to_file "$tms" w "$*"
 }
 
 # Deletes from key-value store.
