@@ -1124,13 +1124,14 @@ base_display_warranty() {
 		printf %s\\n "$war"
 }
 
-# Exits with an error code, which may be zero. Called from cya and die.
+# Exits with an error code, which may be zero. Called from cya and die. In
+# interactive mode logs the outcome instead of exiting, so the calling shell
+# survives.
+# Note that A && B || C is not if-then-else:
+#  shellcheck disable=SC2015
 base_exit() {
 	local err=$? msg=You\'re\ immortal
 	base_is_interactive || exit $err
-
-	# Note that A && B || C is not if-then-else:
-	#  shellcheck disable=SC2015
 	[ $err -eq 0 ] && log "$msg." || logw "$msg, err=$err."
 }
 
