@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260625
+BASE_VERSION=0.9.20260626
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -1032,10 +1032,9 @@ base_check_instances() {
 # Note that A && B || C is not if-then-else:
 #  shellcheck disable=SC2015
 base_cleanup() {
-	local err=$?
+	local err=$? out who wip
 	trap - HUP EXIT INT QUIT TERM
 	if [ "$BASE_KEEP_WIP" = true ]; then
-		local out who wip
 		who="$(id -nu 2>&1)" || {
 			loge "$who".
 			who=none
@@ -1053,11 +1052,7 @@ base_cleanup() {
 		(exit $err) && base_bye || base_bye
 		rm -fr "$BASE_WIP" || :
 	fi
-
-	# Parameter expansion defines if the parameter is not set, which means exit.
-	if [ -z ${1+x} ]; then
-		exit $err
-	fi
+	[ -n "${1+x}" ] || exit $err
 }
 
 # Displays the shellbase banner. Width: 79 characters. Height: 8 lines.
