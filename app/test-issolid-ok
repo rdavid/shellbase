@@ -1,5 +1,5 @@
 #!/bin/sh
-# vi:et lbr noet sw=2 ts=2 tw=79 wrap
+# vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 # File not following:
@@ -8,5 +8,5 @@
 
 # Appears unused:
 #  shellcheck disable=SC2034
-BASE_APP_HASH=728c931cf9b5e2dd286b3e7d31ee87c72993cfa6
+BASE_APP_HASH=d063e0d720f7128f8cece2147efbb019d6b068ee
 issolid
