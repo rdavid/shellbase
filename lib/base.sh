@@ -1039,7 +1039,7 @@ base_cleanup() {
 			loge "$who".
 			who=none
 		}
-		wip="${BASE_WIP%.*}_$who"
+		wip="${BASE_WIP%.*}-$who"
 		if out="$(rm -fr "$wip" 2>&1)"; then
 			(exit $err) && base_bye || base_bye
 			mv "$BASE_WIP" "$wip" || :
