@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260627
+BASE_VERSION=0.9.20260628
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -1197,7 +1197,9 @@ else
 fi
 
 # Loops through arguments before any logging. Handles only arguments with
-# 'do-and-exit' logic. Sets global variables.
+# 'do-and-exit' logic. Sets global variables. Creates the log file so it is
+# writable. Otherwise base_write_to_file skips every write because [ -w ] is
+# false on a missing file.
 base_main() {
 	local arg err use=false ver=false war=false
 	for arg; do
@@ -1227,6 +1229,11 @@ base_main() {
 		BASE_IAM \
 		BASE_LOG \
 		BASE_WIP
+	: >"$BASE_LOG" 2>/dev/null || {
+		err=$?
+		printf >&2 %s\\n "Unable to create $BASE_LOG."
+		exit $err
+	}
 	base_hi
 
 	# Handles signals. See:
