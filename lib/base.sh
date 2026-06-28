@@ -1321,15 +1321,13 @@ base_sig_cleanup() {
 }
 
 # Calculates a separator for time titles based on the number of non-empty
-# parameters.
+# parameters. Iterates over the positional parameters with for and no in.
 base_time_separator() {
 	[ "$#" -gt 3 ] && {
-		loge "Wrong param number $#."
-		return 1
+		loge base_time_separator: expected 3 arguments, got "$#".
+		return $BASE_RC_ARG_NO
 	}
 	local arg cnt=0
-
-	# Iterates over positional parameters via for without in.
 	for arg; do
 		[ -n "$arg" ] && cnt=$((cnt + 1))
 	done
