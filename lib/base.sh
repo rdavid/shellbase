@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260628
+BASE_VERSION=0.9.20260629
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -206,11 +206,10 @@ cmd_exists() {
 	}
 	for cmd; do
 		command -v "$cmd" >/dev/null 2>&1 || {
-			[ "$qui" = false ] && logw Command "$cmd" not found.
+			[ "$qui" = false ] && logw "Command $cmd not found."
 			cnt=$((cnt + 1))
 			[ "$cnt" -lt "$max" ] || {
-				[ "$qui" = false ] &&
-					logw "Missing command count is capped at $max."
+				[ "$qui" = false ] && logw "Missing command count is capped at $max."
 				break
 			}
 		}
