@@ -675,7 +675,8 @@ realpath() {
 
 # Runs a command up to 5 times with exponential backoff (1 s, 2 s, 4 s, 8 s).
 # Logs every attempt, failed exit codes, and a final error if all retries are
-# exhausted.
+# exhausted. Skips the backoff after the last attempt, there is no next try to
+# wait for.
 retry() {
 	[ $# -gt 0 ] || {
 		loge No command specified to retry.
