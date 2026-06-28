@@ -347,11 +347,12 @@ grbt() {
 		git push origin +"$br"
 }
 
-# Ignores exit code 141 from command pipes. See:
+# Ignores exit code 141 (128 + SIGPIPE) from command pipes. See:
 #  https://stackoverflow.com/q/22464786
 handle_pipefails() {
-	[ "$1" -eq 141 ] || return "$1"
-	logw Ignore the pipe failure with the error code 141.
+	local err=141
+	[ "$1" -eq "$err" ] || return "$1"
+	log Ignore the pipe failure with the error code "$err".
 }
 
 # Converts HEIC files in the current directory to JPEG.
