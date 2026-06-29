@@ -2,6 +2,9 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+# Variable appears unused:
+#  shellcheck disable=SC2034
+readonly BASE_APP_VERSION=0.9.20260629
 redo-ifchange \
 	./.github/*.yml \
 	./.github/workflows/*.yml \
@@ -18,31 +21,25 @@ BSH="$(
 	printf >&2 %s\\n "$BSH"
 	exit $err
 }
-
-# Variable appears unused:
-#  shellcheck disable=SC2034
-readonly \
-	BASE_APP_VERSION=0.9.20260627 \
-	BSH
+readonly BSH
 set -- "$@" --quiet
 
 # File not following:
 #  shellcheck disable=SC1090
 . "$BSH"
-cmd_exists actionlint && actionlint
-cmd_exists checkmake && checkmake ./Makefile
-cmd_exists hadolint && hadolint ./container/*/Containerfile
-cmd_exists reuse && reuse lint
-cmd_exists shellcheck && shellcheck ./*.do ./app/* ./lib/*
-cmd_exists shfmt && shfmt -d ./*.do ./app/* ./lib/*
-cmd_exists typos && typos
+cmd_run_if actionlint
+cmd_run_if checkmake ./Makefile
+cmd_run_if hadolint ./container/*/Containerfile
+cmd_run_if reuse lint
+cmd_run_if shellcheck ./*.do ./app/* ./lib/*
+cmd_run_if shfmt -d ./*.do ./app/* ./lib/*
+cmd_run_if typos
 cmd_exists vale && {
 	vale sync >/dev/null 2>&1 || :
 	vale ./README.adoc
 }
-cmd_exists yamllint &&
-	yamllint \
-		./.github/*.yml \
-		./.github/workflows/*.yml
-cmd_exists zizmor && zizmor --offline ./.github/
+cmd_run_if yamllint \
+	./.github/*.yml \
+	./.github/workflows/*.yml
+cmd_run_if zizmor --offline ./.github/
 ./app/update
