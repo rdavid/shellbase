@@ -13,13 +13,13 @@
 # base_ prefix are public and can be used by clients. The public functions
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, chrono_get, chrono_sta, chrono_sto,
-# cmd_exists, cmd_run_if, cya, die, dng2jpg, echo, ellipsize, file_exists,
-# gitlog, grbt, handle_pipefails, heic2jpg, inside, isempty, isfunc, isnumber,
-# isreadable, isroot, issolid, iswritable, log, loge, logw, map_del, map_get,
-# map_put, nmea2gpx, pdf2jpg, pdf2png, prettytable, prettyuptime, realdir,
-# realpath, retry, semver, should_continue, timestamp, tolog, tologe, tolower,
-# totsout, tsout, url_exists, user_exists, validate_cmd, validate_var,
-# var_exists, ver_ge, vid2aud, ytda.
+# cmd_exists, cmd_run, cmd_run_if, cya, die, dng2jpg, echo, ellipsize,
+# file_exists, gitlog, grbt, handle_pipefails, heic2jpg, inside, isempty,
+# isfunc, isnumber, isreadable, isroot, issolid, iswritable, log, loge, logw,
+# map_del, map_get, map_put, nmea2gpx, pdf2jpg, pdf2png, prettytable,
+# prettyuptime, realdir, realpath, retry, semver, should_continue, timestamp,
+# tolog, tologe, tolower, totsout, tsout, url_exists, user_exists,
+# validate_cmd, validate_var, var_exists, ver_ge, vid2aud, ytda.
 #
 # Global variables have BASE_ prefix and clients can use them. Clients should
 # place temporary files under $BASE_WIP. All functions starting with the base_
@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260629
+BASE_VERSION=0.9.20260630
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -217,31 +217,44 @@ cmd_exists() {
 	return $cnt
 }
 
-# Runs the given command if it exists, logging it before execution and
-# reporting a non-zero exit code as an error. Returns 0 when the command is
-# absent or unspecified, so a missing command is a skipped no-op rather than a
-# failure, otherwise returns the command's own exit code so callers can branch
-# on success. cmd_exists reports both a missing command and an empty argument
-# list, so an unquoted empty ${1-} collapses to no argument and triggers its
-# no-command path. The -q option is forwarded to cmd_exists and suppresses the
-# run log, the not-found warning, and the failure error.
-# Usage: cmd_run_if [-q] cmd [arg ...]
+# Runs the command after confirming it exists, logging it and reporting a
+# non-zero exit code as an error. Returns the cmd_exists code when the command
+# is absent or unspecified, otherwise the command's own code. -q goes to
+# cmd_exists and silences the run log and failure error.
+# Usage: cmd_run [-q] cmd [arg ...]
 # Options: -q (quiet mode - suppress logs and warnings)
-# $opt and ${1-} are unquoted on purpose so an absent flag or command collapses
-# to no argument for cmd_exists:
+# $opt and ${1-} stay unquoted so an absent flag or command drops out:
 #  shellcheck disable=SC2086
-cmd_run_if() {
+cmd_run() {
 	local err opt=
 	[ "${1-}" = -q ] && {
 		opt=-q
 		shift
 	}
-	cmd_exists $opt ${1-} || return 0
+	cmd_exists $opt ${1-} || return
 	[ -z "$opt" ] && log "Running: $*"
 	"$@" && return 0
 	err=$?
 	[ -z "$opt" ] && loge "Command $1 failed, err=$err."
 	return $err
+}
+
+# Like cmd_run but a missing or unspecified command is a skipped no-op
+# returning 0, so it suits optional tools; otherwise it defers to cmd_run. cmd
+# is the command word and opt forwards -q to the existence check, so a missing
+# command is reported only without -q.
+# Usage: cmd_run_if [-q] cmd [arg ...]
+# Options: -q (quiet mode - suppress logs and warnings)
+# $opt stays unquoted so an absent flag drops out:
+#  shellcheck disable=SC2086
+cmd_run_if() {
+	local cmd="${1-}" opt=
+	[ "$cmd" = -q ] && {
+		cmd="${2-}"
+		opt=-q
+	}
+	cmd_exists $opt "$cmd" || return 0
+	cmd_run "$@"
 }
 
 # Prints all parameters to the log and exits with a success code. The subshell

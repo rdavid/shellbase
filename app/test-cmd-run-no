@@ -5,8 +5,4 @@
 # File not following:
 #  shellcheck disable=SC1090,SC1091
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
-cmd_run_if : &&
-	cmd_run_if -q : &&
-	cmd_run_if printf '' &&
-	cmd_run_if c0mmand_n0t_f0und &&
-	cmd_run_if -q c0mmand_n0t_f0und
+cmd_run -q c0mmand_n0t_f0und
