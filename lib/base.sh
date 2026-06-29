@@ -13,7 +13,7 @@
 # base_ prefix are public and can be used by clients. The public functions
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, chrono_get, chrono_sta, chrono_sto,
-# cmd_exists, cmd_run, cmd_run_if, cya, die, dng2jpg, echo, ellipsize,
+# cmd_exists, cmd_run, cmd_runif, cya, die, dng2jpg, echo, ellipsize,
 # file_exists, gitlog, grbt, handle_pipefails, heic2jpg, inside, isempty,
 # isfunc, isnumber, isreadable, isroot, issolid, iswritable, log, loge, logw,
 # map_del, map_get, map_put, nmea2gpx, pdf2jpg, pdf2png, prettytable,
@@ -243,11 +243,11 @@ cmd_run() {
 # returning 0, so it suits optional tools; otherwise it defers to cmd_run. cmd
 # is the command word and opt forwards -q to the existence check, so a missing
 # command is reported only without -q.
-# Usage: cmd_run_if [-q] cmd [arg ...]
+# Usage: cmd_runif [-q] cmd [arg ...]
 # Options: -q (quiet mode - suppress logs and warnings)
 # $opt stays unquoted so an absent flag drops out:
 #  shellcheck disable=SC2086
-cmd_run_if() {
+cmd_runif() {
 	local cmd="${1-}" opt=
 	[ "$cmd" = -q ] && {
 		cmd="${2-}"

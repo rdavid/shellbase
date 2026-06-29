@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: 0BSD
 # Variable appears unused:
 #  shellcheck disable=SC2034
-readonly BASE_APP_VERSION=0.9.20260629
+readonly BASE_APP_VERSION=0.9.20260630
 redo-ifchange \
 	./.github/*.yml \
 	./.github/workflows/*.yml \
@@ -27,19 +27,19 @@ set -- "$@" --quiet
 # File not following:
 #  shellcheck disable=SC1090
 . "$BSH"
-cmd_run_if actionlint
-cmd_run_if checkmake ./Makefile
-cmd_run_if hadolint ./container/*/Containerfile
-cmd_run_if reuse lint
-cmd_run_if shellcheck ./*.do ./app/* ./lib/*
-cmd_run_if shfmt -d ./*.do ./app/* ./lib/*
-cmd_run_if typos
+cmd_runif actionlint
+cmd_runif checkmake ./Makefile
+cmd_runif hadolint ./container/*/Containerfile
+cmd_runif reuse lint
+cmd_runif shellcheck ./*.do ./app/* ./lib/*
+cmd_runif shfmt -d ./*.do ./app/* ./lib/*
+cmd_runif typos
 cmd_exists vale && {
 	vale sync >/dev/null 2>&1 || :
 	vale ./README.adoc
 }
-cmd_run_if yamllint \
+cmd_runif yamllint \
 	./.github/*.yml \
 	./.github/workflows/*.yml
-cmd_run_if zizmor --offline ./.github/
+cmd_runif zizmor --offline ./.github/
 ./app/update

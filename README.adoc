@@ -87,7 +87,7 @@ The public functions are, in alphabetical order:
 {url-base}#L183[`chrono_sto`],
 {url-base}#L197[`cmd_exists`],
 {url-base}#L228[`cmd_run`],
-{url-base}#L250[`cmd_run_if`],
+{url-base}#L250[`cmd_runif`],
 {url-base}#L265[`cya`],
 {url-base}#L275[`die`],
 {url-base}#L283[`dng2jpg`],
