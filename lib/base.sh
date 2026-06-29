@@ -77,7 +77,7 @@ aud_only() {
 	}
 	should_continue "Remove the following files:
 $lst
-Total $cnt files" || return $?
+Total $cnt files" || return
 	log Removing "$cnt" files.
 	out="$(
 		find . -type f \
@@ -106,7 +106,7 @@ beroot() {
 
 # Checks if the script is run by a user.
 beuser() {
-	cmd_exists id || return $?
+	cmd_exists id || return
 	local ask cur usr="$1"
 	user_exists "$usr" || die "$usr": No such user.
 	cur="$(id -u 2>&1)" || die "$cur"
@@ -117,13 +117,13 @@ beuser() {
 
 # Requests permission to execute the fork bomb.
 bomb() {
-	should_continue 'Throw the fork bomb' || return $?
+	should_continue 'Throw the fork bomb' || return
 	base_bomb
 }
 
 # The only cheat sheet you need.
 cheat() {
-	cmd_exists curl || return $?
+	cmd_exists curl || return
 	curl https://cht.sh/"$1"
 }
 
@@ -145,7 +145,7 @@ chrono_get() {
 		loge "$now"
 		return $err
 	}
-	beg="$(map_get "$nme" sta)" || return $?
+	beg="$(map_get "$nme" sta)" || return
 	dur="$((now - beg))"
 	day="$(base_time_title $((dur / 86400)) day)"
 	hou="$(base_time_title $((dur % 86400 / 3600)) hour)"
@@ -182,8 +182,8 @@ chrono_sta() {
 # Calculates a duration from the start and cleans inner data.
 chrono_sto() {
 	local dur nme="$1"
-	dur="$(chrono_get "$nme")" || return $?
-	map_del "$nme" sta || return $?
+	dur="$(chrono_get "$nme")" || return
+	map_del "$nme" sta || return
 	printf %s "$dur"
 }
 
@@ -319,7 +319,7 @@ ellipsize() {
 		loge ellipsize: max is not numeric: "$max".
 		return $BASE_RC_ARG_NO
 	}
-	cmd_exists awk || return $?
+	cmd_exists awk || return
 	[ "${#str}" -le "$max" ] && {
 		printf %s "$str"
 		return
@@ -353,7 +353,7 @@ file_exists() {
 
 # Allows users to navigate the history of commits in a Git repository.
 gitlog() {
-	cmd_exists fzf git grep head less xargs || return $?
+	cmd_exists fzf git grep head less xargs || return
 	git log \
 		--color=always \
 		--format="%C(auto)%h%d %s %C(black)%C(bold)%cr" \
@@ -377,7 +377,7 @@ FZF-EOF"
 
 # Generates a temporary commit, performs a rebase, and pushes the changes.
 grbt() {
-	cmd_exists git || return $?
+	cmd_exists git || return
 	local br
 	br="$(git rev-parse --abbrev-ref HEAD 2>&1)" || die "$br"
 	git commit --all --message tmp &&
@@ -482,7 +482,7 @@ isroot() {
 # Verifies that the running script's content matches the script hash (SHA-1, as
 # computed by shasum). It ignores the line where the hash is defined.
 issolid() {
-	cmd_exists awk head grep shasum || return $?
+	cmd_exists awk head grep shasum || return
 	local \
 		err \
 		fle="$0" \
@@ -521,7 +521,7 @@ iswritable() {
 		if file_exists "$arg"; then
 			[ -w "$arg" ] || return 1
 		else
-			touch "$arg" 2>/dev/null || return $?
+			touch "$arg" 2>/dev/null || return
 			rm "$arg"
 		fi
 	done
@@ -613,7 +613,7 @@ map_put() {
 # reject long option names, so the call uses short options.
 nmea2gpx() {
 	local fle out
-	cmd_exists gpsbabel || return $?
+	cmd_exists gpsbabel || return
 	for fle in ./*.log; do
 		[ -e "$fle" ] || [ -L "$fle" ] || continue
 		out="${fle%.log}.gpx"
@@ -622,7 +622,7 @@ nmea2gpx() {
 			-i nmea \
 			-f "$fle" \
 			-o gpx \
-			-F "$out" || return $?
+			-F "$out" || return
 	done
 }
 
@@ -654,7 +654,7 @@ pdf2png() {
 # implementation is inspired by Jakob Westhoff:
 #  https://github.com/jakobwesthoff/prettytable.sh
 prettytable() {
-	cmd_exists column sed || return $?
+	cmd_exists column sed || return
 	local bdy col hdr inp
 	inp="$(cat)"
 	hdr="$(printf %s "$inp" | head -n1)" || handle_pipefails $?
@@ -883,7 +883,7 @@ tsout() {
 # Checks whether all URLs exist, any returned HTTP code is OK. In case of error
 # out has two lines: error message and HTTP error code.
 url_exists() {
-	cmd_exists curl || return $?
+	cmd_exists curl || return
 	local arg out ret=0
 	for arg; do
 		if out="$(
@@ -907,7 +907,7 @@ url_exists() {
 
 # Verifies the existence of all users.
 user_exists() {
-	cmd_exists id || return $?
+	cmd_exists id || return
 	local arg ret=0
 	for arg; do
 		if id "$arg" >/dev/null 2>&1; then
@@ -980,7 +980,7 @@ ver_ge() {
 
 # Converts all video files in current directory to MP3 files.
 vid2aud() {
-	cmd_exists ffmpeg || return $?
+	cmd_exists ffmpeg || return
 	local dst src
 	find . -type f -maxdepth 1 \
 		\( -name \*.mp4 -o -name \*.m4v -o -name \*.avi -o -name \*.mkv \) |
@@ -994,7 +994,7 @@ vid2aud() {
 
 # Downloads a video from YouTube.
 ytda() {
-	cmd_exists renamr yt-dlp || return $?
+	cmd_exists renamr yt-dlp || return
 	yt-dlp \
 		--add-metadata \
 		--cookies-from-browser chrome \
@@ -1101,7 +1101,7 @@ base_cleanup() {
 # <cryptic_fan@hotmail.com> (September 2003):
 #  http://patorjk.com/software/taag/#p=display&f=Georgia11&t=shellbase
 base_display_banner() {
-	cmd_exists base64 || return $?
+	cmd_exists base64 || return
 	printf \
 		'ICAgICAgICAgICAgICwsICAgICAgICAgICAgICAgICAsLCAgICAsLCAgLCwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgYDdNTSAgICAgICAgICAgICAgIGA3TU0gIGA3TU0gKk1NICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgTU0gICAgICAgICAgICAgICAgIE1NICAgIE1NICBNTSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICxwUCJZYmQgIE1NcE1NTWIuICAuZ1AiWWEgICBNTSAgICBNTSAgTU0sZE1NYi4gICAsNiJZYi4gICxwUCJZYmQgIC5nUCJZYSAgCiAgICA4SSAgIGAiICBNTSAgICBNTSAsTScgICBZYiAgTU0gICAgTU0gIE1NICAgIGBNYiA4KSAgIE1NICA4SSAgIGAiICxNJyAgIFliIAogICAgYFlNTU1hLiAgTU0gICAgTU0gOE0iIiIiIiIgIE1NICAgIE1NICBNTSAgICAgTTggICxwbTlNTSAgYFlNTU1hLiA4TSIiIiIiIiAKICAgIEwuICAgSTggIE1NICAgIE1NIFlNLiAgICAsICBNTSAgICBNTSAgTU0uICAgLE05IDhNICAgTU0gIEwuICAgSTggWU0uICAgICwgCiAgICBNOW1tbVAnLkpNTUwgIEpNTUwuYE1ibW1kJy5KTU1MLi5KTU1MLlBeWWJtZFAnICBgTW9vOV5Zby5NOW1tbVAnICBgTWJtbWQnIAo=' |
 		base64 --decode
@@ -1186,7 +1186,7 @@ base_hi() {
 
 # Converts files matching the given pattern in the current directory to JPEG.
 base_img2jpg() {
-	cmd_exists find magick || return $?
+	cmd_exists find magick || return
 	[ $# -eq 0 ] && {
 		loge No file pattern specified for conversion.
 		return $BASE_RC_ARG_NO
@@ -1197,7 +1197,7 @@ base_img2jpg() {
 		-name "$pat" \
 		-type f \
 		-exec magick mogrify -format jpg -monitor {} +
-	should_continue 'Remove the source files' || return $?
+	should_continue 'Remove the source files' || return
 	find . \
 		-maxdepth 1 \
 		-name "$pat" \
@@ -1310,7 +1310,7 @@ base_main() {
 # Converts all PDF files in the current directory to image files. Requires
 # one parameter specifying the desired image format.
 base_pdf2img() {
-	cmd_exists pdftoppm sed || return $?
+	cmd_exists pdftoppm sed || return
 	[ $# -eq 0 ] && {
 		loge No format specified to convert.
 		return $BASE_RC_ARG_NO
