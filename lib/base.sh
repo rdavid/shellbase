@@ -712,16 +712,28 @@ realpath() {
 	[ / = "$dir" ] && printf /%s "$nme" || printf %s/%s "$dir" "$nme"
 }
 
-# Runs a command up to 5 times with exponential backoff (1 s, 2 s, 4 s, 8 s).
-# Logs every attempt, failed exit codes, and a final error if all retries are
-# exhausted. Skips the backoff after the last attempt, there is no next try to
-# wait for.
+# Runs a command up to max attempts (-n num, default 5) with exponential
+# backoff (1 s, 2 s, 4 s, ...), skipping the wait after the last attempt. Logs
+# each attempt and exit code, plus a final error if all are exhausted.
+# Usage: retry [-n num] cmd [arg ...]
 retry() {
+	local cnt=1 dly=1 err max=5
+	[ "${1-}" = -n ] && {
+		[ -n "${2-}" ] || {
+			loge No count specified for -n.
+			return $BASE_RC_ARG_NO
+		}
+		[ "$2" -ge 1 ] 2>/dev/null || {
+			loge Invalid -n count="$2", needs a positive integer.
+			return $BASE_RC_ARG_NO
+		}
+		max="$2"
+		shift 2
+	}
 	[ $# -gt 0 ] || {
 		loge No command specified to retry.
 		return $BASE_RC_ARG_NO
 	}
-	local cnt=1 dly=1 err max=5
 	while [ "$cnt" -le "$max" ]; do
 		log Retry "$cnt"/"$max": "$@"
 		"$@" && return 0
