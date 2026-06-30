@@ -6,8 +6,13 @@
 name: test-mac
 'on':
   pull_request:
+    paths: &paths
+      - '*.do'
+      - app/**
+      - lib/**
   push:
     branches: [master]
+    paths: *paths
   workflow_dispatch:
 permissions:
   contents: read

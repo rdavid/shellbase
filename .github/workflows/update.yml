@@ -4,8 +4,11 @@
 name: update
 'on':
   pull_request:
+    paths: &paths
+      - app/update
   push:
     branches: [master]
+    paths: *paths
   workflow_dispatch:
 permissions:
   contents: read

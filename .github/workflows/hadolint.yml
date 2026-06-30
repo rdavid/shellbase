@@ -4,8 +4,11 @@
 name: hadolint
 'on':
   pull_request:
+    paths: &paths
+      - container/**
   push:
     branches: [master]
+    paths: *paths
   workflow_dispatch:
 permissions:
   contents: read

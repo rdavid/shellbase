@@ -4,8 +4,11 @@
 name: yamllint
 'on':
   pull_request:
+    paths: &paths
+      - .github/**
   push:
     branches: [master]
+    paths: *paths
   workflow_dispatch:
 permissions:
   contents: read

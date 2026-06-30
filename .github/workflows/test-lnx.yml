@@ -4,8 +4,14 @@
 name: test-lnx
 'on':
   pull_request:
+    paths: &paths
+      - '*.do'
+      - app/**
+      - lib/**
+      - container/**
   push:
     branches: [master]
+    paths: *paths
   workflow_dispatch:
 permissions:
   contents: read
