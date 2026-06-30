@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260630
+BASE_VERSION=0.9.20260701
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -217,14 +217,20 @@ cmd_exists() {
 	return $cnt
 }
 
-# Runs the command after confirming it exists, logging it and reporting a
-# non-zero exit code as an error. Returns the cmd_exists code when the command
-# is absent or unspecified, otherwise the command's own code. -q goes to
-# cmd_exists and silences the run log and failure error.
+# Runs a command after confirming it exists. Without -q it logs the command,
+# streams its output through the loggers, and reports a non-zero exit as an
+# error; -q runs it silently, discarding output and skipping both logs. Returns
+# the cmd_exists code when the command is absent or unspecified, otherwise the
+# command's own code.
 # Usage: cmd_run [-q] cmd [arg ...]
 # Options: -q (quiet mode - suppress logs and warnings)
+# Streaming splits the command across both loggers: 2>&1 1>&3 sends stderr to
+# tologe and stdout, via fd 3, to tolog. A pipeline reports only its last stage
+# and pipefail is optional, so the exit code cannot ride the pipes; exec 4>&1
+# aliases fd 4 to the command substitution's stdout and printf writes the code
+# there, past the pipes, for err to capture.
 # $opt and ${1-} stay unquoted so an absent flag or command drops out:
-#  shellcheck disable=SC2086
+#  shellcheck disable=SC2086,SC2069
 cmd_run() {
 	local err opt=
 	[ "${1-}" = -q ] && {
@@ -232,11 +238,26 @@ cmd_run() {
 		shift
 	}
 	cmd_exists $opt ${1-} || return
-	[ -z "$opt" ] && log "Running: $*"
-	"$@" && return 0
-	err=$?
-	[ -z "$opt" ] && loge "Command $1 failed, err=$err."
-	return $err
+	[ -n "$opt" ] && {
+		"$@" >/dev/null 2>&1
+		return
+	}
+	log "Running: $*"
+	err=$(
+		exec 4>&1
+		{
+			{
+				if "$@" 2>&1 1>&3 3>&-; then
+					printf %s 0 >&4
+				else
+					printf %s "$?" >&4
+				fi
+			} | tologe
+		} 3>&1 1>&2 | tolog
+	) || :
+	[ "$err" -eq 0 ] && return 0
+	loge "Command $1 failed, err=$err."
+	return "$err"
 }
 
 # Like cmd_run but a missing or unspecified command is a skipped no-op
