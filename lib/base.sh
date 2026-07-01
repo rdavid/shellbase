@@ -760,7 +760,10 @@ retry() {
 		"$@" && return 0
 		err=$?
 		logw Retry "$cnt" failed, err="$err".
-		[ "$cnt" -lt "$max" ] && sleep "$dly"
+		[ "$cnt" -lt "$max" ] && {
+			log Sleeping "$dly"s before next retry.
+			sleep "$dly"
+		}
 		dly=$((dly * 2))
 		cnt=$((cnt + 1))
 	done
