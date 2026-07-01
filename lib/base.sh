@@ -43,11 +43,12 @@ BASE_QUIET=false
 BASE_RC_ARG_NE=15
 BASE_RC_ARG_NO=11
 BASE_RC_ARG_WA=12
+BASE_RC_CMD_NE=16
 BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260701
+BASE_VERSION=0.9.20260702
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -187,15 +188,18 @@ chrono_sto() {
 	printf %s "$dur"
 }
 
-# Checks whether all specified commands exist and are executable. Loops over
-# the arguments, each one is a command name. The presence of a command is a
-# frequent occurrence, and the event is not logged. The function returns 0 if
-# all commands exist, or the number of missing commands (capped at 255 because
-# shell return codes are limited to 0..255) otherwise.
+# Checks that every argument names a command that exists and is executable.
+# Finding a command is the common case and stays silent; a missing one is
+# warned unless -q is set. With no arguments it fails with BASE_RC_ARG_NO.
+# Return code:
+#  - 0 when all commands are present;
+#  - otherwise a count of the missing commands that starts from BASE_RC_CMD_NE:
+#    one missing yields BASE_RC_CMD_NE, each further miss adds one, capped so
+#    the result stays within the shell's 0..255 return range.
 # Usage: cmd_exists [-q] cmd1 [cmd2 ...]
 # Options: -q (quiet mode - suppress warnings and errors)
 cmd_exists() {
-	local cmd cnt=0 max=255 qui=false
+	local cmd cnt=0 max=$((256 - BASE_RC_CMD_NE)) qui=false
 	[ "${1-}" = -q ] && {
 		qui=true
 		shift
@@ -214,7 +218,7 @@ cmd_exists() {
 			}
 		}
 	done
-	return $cnt
+	[ "$cnt" -eq 0 ] || return $((BASE_RC_CMD_NE + cnt - 1))
 }
 
 # Runs a command after confirming it exists. Without -q it logs the command,
@@ -1509,6 +1513,7 @@ readonly \
 	BASE_RC_ARG_NE \
 	BASE_RC_ARG_NO \
 	BASE_RC_ARG_WA \
+	BASE_RC_CMD_NE \
 	BASE_RC_CON_NO \
 	BASE_RC_CON_TO \
 	BASE_RC_DIE_NO \
