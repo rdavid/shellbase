@@ -68,14 +68,14 @@ toc::[]
 == About
 
 The `shellbase` framework serves as a foundation for Unix shell scripts.
-The framework stays POSIX-compliant (`Portable Operating System Interface for uniX`)
-and runs across Unix-like systems.
-It offers essential services, including logging, validation helpers, signal
-handling, garbage collection, and support for concurrent instances.
+It follows POSIX, the Portable Operating System Interface standard, and runs
+across Unix-like systems.
+The framework offers essential services, including logging, validation
+helpers, signal handling, garbage collection, and support for concurrent
+instances.
 
 `shellbase` defines global variables and functions.
-All functions without the `base_` prefix are public.
-Clients may use them.
+Functions without the `base_` prefix are public, and clients may call them.
 The public functions are, in alphabetical order:
 {url-base}#L56[`aud_only`],
 {url-base}#L104[`beroot`],
@@ -137,11 +137,10 @@ The public functions are, in alphabetical order:
 {url-base}#L1017[`vid2aud`],
 {url-base}#L1031[`ytda`].
 
-Global variables have the `BASE_` prefix.
+Global variables carry the `BASE_` prefix.
 Clients may use them and should place temporary files under `$BASE_WIP`.
-All functions starting with the `base_` prefix stay internal.
-Clients shouldn't use them.
-Names appear in alphabetical order.
+Functions with the `base_` prefix stay internal, and clients shouldn't call
+them.
 
 See
 {url-dotfiles}[`dotfiles`],
@@ -152,7 +151,7 @@ as example projects that use this framework.
 
 == Install
 
-The artifact consists of a single non-executable POSIX-compliant shell script file
+The framework ships as a single non-executable POSIX-compliant shell script,
 {url-base}[`base.sh`].
 Install the file from the repository:
 
@@ -162,10 +161,10 @@ git clone https://github.com/rdavid/shellbase.git &&
   ./shellbase/app/install
 ----
 
-Install the file from a release.
-Some operating systems demand administrative rights to install to
+Alternatively, install the file from a release.
+Some operating systems demand administrative rights to write to
 `/usr/local/bin`.
-Use `sudo` or `doas` before `tar`:
+Prefix `tar` with `sudo` or `doas` when needed:
 
 [,sh]
 ----
@@ -183,7 +182,7 @@ curl --location --silent $SRC |
 == Using
 
 Verify `/usr/local/bin` appears in your `PATH`.
-Then your script can use `shellbase`:
+Then source the framework from your script:
 
 [,sh]
 ----
