@@ -9,4 +9,5 @@ cmd_runif : &&
 	cmd_runif -q : &&
 	cmd_runif printf '' &&
 	cmd_runif c0mmand_n0t_f0und &&
-	cmd_runif -q c0mmand_n0t_f0und
+	cmd_runif -q c0mmand_n0t_f0und &&
+	cmd_runif -q sh -c "exit $BASE_RC_CMD_NE"

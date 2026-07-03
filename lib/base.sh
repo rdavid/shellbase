@@ -48,7 +48,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260702
+BASE_VERSION=0.9.20260703
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -264,22 +264,17 @@ cmd_run() {
 	return "$err"
 }
 
-# Like cmd_run but a missing or unspecified command is a skipped no-op
-# returning 0, so it suits optional tools; otherwise it defers to cmd_run. cmd
-# is the command word and opt forwards -q to the existence check, so a missing
-# command is reported only without -q.
+# Like cmd_run for optional tools: a missing command becomes a skipped no-op
+# returning 0 while every other outcome keeps cmd_run's own code. It runs the
+# command through cmd_run and remaps only BASE_RC_CMD_NE to 0, so a real
+# failure, or an unspecified command failing with BASE_RC_ARG_NO, still
+# propagates. A command that itself exits with BASE_RC_CMD_NE cannot be told
+# apart from a missing one and also counts as skipped. Both $? expansions
+# occur while $? still holds cmd_run's code, so the remap is exact.
 # Usage: cmd_runif [-q] cmd [arg ...]
 # Options: -q (quiet mode - suppress logs and warnings)
-# $opt stays unquoted so an absent flag drops out:
-#  shellcheck disable=SC2086
 cmd_runif() {
-	local cmd="${1-}" opt=
-	[ "$cmd" = -q ] && {
-		cmd="${2-}"
-		opt=-q
-	}
-	cmd_exists $opt "$cmd" || return 0
-	cmd_run "$@"
+	cmd_run "$@" || return $(($? == BASE_RC_CMD_NE ? 0 : $?))
 }
 
 # Prints all parameters to the log and exits with a success code. The subshell
