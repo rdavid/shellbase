@@ -969,32 +969,40 @@ validate_var() {
 	for arg; do var_exists "$arg" || die Define "$arg".; done
 }
 
-# Checks whether all variables are defined. Loops over the arguments, each one
-# is a variable name. Fails if any variable is unset or null.
+# Checks whether all variables are defined. Every argument is a variable
+# name that has to be a POSIX identifier: [A-Za-z_][A-Za-z0-9_]*. The check
+# reads it with the ${name-} expansion, which turns an undefined name into
+# an empty string and avoids failures under set -o nounset. A set variable
+# is logged with its value; an unset or null one is a very common case and
+# stays silent.
+# Return code:
+#  - 0 when all variables are set;
+#  - otherwise the code of the last failing argument: BASE_RC_ARG_NE for an
+#    invalid or unreadable name, BASE_RC_ARG_NO for an unset or null
+#    variable.
+# Usage: var_exists [-q] var1 [var2 ...]
+# Options: -q (quiet mode - suppress warnings and logs)
 var_exists() {
-	local arg ret=0 var
+	local arg qui=false ret=0 var
+	[ "${1-}" = -q ] && {
+		qui=true
+		shift
+	}
 	for arg; do
-
-		# Accepts only POSIX identifiers: [A-Za-z_][A-Za-z0-9_]*.
 		case "$arg" in
 		'' | [!A-Za-z_]* | *[!A-Za-z0-9_]*)
-			logw "Invalid variable name: $arg."
+			[ "$qui" = false ] && logw "Invalid variable name $arg."
 			ret=$BASE_RC_ARG_NE
 			continue
 			;;
 		esac
-
-		# ${name-} expands to empty when name is undefined and avoids nounset
-		# failures under set -o nounset.
 		eval "var=\${$arg-}" || {
-			logw "Failed to read variable: $arg."
+			[ "$qui" = false ] && logw "Failed to read variable $arg."
 			ret=$BASE_RC_ARG_NE
 			continue
 		}
-
-		# An absence of a variable is a very common case. Does not log the event.
 		if [ -n "$var" ]; then
-			log "Variable $arg is set to $var."
+			[ "$qui" = false ] && log "Variable $arg is set to $var."
 		else
 			ret=$BASE_RC_ARG_NO
 		fi
@@ -1166,14 +1174,14 @@ base_display_usage() {
 			                    prompt without interruption.
 		EOM
 	)" || die "$use"
-	var_exists BASE_APP_USAGE 2>/dev/null &&
+	var_exists -q BASE_APP_USAGE &&
 		printf %s\\n "$use" "$BASE_APP_USAGE" ||
 		printf %s\\n "$use"
 }
 
 # Prints the shellbase version and the application version.
 base_display_version() {
-	var_exists BASE_APP_VERSION 2>/dev/null &&
+	var_exists -q BASE_APP_VERSION &&
 		printf \
 			'shellbase %s\n%s %s\n' \
 			"$BASE_VERSION" "$BASE_IAM" "$BASE_APP_VERSION" | sort ||
@@ -1195,7 +1203,7 @@ base_display_warranty() {
 			THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 		EOM
 	)" || die "$war"
-	var_exists BASE_APP_WARRANTY 2>/dev/null &&
+	var_exists -q BASE_APP_WARRANTY &&
 		printf '%s\n\n%s\n' "$war" "$BASE_APP_WARRANTY" ||
 		printf %s\\n "$war"
 }
@@ -1318,7 +1326,7 @@ base_main() {
 	trap base_sig_cleanup HUP INT QUIT TERM
 
 	# Continues only with a minimum shellbase version.
-	if var_exists BASE_MIN_VERSION 2>/dev/null; then
+	if var_exists -q BASE_MIN_VERSION; then
 		ver_ge "$BASE_VERSION" "$BASE_MIN_VERSION" ||
 			die "Shellbase is $BASE_VERSION, needs $BASE_MIN_VERSION or above."
 	fi
