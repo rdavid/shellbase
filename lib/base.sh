@@ -48,7 +48,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260703
+BASE_VERSION=0.9.20260704
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -955,11 +955,11 @@ user_exists() {
 	return $ret
 }
 
-# Makes sure all commands exist, otherwise dies. Loops over the arguments in
-# order to die with a command name in error.
+# Deprecated: use cmd_exists directly, validate_cmd will be removed in a
+# future release. Makes sure all commands exist, otherwise dies.
 validate_cmd() {
-	local arg
-	for arg; do cmd_exists "$arg" || die Install "$arg".; done
+	logw validate_cmd is deprecated and will be removed, use cmd_exists.
+	cmd_exists "$@" || die
 }
 
 # Checks if environment variables are defined. Loops over the arguments in
