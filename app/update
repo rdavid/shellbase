@@ -29,7 +29,7 @@ BASE_APP_USAGE="$(
 #  shellcheck disable=SC2034
 readonly \
 	BASE_APP_USAGE \
-	BASE_APP_VERSION=0.9.20260627 \
+	BASE_APP_VERSION=0.9.20260703 \
 	BASE_MIN_VERSION=0.9.20231212 \
 	BSH \
 	TGT=README.adoc
@@ -65,7 +65,7 @@ analyze() {
 		rev |
 		awk -F: '{print "{url-base}#L"$1"[`"$2"`],"}' |
 		sed '$s/\,/./g' >"$MID"
-	num="$(awk '/Global variables have/ {print FNR}' "$TGT" 2>&1)" ||
+	num="$(awk '/Global variables/ {print FNR}' "$TGT" 2>&1)" ||
 		die "$num"
 	num=$((num - 1))
 	tail -n +"$num" "$TGT" >"$END"

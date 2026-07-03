@@ -3,14 +3,14 @@
 # SPDX-FileCopyrightText: 2020-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 #
-# The shellbase framework serves as a foundation for Unix shell scripts. This
-# framework is mostly POSIX-compliant, ensuring compatibility across Unix-like
-# systems. It offers a range of essential services, including public functions
-# such as logger and multiple validations, signal handling, garbage collection,
-# and support for multiple instances.
+# The shellbase framework serves as a foundation for Unix shell scripts. It
+# mostly follows POSIX, the Portable Operating System Interface standard, and
+# runs across Unix-like systems. The framework offers essential services,
+# including logging, validation helpers, signal handling, garbage collection,
+# and support for concurrent instances.
 #
-# The shellbase defines global variables and functions. All functions without
-# base_ prefix are public and can be used by clients. The public functions
+# The framework defines global variables and functions. Functions without the
+# base_ prefix are public, and clients may call them. The public functions
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, chrono_get, chrono_sta, chrono_sto,
 # cmd_exists, cmd_run, cmd_runif, cya, die, dng2jpg, echo, ellipsize,
@@ -21,18 +21,18 @@
 # tolog, tologe, tolower, totsout, tsout, url_exists, user_exists,
 # validate_cmd, validate_var, var_exists, ver_ge, vid2aud, ytda.
 #
-# Global variables have BASE_ prefix and clients can use them. Clients should
-# place temporary files under $BASE_WIP. All functions starting with the base_
-# prefix are internal and should not be used by clients. All names are in
-# alphabetical order.
+# Global variables carry the BASE_ prefix. Clients may use them and should
+# place temporary files under $BASE_WIP. Functions with the base_ prefix stay
+# internal, and clients shouldn't call them. All names appear in alphabetical
+# order.
 #
-# The following variables can be changed by command line parameters. They will
-# be declared readonly after the parsing of command line parameters. BASE_RC_...
-# and BASE_VERSION should be declared writable in case of double sourcing in
-# interactive mode. A better solution may exist.
+# Command line parameters may change the following variables. They become
+# readonly after the parsing of the command line. BASE_RC_... and BASE_VERSION
+# stay writable to survive double sourcing in interactive mode. A better
+# solution may exist.
 #
-# The script uses local variables which are not POSIX but supported by most
-# shells. See:
+# The script uses local variables, which POSIX omits but most shells support.
+# See:
 #  https://stackoverflow.com/q/18597697
 #  shellcheck disable=SC2039,SC3043
 BASE_DIR_WIP=/tmp
