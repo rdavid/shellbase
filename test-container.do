@@ -14,14 +14,14 @@ BSH="$(
 # Variable appears unused:
 #  shellcheck disable=SC2034
 readonly \
-	BASE_APP_VERSION=0.9.20260627 \
+	BASE_APP_VERSION=0.9.20260705 \
 	BSH
 set -- "$@" --quiet
 
 # File not following:
 #  shellcheck disable=SC1090
 . "$BSH"
-validate_cmd podman
+cmd_exists podman || die
 STOP_VM=YES
 out="$(podman machine start 2>&1)" || {
 	[ $? -eq 125 ] || die "$out"

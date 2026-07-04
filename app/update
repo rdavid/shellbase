@@ -29,7 +29,7 @@ BASE_APP_USAGE="$(
 #  shellcheck disable=SC2034
 readonly \
 	BASE_APP_USAGE \
-	BASE_APP_VERSION=0.9.20260703 \
+	BASE_APP_VERSION=0.9.20260705 \
 	BASE_MIN_VERSION=0.9.20231212 \
 	BSH \
 	TGT=README.adoc
@@ -97,7 +97,7 @@ update() {
 # Checks the environment.
 validate() {
 	isreadable "$BSH" "$TGT" || die
-	validate_cmd awk cat cmp cut grep head rev sed tail
+	cmd_exists rev || die
 	grep --help >/dev/null 2>&1 || {
 		logw Stopped, GNU grep is required.
 		cya
