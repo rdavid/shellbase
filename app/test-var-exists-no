@@ -5,6 +5,15 @@
 # File not following:
 #  shellcheck disable=SC1090,SC1091
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+# A call without arguments has to fail, a zero exit here is caught by the
+# harness, which expects this script to return positively.
+var_exists -q && exit 0
+
+# An invalid name takes precedence over an unset variable, the || keeps
+# errexit from ending the script before the code is compared.
+ret=0
+var_exists -q 1nvalid UNDEFINED_VAR1ABLE || ret=$?
+[ "$ret" -eq "$BASE_RC_ARG_NE" ] || exit 0
 var_exists \
 	-q \
 	HOME \

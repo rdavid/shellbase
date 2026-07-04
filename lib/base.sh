@@ -969,42 +969,46 @@ validate_var() {
 	for arg; do var_exists "$arg" || die Define "$arg".; done
 }
 
-# Checks whether all variables are defined. Every argument is a variable
-# name that has to be a POSIX identifier: [A-Za-z_][A-Za-z0-9_]*. The check
-# reads it with the ${name-} expansion, which turns an undefined name into
-# an empty string and avoids failures under set -o nounset. A set variable
-# is logged with its value; an unset or null one is a very common case and
-# stays silent.
+# Checks that every argument names a defined variable. A name has to be a
+# POSIX identifier: [A-Za-z_][A-Za-z0-9_]*; it is read with the ${name-}
+# expansion, which keeps set -o nounset from failing on an undefined name.
+# Each check is logged unless -q is set: a set variable with its value, an
+# unset or null one by name, an invalid or unreadable name as an error. With
+# no arguments it fails with BASE_RC_ARG_NO.
 # Return code:
-#  - 0 when all variables are set;
-#  - otherwise the code of the last failing argument: BASE_RC_ARG_NE for an
-#    invalid or unreadable name, BASE_RC_ARG_NO for an unset or null
-#    variable.
+#  - 0 when all variables are set and not null;
+#  - BASE_RC_ARG_NE when a name is invalid or unreadable;
+#  - otherwise BASE_RC_ARG_NO when a variable is unset or null.
 # Usage: var_exists [-q] var1 [var2 ...]
-# Options: -q (quiet mode - suppress warnings and logs)
+# Options: -q (quiet mode - suppress errors and logs)
 var_exists() {
 	local arg qui=false ret=0 var
 	[ "${1-}" = -q ] && {
 		qui=true
 		shift
 	}
+	[ $# -eq 0 ] && {
+		[ "$qui" = false ] && loge No variables specified to check.
+		return $BASE_RC_ARG_NO
+	}
 	for arg; do
 		case "$arg" in
 		'' | [!A-Za-z_]* | *[!A-Za-z0-9_]*)
-			[ "$qui" = false ] && logw "Invalid variable name $arg."
+			[ "$qui" = false ] && loge "Invalid variable name $arg."
 			ret=$BASE_RC_ARG_NE
 			continue
 			;;
 		esac
 		eval "var=\${$arg-}" || {
-			[ "$qui" = false ] && logw "Failed to read variable $arg."
+			[ "$qui" = false ] && loge "Failed to read variable $arg."
 			ret=$BASE_RC_ARG_NE
 			continue
 		}
 		if [ -n "$var" ]; then
 			[ "$qui" = false ] && log "Variable $arg is set to $var."
 		else
-			ret=$BASE_RC_ARG_NO
+			[ "$qui" = false ] && log "Variable $arg is unset or null."
+			[ "$ret" -eq 0 ] && ret=$BASE_RC_ARG_NO
 		fi
 	done
 	return $ret
