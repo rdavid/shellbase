@@ -962,11 +962,11 @@ validate_cmd() {
 	cmd_exists "$@" || die
 }
 
-# Checks if environment variables are defined. Loops over the arguments in
-# order to die with a variable name in error.
+# Deprecated: use var_exists directly, validate_var will be removed in a
+# future release. Makes sure all variables are defined, otherwise dies.
 validate_var() {
-	local arg
-	for arg; do var_exists "$arg" || die Define "$arg".; done
+	logw validate_var is deprecated and will be removed, use var_exists.
+	var_exists "$@" || die
 }
 
 # Checks that every argument names a defined variable. A name has to be a
