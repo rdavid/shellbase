@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-2025 David Rabkin
+# SPDX-FileCopyrightText: 2023-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 FROM ghcr.io/rdavid/goredoer:0.9.20260404 as goredoer
 FROM debian:bookworm
@@ -8,7 +8,7 @@ ENV \
 	CM_URL=https://github.com/mrtazz/checkmake/releases/download/0.2.2/checkmake-0.2.2.linux.amd64 \
 	DEBCONF_NOWARNINGS=yes \
 	HL_BIN=/usr/local/bin/hadolint \
-	HL_URL=https://github.com/hadolint/hadolint/releases/download/v2.14.0/hadolint-Linux-x86_64 \
+	HL_URL=https://github.com/hadolint/hadolint/releases/download/v2.14.0/hadolint-linux-x86_64 \
 	TIME_ZONE=Asia/Jerusalem \
 	USER=shellbase
 COPY LICENSES/* /licenses/
