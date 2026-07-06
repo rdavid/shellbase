@@ -39,8 +39,22 @@ RUN \
 	&& useradd --create-home --gid 1001 --uid 1001 "$USER" \
 	&& cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime \
 	&& printf %s "$TIME_ZONE" > /etc/timezone \
-	&& curl --location --output "$CM_BIN" --silent "$CM_URL" \
-	&& curl --location --output "$HL_BIN" --silent "$HL_URL" \
+	&& curl \
+		--continue-at - \
+		--location \
+		--output "$CM_BIN" \
+		--retry 10 \
+		--retry-all-errors \
+		--silent \
+		"$CM_URL" \
+	&& curl \
+		--continue-at - \
+		--location \
+		--output "$HL_BIN" \
+		--retry 10 \
+		--retry-all-errors \
+		--silent \
+		"$HL_URL" \
 	&& chmod +x "$CM_BIN" "$HL_BIN" \
 	&& goredo -symlinks
 USER "$USER"

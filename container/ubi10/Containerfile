@@ -26,8 +26,22 @@ RUN \
 		util-linux-2.40.2 \
 	&& microdnf clean all --disableplugin=subscription-manager \
 	&& useradd --create-home "$USER" \
-	&& curl --location --output "$CM_BIN" --silent "$CM_URL" \
-	&& curl --location --output "$HL_BIN" --silent "$HL_URL" \
+	&& curl \
+		--continue-at - \
+		--location \
+		--output "$CM_BIN" \
+		--retry 10 \
+		--retry-all-errors \
+		--silent \
+		"$CM_URL" \
+	&& curl \
+		--continue-at - \
+		--location \
+		--output "$HL_BIN" \
+		--retry 10 \
+		--retry-all-errors \
+		--silent \
+		"$HL_URL" \
 	&& chmod +x "$CM_BIN" "$HL_BIN" \
 	&& goredo -symlinks
 USER "$USER"
