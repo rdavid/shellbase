@@ -5,7 +5,7 @@ FROM debian:bookworm
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	CM_BIN=/usr/local/bin/checkmake \
-	CM_URL=https://github.com/mrtazz/checkmake/releases/download/0.2.2/checkmake-0.2.2.linux.amd64 \
+	CM_URL=https://github.com/mrtazz/checkmake/releases/download/v0.3.2/checkmake-v0.3.2.linux.amd64 \
 	DEBCONF_NOWARNINGS=yes \
 	HL_BIN=/usr/local/bin/hadolint \
 	HL_URL=https://github.com/hadolint/hadolint/releases/download/v2.14.0/hadolint-linux-x86_64 \
