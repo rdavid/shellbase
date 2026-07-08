@@ -49,13 +49,13 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260707
+BASE_VERSION=0.9.20260708
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
 # counting the matched files.
 aud_only() {
-	local cnt err lst out
+	local cnt err lst
 	lst=$(
 		find . -type f \
 			! \( \
@@ -81,24 +81,14 @@ aud_only() {
 $lst
 Total $cnt files" || return
 	log Removing "$cnt" files.
-	out="$(
-		find . -type f \
-			! \( \
-			-name '*.[Mm][Pp]3' -o \
-			-name '*.[Mm]4[Aa]' -o \
-			-name '*.[Ff][Ll][Aa][Cc]' \
-			\) \
-			-exec rm -f {} + 2>&1
-	)" || {
-		err=$?
-		loge "$out"
-		return $err
-	}
-	out="$(find . -type d -empty -delete 2>&1)" || {
-		err=$?
-		loge "$out"
-		return $err
-	}
+	cmd_run find . -type f \
+		! \( \
+		-name '*.[Mm][Pp]3' -o \
+		-name '*.[Mm]4[Aa]' -o \
+		-name '*.[Ff][Ll][Aa][Cc]' \
+		\) \
+		-exec rm -f {} + || return
+	cmd_run find . -type d -empty -delete
 }
 
 # Checks if the script is run by the root user.
