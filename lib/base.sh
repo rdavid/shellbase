@@ -53,9 +53,10 @@ BASE_VERSION=0.9.20260708
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
-# counting the matched files.
+# counting the matched files. The confirmation message is deliberately not
+# indented: leading tabs would appear verbatim in the prompt.
 aud_only() {
-	local cnt err lst
+	local cnt err lst msg
 	lst=$(
 		find . -type f \
 			! \( \
@@ -77,9 +78,10 @@ aud_only() {
 		loge Something went wrong.
 		return $err
 	}
-	should_continue "Remove the following files:
+	msg="Remove the following files:
 $lst
-Total $cnt files" || return
+Total $cnt files"
+	should_continue "$msg" || return
 	log Removing "$cnt" files.
 	cmd_run find . -type f \
 		! \( \
