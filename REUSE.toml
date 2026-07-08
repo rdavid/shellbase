@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 David Rabkin
+# SPDX-FileCopyrightText: 2025-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 version = 1
 [[annotations]]
@@ -14,5 +14,5 @@ path = [
 	"README.adoc",
 ]
 precedence = "override"
-SPDX-FileCopyrightText = "2025 David Rabkin"
+SPDX-FileCopyrightText = "2025-2026 David Rabkin"
 SPDX-License-Identifier = "0BSD"
