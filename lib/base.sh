@@ -49,7 +49,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260708
+BASE_VERSION=0.9.20260710
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -239,7 +239,7 @@ cmd_run() {
 		"$@" >/dev/null 2>&1
 		return
 	}
-	log "Running: $*"
+	log "» $*"
 	err=$(
 		exec 4>&1
 		{
@@ -253,7 +253,7 @@ cmd_run() {
 		} 3>&1 1>&2 | tolog
 	) || :
 	[ "$err" -eq 0 ] && return 0
-	loge "Command $1 failed, err=$err."
+	loge "$1 failed, err=$err."
 	return "$err"
 }
 
