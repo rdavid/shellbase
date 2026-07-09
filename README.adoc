@@ -69,13 +69,12 @@ toc::[]
 
 The `shellbase` framework serves as a foundation for Unix shell scripts.
 It follows POSIX, the Portable Operating System Interface standard, and runs
-across Unix-like systems.
-The framework offers essential services, including logging, validation
-helpers, signal handling, garbage collection, and support for concurrent
-instances.
+on any Unix-like system.
+The framework provides logging, validation helpers, signal handling, garbage
+collection, and support for concurrent instances.
 
 `shellbase` defines global variables and functions.
-Functions without the `base_` prefix are public, and clients may call them.
+Clients may call any function without the `base_` prefix.
 The public functions are, in alphabetical order:
 {url-base}#L58[`aud_only`],
 {url-base}#L97[`beroot`],
@@ -139,19 +138,19 @@ The public functions are, in alphabetical order:
 
 Global variables carry the `BASE_` prefix.
 Clients may use them and should place temporary files under `$BASE_WIP`.
-Functions with the `base_` prefix stay internal, and clients shouldn't call
-them.
+Functions with the `base_` prefix stay internal.
+Clients shouldn't call them.
 
 See
 {url-dotfiles}[`dotfiles`],
 {url-gento}[`gento`],
 {url-pulse}[`pulse`], and
 {url-toolbox}[`toolbox`]
-as example projects that use this framework.
+for example projects built on the framework.
 
 == Install
 
-The framework ships as a single non-executable POSIX-compliant shell script,
+The framework ships as a single non-executable POSIX shell script,
 {url-base}[`base.sh`].
 Install the file from the repository:
 
@@ -161,7 +160,7 @@ git clone https://github.com/rdavid/shellbase.git &&
   ./shellbase/app/install
 ----
 
-Alternatively, install the file from a release.
+Or install the file from a release.
 Some operating systems demand administrative rights to write to
 `/usr/local/bin`.
 Prefix `tar` with `sudo` or `doas` when needed:
@@ -197,11 +196,12 @@ The framework provides three loggers:
 {url-base}#L545[`log`] for information,
 {url-base}#L554[`loge`] for errors, and
 {url-base}#L562[`logw`] for warnings.
-Each prints to standard error and, in non-interactive mode, appends the message
-to the log file under a single lowercase level tag: `i` for information, `e` for
-errors, and `w` for warnings.
+Each logger prints to standard error.
+In non-interactive mode, each also appends the message to the log file under
+a single lowercase level tag: `i` for information, `e` for errors, and `w`
+for warnings.
 
-You can try `shellbase` without installation:
+Try `shellbase` without installation:
 
 [,sh]
 ----
@@ -258,8 +258,9 @@ You can install Sergey Matveev's {url-goredo}[`goredo`] implementation.
 {url-vale}[`vale`],
 {url-yamllint}[`yamllint`],
 {url-zizmor}[`zizmor`].
-`redo test` runs unit tests across installed shells.
-`redo test-container` runs the tests across various shells in containers.
+`redo test` runs the unit tests against each installed shell.
+`redo test-container` repeats the tests inside the supported container
+images.
 The project uses {url-cv}[David Rabkin]'s {url-goredoer}[`goredoer`] to build
 {url-goredo}[`goredo`].
 
