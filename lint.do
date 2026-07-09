@@ -2,9 +2,13 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
-# Variable appears unused, file not following:
+#
+# Lints the project with any installed linters. Command output streams to
+# the console through the shellbase loggers, and the script prints OK to
+# stdin for the redo target.
+#
+# Variable appears unused and file not following:
 #  shellcheck disable=SC2034,SC1090
-readonly BASE_APP_VERSION=0.9.20260701
 redo-ifchange \
 	./.github/*.yml \
 	./.github/workflows/*.yml \
@@ -21,8 +25,10 @@ BSH="$(
 	printf >&2 %s\\n "$BSH"
 	exit $err
 }
-readonly BSH
-set -- "$@" --quiet
+readonly \
+	BASE_APP_VERSION=0.9.20260709 \
+	BASE_MIN_VERSION=0.9.20260707 \
+	BSH
 . "$BSH"
 cmd_runif actionlint
 cmd_runif checkmake ./Makefile
@@ -42,5 +48,6 @@ cmd_runif vale ./README.adoc
 cmd_runif yamllint \
 	./.github/*.yml \
 	./.github/workflows/*.yml
-cmd_runif zizmor --offline ./.github/ 2>&1
+cmd_runif zizmor --offline ./.github/
 ./app/update
+printf OK

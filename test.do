@@ -2,6 +2,13 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# Runs every executable test case under app/ against each locally installed
+# shell. Test output streams to the console through stderr, and the script
+# prints OK to stdin for the redo target.
+#
+# Variable appears unused, file not following and A && B || C:
+#  shellcheck disable=SC2034,SC1090,SC2015
 redo-ifchange ./app/* ./lib/*
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
@@ -10,30 +17,21 @@ BSH="$(
 	printf >&2 %s\\n "$BSH"
 	exit $err
 }
-
-# Variable appears unused:
-#  shellcheck disable=SC2034
 readonly \
-	BASE_APP_VERSION=0.9.20260627 \
+	BASE_APP_VERSION=0.9.20260709 \
 	BASE_MIN_VERSION=0.9.20231228 \
 	BSH
-set -- "$@" --quiet
-
-# File not following:
-#  shellcheck disable=SC1090
 . "$BSH"
 for sh in ash bash dash fish ksh oksh tcsh yash zsh; do
 	cmd_exists "$sh" || continue
 	chrono_sta run || die
 	for ok in ./app/*-ok; do
-		"$sh" -c "$ok 2>&1" || die "$ok" on "$sh" returns negative.
+		"$sh" -c "$ok 2>&1" >&2 || die "$ok" on "$sh" returns negative.
 	done
 	for no in ./app/*-no; do
-
-		# A && B || C:
-		#  shellcheck disable=SC2015
-		"$sh" -c "$no 2>&1" && die "$no" on "$sh" returns positive. || :
+		"$sh" -c "$no 2>&1" >&2 && die "$no" on "$sh" returns positive. || :
 	done
 	dur="$(chrono_sto run)" || die
-	printf >&2 '%4s %s.\n' "$sh" "$dur"
+	log "$sh" "$dur."
 done
+printf OK

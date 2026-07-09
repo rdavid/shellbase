@@ -2,7 +2,20 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
-redo-ifchange ./app/* ./lib/*
+#
+# Runs the lint and test targets inside every supported container image with
+# Podman. The variable STP tracks whether the script started the Podman VM
+# and should stop it on exit. Exit code 125 from podman machine start means
+# the VM is already running or is still starting up. Command output streams
+# to the console through the shellbase loggers, and the script prints OK to
+# stdin for the redo target.
+#
+# Variable appears unused and file not following:
+#  shellcheck disable=SC2034,SC1090
+redo-ifchange \
+	./app/* \
+	./container/*/Containerfile \
+	./lib/*
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
 )"/lib/base.sh || {
@@ -10,23 +23,16 @@ BSH="$(
 	printf >&2 %s\\n "$BSH"
 	exit $err
 }
-
-# Variable appears unused:
-#  shellcheck disable=SC2034
 readonly \
-	BASE_APP_VERSION=0.9.20260705 \
+	BASE_APP_VERSION=0.9.20260709 \
+	BASE_MIN_VERSION=0.9.20260707 \
 	BSH
-set -- "$@" --quiet
-
-# File not following:
-#  shellcheck disable=SC1090
 . "$BSH"
-cmd_exists podman || die
-STOP_VM=YES
-out="$(podman machine start 2>&1)" || {
-	[ $? -eq 125 ] || die "$out"
-	printf >&2 'VM already running or starting.\n'
-	STOP_VM=NO
+STP=true
+cmd_run podman machine start || {
+	[ $? = 125 ] || die
+	log Podman VM is already running.
+	STP=false
 }
 
 # If tests run in shell-tracing mode, passes the tracing flag to the container.
@@ -37,19 +43,17 @@ inside "$(uname -m)" arm64 && ARM=true || ARM=false
 # container and removes it automatically on exit.
 for f in ./container/*/Containerfile; do
 	[ "$ARM" = true ] && inside "$f" archlinux && {
-		printf >&2 'Arch Linux does not currently support ARM architecture.\n'
+		log Arch Linux does not currently support ARM architecture.
 		continue
 	}
 	nme="$(printf %s "$f" | awk -F / '{print $3}' 2>&1)" || die "$nme"
-	printf >&2 %s...\\n "$nme"
+	log "$nme..."
 	chrono_sta run || die Unable to start timer.
 	hsh="$(podman build --file "$f" --format docker --quiet . 2>&1)" ||
 		die "$hsh"
-	podman run --rm --rmi "$hsh" "$EXE" lint test
+	cmd_run podman run --rm --rmi "$hsh" "$EXE" lint test
 	dur="$(chrono_sto run)" || die Unable to stop timer.
-	printf >&2 %s\ %s.\\n "$nme" "$dur"
+	log "$nme" "$dur".
 done
-
-# A && B || C is not if-then-else:
-#  shellcheck disable=SC2015
-[ "$STOP_VM" = YES ] && podman machine stop || :
+[ "$STP" = false ] || podman machine stop
+printf OK
