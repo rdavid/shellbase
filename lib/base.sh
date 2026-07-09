@@ -1230,19 +1230,19 @@ base_hi() {
 
 # Converts files matching the given pattern in the current directory to JPEG.
 base_img2jpg() {
-	cmd_exists find magick || return
-	[ $# -eq 0 ] && {
-		loge No file pattern specified for conversion.
+	[ $# -eq 1 ] || {
+		loge Expected single file pattern, got "$#".
 		return $BASE_RC_ARG_NO
 	}
 	local pat="$1"
-	find . \
+	cmd_exists magick || return
+	cmd_run find . \
 		-maxdepth 1 \
 		-name "$pat" \
 		-type f \
-		-exec magick mogrify -format jpg -monitor {} +
+		-exec magick mogrify -format jpg -monitor {} + || return
 	should_continue 'Remove the source files' || return
-	find . \
+	cmd_run find . \
 		-maxdepth 1 \
 		-name "$pat" \
 		-type f \
