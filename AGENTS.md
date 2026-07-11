@@ -18,8 +18,8 @@ This project uses `redo` (or `goredo`) as the primary task runner. `make` is onl
 a thin proxy.
 
 - `redo all`: run the default build target.
-- `redo lint`: run `actionlint`, `checkmake`, `hadolint`, `reuse`,
-  `shellcheck`, `shfmt`, `typos`, `vale`, `yamllint`, and `zizmor`.
+- `redo lint`: run `actionlint`, `checkmake`, `dash`, `hadolint`, `mksh`,
+  `reuse`, `shellcheck`, `shfmt`, `typos`, `vale`, `yamllint`, and `zizmor`.
 - `redo test`: execute unit tests against the shells installed locally.
 - `redo test-container`: run the test suite inside the supported container
   images.

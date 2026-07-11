@@ -3,9 +3,13 @@
 # SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 #
-# Lints the project with any installed linters. Command output streams to
-# the console through the shellbase loggers, and the script prints OK to
-# stdin for the redo target.
+# Lints the project with whichever linters are installed, skipping the
+# missing ones. Command output streams to the console through the shellbase
+# loggers, while the script itself prints only OK to stdout, which redo
+# captures as the target. Dash and mksh check syntax one file per
+# invocation: a POSIX shell reads only its first operand as the script and
+# hands any further operands to it as positional parameters, so files after
+# the first would be silently skipped rather than checked.
 #
 # Variable appears unused and file not following:
 #  shellcheck disable=SC2034,SC1090
@@ -26,12 +30,16 @@ BSH="$(
 	exit $err
 }
 readonly \
-	BASE_APP_VERSION=0.9.20260709 \
+	BASE_APP_VERSION=0.9.20260711 \
 	BASE_MIN_VERSION=0.9.20260707 \
 	BSH
 . "$BSH"
 cmd_runif actionlint
 cmd_runif checkmake ./Makefile
+for f in ./*.do ./app/* ./lib/*; do
+	cmd_runif dash -n "$f"
+	cmd_runif mksh -n "$f"
+done
 cmd_runif hadolint ./container/*/Containerfile
 cmd_runif reuse lint
 cmd_runif shellcheck \

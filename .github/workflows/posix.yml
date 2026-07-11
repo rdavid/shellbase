@@ -1,0 +1,52 @@
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Parses the scripts under strict POSIX shells. shellcheck performs static
+# analysis only, while dash and mksh parse each script and reject syntax the
+# project's target shells do not accept. The matrix shell name reaches the
+# run block through an environment variable to keep the command free of
+# template injection. dash ships with Ubuntu as /bin/sh, so the install
+# runs only when the matrix shell is missing, sparing the dash leg a
+# needless apt fetch.
+---
+name: posix
+'on':
+  pull_request:
+    paths: &paths
+      - '*.do'
+      - app/**
+      - lib/**
+  push:
+    branches: [master]
+    paths: *paths
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+defaults:
+  run:
+    shell: sh
+jobs:
+  posix:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        shell: [dash, mksh]
+    steps:
+      - uses: actions/checkout@v7.0.0
+        with:
+          persist-credentials: false
+      - env:
+          SH: ${{ matrix.shell }}
+        run: |
+          command -v "$SH" >/dev/null || {
+            sudo apt-get update
+            sudo apt-get install --no-install-recommends --yes \
+              "$SH"
+          }
+          for f in ./*.do ./app/* ./lib/*; do
+            "$SH" -n "$f"
+          done
