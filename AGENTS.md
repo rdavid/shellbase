@@ -3,6 +3,10 @@
 
 # Repository Guidelines
 
+`shellbase` is a POSIX-oriented shell framework (`lib/base.sh`) that scripts
+source for logging, validation, signal handling, garbage collection, and
+concurrent-instance support.
+
 ## Project Structure & Module Organization
 
 `lib/base.sh` is the core POSIX-oriented library and the main artifact shipped
@@ -24,14 +28,27 @@ a thin proxy.
 - `redo test-container`: run the test suite inside the supported container
   images.
 - `./app/install`: install `lib/base.sh` into the expected local path.
+- `./app/update`: lint `README.adoc`'s function links against `lib/base.sh`;
+  add `-a`/`--action` to regenerate them.
 
 Use `make test` only if you need the compatibility wrapper.
+
+`./app/update` requires GNU grep. On macOS, run it with GNU grep first on
+`PATH` (for example
+`PATH=/opt/homebrew/opt/grep/libexec/gnubin:$PATH ./app/update -a`); with the
+BSD grep on `PATH` by default, its GNU-grep guard exits 0 quietly and leaves
+`README.adoc` untouched instead of failing loudly.
 
 ## Coding Style & Naming Conventions
 
 Write shell as portable `sh` first. Keep Bash-specific features out unless the
 file already depends on them. Follow the existing editor hints: 2-space
-indentation, no tabs, and an approximately 79-character text width. Public
+indentation, no tabs, and an approximately 79-character text width. Every
+script opens with the same header shape: the `#!/bin/sh` shebang (omitted in
+`*.do` files, which `redo` executes directly), the
+`# vi: lbr noet sw=2 ts=2 tw=79 wrap` modeline, the two SPDX lines, then any
+`shellcheck disable` block or description comment, before sourcing
+`lib/base.sh`. Match this layout when adding a new file. Public
 functions in `lib/base.sh` are unprefixed, internal helpers use `base_`, and
 global variables use the `BASE_` prefix. Name local variables with no more
 than three letters, for example `cnt`, `dly`, or `err`. Keep new test files
@@ -60,6 +77,13 @@ alphabetical order by name. This applies to both `lib/base.sh` (public
 functions alphabetical, then `base_` helpers alphabetical, with no
 `main`) and to app scripts that define their own `main()`.
 
+`README.adoc` links every public function to its exact line in
+`lib/base.sh` (for example `{url-base}#L58[`aud_only`]`). Any edit to
+`lib/base.sh` that shifts line numbers requires running `./app/update -a`
+to regenerate the alphabetical function-list block; the `log`, `loge`,
+`logw`, and `prettytable` prose links elsewhere in `README.adoc` are
+hand-maintained and must be fixed manually.
+
 ## Testing Guidelines
 
 Add or update an executable script in `app/` for every behavior change. Use
@@ -68,6 +92,13 @@ submitting. Run `redo test-container` when changing portability-sensitive shell
 logic, container files, or CI behavior. Keep tests deterministic and compatible
 with multiple Unix-like shells.
 
+Test scripts run under `set -o errexit`, so a bare failing call ends the
+script before any check on its exit code runs. Route expected failures
+through `|| ret=$?` and compare `ret` afterward. In `*-no` scripts, assert by
+appending `|| exit 0` to the check itself, so an unexpected success falls
+through to `exit 0` and the test harness — which expects a `*-no` script to
+fail — flags it.
+
 ## Commit & Pull Request Guidelines
 
 Before committing, update `BASE_VERSION` in `lib/base.sh`,
@@ -75,7 +106,9 @@ Before committing, update `BASE_VERSION` in `lib/base.sh`,
 `SPDX-FileCopyrightText` year in every changed file. Only when the file
 has a substantive change — never bump the year or version by itself. If a
 refactor pass ends up making no meaningful change to a file, revert the
-year/version edit too. A metadata-only diff is noise.
+year/version edit too. A metadata-only diff is noise. Versions are
+date-based (`0.9.YYYYMMDD`); same-day commits share the value, so do not
+re-bump a version already set to today's date.
 
 Use Conventional Commits for all commits created by the agent, especially
 scoped forms such as `build(deps): ...` and `chore(deps): ...`. Prefer concise,
