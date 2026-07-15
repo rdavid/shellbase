@@ -1071,7 +1071,7 @@ base_bye() {
 		loge "$usr".
 		usr=err
 	}
-	msg="${BASE_IAM}[$$] $usr: bye after $dur"
+	msg="${BASE_IAM}[$$] $usr \o ~ $dur"
 	[ $err -eq 0 ] && log "$msg." || logw "$msg, err=$err."
 }
 
@@ -1223,7 +1223,7 @@ base_exit() {
 base_hi() {
 	local usr
 	usr="$(id -nu 2>&1)" || die "$usr"
-	log "${BASE_IAM}[$$] $usr: hi."
+	log "${BASE_IAM}[$$] $usr o/"
 	chrono_sta lifespan || die
 }
 
