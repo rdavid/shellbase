@@ -49,7 +49,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260710
+BASE_VERSION=0.9.20260715
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -1036,17 +1036,16 @@ vid2aud() {
 		done
 }
 
-# Downloads a video from YouTube.
+# Downloads a video from YouTube or another host supported by yt-dlp.
 ytda() {
-	cmd_exists renamr yt-dlp || return
-	yt-dlp \
+	cmd_run yt-dlp \
 		--add-metadata \
 		--cookies-from-browser chrome \
 		--format bestaudio+bestvideo/best \
 		--merge-output-format mp4 \
 		--output "%(uploader)s-%(upload_date)s-%(title)s.%(ext)s" \
-		"$@" &&
-		renamr -a
+		"$@" || return
+	cmd_runif renamr -a
 }
 
 # All functions below are private, have the base_ prefix, and should be used
