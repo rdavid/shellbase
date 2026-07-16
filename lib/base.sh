@@ -1208,15 +1208,18 @@ base_display_warranty() {
 		printf %s\\n "$war"
 }
 
-# Exits with an error code, which may be zero. Called from cya and die. In
-# interactive mode logs the outcome instead of exiting, so the calling shell
-# survives.
-# Note that A && B || C is not if-then-else:
-#  shellcheck disable=SC2015
+# Terminates with the given error code, which may be zero. Called from cya
+# and die. In interactive mode, avoids killing the shell: logs the outcome
+# and returns the error code instead of exiting.
 base_exit() {
-	local err=$? msg=You\'re\ immortal
+	local err=$? msg=Still\ alive
 	base_is_interactive || exit $err
-	[ $err -eq 0 ] && log "$msg." || logw "$msg, err=$err."
+	if [ $err -eq 0 ]; then
+		log "$msg."
+	else
+		logw "$msg, err=$err."
+	fi
+	return $err
 }
 
 # Logs the program name, process ID, and user name at startup.
