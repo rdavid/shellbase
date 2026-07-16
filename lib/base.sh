@@ -621,21 +621,23 @@ map_put() {
 	printf %s "$val" >"$dir/$nme/$key"
 }
 
-# Converts all .log files in the current directory to .gpx files using
-# gpsbabel, skipping unmatched glob literals and dangling links. gpsbabel may
-# reject long option names, so the call uses short options.
+# Converts all .log files in the current directory to .gpx files. The check
+# inside the loop skips the unmatched glob literal but keeps dangling links.
+# gpsbabel reads its arguments as a sequence. Each -f and -F file uses the
+# format set by the -i or -o preceding it, so sorting the options breaks the
+# call. gpsbabel may also reject long option names, so the call uses short
+# ones.
 nmea2gpx() {
 	local fle out
 	cmd_exists gpsbabel || return
 	for fle in ./*.log; do
 		[ -e "$fle" ] || [ -L "$fle" ] || continue
 		out="${fle%.log}.gpx"
-		log "Converting $fle to $out."
-		gpsbabel \
+		cmd_run gpsbabel \
 			-i nmea \
 			-f "$fle" \
 			-o gpx \
-			-F "$out" || return
+			-F "$out"
 	done
 }
 
@@ -1022,7 +1024,10 @@ ver_ge() {
 	loge ver_ge: sort failed with $err.
 }
 
-# Converts all video files in current directory to MP3 files.
+# Converts all video files in the current directory to MP3 files. find
+# matches the mp4, m4v, avi, and mkv extensions. ffmpeg treats options as
+# positional. An option before -i applies to the input and the rest apply to
+# the output, so only the output options after -i are sorted.
 vid2aud() {
 	cmd_exists ffmpeg || return
 	local dst src
@@ -1031,8 +1036,15 @@ vid2aud() {
 		while read -r src; do
 			src="${src#./}"
 			dst="${src%.*}".mp3
-			log Convert "$src" to "$dst".
-			ffmpeg -nostdin -i "$src" -vn -ar 44100 -ac 2 -ab 320k -f mp3 "$dst"
+			cmd_run ffmpeg \
+				-nostdin \
+				-i "$src" \
+				-ab 320k \
+				-ac 2 \
+				-ar 44100 \
+				-f mp3 \
+				-vn \
+				"$dst"
 		done
 }
 
