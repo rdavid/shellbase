@@ -1365,15 +1365,14 @@ base_main() {
 	}
 }
 
-# Converts all PDF files in the current directory to image files. Requires
-# one parameter specifying the desired image format.
+# Converts all PDF files in the current directory to image files. The only
+# parameter selects the image format, -jpeg or -png.
 base_pdf2img() {
-	cmd_exists pdftoppm sed || return
-	[ $# -eq 0 ] && {
+	[ $# -ne 0 ] || {
 		loge No format specified to convert.
 		return $BASE_RC_ARG_NO
 	}
-	local dst fle fmt="$1" msg
+	local fle fmt="$1"
 	case "$fmt" in
 	-jpeg) log Convert PDF files to JPEG. ;;
 	-png) log Convert PDF files to PNG. ;;
@@ -1383,12 +1382,7 @@ base_pdf2img() {
 		;;
 	esac
 	for fle in *.pdf; do
-		dst="${fle%.*}"
-		msg="$(pdftoppm 2>&1 "$fle" "$dst" "$fmt")" || {
-			loge NO: "$fle": "$msg".
-			continue
-		}
-		log OK: "$fle".
+		cmd_run pdftoppm "$fle" "${fle%.*}" "$fmt"
 	done
 }
 
