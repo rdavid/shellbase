@@ -29,13 +29,13 @@ a thin proxy.
   images.
 - `./app/install`: install `lib/base.sh` into the expected local path.
 - `./app/update`: lint `README.adoc`'s function links against `lib/base.sh`;
-  add `-a`/`--action` to regenerate them.
+  add `--action` to regenerate them.
 
 Use `make test` only if you need the compatibility wrapper.
 
 `./app/update` requires GNU grep. On macOS, run it with GNU grep first on
 `PATH` (for example
-`PATH=/opt/homebrew/opt/grep/libexec/gnubin:$PATH ./app/update -a`); with the
+`PATH=/opt/homebrew/opt/grep/libexec/gnubin:$PATH ./app/update --action`); with the
 BSD grep on `PATH` by default, its GNU-grep guard exits 0 quietly and leaves
 `README.adoc` untouched instead of failing loudly.
 
@@ -71,6 +71,11 @@ single-quoted form (e.g. `printf '%s\n'`). When both forms are the same
 length or the quoted form is shorter, prefer the quoted form for
 readability.
 
+When invoking a command that offers both a short and a long form of a flag,
+prefer the long form (for example `--action` over `-a`, `--force` over `-f`)
+for readability, both in scripts and in documentation examples. Fall back to
+the short form only when the command has no long-form equivalent.
+
 Order function definitions with `main()` first (immediately after the
 script-level setup), then the remaining functions in strict
 alphabetical order by name. This applies to both `lib/base.sh` (public
@@ -79,7 +84,7 @@ functions alphabetical, then `base_` helpers alphabetical, with no
 
 `README.adoc` links every public function to its exact line in
 `lib/base.sh` (for example `{url-base}#L58[`aud_only`]`). Any edit to
-`lib/base.sh` that shifts line numbers requires running `./app/update -a`
+`lib/base.sh` that shifts line numbers requires running `./app/update --action`
 to regenerate the alphabetical function-list block; the `log`, `loge`,
 `logw`, and `prettytable` prose links elsewhere in `README.adoc` are
 hand-maintained and must be fixed manually.
