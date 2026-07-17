@@ -49,7 +49,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260716
+BASE_VERSION=0.9.20260717
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -98,9 +98,14 @@ beroot() {
 	beuser root
 }
 
-# Checks if the script is run by a user.
+# Checks if the script is run by a user. Without a single argument it fails
+# with BASE_RC_ARG_NO. Relies on the id command, which exists on any POSIX
+# system.
 beuser() {
-	cmd_exists id || return
+	[ $# -eq 1 ] || {
+		loge Expected a single argument, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	local ask cur usr="$1"
 	user_exists "$usr" || die "$usr": No such user.
 	cur="$(id -u 2>&1)" || die "$cur"
