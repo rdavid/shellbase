@@ -231,20 +231,17 @@ cmd_exists() {
 # and pipefail is optional, so the exit code cannot ride the pipes; exec 4>&1
 # aliases fd 4 to the command substitution's stdout and printf writes the code
 # there, past the pipes, for err to capture.
-# $opt and ${1-} stay unquoted so an absent flag or command drops out:
+# ${1-} stays unquoted so an absent command drops out:
 #  shellcheck disable=SC2086,SC2069
 cmd_run() {
-	local err opt=
 	[ "${1-}" = -q ] && {
-		opt=-q
 		shift
-	}
-	cmd_exists $opt ${1-} || return
-	[ -n "$opt" ] && {
-		"$@" >/dev/null 2>&1
+		cmd_exists -q ${1-} && "$@" >/dev/null 2>&1
 		return
 	}
+	cmd_exists ${1-} || return
 	log "» $*"
+	local err
 	err=$(
 		exec 4>&1
 		{
@@ -257,8 +254,7 @@ cmd_run() {
 			} | tologe
 		} 3>&1 1>&2 | tolog
 	) || :
-	[ "$err" -eq 0 ] && return 0
-	loge "$1 failed, err=$err."
+	[ "$err" -eq 0 ] || loge "$1 failed, err=$err."
 	return "$err"
 }
 
