@@ -1,27 +1,21 @@
 # SPDX-FileCopyrightText: 2023-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+# hadolint global ignore=DL3008
 FROM ghcr.io/rdavid/goredoer:0.9.20260707 as goredoer
 FROM debian:trixie
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
-	CM_BIN=/usr/local/bin/checkmake \
-	CM_URL=https://github.com/mrtazz/checkmake/releases/download/v0.3.2/checkmake-v0.3.2.linux.amd64 \
 	DEBCONF_NOWARNINGS=yes \
-	HL_BIN=/usr/local/bin/hadolint \
-	HL_URL=https://github.com/hadolint/hadolint/releases/download/v2.14.0/hadolint-linux-x86_64 \
 	TIME_ZONE=Asia/Jerusalem \
 	USER=shellbase
 COPY LICENSES/* /licenses/
 WORKDIR /bin
 COPY --from=goredoer /goredo .
-
-# hadolint ignore=DL3008
 RUN \
 	apt-get update --assume-yes \
 	&& apt-get upgrade --assume-yes \
 	&& apt-get install --assume-yes --no-install-recommends \
 		bash \
-		ca-certificates \
 		curl \
 		dash \
 		fish \
@@ -38,23 +32,6 @@ RUN \
 	&& useradd --create-home --gid 1001 --uid 1001 "$USER" \
 	&& cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime \
 	&& printf %s "$TIME_ZONE" > /etc/timezone \
-	&& curl \
-		--continue-at - \
-		--location \
-		--output "$CM_BIN" \
-		--retry 10 \
-		--retry-all-errors \
-		--silent \
-		"$CM_URL" \
-	&& curl \
-		--continue-at - \
-		--location \
-		--output "$HL_BIN" \
-		--retry 10 \
-		--retry-all-errors \
-		--silent \
-		"$HL_URL" \
-	&& chmod +x "$CM_BIN" "$HL_BIN" \
 	&& goredo -symlinks
 USER "$USER"
 WORKDIR /home/"$USER"

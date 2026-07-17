@@ -4,10 +4,6 @@ FROM ghcr.io/rdavid/goredoer:0.9.20260707 as goredoer
 FROM alpine:3.24.1
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
-	CM_BIN=/usr/local/bin/checkmake \
-	CM_URL=https://github.com/mrtazz/checkmake/releases/download/0.2.2/checkmake-0.2.2.linux.amd64 \
-	HL_BIN=/usr/local/bin/hadolint \
-	HL_URL=https://github.com/hadolint/hadolint/releases/download/v2.14.0/hadolint-linux-x86_64 \
 	TIME_ZONE=Asia/Jerusalem \
 	USER=shellbase
 COPY LICENSES/* /licenses/
@@ -38,23 +34,6 @@ RUN \
 	&& adduser -D -u 1001 "$USER" "$USER" \
 	&& cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime \
 	&& printf %s "$TIME_ZONE" > /etc/timezone \
-	&& curl \
-		--continue-at - \
-		--location \
-		--output "$CM_BIN" \
-		--retry 10 \
-		--retry-all-errors \
-		--silent \
-		"$CM_URL" \
-	&& curl \
-		--continue-at - \
-		--location \
-		--output "$HL_BIN" \
-		--retry 10 \
-		--retry-all-errors \
-		--silent \
-		"$HL_URL" \
-	&& chmod +x "$CM_BIN" "$HL_BIN" \
 	&& goredo -symlinks
 USER "$USER"
 WORKDIR /home/"$USER"
