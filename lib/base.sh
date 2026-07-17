@@ -919,8 +919,13 @@ tsout() {
 }
 
 # Checks whether all URLs exist, any returned HTTP code is OK. In case of error
-# out has two lines: error message and HTTP error code.
+# out has two lines: error message and HTTP error code. Without arguments it
+# fails with BASE_RC_ARG_NO.
 url_exists() {
+	[ $# -gt 0 ] || {
+		loge No URLs specified to check.
+		return $BASE_RC_ARG_NO
+	}
 	cmd_exists curl || return
 	local arg out ret=0
 	for arg; do
