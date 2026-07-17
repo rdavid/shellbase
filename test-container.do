@@ -24,7 +24,7 @@ BSH="$(
 	exit $err
 }
 readonly \
-	BASE_APP_VERSION=0.9.20260709 \
+	BASE_APP_VERSION=0.9.20260717 \
 	BASE_MIN_VERSION=0.9.20260707 \
 	BSH
 . "$BSH"
@@ -40,7 +40,10 @@ inside "$-" x && EXE=-xx || EXE=''
 inside "$(uname -m)" arm64 && ARM=true || ARM=false
 
 # Builds the image silently and captures the container hash. Then runs the
-# container and removes it automatically on exit.
+# container and removes it automatically on exit. A failing image logs the
+# error and moves on to the next one instead of aborting the whole run. ERR
+# counts how many images failed so the script can report it at the end.
+ERR=0
 for f in ./container/*/Containerfile; do
 	[ "$ARM" = true ] && inside "$f" archlinux && {
 		log Arch Linux does not currently support ARM architecture.
@@ -49,11 +52,23 @@ for f in ./container/*/Containerfile; do
 	nme="$(printf %s "$f" | awk -F / '{print $3}' 2>&1)" || die "$nme"
 	log "$nme..."
 	chrono_sta run || die Unable to start timer.
-	hsh="$(podman build --file "$f" --format docker --quiet . 2>&1)" ||
-		die "$hsh"
-	cmd_run podman run --rm --rmi "$hsh" "$EXE" lint test
+	hsh="$(
+		podman build \
+			--file "$f" \
+			--format docker \
+			--quiet \
+			. \
+			2>&1
+	)" || {
+		loge "$hsh"
+		ERR=$((ERR + 1))
+		continue
+	}
+	cmd_run podman run --rm --rmi "$hsh" "$EXE" lint test ||
+		ERR=$((ERR + 1))
 	dur="$(chrono_sto run)" || die Unable to stop timer.
 	log "$nme" "$dur".
 done
 [ "$STP" = false ] || podman machine stop
+[ "$ERR" = 0 ] || die "$ERR" container image\(s\) failed.
 printf OK
