@@ -360,10 +360,13 @@ ellipsize() {
 
 # Verifies the existence of all files. Iterates through the arguments,
 # with each argument representing a file name. Fails if any of the specified
-# files do not exist.
+# files do not exist. Without arguments it fails with BASE_RC_ARG_NO.
 file_exists() {
+	[ $# -gt 0 ] || {
+		loge No files specified to check.
+		return $BASE_RC_ARG_NO
+	}
 	local arg
-	[ $# -gt 0 ] || return $BASE_RC_ARG_NO
 	for arg; do
 		[ -e "$arg" ] || [ -L "$arg" ] || return $BASE_RC_ARG_NE
 	done
