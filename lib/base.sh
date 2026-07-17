@@ -940,9 +940,13 @@ url_exists() {
 	return $ret
 }
 
-# Verifies the existence of all users.
+# Verifies the existence of all users. Without arguments it fails with
+# BASE_RC_ARG_NO. Relies on the id command, which exists on any POSIX system.
 user_exists() {
-	cmd_exists id || return
+	[ $# -gt 0 ] || {
+		loge No users specified to check.
+		return $BASE_RC_ARG_NO
+	}
 	local arg ret=0
 	for arg; do
 		if id "$arg" >/dev/null 2>&1; then
