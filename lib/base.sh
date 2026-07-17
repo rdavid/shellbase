@@ -49,7 +49,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260717
+BASE_VERSION=0.9.20260718
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -393,14 +393,20 @@ FZF-EOF"
 }
 
 # Generates a temporary commit, performs a rebase, and pushes the changes.
+# The rebase runs directly because cmd_run streams output through the
+# loggers and would detach the editor of the interactive rebase.
 grbt() {
 	cmd_exists git || return
-	local br
-	br="$(git rev-parse --abbrev-ref HEAD 2>&1)" || die "$br"
-	git commit --all --message tmp &&
-		git push &&
-		git rebase --interactive HEAD~5 &&
-		git push origin +"$br"
+	local br err
+	br="$(git rev-parse --abbrev-ref HEAD 2>&1)" || {
+		err=$?
+		loge "$br"
+		return $err
+	}
+	cmd_run git commit --all --message tmp || return
+	cmd_run git push || return
+	git rebase --interactive HEAD~5 || return
+	cmd_run git push origin +"$br"
 }
 
 # Ignores exit code 141 (128 + SIGPIPE) from command pipes. See:
