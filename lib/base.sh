@@ -324,20 +324,20 @@ echo() {
 # Truncates a string to specified maximum length, inserting ellipsis in the
 # middle if necessary. The resulting string will never be longer than the
 # specified maximum length. The original string is returned if it is already
-# shorter than or equal to the maximum length.
-# The origin of the idea:
+# shorter than or equal to the maximum length. Relies on the awk command,
+# which exists on any POSIX system. The implementation is inspired by
+# yegor256's ellipsized:
 #  https://github.com/yegor256/ellipsized
 ellipsize() {
-	local beg end max="$2" str="$1"
 	[ $# -eq 2 ] || {
-		loge ellipsize: expected 2 arguments, got "$#".
+		loge Expected two arguments, got "$#".
 		return $BASE_RC_ARG_NO
 	}
+	local beg end max="$2" str="$1"
 	isnumber "$max" || {
-		loge ellipsize: max is not numeric: "$max".
+		loge Maximum length is not numeric: "$max".
 		return $BASE_RC_ARG_NO
 	}
-	cmd_exists awk || return
 	[ "${#str}" -le "$max" ] && {
 		printf %s "$str"
 		return

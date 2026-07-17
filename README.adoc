@@ -91,7 +91,7 @@ The public functions are, in alphabetical order:
 {url-base}#L293[`die`],
 {url-base}#L301[`dng2jpg`],
 {url-base}#L310[`echo`],
-{url-base}#L330[`ellipsize`],
+{url-base}#L331[`ellipsize`],
 {url-base}#L364[`file_exists`],
 {url-base}#L373[`gitlog`],
 {url-base}#L397[`grbt`],
