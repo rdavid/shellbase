@@ -18,8 +18,8 @@ BSH="$(
 # Variable appears unused:
 #  shellcheck disable=SC2034
 readonly \
-	BASE_APP_VERSION=0.9.20260627 \
-	BASE_MIN_VERSION=0.9.20240831 \
+	BASE_APP_VERSION=0.9.20260718 \
+	BASE_MIN_VERSION=0.9.20260707 \
 	BSH \
 	DST=/usr/local/bin \
 	TGT=/usr/local/bin/base.sh
@@ -41,11 +41,11 @@ main() {
 			msg="$old is installed in $DST. Update to $new"
 		should_continue "$msg" || cya
 		dst_avail
-		cp -f "$BSH" "$TGT" || die Unable to copy "$BSH" to "$TGT".
+		cmd_run cp -f "$BSH" "$TGT"
 		printf '%s is updated to %s in %s.\n' "$old" "$new" "$DST"
 	else
 		dst_avail
-		cp "$BSH" "$TGT" || die Unable to copy "$BSH" to "$TGT".
+		cmd_run cp "$BSH" "$TGT"
 		printf '%s is installed in %s.\n' "$new" "$DST"
 	fi
 }
