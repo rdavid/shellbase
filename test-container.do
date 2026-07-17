@@ -24,7 +24,7 @@ BSH="$(
 	exit $err
 }
 readonly \
-	BASE_APP_VERSION=0.9.20260717 \
+	BASE_APP_VERSION=0.9.20260718 \
 	BASE_MIN_VERSION=0.9.20260707 \
 	BSH
 . "$BSH"
@@ -69,6 +69,6 @@ for f in ./container/*/Containerfile; do
 	dur="$(chrono_sto run)" || die Unable to stop timer.
 	log "$nme" "$dur".
 done
-[ "$STP" = false ] || podman machine stop
+[ "$STP" = false ] || cmd_run podman machine stop
 [ "$ERR" = 0 ] || die "$ERR" container image\(s\) failed.
 printf OK
