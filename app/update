@@ -30,7 +30,7 @@ BASE_APP_USAGE="$(
 readonly \
 	BASE_APP_USAGE \
 	BASE_APP_VERSION=0.9.20260718 \
-	BASE_MIN_VERSION=0.9.20260707 \
+	BASE_MIN_VERSION=0.9.20260718 \
 	BSH \
 	TGT=README.adoc
 set -- "$@" --quiet
@@ -98,7 +98,6 @@ update() {
 # the failed GNU grep probe leaves gracefully with 0.
 validate() {
 	isreadable "$BSH" "$TGT" || die
-	cmd_exists rev || die
 	cmd_run -q grep --help || {
 		:
 		cya GNU grep is required.

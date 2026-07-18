@@ -1,0 +1,10 @@
+#!/bin/sh
+# vi: lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+# File not following:
+#  shellcheck disable=SC1090,SC1091
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+str="$(printf 'abc\nfunc() {\n' | rev)" || die "$str"
+[ "$str" = "$(printf 'cba\n{ )(cnuf\n')" ] || die rev returns "$str".
+log rev reverses every line.

@@ -17,8 +17,8 @@
 # file_exists, gitlog, grbt, handle_pipefails, heic2jpg, inside, isempty,
 # isfunc, isnumber, isreadable, isroot, issolid, iswritable, log, loge, logw,
 # map_del, map_get, map_put, nmea2gpx, pdf2jpg, pdf2png, prettytable,
-# prettyuptime, realdir, realpath, retry, semver, should_continue, timestamp,
-# tolog, tologe, tolower, totsout, tsout, url_exists, user_exists,
+# prettyuptime, realdir, realpath, retry, rev, semver, should_continue,
+# timestamp, tolog, tologe, tolower, totsout, tsout, url_exists, user_exists,
 # validate_cmd, validate_var, var_exists, ver_ge, vid2aud, ytda.
 #
 # Global variables carry the BASE_ prefix. Clients may use them and should
@@ -773,6 +773,18 @@ retry() {
 	done
 	loge All "$max" retries exhausted.
 	return $err
+}
+
+# Reverses the characters of every line from the operand files or stdin,
+# replacing the non-standard rev command. Relies on the awk command, which
+# exists on any POSIX system. Some awk implementations reverse bytes rather
+# than multibyte characters, so UTF-8 input may differ from rev.
+rev() {
+	awk '{
+		out = ""
+		for (pos = length($0); pos > 0; pos--) out = out substr($0, pos, 1)
+		print out
+	}' "$@"
 }
 
 # Extracts semantic versioning from a string. See:
