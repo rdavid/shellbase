@@ -6,8 +6,8 @@
 # Updates README.adoc with current links to the public functions. By default
 # does not update the file and works as a linter.
 #
-# Uses local variables:
-#  shellcheck disable=SC2039,SC3043
+# File not following, variable appears unused, and uses local variables:
+#  shellcheck disable=SC1090,SC2034,SC2039,SC3043
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
 )"/../lib/base.sh || {
@@ -24,9 +24,6 @@ BASE_APP_USAGE="$(
 	printf >&2 %s\\n "$BASE_APP_USAGE"
 	exit "$err"
 }
-
-# Variable appears unused:
-#  shellcheck disable=SC2034
 readonly \
 	BASE_APP_USAGE \
 	BASE_APP_VERSION=0.9.20260718 \
@@ -34,9 +31,6 @@ readonly \
 	BSH \
 	TGT=README.adoc
 set -- "$@" --quiet
-
-# File not following:
-#  shellcheck disable=SC1090
 . "$BSH"
 readonly \
 	BEG="$BASE_WIP"/beg \
@@ -85,23 +79,23 @@ parse() {
 	readonly ACT
 }
 
-# Compares the new README against the current one. Updates if needed.
+# Compares the new README against the current one. Updates if needed. cmp
+# takes the short -s flag, POSIX defines no long form.
 update() {
-	cmp --quiet "$OUT" "$TGT" && cya "$TGT" is updated.
+	cmd_run cmp -s "$OUT" "$TGT" && cya "$TGT" is updated.
 	[ "$ACT" = false ] && die "$TGT" should be updated.
 	iswritable "$TGT" || die
 	cmd_run cp -f "$OUT" "$TGT"
 	log "$TGT" has been updated.
 }
 
-# Checks the environment. The colon resets the exit status, so cya after
-# the failed GNU grep probe leaves gracefully with 0.
+# Checks the environment. The colon resets the failed GNU grep probe's
+# status, so cya leaves gracefully with 0.
 validate() {
 	isreadable "$BSH" "$TGT" || die
-	cmd_run -q grep --help || {
-		:
-		cya GNU grep is required.
-	}
+	cmd_run grep --help && return
+	:
+	cya GNU grep is required.
 }
 
 # Entry point.
