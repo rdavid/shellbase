@@ -2,34 +2,30 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
-# Uses local variables:
-#  shellcheck disable=SC2039,SC3043
+#
+# Installs lib/base.sh into /usr/local/bin. Compares the new version
+# against an installed one and asks for confirmation before copying.
+#
+# File not following, variable appears unused, and uses local variables:
+#  shellcheck disable=SC1090,SC2034,SC2039,SC3043
 set -- "$@" --quiet
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
 )"/../lib/base.sh || {
-
-	# Captures status before printf because local is invalid outside functions.
 	err=$?
 	printf >&2 %s\\n "$BSH"
 	exit "$err"
 }
-
-# Variable appears unused:
-#  shellcheck disable=SC2034
 readonly \
 	BASE_APP_VERSION=0.9.20260718 \
 	BASE_MIN_VERSION=0.9.20260707 \
 	BSH \
 	DST=/usr/local/bin \
 	TGT=/usr/local/bin/base.sh
-
-# File not following:
-#  shellcheck disable=SC1090
 . "$BSH"
 
 # Validates and installs. The version string contains the program name and
-# version, e.g., shellbase 0.9.20230408.
+# version, for example shellbase 0.9.20260718.
 main() {
 	validate
 	local msg new old
@@ -40,22 +36,15 @@ main() {
 			msg="$new is already installed in $DST. Continue anyway" ||
 			msg="$old is installed in $DST. Update to $new"
 		should_continue "$msg" || cya
-		dst_avail
 		cmd_run cp -f "$BSH" "$TGT"
 		printf '%s is updated to %s in %s.\n' "$old" "$new" "$DST"
 	else
-		dst_avail
 		cmd_run cp "$BSH" "$TGT"
 		printf '%s is installed in %s.\n' "$new" "$DST"
 	fi
 }
 
-# Checks if the destination directory is writable.
-dst_avail() {
-	iswritable "$DST" || die "$DST" is not writable.
-}
-
-# Checks the environment.
+# Verifies that the destination directory exists.
 validate() {
 	file_exists "$DST" || die "$DST": No such directory.
 }
