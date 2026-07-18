@@ -29,8 +29,8 @@ BASE_APP_USAGE="$(
 #  shellcheck disable=SC2034
 readonly \
 	BASE_APP_USAGE \
-	BASE_APP_VERSION=0.9.20260705 \
-	BASE_MIN_VERSION=0.9.20231212 \
+	BASE_APP_VERSION=0.9.20260718 \
+	BASE_MIN_VERSION=0.9.20260707 \
 	BSH \
 	TGT=README.adoc
 set -- "$@" --quiet
@@ -90,17 +90,18 @@ update() {
 	cmp --quiet "$OUT" "$TGT" && cya "$TGT" is updated.
 	[ "$ACT" = false ] && die "$TGT" should be updated.
 	iswritable "$TGT" || die
-	cp -f "$OUT" "$TGT" || die Unable to update "$TGT".
+	cmd_run cp -f "$OUT" "$TGT"
 	log "$TGT" has been updated.
 }
 
-# Checks the environment.
+# Checks the environment. The colon resets the exit status, so cya after
+# the failed GNU grep probe leaves gracefully with 0.
 validate() {
 	isreadable "$BSH" "$TGT" || die
 	cmd_exists rev || die
-	grep --help >/dev/null 2>&1 || {
-		logw Stopped, GNU grep is required.
-		cya
+	cmd_run -q grep --help || {
+		:
+		cya GNU grep is required.
 	}
 }
 
