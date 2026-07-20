@@ -49,7 +49,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260720
+BASE_VERSION=0.9.20260721
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -397,7 +397,7 @@ FZF-EOF"
 grbt() {
 	cmd_exists git || return
 	local br err
-	br="$(git rev-parse --abbrev-ref HEAD 2>&1)" || {
+	br="$(git branch --show-current 2>&1)" || {
 		err=$?
 		loge "$br"
 		return $err
