@@ -41,7 +41,10 @@ process() {
 		printf '%s is installed in %s.\n' "$new" "$DST"
 		return
 	}
-	old="$(sh "$TGT" --quiet --version 2>&1)" || die "$old"
+	old="$(sh "$TGT" --quiet --version 2>&1)" || {
+		logw "$old". Continuing with an unreadable version.
+		old='An unreadable version'
+	}
 	[ "$old" = "$new" ] &&
 		msg="$new is already installed in $DST. Continue anyway" ||
 		msg="$old is installed in $DST. Update to $new"
