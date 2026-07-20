@@ -48,9 +48,10 @@ process() {
 	[ "$old" = "$new" ] &&
 		msg="$new is already installed in $DST. Continue anyway" ||
 		msg="$old is installed in $DST. Update to $new"
-	should_continue "$msg" || cya
-	cmd_run cp -f "$BSH" "$TGT"
-	printf '%s is updated to %s in %s.\n' "$old" "$new" "$DST"
+	if should_continue "$msg"; then
+		cmd_run cp -f "$BSH" "$TGT"
+		printf '%s is updated to %s in %s.\n' "$old" "$new" "$DST"
+	fi
 }
 
 # Verifies that the destination directory exists.
