@@ -2,6 +2,9 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# Verifies that BASE_LOG_CAP defaults to 1 GiB.
+#
 # File not following:
 #  shellcheck disable=SC1090,SC1091
 set -- --keep-wip "$@"

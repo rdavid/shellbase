@@ -2,6 +2,11 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2024-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# Manually verifies should_continue's interactive prompt, using both the
+# default message and a custom one. Excluded from the automated test.do loop
+# since it needs real terminal input.
+#
 # File not following:
 #  shellcheck disable=SC1090,SC1091
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh

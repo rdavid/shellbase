@@ -2,6 +2,10 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# Verifies that var_exists rejects a variable name crafted to inject a
+# command via unsafe expansion, without executing the injected command.
+#
 # File not following:
 #  shellcheck disable=SC1090,SC1091
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh

@@ -2,6 +2,10 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# Verifies that aud_only keeps audio files (mp3, flac, m4a) and removes
+# everything else from the current directory.
+#
 # File not following:
 #  shellcheck disable=SC1090,SC1091
 set -- -y -q

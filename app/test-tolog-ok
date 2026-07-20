@@ -2,6 +2,10 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# Verifies that tolog and tologe correctly route a function's interleaved
+# stdout and stderr to the information and error loggers respectively.
+#
 # Uses local variables:
 #  shellcheck disable=SC2039,SC3043
 # File not following:

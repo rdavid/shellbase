@@ -2,6 +2,10 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2023-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# Verifies that base_main dies when the running shellbase version is below
+# an app's declared BASE_MIN_VERSION.
+#
 # File not following, appears unused:
 #  shellcheck disable=SC1090,SC1091,SC2034
 readonly BASE_MIN_VERSION=9999.9.20230311

@@ -2,6 +2,11 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2024-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# Verifies that chrono_sta, chrono_get, and chrono_sto track multiple named
+# stopwatches independently, and that restarting a stopwatch with chrono_sta
+# resets it.
+#
 # File not following:
 #  shellcheck disable=SC1090,SC1091
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh

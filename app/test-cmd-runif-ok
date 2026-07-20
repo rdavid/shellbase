@@ -2,6 +2,11 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# Verifies that cmd_runif succeeds for an existing command and treats a
+# missing command, or one that exits with BASE_RC_CMD_NE, as a skipped
+# no-op.
+#
 # File not following:
 #  shellcheck disable=SC1090,SC1091
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh

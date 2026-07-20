@@ -2,6 +2,10 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2023-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# Verifies that the --help flag prints the usage instructions, including an
+# app-specific BASE_APP_USAGE addendum.
+#
 # Variable appears unused:
 #  shellcheck disable=SC2034
 BASE_APP_USAGE="$(

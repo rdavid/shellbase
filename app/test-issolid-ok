@@ -2,11 +2,15 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# Verifies that issolid succeeds when BASE_APP_HASH matches the running
+# script's hash.
+#
 # File not following:
 #  shellcheck disable=SC1090,SC1091
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 
 # Appears unused:
 #  shellcheck disable=SC2034
-BASE_APP_HASH=d063e0d720f7128f8cece2147efbb019d6b068ee
+BASE_APP_HASH=a46d300080f2cd52ac5db95150d370514ab24176
 issolid

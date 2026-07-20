@@ -2,6 +2,11 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2023-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# Verifies that ver_ge succeeds when the first version is greater than or
+# equal to the second, including a pre-release suffix, and that base_main
+# starts normally when the running version meets a low BASE_MIN_VERSION.
+#
 # File not following, appears unused:
 #  shellcheck disable=SC1090,SC1091,SC2034
 readonly BASE_MIN_VERSION=0.9.20230311

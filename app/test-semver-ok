@@ -2,6 +2,11 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# Verifies that semver extracts a valid version, with optional build
+# metadata and pre-release info, from surrounding text. Skips if GNU grep is
+# unavailable.
+#
 # File not following:
 #  shellcheck disable=SC1090,SC1091
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh

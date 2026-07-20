@@ -2,6 +2,10 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2021-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# Verifies that iswritable succeeds for writable files and for paths that do
+# not yet exist.
+#
 # File not following:
 #  shellcheck disable=SC1090,SC1091
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
