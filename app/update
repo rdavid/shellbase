@@ -26,7 +26,7 @@ BASE_APP_USAGE="$(
 }
 readonly \
 	BASE_APP_USAGE \
-	BASE_APP_VERSION=0.9.20260718 \
+	BASE_APP_VERSION=0.9.20260720 \
 	BASE_MIN_VERSION=0.9.20260718 \
 	BSH \
 	TGT=README.adoc
@@ -46,8 +46,8 @@ main() {
 	update
 }
 
-# Parses base.sh for functions and re-creates new README. Uses GNU grep with
-# PCRE option.
+# Parses base.sh for functions and re-creates the README. Uses GNU grep with
+# the PCRE option.
 analyze() {
 	local num
 	num="$(awk '/The public functions are/ {print FNR}' "$TGT" 2>&1)" ||
@@ -80,7 +80,7 @@ parse() {
 }
 
 # Compares the new README against the current one. Updates if needed. cmp
-# takes the short -s flag, POSIX defines no long form.
+# takes only the short -s flag. POSIX defines no long form.
 update() {
 	cmd_run cmp -s "$OUT" "$TGT" && cya "$TGT" is updated.
 	[ "$ACT" = false ] && die "$TGT" should be updated.

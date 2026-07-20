@@ -108,8 +108,8 @@ fail — flags it.
 
 Before committing, update `BASE_VERSION` in `lib/base.sh`,
 `BASE_APP_VERSION` in every other changed file that declares it, and the
-`SPDX-FileCopyrightText` year in every changed file. Only when the file
-has a substantive change — never bump the year or version by itself. If a
+`SPDX-FileCopyrightText` year in every changed file — but only when the
+file has a substantive change. Never bump the year or version by itself. If a
 refactor pass ends up making no meaningful change to a file, revert the
 year/version edit too. A metadata-only diff is noise. Versions are
 date-based (`0.9.YYYYMMDD`); same-day commits share the value, so do not

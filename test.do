@@ -5,7 +5,7 @@
 #
 # Runs every executable test case under app/ against each locally installed
 # shell. Test output streams to the console through stderr, and the script
-# prints OK to stdin for the redo target.
+# prints OK to stdout for the redo target.
 #
 # Variable appears unused, file not following and A && B || C:
 #  shellcheck disable=SC2034,SC1090,SC2015
@@ -18,7 +18,7 @@ BSH="$(
 	exit $err
 }
 readonly \
-	BASE_APP_VERSION=0.9.20260709 \
+	BASE_APP_VERSION=0.9.20260720 \
 	BASE_MIN_VERSION=0.9.20231228 \
 	BSH
 . "$BSH"

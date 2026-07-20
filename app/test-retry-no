@@ -7,7 +7,7 @@
 . "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 
 # Each case must fail: a zero exit anywhere short-circuits the chain and makes
-# this -no test pass positively, flagging the regression.
+# this -no script return positive, which the harness flags as a regression.
 retry -n 0 : ||
 	retry -n foo : ||
 	retry -n ||

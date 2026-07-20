@@ -49,7 +49,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260718
+BASE_VERSION=0.9.20260720
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -285,7 +285,7 @@ cya() {
 
 # Prints all parameters as an error message and exits with the error code. It
 # attempts to retain the original code. Otherwise it uses BASE_RC_DIE_NO, so
-# err is always non-empty.
+# err is always non-zero.
 die() {
 	local err=$?
 	[ $# = 0 ] || loge "$@"
@@ -317,12 +317,11 @@ echo() {
 	printf "$fmt$end" "$*"
 }
 
-# Truncates a string to specified maximum length, inserting ellipsis in the
-# middle if necessary. The resulting string will never be longer than the
-# specified maximum length. The original string is returned if it is already
-# shorter than or equal to the maximum length. Relies on the awk command,
-# which exists on any POSIX system. The implementation is inspired by
-# yegor256's ellipsized:
+# Truncates a string to a given maximum length, inserting an ellipsis in the
+# middle if necessary. The resulting string is never longer than that maximum
+# length. The original string is returned if it is already shorter than or
+# equal to it. Relies on the awk command, which exists on any POSIX system. The
+# implementation is inspired by yegor256's ellipsized:
 #  https://github.com/yegor256/ellipsized
 ellipsize() {
 	[ $# -eq 2 ] || {
@@ -550,8 +549,7 @@ iswritable() {
 	done
 }
 
-# Sends all log messages to stderr. The information logger is silent with the
-# --quiet flag.
+# The information logger is silent with the --quiet flag.
 log() {
 	local tms
 	tms="$(timestamp)" || exit $?
@@ -560,7 +558,7 @@ log() {
 	base_is_interactive || base_write_to_file "$tms" i "$*"
 }
 
-# Error logger always prints to stderr.
+# The error logger always prints to stderr.
 loge() {
 	local tms
 	tms="$(timestamp)" || exit $?
@@ -577,7 +575,7 @@ logw() {
 	base_is_interactive || base_write_to_file "$tms" w "$*"
 }
 
-# Deletes from key-value store.
+# Deletes a key from the key-value store.
 map_del() {
 	local \
 		dir="$BASE_WIP"/map \
@@ -597,7 +595,7 @@ map_del() {
 	rmdir "$dir"
 }
 
-# Reads from key-value store.
+# Reads a value from the key-value store.
 map_get() {
 	local \
 		dir="$BASE_WIP"/map \
@@ -619,7 +617,7 @@ map_get() {
 	printf %s "$val"
 }
 
-# Adds to key-value store.
+# Adds a key-value pair to the key-value store.
 map_put() {
 	local \
 		dir="$BASE_WIP"/map \
@@ -728,7 +726,7 @@ realdir() {
 	printf %s "$dir"
 }
 
-# Returns absolute path to a file. See:
+# Returns the absolute path of a file. See:
 #  https://stackoverflow.com/q/3915040
 realpath() {
 	local dir nme str="$1"
@@ -851,8 +849,8 @@ should_continue() {
 	trap base_sig_cleanup TERM
 	stty "$old"
 
-	# Adds a new line before any printing to compensate for the question without
-	# a new line. The wait command may return an error code.
+	# Adds a newline before any printing to compensate for the question without
+	# a newline. The wait command may return an error code.
 	printf \\n
 	kill "$dog"
 	set +m
@@ -932,9 +930,9 @@ tsout() {
 	printf '%s %s\n' "$tms" "$*"
 }
 
-# Checks whether all URLs exist, any returned HTTP code is OK. In case of error
-# out has two lines: error message and HTTP error code. Without arguments it
-# fails with BASE_RC_ARG_NO.
+# Checks whether all URLs exist. Any returned HTTP code is OK. In case of
+# error out has two lines: an error message and the HTTP error code. Without
+# arguments it fails with BASE_RC_ARG_NO.
 url_exists() {
 	[ $# -gt 0 ] || {
 		loge No URLs specified to check.
@@ -981,14 +979,14 @@ user_exists() {
 	return $ret
 }
 
-# Deprecated: use cmd_exists directly, validate_cmd will be removed in a
+# Deprecated: use cmd_exists directly. validate_cmd will be removed in a
 # future release. Makes sure all commands exist, otherwise dies.
 validate_cmd() {
 	logw validate_cmd is deprecated and will be removed, use cmd_exists.
 	cmd_exists "$@" || die
 }
 
-# Deprecated: use var_exists directly, validate_var will be removed in a
+# Deprecated: use var_exists directly. validate_var will be removed in a
 # future release. Makes sure all variables are defined, otherwise dies.
 validate_var() {
 	logw validate_var is deprecated and will be removed, use var_exists.
@@ -1193,7 +1191,7 @@ base_display_banner() {
 		base64 --decode
 }
 
-# Prints the usage instructions and terminates the program.
+# Prints the usage instructions.
 base_display_usage() {
 	base_display_banner
 	printf \\n
@@ -1371,7 +1369,7 @@ base_main() {
 	trap base_cleanup EXIT
 	trap base_sig_cleanup HUP INT QUIT TERM
 
-	# Continues only with a minimum shellbase version.
+	# Continues only if shellbase meets the caller's minimum required version.
 	if var_exists -q BASE_MIN_VERSION; then
 		ver_ge "$BASE_VERSION" "$BASE_MIN_VERSION" ||
 			die "Shellbase is $BASE_VERSION, needs $BASE_MIN_VERSION or above."

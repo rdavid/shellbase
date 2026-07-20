@@ -8,7 +8,7 @@
 # and should stop it on exit. Exit code 125 from podman machine start means
 # the VM is already running or is still starting up. Command output streams
 # to the console through the shellbase loggers, and the script prints OK to
-# stdin for the redo target.
+# stdout for the redo target.
 #
 # Variable appears unused and file not following:
 #  shellcheck disable=SC2034,SC1090
@@ -24,7 +24,7 @@ BSH="$(
 	exit $err
 }
 readonly \
-	BASE_APP_VERSION=0.9.20260718 \
+	BASE_APP_VERSION=0.9.20260720 \
 	BASE_MIN_VERSION=0.9.20260707 \
 	BSH
 . "$BSH"
