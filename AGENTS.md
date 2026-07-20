@@ -28,16 +28,16 @@ a thin proxy.
 - `redo test-container`: run the test suite inside the supported container
   images.
 - `./app/install`: install `lib/base.sh` into the expected local path.
-- `./app/update`: lint `README.adoc`'s function links against `lib/base.sh`;
-  add `--action` to regenerate them.
+- `./app/update`: lint `README.adoc`'s function links against `lib/base.sh`.
+  Add `--action` to regenerate them.
 
 Use `make test` only if you need the compatibility wrapper.
 
 `./app/update` requires GNU grep. On macOS, run it with GNU grep first on
 `PATH` (for example
-`PATH=/opt/homebrew/opt/grep/libexec/gnubin:$PATH ./app/update --action`); with the
-BSD grep on `PATH` by default, its GNU-grep guard exits 0 quietly and leaves
-`README.adoc` untouched instead of failing loudly.
+`PATH=/opt/homebrew/opt/grep/libexec/gnubin:$PATH ./app/update --action`). With
+the BSD grep on `PATH` by default, its GNU-grep guard exits 0 quietly and
+leaves `README.adoc` untouched instead of failing loudly.
 
 ## Coding Style & Naming Conventions
 
@@ -85,7 +85,7 @@ functions alphabetical, then `base_` helpers alphabetical, with no
 `README.adoc` links every public function to its exact line in
 `lib/base.sh` (for example `{url-base}#L58[`aud_only`]`). Any edit to
 `lib/base.sh` that shifts line numbers requires running `./app/update --action`
-to regenerate the alphabetical function-list block; the `log`, `loge`,
+to regenerate the alphabetical function-list block. The `log`, `loge`,
 `logw`, and `prettytable` prose links elsewhere in `README.adoc` are
 hand-maintained and must be fixed manually.
 
@@ -112,7 +112,7 @@ Before committing, update `BASE_VERSION` in `lib/base.sh`,
 file has a substantive change. Never bump the year or version by itself. If a
 refactor pass ends up making no meaningful change to a file, revert the
 year/version edit too. A metadata-only diff is noise. Versions are
-date-based (`0.9.YYYYMMDD`); same-day commits share the value, so do not
+date-based (`0.9.YYYYMMDD`). Same-day commits share the value, so do not
 re-bump a version already set to today's date.
 
 Use Conventional Commits for all commits created by the agent, especially
@@ -123,3 +123,5 @@ to commits, pull requests, issues, or code comments. Pull requests should
 explain the user-visible change, note any portability implications, and confirm
 the relevant `redo lint` and `redo test` results. Link related issues when
 applicable. UI screenshots are usually unnecessary for this repository.
+Commit messages and pull request descriptions follow the same semicolon rule
+as code comments: split clauses into separate sentences instead.
