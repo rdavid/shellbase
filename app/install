@@ -17,31 +17,37 @@ BSH="$(
 	exit "$err"
 }
 readonly \
-	BASE_APP_VERSION=0.9.20260718 \
+	BASE_APP_VERSION=0.9.20260720 \
 	BASE_MIN_VERSION=0.9.20260707 \
 	BSH \
 	DST=/usr/local/bin \
 	TGT=/usr/local/bin/base.sh
 . "$BSH"
 
-# Validates and installs. The version string contains the program name and
-# version, for example shellbase 0.9.20260718.
+# Validates and installs.
 main() {
 	validate
+	process
+}
+
+# Compares the new version against an installed one, asks for confirmation,
+# and copies base.sh to the destination. The version string contains the
+# program name and version, for example shellbase 0.9.20260718.
+process() {
 	local msg new old
 	new="$(sh "$BSH" --quiet --version 2>&1)" || die "$new"
-	if file_exists "$TGT"; then
-		old="$(sh "$TGT" --quiet --version 2>&1)" || die "$old"
-		[ "$old" = "$new" ] &&
-			msg="$new is already installed in $DST. Continue anyway" ||
-			msg="$old is installed in $DST. Update to $new"
-		should_continue "$msg" || cya
-		cmd_run cp -f "$BSH" "$TGT"
-		printf '%s is updated to %s in %s.\n' "$old" "$new" "$DST"
-	else
+	file_exists "$TGT" || {
 		cmd_run cp "$BSH" "$TGT"
 		printf '%s is installed in %s.\n' "$new" "$DST"
-	fi
+		return
+	}
+	old="$(sh "$TGT" --quiet --version 2>&1)" || die "$old"
+	[ "$old" = "$new" ] &&
+		msg="$new is already installed in $DST. Continue anyway" ||
+		msg="$old is installed in $DST. Update to $new"
+	should_continue "$msg" || cya
+	cmd_run cp -f "$BSH" "$TGT"
+	printf '%s is updated to %s in %s.\n' "$old" "$new" "$DST"
 }
 
 # Verifies that the destination directory exists.
