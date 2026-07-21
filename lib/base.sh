@@ -14,12 +14,13 @@
 # are, in alphabetical order:
 # aud_only, beroot, beuser, bomb, cheat, chrono_get, chrono_sta, chrono_sto,
 # cmd_exists, cmd_run, cmd_runif, cya, die, dng2jpg, echo, ellipsize,
-# file_exists, gitlog, grbt, handle_pipefails, heic2jpg, inside, isempty,
-# isfunc, isnumber, isreadable, isroot, issolid, iswritable, log, loge, logw,
-# map_del, map_get, map_put, nmea2gpx, pdf2jpg, pdf2png, prettytable,
-# prettyuptime, realdir, realpath, retry, rev, semver, should_continue,
-# timestamp, tolog, tologe, tolower, totsout, tsout, url_exists, user_exists,
-# validate_cmd, validate_var, var_exists, ver_ge, vid2aud, ytda.
+# file_exists, gitfix, gitlog, grbt, handle_pipefails, heic2jpg, inside,
+# isempty, isfunc, isnumber, isreadable, isroot, issolid, iswritable, log,
+# loge, logw, map_del, map_get, map_put, nmea2gpx, pdf2jpg, pdf2png,
+# prettytable, prettyuptime, realdir, realpath, retry, rev, semver,
+# should_continue, timestamp, tolog, tologe, tolower, totsout, tsout,
+# url_exists, user_exists, validate_cmd, validate_var, var_exists, ver_ge,
+# vid2aud, ytda.
 #
 # Global variables carry the BASE_ prefix. Clients may use them and should
 # place temporary files under $BASE_WIP. Functions with the base_ prefix stay
@@ -49,7 +50,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260721
+BASE_VERSION=0.9.20260722
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -367,6 +368,24 @@ file_exists() {
 	done
 }
 
+# Amends the last commit without changing its message and force-pushes the
+# result. Prompts for confirmation before amending, showing the commit
+# subject so the user knows what they are about to overwrite. Returns early
+# if there is nothing staged to fold into the commit. cmd_run checks that
+# git exists, so gitfix does not need its own cmd_exists guard.
+gitfix() {
+	cmd_run git commit --dry-run --quiet || return
+	local err sub
+	sub="$(git log -1 --format='%s' 2>&1)" || {
+		err=$?
+		loge "$sub"
+		return $err
+	}
+	should_continue "Amend and force-push: $sub" || return
+	cmd_run git commit --amend --no-edit || return
+	cmd_run git push --force-with-lease || return
+}
+
 # Allows users to navigate the history of commits in a Git repository.
 gitlog() {
 	cmd_exists fzf git grep head less xargs || return
@@ -395,6 +414,7 @@ FZF-EOF"
 # The rebase runs directly because cmd_run streams output through the
 # loggers and would detach the editor of the interactive rebase.
 grbt() {
+	logw grbt is deprecated and will be removed, use gitfix.
 	cmd_exists git || return
 	local br err
 	br="$(git branch --show-current 2>&1)" || {
