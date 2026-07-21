@@ -94,49 +94,49 @@ The public functions are, in alphabetical order:
 {url-base}#L327[`ellipsize`],
 {url-base}#L360[`file_exists`],
 {url-base}#L376[`gitfix`],
-{url-base}#L390[`gitlog`],
-{url-base}#L416[`grbt`],
-{url-base}#L433[`handle_pipefails`],
-{url-base}#L440[`heic2jpg`],
-{url-base}#L453[`inside`],
-{url-base}#L460[`isempty`],
-{url-base}#L484[`isfunc`],
-{url-base}#L497[`isnumber`],
-{url-base}#L505[`isreadable`],
-{url-base}#L514[`isroot`],
-{url-base}#L526[`issolid`],
-{url-base}#L560[`iswritable`],
-{url-base}#L573[`log`],
-{url-base}#L582[`loge`],
-{url-base}#L590[`logw`],
-{url-base}#L599[`map_del`],
-{url-base}#L619[`map_get`],
-{url-base}#L641[`map_put`],
-{url-base}#L658[`nmea2gpx`],
-{url-base}#L673[`pdf2jpg`],
-{url-base}#L678[`pdf2png`],
-{url-base}#L699[`prettytable`],
-{url-base}#L719[`prettyuptime`],
-{url-base}#L742[`realdir`],
-{url-base}#L751[`realpath`],
-{url-base}#L762[`retry`],
-{url-base}#L800[`rev`],
-{url-base}#L814[`semver`],
-{url-base}#L832[`should_continue`],
-{url-base}#L890[`timestamp`],
-{url-base}#L910[`tolog`],
-{url-base}#L916[`tologe`],
-{url-base}#L923[`tolower`],
-{url-base}#L941[`totsout`],
-{url-base}#L947[`tsout`],
-{url-base}#L956[`url_exists`],
-{url-base}#L985[`user_exists`],
-{url-base}#L1004[`validate_cmd`],
-{url-base}#L1011[`validate_var`],
-{url-base}#L1029[`var_exists`],
-{url-base}#L1069[`ver_ge`],
-{url-base}#L1080[`vid2aud`],
-{url-base}#L1101[`ytda`].
+{url-base}#L392[`gitlog`],
+{url-base}#L418[`grbt`],
+{url-base}#L435[`handle_pipefails`],
+{url-base}#L442[`heic2jpg`],
+{url-base}#L455[`inside`],
+{url-base}#L462[`isempty`],
+{url-base}#L486[`isfunc`],
+{url-base}#L499[`isnumber`],
+{url-base}#L507[`isreadable`],
+{url-base}#L516[`isroot`],
+{url-base}#L528[`issolid`],
+{url-base}#L562[`iswritable`],
+{url-base}#L575[`log`],
+{url-base}#L584[`loge`],
+{url-base}#L592[`logw`],
+{url-base}#L601[`map_del`],
+{url-base}#L621[`map_get`],
+{url-base}#L643[`map_put`],
+{url-base}#L660[`nmea2gpx`],
+{url-base}#L675[`pdf2jpg`],
+{url-base}#L680[`pdf2png`],
+{url-base}#L701[`prettytable`],
+{url-base}#L721[`prettyuptime`],
+{url-base}#L744[`realdir`],
+{url-base}#L753[`realpath`],
+{url-base}#L764[`retry`],
+{url-base}#L802[`rev`],
+{url-base}#L816[`semver`],
+{url-base}#L834[`should_continue`],
+{url-base}#L892[`timestamp`],
+{url-base}#L912[`tolog`],
+{url-base}#L918[`tologe`],
+{url-base}#L925[`tolower`],
+{url-base}#L943[`totsout`],
+{url-base}#L949[`tsout`],
+{url-base}#L958[`url_exists`],
+{url-base}#L987[`user_exists`],
+{url-base}#L1006[`validate_cmd`],
+{url-base}#L1013[`validate_var`],
+{url-base}#L1031[`var_exists`],
+{url-base}#L1071[`ver_ge`],
+{url-base}#L1082[`vid2aud`],
+{url-base}#L1103[`ytda`].
 
 Global variables carry the `BASE_` prefix.
 Clients may use them and should place temporary files under `$BASE_WIP`.
@@ -195,9 +195,9 @@ log I\'m using the shellbase.
 ----
 
 The framework provides three loggers:
-{url-base}#L573[`log`] for information,
-{url-base}#L582[`loge`] for errors, and
-{url-base}#L590[`logw`] for warnings.
+{url-base}#L575[`log`] for information,
+{url-base}#L584[`loge`] for errors, and
+{url-base}#L592[`logw`] for warnings.
 Each logger prints to standard error.
 In non-interactive mode, each also appends the message to the log file under
 a single lowercase level tag: `i` for information, `e` for errors, and `w`
@@ -221,7 +221,7 @@ eval "$(
 log I\'m using the shellbase.
 ----
 
-{url-base}#L699[`prettytable`] example:
+{url-base}#L701[`prettytable`] example:
 
 [,sh]
 ----

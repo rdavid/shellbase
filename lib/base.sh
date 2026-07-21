@@ -386,9 +386,11 @@ gitfix() {
 	cmd_run git push --force-with-lease || return
 }
 
-# Allows users to navigate the history of commits in a Git repository.
+# Allows users to navigate the history of commits in a Git repository. Pipes
+# the colored, graphed git log through fzf for interactive browsing, and
+# ctrl-m on a selected commit opens its full diff in less.
 gitlog() {
-	cmd_exists fzf git grep head less xargs || return
+	cmd_exists fzf git less || return
 	git log \
 		--color=always \
 		--format="%C(auto)%h%d %s %C(black)%C(bold)%cr" \
