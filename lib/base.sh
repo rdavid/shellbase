@@ -50,7 +50,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260722
+BASE_VERSION=0.9.20260723
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -658,16 +658,15 @@ map_put() {
 # call. gpsbabel may also reject long option names, so the call uses short
 # ones.
 nmea2gpx() {
-	local fle out
 	cmd_exists gpsbabel || return
+	local fle
 	for fle in ./*.log; do
 		[ -e "$fle" ] || [ -L "$fle" ] || continue
-		out="${fle%.log}.gpx"
 		cmd_run gpsbabel \
 			-i nmea \
 			-f "$fle" \
 			-o gpx \
-			-F "$out"
+			-F "${fle%.log}.gpx"
 	done
 }
 
