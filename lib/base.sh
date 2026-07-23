@@ -811,20 +811,35 @@ rev() {
 #  1.2.3
 #  1.2.3+meta
 #  1.2.3-4-alpha
-# Uses GNU grep with PCRE option.
+# Uses GNU grep with PCRE option. Probes support by matching against the
+# always-empty /dev/null: grep exits 0 for a match, 1 for no match, and 2 or
+# higher for a real error, such as an unrecognized option. A match is
+# impossible here, so an exit code of 1 or less means grep understood the
+# option, while 2 or higher means it did not.
 semver() {
-	local ret=0 str="$1" ver
+	[ $# -eq 1 ] || {
+		loge Expected a single argument, got "$#".
+		return $BASE_RC_ARG_NO
+	}
+	cmd_run grep --perl-regexp . /dev/null || {
+		[ $? -le 1 ] || {
+			loge GNU grep is required.
+			return $BASE_RC_CMD_NE
+		}
+		log GNU grep check passed.
+	}
+	local ret=0 ver
 	ver="$(
-		printf %s "$str" |
+		printf %s "$1" |
 			grep --only-matching --perl-regexp \
 				'(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$' 2>&1
 	)" || {
 		ret=$?
-		loge "$ver"
+		loge "$ver, err=$ret."
 		ver=0.0.0+nil
 	}
 	printf %s "$ver"
-	return $ret
+	return "$ret"
 }
 
 # Asks for permission to continue. Returns an error code if the input is not
