@@ -523,10 +523,11 @@ isroot() {
 	[ "$num" -eq 0 ]
 }
 
-# Verifies that the running script's content matches the script hash (SHA-1, as
-# computed by shasum). It ignores the line where the hash is defined.
+# Verifies that the running script's content matches its SHA-1 hash, computed
+# with shasum, awk, grep, and head, ignoring the line where the hash is
+# defined.
 issolid() {
-	cmd_exists awk head grep shasum || return
+	cmd_exists shasum || return
 	local \
 		err \
 		fle="$0" \
@@ -694,11 +695,12 @@ pdf2png() {
 # |123456789  |John Foo  |Director  |
 # |12         |Mike Bar  |Engineer  |
 # +-----------+----------+----------+
-# The sed script needs double quotes for its escaped last-line address. The
-# implementation is inspired by Jakob Westhoff:
+# The sed script needs double quotes for its escaped last-line address. Sed
+# is available on any Unix-like system. The implementation is inspired by
+# Jakob Westhoff:
 #  https://github.com/jakobwesthoff/prettytable.sh
 prettytable() {
-	cmd_exists column sed || return
+	cmd_exists column || return
 	local bdy col hdr inp
 	inp="$(cat)"
 	hdr="$(printf %s "$inp" | head -n1)" || handle_pipefails $?
@@ -715,10 +717,11 @@ prettytable() {
 		sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g"
 }
 
-# Displays uptime in a human-readable format. See:
+# Displays uptime in a human-readable format using the sed and tr commands,
+# available on any Unix-like system. See:
 #  https://stackoverflow.com/q/28353409
 prettyuptime() {
-	cmd_exists sed tr uptime || {
+	cmd_exists uptime || {
 		local err=$?
 		printf '↑ err=%d' "$err"
 		return $err
