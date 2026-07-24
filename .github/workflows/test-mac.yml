@@ -37,7 +37,7 @@ jobs:
           - macos-26
           - macos-26-intel
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - run: |
