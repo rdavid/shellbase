@@ -50,7 +50,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260723
+BASE_VERSION=0.9.20260724
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -782,10 +782,9 @@ retry() {
 		return $BASE_RC_ARG_NO
 	}
 	while [ "$cnt" -le "$max" ]; do
-		log Retry "$cnt"/"$max": "$@"
-		"$@" && return 0
+		log Retry "$cnt"/"$max".
+		cmd_run "$@" && return 0
 		err=$?
-		logw Retry "$cnt" failed, err="$err".
 		[ "$cnt" -lt "$max" ] && {
 			log Sleeping "$dly"s before next retry.
 			sleep "$dly"
