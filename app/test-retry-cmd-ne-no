@@ -1,0 +1,19 @@
+#!/bin/sh
+# vi: lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Verifies that retry stops after the first attempt, without sleeping or
+# retrying, when the command itself is missing. Checks that fail on an
+# unexpected zero exit here fall through to the harness, which expects a
+# -no script to fail and flags the unexpected success.
+#
+# File not following:
+#  shellcheck disable=SC1090,SC1091
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+out="$(retry -n 5 c0mmand_n0t_f0und 2>&1)" && exit 0
+inside "$out" 'Retry 1/5.' || exit 0
+inside "$out" 'Command c0mmand_n0t_f0und not found.' || exit 0
+inside "$out" 'Retry 2/5.' && exit 0
+inside "$out" 'Sleeping' && exit 0
+retry -n 5 c0mmand_n0t_f0und

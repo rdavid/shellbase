@@ -50,7 +50,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260724
+BASE_VERSION=0.9.20260725
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -761,7 +761,10 @@ realpath() {
 
 # Runs a command up to max attempts (-n num, default 5) with exponential
 # backoff (1 s, 2 s, 4 s, ...), skipping the wait after the last attempt. Logs
-# each attempt and exit code, plus a final error if all are exhausted.
+# each attempt and exit code, plus a final error if all are exhausted. Stops
+# after the first attempt, without sleeping or retrying, when the command
+# itself is missing, since a missing command will not appear between
+# attempts.
 # Usage: retry [-n num] cmd [arg ...]
 retry() {
 	local cnt=1 dly=1 err max=5
@@ -785,6 +788,7 @@ retry() {
 		log Retry "$cnt"/"$max".
 		cmd_run "$@" && return 0
 		err=$?
+		[ "$err" -eq $BASE_RC_CMD_NE ] && return $err
 		[ "$cnt" -lt "$max" ] && {
 			log Sleeping "$dly"s before next retry.
 			sleep "$dly"
