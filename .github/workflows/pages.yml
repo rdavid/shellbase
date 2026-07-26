@@ -32,6 +32,7 @@ jobs:
           asciidoctor \
             --attribute docinfo=private \
             --attribute docinfodir=.github/pages \
+            --attribute pages-build \
             --out-file _site/index.html \
             README.adoc
       - uses: actions/configure-pages@v6.0.0

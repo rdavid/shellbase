@@ -266,6 +266,101 @@ images.
 The project uses {url-cv}[David Rabkin]'s {url-goredoer}[`goredoer`] to build
 {url-goredo}[`goredo`].
 
+A run of `redo lint` shows the conventions in practice: commands echo
+before they run, missing linters stay silent instead of warning, a failure
+doesn't stop the rest, and the script's only line of stdout is the bare
+`OK` that redo reads as the target.
+
+ifdef::pages-build[]
+++++
+<div id="term-demo">
+  <div class="window">
+    <div class="titlebar">
+      <div class="dots">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+      </div>
+      <span class="tab">lint.do &mdash; redo lint</span>
+    </div>
+    <div class="term-body">
+      <div class="row">
+        <span class="gutter"><span class="badge">1</span></span>
+        <span class="prompt"><span class="sym">$</span> redo lint</span>
+      </div>
+      <div class="row">
+        <span class="gutter"><span class="badge">2</span></span>
+        <span class="info"><span class="ts">20260727-14:02:01</span> &raquo; dash -n ./lint.do</span>
+      </div>
+      <div class="row">
+        <span class="gutter"></span>
+        <span class="info"><span class="ts">20260727-14:02:01</span> &raquo; mksh -n ./lint.do</span>
+      </div>
+      <div class="row">
+        <span class="gutter"></span>
+        <span class="info"><span class="ts">20260727-14:02:02</span> &raquo; shellcheck ./*.do ./app/* ./lib/*</span>
+      </div>
+      <div class="row silence-row">
+        <span class="gutter"><span class="badge">3</span></span>
+        <span class="silence">actionlint, checkmake, hadolint &mdash; not installed, nothing logged</span>
+      </div>
+      <div class="row">
+        <span class="gutter"><span class="badge">4</span></span>
+        <span class="err"><span class="ts">20260727-14:02:04</span> shfmt failed, err=1.</span>
+      </div>
+      <div class="row">
+        <span class="gutter"></span>
+        <span class="info"><span class="ts">20260727-14:02:05</span> &raquo; yamllint ./.github/*.yml ./.github/workflows/*.yml</span>
+      </div>
+      <div class="row">
+        <span class="gutter"><span class="badge">5</span></span>
+        <span class="ok">OK</span>
+      </div>
+    </div>
+  </div>
+  <div class="legend">
+    <h3>What the numbers point at</h3>
+    <ol>
+      <li>
+        <span class="num">1</span>
+        <p>No shellbase-specific CLI to learn &mdash; <code>redo lint</code> is a plain redo target running a POSIX <code>.do</code> script.</p>
+      </li>
+      <li>
+        <span class="num">2</span>
+        <p><code>cmd_run</code> echoes the exact command it's about to run, in the same green as every other info-level <code>log</code> line, before any output appears.</p>
+      </li>
+      <li>
+        <span class="num">3</span>
+        <p><code>cmd_runif</code> skips missing tools without a warning. Silence is the signal that a linter isn't installed, not a yellow line asking you to fix it.</p>
+      </li>
+      <li>
+        <span class="num">4</span>
+        <p>A genuine failure, printed in red by <code>loge</code>. One bad linter doesn't stop the rest &mdash; <code>lint.do</code> keeps going.</p>
+      </li>
+      <li>
+        <span class="num">5</span>
+        <p>The only line on stdout. redo reads it as the target's content; every line above it went to stderr.</p>
+      </li>
+    </ol>
+  </div>
+</div>
+++++
+endif::[]
+
+ifndef::pages-build[]
+[,sh]
+----
+$ redo lint
+20260727-14:02:01 » dash -n ./lint.do
+20260727-14:02:01 » mksh -n ./lint.do
+20260727-14:02:02 » shellcheck ./*.do ./app/* ./lib/*
+# actionlint, checkmake, hadolint - not installed, nothing logged
+20260727-14:02:04 shfmt failed, err=1.
+20260727-14:02:05 » yamllint ./.github/*.yml ./.github/workflows/*.yml
+OK
+----
+endif::[]
+
 == Links
 
 - {url-sh0}[Bash Pitfalls]
