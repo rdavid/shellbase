@@ -1,0 +1,50 @@
+<!--
+SPDX-FileCopyrightText: 2026 David Rabkin
+SPDX-License-Identifier: 0BSD
+-->
+<style>
+:root {
+  --bg: #3f3f3f;
+  --bg-panel: #2b2b2b;
+  --fg: #dcdccc;
+  --fg-muted: #7f9f7f;
+  --accent-yellow: #f0dfaf;
+  --accent-orange: #dfaf8f;
+  --accent-cyan: #8cd0d3;
+  --border: #4f4f4f;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+body {
+  background: var(--bg) !important;
+  color: var(--fg) !important;
+}
+#header, #content, #footer { max-width: 900px; }
+#footer, #footer-text { color: var(--fg-muted) !important; }
+h1, h2, h3, h4, h5, h6, #toctitle, #header > h1:first-child {
+  font-family: var(--mono);
+  color: var(--accent-yellow) !important;
+  border-bottom-color: var(--border) !important;
+}
+a { color: var(--accent-orange) !important; }
+a:hover { color: var(--accent-cyan) !important; }
+pre, code, tt { font-family: var(--mono); }
+code {
+  background: var(--bg-panel) !important;
+  color: var(--accent-cyan) !important;
+}
+.listingblock pre,
+.literalblock pre,
+.listingblock > .content > pre {
+  background: var(--bg-panel) !important;
+  color: var(--accent-cyan) !important;
+  border: 1px solid var(--border);
+}
+#content #toc {
+  background: var(--bg-panel) !important;
+  border: 1px solid var(--border);
+  padding: 1em;
+}
+#toc a { color: var(--fg) !important; }
+#toc a:hover { color: var(--accent-orange) !important; }
+hr { border-color: var(--border); }
+</style>
