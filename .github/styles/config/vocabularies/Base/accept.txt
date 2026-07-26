@@ -4,3 +4,4 @@ Matveev
 Rabkin
 Sergey
 Shellbase
+stdout

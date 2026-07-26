@@ -50,7 +50,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260725
+BASE_VERSION=0.9.20260727
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -168,8 +168,13 @@ chrono_get() {
 	fi
 }
 
-# Marks the beginning of a period. The only parameter is the stopwatch name.
+# Marks the beginning of a period. The only parameter is the stopwatch
+# name. Without a single argument it fails with BASE_RC_ARG_NO.
 chrono_sta() {
+	[ $# -eq 1 ] || {
+		loge Expected a single argument, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	local err nme="$1" now
 	now="$(date +%s 2>&1)" || {
 		err=$?
@@ -179,8 +184,14 @@ chrono_sta() {
 	map_put "$nme" sta "$now"
 }
 
-# Calculates a duration from the start and cleans inner data.
+# Calculates a duration from the start and cleans inner data. The only
+# parameter is the stopwatch name. Without a single argument it fails with
+# BASE_RC_ARG_NO.
 chrono_sto() {
+	[ $# -eq 1 ] || {
+		loge Expected a single argument, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	local dur nme="$1"
 	dur="$(chrono_get "$nme")" || return
 	map_del "$nme" sta || return
@@ -742,17 +753,27 @@ prettyuptime() {
 	' | tr -d \\n
 }
 
-# Returns the absolute directory of a file. See the description of realpath.
+# Returns the absolute directory of a file. Without a single argument it
+# fails with BASE_RC_ARG_NO. See the description of realpath.
 realdir() {
+	[ $# -eq 1 ] || {
+		loge Expected a single argument, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	local dir str="$1"
 	dir="$(dirname -- "$str" 2>&1)" || die "$dir"
 	dir="$(CDPATH='' \cd -- "$dir" 2>&1 && pwd -P)" || die "$dir"
 	printf %s "$dir"
 }
 
-# Returns the absolute path of a file. See:
+# Returns the absolute path of a file. Without a single argument it fails
+# with BASE_RC_ARG_NO. See:
 #  https://stackoverflow.com/q/3915040
 realpath() {
+	[ $# -eq 1 ] || {
+		loge Expected a single argument, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	local dir nme str="$1"
 	dir="$(realdir "$str")" || die
 	nme="$(basename -- "$str" 2>&1)" || die "$nme"
