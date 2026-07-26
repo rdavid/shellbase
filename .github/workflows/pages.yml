@@ -5,7 +5,7 @@ name: pages
 'on':
   push:
     branches: [master]
-    paths: [README.adoc]
+    paths: [README.adoc, .github/pages/**]
   workflow_dispatch:
 permissions:
   contents: read
@@ -28,6 +28,7 @@ jobs:
           sudo apt-get install --no-install-recommends --yes asciidoctor
       - run: |
           mkdir _site
+          cp .github/pages/favicon.svg _site/favicon.svg
           asciidoctor \
             --attribute docinfo=private \
             --attribute docinfodir=.github/pages \
