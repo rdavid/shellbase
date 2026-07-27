@@ -1,0 +1,15 @@
+#!/bin/sh
+# vi: lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Verifies that isempty handles a directory name that collides with a cd
+# option, such as -L, instead of silently changing to the wrong directory.
+#
+# File not following:
+#  shellcheck disable=SC1090,SC1091
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+cd -- "$BASE_WIP" || die
+mkdir -- -L
+isempty -L || die -L is reported as inaccessible.
+rmdir -- -L

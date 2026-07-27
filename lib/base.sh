@@ -110,7 +110,7 @@ beuser() {
 	local ask cur usr="$1"
 	user_exists "$usr" || die "$usr": No such user.
 	cur="$(id -u 2>&1)" || die "$cur"
-	ask="$(id -u "$usr" 2>&1)" || die "$ask"
+	ask="$(id -u -- "$usr" 2>&1)" || die "$ask"
 	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."
 	log "You are $usr ($cur)."
 }
@@ -494,7 +494,7 @@ isempty() {
 		loge Expected a single argument, got "$#".
 		return $BASE_RC_ARG_NO
 	}
-	cd "$1" >/dev/null 2>&1 || {
+	cd -- "$1" >/dev/null 2>&1 || {
 		local err=$?
 		loge The directory is not accessible: "$1", err=$err.
 		return $err
@@ -617,8 +617,8 @@ iswritable() {
 		if file_exists "$arg"; then
 			[ -w "$arg" ] || return 1
 		else
-			touch "$arg" 2>/dev/null || return
-			rm "$arg"
+			touch -- "$arg" 2>/dev/null || return
+			rm -- "$arg"
 		fi
 	done
 }
@@ -1084,7 +1084,7 @@ user_exists() {
 	}
 	local arg ret=0
 	for arg; do
-		if id "$arg" >/dev/null 2>&1; then
+		if id -- "$arg" >/dev/null 2>&1; then
 			log User "$arg" exists.
 		else
 			ret=$?
@@ -1530,7 +1530,7 @@ base_pdf2img() {
 		;;
 	esac
 	for fle in *.pdf; do
-		cmd_run pdftoppm "$fle" "${fle%.*}" "$fmt"
+		cmd_run pdftoppm "$fmt" -- "$fle" "${fle%.*}"
 	done
 }
 
