@@ -18,6 +18,7 @@ SPDX-License-Identifier: 0BSD
 body {
   background: var(--bg) !important;
   color: var(--fg) !important;
+  padding-top: 3.5em;
 }
 #header, #content, #footer { max-width: 900px; }
 #footer, #footer-text { color: var(--fg-muted) !important; }
@@ -25,6 +26,7 @@ h1, h2, h3, h4, h5, h6, #toctitle, #header > h1:first-child {
   font-family: var(--mono);
   color: var(--accent-yellow) !important;
   border-bottom-color: var(--border) !important;
+  scroll-margin-top: 4.5em;
 }
 a { color: var(--accent-orange) !important; }
 a:hover { color: var(--accent-cyan) !important; }
@@ -41,12 +43,70 @@ code {
   border: 1px solid var(--border);
 }
 #content #toc {
-  background: var(--bg-panel) !important;
-  border: 1px solid var(--border);
-  padding: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5em;
+  background: var(--bg) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  padding: 0.9em 56px 0.9em 15px !important;
+  margin: 0 auto !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  max-width: 900px;
+  z-index: 10;
 }
-#toc a { color: var(--fg) !important; }
+#repo-link {
+  position: fixed;
+  top: 0;
+  right: max(15px, calc(50vw - 450px + 15px));
+  padding: 0.9em 0;
+  font-size: 0.92em;
+  z-index: 11;
+}
+#repo-link a {
+  display: flex;
+  align-items: center;
+  height: 1.3em;
+  color: var(--fg-muted);
+}
+#repo-link a:hover { color: var(--accent-orange); }
+#repo-link svg { width: 1.15em; height: 1.15em; }
+#toc::before {
+  content: "shellbase";
+  flex: none;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.95em;
+  color: var(--accent-yellow);
+  background: url("favicon.svg") no-repeat left center;
+  background-size: 1.15em 1.15em;
+  padding-left: 1.6em;
+  line-height: 1.15em;
+}
+#toctitle { display: none; }
+#toc ul.sectlevel1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.6em;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--mono);
+  font-size: 0.92em;
+}
+#toc ul.sectlevel1 > li { margin: 0; }
+#toc a { color: var(--fg) !important; text-decoration: none; }
 #toc a:hover { color: var(--accent-orange) !important; }
+@media (max-width: 560px) {
+  #content #toc { justify-content: flex-start; gap: 1em 1.5em; }
+  #toc ul.sectlevel1 { gap: 1em 1.2em; font-size: 0.86em; }
+}
 hr { border-color: var(--border); }
 #term-demo { margin: 1.5em 0 2em; }
 #term-demo .window {
