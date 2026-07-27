@@ -78,8 +78,10 @@ code {
   flex-wrap: wrap;
   gap: 1.5em;
   background: var(--bg) !important;
-  border: none !important;
-  border-bottom: 1px solid var(--border);
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid var(--border) !important;
   border-radius: 0;
   padding: 0.9em 56px 0.9em 15px !important;
   margin: 0 auto !important;
@@ -136,7 +138,7 @@ code {
   #content #toc { justify-content: flex-start; gap: 1em 1.5em; }
   #toc ul.sectlevel1 { gap: 1em 1.2em; font-size: 0.86em; }
 }
-hr { border-color: var(--border); }
+hr, .sect1 + .sect1 { border-color: var(--border) !important; }
 #term-demo { margin: 1.5em 0 2em; }
 #term-demo .window {
   background: var(--bg-panel);
