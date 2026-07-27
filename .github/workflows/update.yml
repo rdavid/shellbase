@@ -6,6 +6,8 @@ name: update
   pull_request:
     paths: &paths
       - app/update
+      - lib/base.sh
+      - README.adoc
   push:
     branches: [master]
     paths: *paths

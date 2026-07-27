@@ -4,8 +4,13 @@
 name: vale
 'on':
   pull_request:
+    paths: &paths
+      - .vale.ini
+      - .github/styles/**
+      - README.adoc
   push:
     branches: [master]
+    paths: *paths
   workflow_dispatch:
 permissions:
   contents: read
