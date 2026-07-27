@@ -50,7 +50,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260727
+BASE_VERSION=0.9.20260728
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -121,15 +121,24 @@ bomb() {
 	base_bomb
 }
 
-# The only cheat sheet you need.
+# The only cheat sheet you need. The only parameter is the topic.
 cheat() {
+	[ $# -eq 1 ] || {
+		loge Expected a single argument, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	cmd_exists curl || return
 	curl https://cht.sh/"$1"
 }
 
 # Calculates a duration from the start. There are 86400 seconds in a day,
-# 3600 in an hour, and 60 in a minute.
+# 3600 in an hour, and 60 in a minute. The only parameter is the stopwatch
+# name.
 chrono_get() {
+	[ $# -eq 1 ] || {
+		loge Expected a single argument, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	local \
 		beg \
 		err \
@@ -441,9 +450,14 @@ grbt() {
 	cmd_run git push origin +"$br"
 }
 
-# Ignores exit code 141 (128 + SIGPIPE) from command pipes. See:
+# Ignores exit code 141 (128 + SIGPIPE) from command pipes. The only
+# parameter is the exit code to check. See:
 #  https://stackoverflow.com/q/22464786
 handle_pipefails() {
+	[ $# -eq 1 ] || {
+		loge Expected a single argument, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	local err=141
 	[ "$1" -eq "$err" ] || return "$1"
 	log Ignore the pipe failure with the error code "$err".
@@ -464,13 +478,22 @@ heic2jpg() {
 # Case does not require another shell process. See:
 #  https://www.grymoire.com/Unix/Sh.html#toc-uh-96
 inside() {
+	[ $# -eq 2 ] || {
+		loge Expected two arguments, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	case "$1" in *$2*) return 0 ;; esac
 	return 1
 }
 
-# Determines whether a directory is empty. See:
+# Determines whether a directory is empty. The only parameter is the
+# directory. See:
 #  https://unix.stackexchange.com/q/202243
 isempty() {
+	[ $# -eq 1 ] || {
+		loge Expected a single argument, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	cd "$1" >/dev/null 2>&1 || {
 		local err=$?
 		loge The directory is not accessible: "$1", err=$err.
@@ -492,9 +515,14 @@ isempty() {
 	return $ret
 }
 
-# Determines whether a shell function with a given name exists. See:
+# Determines whether a shell function with a given name exists. The only
+# parameter is the function name. See:
 #  https://stackoverflow.com/q/35818555
 isfunc() {
+	[ $# -eq 1 ] || {
+		loge Expected a single argument, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	local str
 	str="$(type "$1" 2>&1)" || {
 		local err=$?
@@ -508,6 +536,10 @@ isfunc() {
 # strings containing non-digits while accepting everything else. See:
 #  https://stackoverflow.com/q/806906
 isnumber() {
+	[ $# -eq 1 ] || {
+		loge Expected a single argument, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	case "$1" in
 	'' | *[!0-9]*) return 1 ;;
 	esac
@@ -516,6 +548,10 @@ isnumber() {
 
 # Verifies that all parameters are readable files.
 isreadable() {
+	[ $# -gt 0 ] || {
+		loge No files specified to check.
+		return $BASE_RC_ARG_NO
+	}
 	local arg
 	for arg; do
 		[ -r "$arg" ] || return 1
@@ -572,6 +608,10 @@ issolid() {
 
 # Verifies that all parameters are writable files or do not exist.
 iswritable() {
+	[ $# -gt 0 ] || {
+		loge No files specified to check.
+		return $BASE_RC_ARG_NO
+	}
 	local arg
 	for arg; do
 		if file_exists "$arg"; then
@@ -611,6 +651,10 @@ logw() {
 
 # Deletes a key from the key-value store.
 map_del() {
+	[ $# -eq 2 ] || {
+		loge Expected two arguments, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	local \
 		dir="$BASE_WIP"/map \
 		err \
@@ -631,6 +675,10 @@ map_del() {
 
 # Reads a value from the key-value store.
 map_get() {
+	[ $# -eq 2 ] || {
+		loge Expected two arguments, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	local \
 		dir="$BASE_WIP"/map \
 		err \
@@ -653,6 +701,10 @@ map_get() {
 
 # Adds a key-value pair to the key-value store.
 map_put() {
+	[ $# -eq 3 ] || {
+		loge Expected three arguments, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	local \
 		dir="$BASE_WIP"/map \
 		key="$2" \
@@ -1110,6 +1162,10 @@ var_exists() {
 # Uses single-letter sort options for compatibility. For more information, see:
 #  https://unix.stackexchange.com/q/285924
 ver_ge() {
+	[ $# -eq 2 ] || {
+		loge Expected two arguments, got "$#".
+		return $BASE_RC_ARG_NO
+	}
 	printf %s\\n "$2" "$1" | sort -cV >/dev/null 2>&1
 	local err=$?
 	[ $err -lt 2 ] && return $err

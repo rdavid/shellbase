@@ -1,0 +1,12 @@
+#!/bin/sh
+# vi: lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Verifies that map_put fails when called with two arguments.
+#
+# File not following:
+#  shellcheck disable=SC1090,SC1091
+. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+map_put a key1
+log Value put.
