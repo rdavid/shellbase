@@ -22,6 +22,29 @@ body {
 }
 #header, #content { max-width: 900px; }
 #footer { display: none; }
+#site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1em;
+  margin: 3em 0 0;
+  padding: 1.5em 0 0.5em;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.85em;
+  color: var(--fg-muted);
+}
+#site-footer .footer-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+#site-footer .footer-left img { display: block; }
+#site-footer .footer-left a { color: var(--accent-orange) !important; }
+#site-footer .footer-links { display: flex; gap: 1.4em; }
+#site-footer .footer-links a { color: var(--fg-muted) !important; text-decoration: none; }
+#site-footer .footer-links a:hover { color: var(--accent-orange) !important; }
 #content p {
   text-align: justify;
   text-align-last: left;

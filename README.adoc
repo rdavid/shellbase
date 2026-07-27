@@ -384,3 +384,19 @@ endif::[]
 
 `shellbase` belongs to {url-cv}[David Rabkin] and uses a
 {url-license}[Zero-Clause BSD license].
+
+ifdef::pages-build[]
+++++
+<footer id="site-footer">
+  <div class="footer-left">
+    <img src="favicon.svg" alt="" width="20" height="20">
+    <span>shellbase by <a href="http://cv.rabkin.co.il" target="_blank" rel="noopener">David Rabkin</a></span>
+  </div>
+  <div class="footer-links">
+    <a href="https://github.com/rdavid/shellbase" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/rdavid/shellbase/releases" target="_blank" rel="noopener">Releases</a>
+    <a href="https://github.com/rdavid/shellbase/blob/master/LICENSES/0BSD.txt" target="_blank" rel="noopener">0BSD License</a>
+  </div>
+</footer>
+++++
+endif::[]
