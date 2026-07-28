@@ -1169,7 +1169,7 @@ ver_ge() {
 	printf %s\\n "$2" "$1" | sort -cV >/dev/null 2>&1
 	local err=$?
 	[ $err -lt 2 ] && return $err
-	loge ver_ge: sort failed with $err.
+	loge Sort failed with $err.
 }
 
 # Converts all video files in the current directory to MP3 files. find
@@ -1565,7 +1565,7 @@ base_sig_cleanup() {
 # parameters. Iterates over the positional parameters with for and no in.
 base_time_separator() {
 	[ "$#" -gt 3 ] && {
-		loge base_time_separator: expected 3 arguments, got "$#".
+		loge Expected at most three arguments, got "$#".
 		return $BASE_RC_ARG_NO
 	}
 	local arg cnt=0
