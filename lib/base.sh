@@ -50,7 +50,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260728
+BASE_VERSION=0.9.20260801
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -597,10 +597,14 @@ issolid() {
 		loge File "$fle" has hash with unknown format: "$lne".
 		return $err
 	}
-	grep --invert-match --regexp "$pat" "$fle" >"$tmp"
+	grep --invert-match --regexp "$pat" "$fle" >"$tmp" || {
+		err=$?
+		loge Couldn\'t strip the hash line from "$fle".
+		return $err
+	}
 	printf %s\ \ %s "$hsh" "$tmp" | shasum --check --status || {
 		err=$?
-		loge Hash of "$fle" does not match "$hsh"
+		loge Hash of "$fle" does not match "$hsh".
 		return $err
 	}
 	log File "$fle" is solid.
