@@ -8,6 +8,7 @@ name: test-bsd
       - '*.do'
       - app/**
       - lib/**
+      - Makefile
   push:
     branches: [master]
     paths: *paths

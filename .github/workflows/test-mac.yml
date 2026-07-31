@@ -10,6 +10,7 @@ name: test-mac
       - '*.do'
       - app/**
       - lib/**
+      - Makefile
   push:
     branches: [master]
     paths: *paths

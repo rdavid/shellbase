@@ -9,6 +9,7 @@ name: test-lnx
       - app/**
       - lib/**
       - container/**
+      - Makefile
   push:
     branches: [master]
     paths: *paths
