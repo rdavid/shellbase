@@ -121,14 +121,13 @@ bomb() {
 	base_bomb
 }
 
-# The only cheat sheet you need. The only parameter is the topic.
+# The only cheat sheet you need. The parameter is the topic.
 cheat() {
-	[ $# -eq 1 ] || {
-		loge Expected a single argument, got "$#".
+	[ $# -le 1 ] || {
+		loge Expected at most a single argument, got "$#".
 		return $BASE_RC_ARG_NO
 	}
-	cmd_exists curl || return
-	curl https://cht.sh/"$1"
+	cmd_exists curl && curl cht.sh/"${1-}"
 }
 
 # Calculates a duration from the start. There are 86400 seconds in a day,
