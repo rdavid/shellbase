@@ -56,12 +56,17 @@
      M9mmmP'.JMML  JMML.`Mbmmd'.JMML..JMML.P^YbmdP'  `Moo9^Yo.M9mmmP'  `Mbmmd' 
 ----
 
-image:{img-test-bsd}[text bsd,link={url-test-bsd}]
-image:{img-test-lnx}[text lnx,link={url-test-lnx}]
-image:{img-test-mac}[test mac,link={url-test-mac}]
-image:{img-hoc}[hits of code,link={url-hoc}]
-image:{img-releases}[release,link={url-releases}]
-image:{img-license}[license,link={url-license}]
+[subs=attributes+]
+++++
+<div align="right">
+<a href="{url-test-bsd}"><img src="{img-test-bsd}" alt="text bsd"></a>
+<a href="{url-test-lnx}"><img src="{img-test-lnx}" alt="text lnx"></a>
+<a href="{url-test-mac}"><img src="{img-test-mac}" alt="test mac"></a>
+<a href="{url-hoc}"><img src="{img-hoc}" alt="hits of code"></a>
+<a href="{url-releases}"><img src="{img-releases}" alt="release"></a>
+<a href="{url-license}"><img src="{img-license}" alt="license"></a>
+</div>
+++++
 
 toc::[]
 
