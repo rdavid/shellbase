@@ -30,7 +30,7 @@ BSH="$(
 	exit $err
 }
 readonly \
-	BASE_APP_VERSION=0.9.20260711 \
+	BASE_APP_VERSION=0.9.20260815 \
 	BASE_MIN_VERSION=0.9.20260707 \
 	BSH
 . "$BSH"
@@ -40,6 +40,7 @@ for f in ./*.do ./app/* ./lib/*; do
 	cmd_runif dash -n "$f"
 	cmd_runif mksh -n "$f"
 done
+cmd_runif gitleaks detect --no-banner --redact
 cmd_runif hadolint ./container/*/Containerfile
 cmd_runif reuse lint
 cmd_runif shellcheck \

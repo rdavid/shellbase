@@ -14,6 +14,7 @@
 :url-cv: http://cv.rabkin.co.il
 :url-dotfiles: https://github.com/rdavid/dotfiles
 :url-gento: https://github.com/rdavid/gento
+:url-gitleaks: https://github.com/gitleaks/gitleaks
 :url-goredo: http://www.goredo.stargrave.org/INSTALL.html
 :url-goredoer: https://github.com/rdavid/goredoer
 :url-hadolint: https://github.com/hadolint/hadolint
@@ -269,6 +270,7 @@ You can install Sergey Matveev's {url-goredo}[`goredo`] implementation.
 `redo lint` applies the following linters to the source files:
 {url-actionlint}[`actionlint`],
 {url-checkmake}[`checkmake`],
+{url-gitleaks}[`gitleaks`],
 {url-hadolint}[`hadolint`],
 {url-reuse}[`reuse`],
 {url-shellcheck}[`shellcheck`],
