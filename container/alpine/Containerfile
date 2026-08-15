@@ -35,7 +35,7 @@ RUN \
 	&& cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime \
 	&& printf %s "$TIME_ZONE" > /etc/timezone \
 	&& goredo -symlinks
-USER "$USER"
+USER 1001
 WORKDIR /home/"$USER"
 COPY \
 	--chown="$USER":"$USER" \

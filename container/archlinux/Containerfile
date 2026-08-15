@@ -32,11 +32,11 @@ RUN \
 		yamllint>=1.31 \
 		zsh>=r5.9 \
 	&& ln -s /usr/bin/core_perl/shasum /usr/bin/shasum \
-	&& useradd --create-home "$USER" \
+	&& useradd --create-home --uid 1001 "$USER" \
 	&& cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime \
 	&& printf %s "$TIME_ZONE" > /etc/timezone \
 	&& goredo -symlinks
-USER "$USER"
+USER 1001
 WORKDIR /home/"$USER"
 COPY \
 	--chown="$USER":"$USER" \

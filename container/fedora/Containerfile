@@ -29,11 +29,11 @@ RUN \
 		yamllint \
 		yash \
 	&& dnf clean all \
-	&& useradd --create-home "$USER" \
+	&& useradd --create-home --uid 1001 "$USER" \
 	&& cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime \
 	&& printf %s "$TIME_ZONE" > /etc/timezone \
 	&& goredo -symlinks
-USER "$USER"
+USER 1001
 WORKDIR /home/"$USER"
 COPY \
 	--chown="$USER":"$USER" \

@@ -21,9 +21,9 @@ RUN \
 		tzdata-2026b \
 		util-linux-2.37.4 \
 	&& microdnf clean all --disableplugin=subscription-manager \
-	&& useradd --create-home "$USER" \
+	&& useradd --create-home --uid 1001 "$USER" \
 	&& goredo -symlinks
-USER "$USER"
+USER 1001
 WORKDIR /home/"$USER"
 COPY \
 	--chown="$USER":"$USER" \
