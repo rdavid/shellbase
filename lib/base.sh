@@ -50,7 +50,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260801
+BASE_VERSION=0.9.20260816
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -485,32 +485,37 @@ inside() {
 	return 1
 }
 
-# Determines whether a directory is empty. The only parameter is the
-# directory. See:
+# Determines whether a directory is empty, counting visible and hidden
+# entries alike, and treating a broken symlink as present even though
+# [ -e ] alone would miss it. Returns 0 if empty, 1 otherwise. The only
+# parameter is the directory. $PWD is captured before entering it and used
+# to restore the original directory on return, rather than relying on
+# $OLDPWD, since nounset is re-enabled before that reference and $PWD is a
+# POSIX-maintained variable rather than a cd side effect. See:
 #  https://unix.stackexchange.com/q/202243
 isempty() {
 	[ $# -eq 1 ] || {
 		loge Expected a single argument, got "$#".
 		return $BASE_RC_ARG_NO
 	}
+	local fle old="$PWD" ret=0
 	cd -- "$1" >/dev/null 2>&1 || {
-		local err=$?
-		loge The directory is not accessible: "$1", err=$err.
-		return $err
+		loge The directory is not accessible: "$1", err=$?.
+		return $BASE_RC_ARG_NE
 	}
-	local ret
 	set +o nounset -- ./* ./.[!.]* ./..?*
 	if [ -n "$4" ] ||
-		for e; do
-			[ -L "$e" ] ||
-				[ -e "$e" ] && break
+		for fle; do
+			[ -L "$fle" ] ||
+				[ -e "$fle" ] && break
 		done; then
 		ret=1
-	else
-		ret=0
 	fi
 	set -o nounset
-	cd "$OLDPWD"
+	cd -- "$old" >/dev/null 2>&1 || {
+		loge Could not return to the original directory: "$old", err=$?.
+		return $BASE_RC_CMD_NE
+	}
 	return $ret
 }
 
