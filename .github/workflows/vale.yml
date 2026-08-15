@@ -34,3 +34,11 @@ jobs:
       - uses: vale-cli/vale-action@v3.0.0
         with:
           fail_on_error: true
+          reporter: >-
+            ${{ github.event_name == 'pull_request'
+            && 'github-pr-annotations'
+            || 'local' }}
+          filter_mode: >-
+            ${{ github.event_name == 'pull_request'
+            && 'added'
+            || 'nofilter' }}
