@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: 2023-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
 # Multiple redirections compete for stdout:
-# hadolint global ignore=SC2261
+#  hadolint global ignore=SC2261
 FROM ghcr.io/rdavid/goredoer:0.9.20260707 as goredoer
 FROM archlinux:base
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
@@ -18,19 +19,19 @@ RUN \
 	&& pacman --noconfirm --sync \
 		actionlint>=1.7 \
 		asciidoctor>=2.0 \
-		bash>=5.1 \
+		bash>=5.3 \
 		dash>=0.5 \
-		diffutils>=3.10.3 \
-		fish>=3.6 \
-		ksh>=2020 \
+		diffutils>=3.12 \
+		fish>=4.8 \
+		ksh>=2020.0 \
 		perl \
-		shellcheck>=0.9 \
-		shfmt>=3.6 \
+		shellcheck>=0.11 \
+		shfmt>=3.13 \
 		tcsh>=6.24 \
-		typos>=1.35 \
-		vale>=3.12 \
-		yamllint>=1.31 \
-		zsh>=r5.9 \
+		typos>=1.49 \
+		vale>=3.17 \
+		yamllint>=1.38 \
+		zsh>=5.9 \
 	&& ln -s /usr/bin/core_perl/shasum /usr/bin/shasum \
 	&& useradd --create-home --uid 1001 "$USER" \
 	&& cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime \
