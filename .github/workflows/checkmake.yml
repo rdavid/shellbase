@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+---
+name: checkmake
+'on':
+  pull_request:
+    paths: &paths
+      - Makefile
+  push:
+    branches: [master]
+    paths: *paths
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+defaults:
+  run:
+    shell: sh
+jobs:
+  checkmake:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - id: cache
+        uses: actions/cache@v6.1.0
+        with:
+          path: ./checkmake
+          key: checkmake-0.3.2-${{ runner.os }}
+      - if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          srv=https://github.com/mrtazz/checkmake/releases/download
+          ver=0.3.2
+          curl \
+            --fail \
+            --location \
+            --output ./checkmake \
+            --silent \
+            --show-error \
+            "$srv/v$ver/checkmake-v$ver.linux.amd64"
+          chmod +x ./checkmake
+      - run: ./checkmake ./Makefile
