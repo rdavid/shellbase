@@ -14,6 +14,7 @@
 # Variable appears unused and file not following:
 #  shellcheck disable=SC2034,SC1090
 redo-ifchange \
+	./.conform.yaml \
 	./.github/*.yml \
 	./.github/workflows/*.yml \
 	./app/* \
@@ -30,12 +31,13 @@ BSH="$(
 	exit $err
 }
 readonly \
-	BASE_APP_VERSION=0.9.20260815 \
+	BASE_APP_VERSION=0.9.20260817 \
 	BASE_MIN_VERSION=0.9.20260707 \
 	BSH
 . "$BSH"
 cmd_runif actionlint
 cmd_runif checkmake ./Makefile
+cmd_runif conform enforce --commit-ref HEAD
 for f in ./*.do ./app/* ./lib/*; do
 	cmd_runif dash -n "$f"
 	cmd_runif mksh -n "$f"

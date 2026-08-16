@@ -11,6 +11,7 @@
 :url-actionlint: https://github.com/rhysd/actionlint
 :url-base: https://github.com/rdavid/shellbase/blob/master/lib/base.sh
 :url-checkmake: https://github.com/mrtazz/checkmake
+:url-conform: https://github.com/siderolabs/conform
 :url-cv: http://cv.rabkin.co.il
 :url-dotfiles: https://github.com/rdavid/dotfiles
 :url-gento: https://github.com/rdavid/gento
@@ -270,6 +271,7 @@ You can install Sergey Matveev's {url-goredo}[`goredo`] implementation.
 `redo lint` applies the following linters to the source files:
 {url-actionlint}[`actionlint`],
 {url-checkmake}[`checkmake`],
+{url-conform}[`conform`],
 {url-gitleaks}[`gitleaks`],
 {url-hadolint}[`hadolint`],
 {url-reuse}[`reuse`],

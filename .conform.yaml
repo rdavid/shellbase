@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+---
+policies:
+  - type: commit
+    spec:
+      conventional:
+        descriptionLength: 72
+        scopes:
+          - ".*"
+        types:
+          - build
+          - chore
+          - ci
+          - docs
+          - feat
+          - fix
+          - perf
+          - refactor
+          - revert
+          - style
+          - test
+      header:
+        case: lower
+        imperative: true
+        length: 50
+      spellcheck:
+        locale: US

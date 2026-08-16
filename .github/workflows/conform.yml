@@ -1,0 +1,53 @@
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+
+# Enforces the Conventional Commits format required by AGENTS.md. On a pull
+# request every commit ahead of the base branch is checked; conform's
+# --base-branch flag needs the base ref present locally, which fetch-depth 0
+# guarantees. On a direct push to master only the landed commit is checked,
+# since GITHUB_EVENT_NAME and GITHUB_BASE_REF are plain runner environment
+# variables here, not template-expanded strings, the branching stays free of
+# template injection. conform has no stable release yet, so the pin below
+# tracks the latest alpha.
+---
+name: conform
+'on':
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+defaults:
+  run:
+    shell: sh
+jobs:
+  conform:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - run: |
+          srv=https://github.com/siderolabs/conform
+          ver=0.1.0-alpha.31
+          url=$srv/releases/download/v$ver/conform-linux-amd64
+          curl \
+            --fail \
+            --location \
+            --output conform \
+            --retry 3 \
+            --show-error \
+            --silent \
+            "$url"
+          chmod +x conform
+          if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+            ./conform enforce --base-branch "origin/$GITHUB_BASE_REF"
+          else
+            ./conform enforce --commit-ref HEAD
+          fi
