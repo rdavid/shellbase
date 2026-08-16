@@ -6,6 +6,7 @@
 # Verifies that cmd_run fails for a nonexistent command.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 cmd_run -q c0mmand_n0t_f0und

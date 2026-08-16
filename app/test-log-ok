@@ -6,8 +6,9 @@
 # Verifies that log, logw, and loge all accept a message without failing.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 i=0
 while [ "$i" -ne 10 ]; do
 	case "$((i % 3))" in

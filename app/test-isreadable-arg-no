@@ -6,7 +6,8 @@
 # Verifies that isreadable fails when called without a file argument.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 isreadable
 log The file is readable.

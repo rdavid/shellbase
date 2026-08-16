@@ -7,6 +7,7 @@
 # second.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 ver_ge 1.2.2 1.2.3 || die 1.2.2

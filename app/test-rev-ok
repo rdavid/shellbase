@@ -6,8 +6,9 @@
 # Verifies that rev reverses the characters of each line.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 str="$(printf 'abc\nfunc() {\n' | rev)" || die "$str"
 [ "$str" = "$(printf 'cba\n{ )(cnuf\n')" ] || die rev returns "$str".
 log rev reverses every line.

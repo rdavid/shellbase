@@ -6,7 +6,8 @@
 # Verifies that BASE_LOG_CAP defaults to 1 GiB.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
+#  shellcheck disable=SC1090
 set -- --keep-wip "$@"
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 [ "$BASE_LOG_CAP" -eq "$((1024 * 1024 * 1024))" ]

@@ -6,8 +6,9 @@
 # Verifies that chrono_sto fails for a stopwatch that was never started.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 chrono_sta foo
 dur="$(chrono_sto bar)" || die
 log Bar in "$dur".

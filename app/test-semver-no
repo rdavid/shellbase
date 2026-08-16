@@ -7,8 +7,9 @@
 # input lacks a complete major.minor.patch pattern.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 ver="$(semver 'I am 1.2')"
 log SemVer: "$ver".
 ! inside "$ver" 0.0.0+nil

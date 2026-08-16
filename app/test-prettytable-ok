@@ -7,8 +7,9 @@
 # bordered table, including with more rows than fit on one screen.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 cc1=$(
 	cat <<-EOM
 		+-----------+----------+----------+

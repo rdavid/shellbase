@@ -9,8 +9,9 @@
 # -no script to fail and flags the unexpected success.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 out="$(retry -n 5 c0mmand_n0t_f0und 2>&1)" && exit 0
 inside "$out" 'Retry 1/5.' || exit 0
 inside "$out" 'Command c0mmand_n0t_f0und not found.' || exit 0

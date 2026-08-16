@@ -8,8 +8,9 @@
 # unavailable.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 grep --help >/dev/null 2>&1 || {
 	logw test-semver-ok: Skipped, GNU grep is required.
 	cya

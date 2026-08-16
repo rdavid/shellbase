@@ -8,8 +8,9 @@
 # single-digit ones like 9.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 for v in 1.2.10 1.10.0 10.0.0; do
 	ver_ge "$v" 1.2.9 || die "$v"
 done

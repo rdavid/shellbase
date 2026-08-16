@@ -6,8 +6,9 @@
 # Verifies that isnumber succeeds for strings made only of digits.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 isnumber 0 || die 0 is not a number.
 isnumber 9 || die 9 is not a number.
 isnumber 10 || die 10 is not a number.

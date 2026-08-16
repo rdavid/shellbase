@@ -7,8 +7,9 @@
 # glob matches, and fails otherwise.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 file_exists /tmp && log /tmp exists.
 file_exists /tmp1 || log /tmp1 does not exist.
 file_exists /tmp/* && log /tmp/\* exists.

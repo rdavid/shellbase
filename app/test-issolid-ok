@@ -7,10 +7,11 @@
 # script's hash.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 
 # Appears unused:
 #  shellcheck disable=SC2034
-BASE_APP_HASH=a46d300080f2cd52ac5db95150d370514ab24176
+BASE_APP_HASH=711a18e5c7bdaa42db22f2ee619609c89553350c
 issolid

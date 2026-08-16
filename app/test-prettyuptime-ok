@@ -7,8 +7,9 @@
 # least one recognized time unit.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 ok=false
 up="$(prettyuptime)"
 for w in 0 1 2 3 4 5 6 7 8 9 day days hour hours less minute minutes; do

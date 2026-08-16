@@ -7,7 +7,8 @@
 # options, such as -rf, instead of misparsing it as flags for touch or rm.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 cd -- "$BASE_WIP" || die
 iswritable -rf || die -rf is reported as not writable.

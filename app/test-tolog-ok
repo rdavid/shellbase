@@ -9,8 +9,9 @@
 # Uses local variables:
 #  shellcheck disable=SC2039,SC3043
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 foo() {
 	local i=1
 	while [ $i -le 3 ]; do

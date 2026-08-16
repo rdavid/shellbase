@@ -8,9 +8,10 @@
 # starts normally when the running version meets a low BASE_MIN_VERSION.
 #
 # File not following, appears unused:
-#  shellcheck disable=SC1090,SC1091,SC2034
+#  shellcheck disable=SC1090,SC2034
 readonly BASE_MIN_VERSION=0.9.20230311
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 for v in 1.2.3 1.2.3-alpha 1.2.4; do
 	ver_ge "$v" 1.2.3 || die "$v"
 done

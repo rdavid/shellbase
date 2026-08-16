@@ -8,8 +8,9 @@
 # since it needs real terminal input.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 should_continue || cya Stopped first.
 log Continued first.
 should_continue You\'re "$USER", continue || cya Stopped second.

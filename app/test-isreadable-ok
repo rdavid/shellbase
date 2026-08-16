@@ -6,8 +6,9 @@
 # Verifies that isreadable succeeds when all the given files are readable.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 fle1="$BASE_WIP/1"
 fle2="$BASE_WIP/2"
 touch "$fle1" "$fle2"

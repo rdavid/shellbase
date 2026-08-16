@@ -7,8 +7,9 @@
 # with contents.
 #
 # File not following:
-#  shellcheck disable=SC1090,SC1091
-. "$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
 dir="$BASE_WIP/empty-dir"
 mkdir "$dir"
 isempty /tmp || log /tmp is not empty.
