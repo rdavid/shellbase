@@ -90,6 +90,10 @@ to regenerate the alphabetical function-list block. The `log`, `loge`,
 `logw`, and `prettytable` prose links elsewhere in `README.adoc` are
 hand-maintained and must be fixed manually.
 
+When `README.adoc` links to another project, prefer that project's GitHub
+Pages site (`https://<owner>.github.io/<repo>/`) over its bare repository
+URL, if the project publishes one.
+
 ## Testing Guidelines
 
 Add or update an executable script in `app/` for every behavior change. Use
