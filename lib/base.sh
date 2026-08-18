@@ -1192,6 +1192,7 @@ ver_ge() {
 # every file, most commonly 48kHz video audio, to 44100.
 vid2aud() {
 	cmd_exists ffmpeg || return
+	iswritable . || return
 	local dst src
 	find . -type f -maxdepth 1 \
 		\( \
@@ -1209,7 +1210,15 @@ vid2aud() {
 		\) |
 		while read -r src; do
 			src="${src#./}"
+			isreadable "$src" || {
+				logw "$src" is not readable.
+				continue
+			}
 			dst="${src%.*}".mp3
+			file_exists "$dst" && {
+				logw "$dst" already exists.
+				continue
+			}
 			cmd_run ffmpeg \
 				-nostdin \
 				-i "$src" \
