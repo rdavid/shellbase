@@ -553,7 +553,9 @@ isnumber() {
 	return 0
 }
 
-# Verifies that all parameters are readable files.
+# Verifies that all parameters are readable files. Logs and fails with
+# BASE_RC_ARG_NO if called without arguments, or BASE_RC_ARG_NE on the
+# first unreadable file.
 isreadable() {
 	[ $# -gt 0 ] || {
 		loge No files specified to check.
@@ -561,7 +563,9 @@ isreadable() {
 	}
 	local arg
 	for arg; do
-		[ -r "$arg" ] || return 1
+		[ -r "$arg" ] && continue
+		loge "$arg" is not readable, err=$?.
+		return $BASE_RC_ARG_NE
 	done
 }
 
