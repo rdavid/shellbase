@@ -50,7 +50,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260816
+BASE_VERSION=0.9.20260818
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -1181,24 +1181,41 @@ ver_ge() {
 }
 
 # Converts all video files in the current directory to MP3 files. find
-# matches the mp4, m4v, avi, and mkv extensions. ffmpeg treats options as
-# positional. An option before -i applies to the input and the rest apply to
-# the output, so only the output options after -i are sorted.
+# matches the avi, flv, m4v, mkv, mov, mp4, mpg, ogv, ts, webm, and wmv
+# extensions. ffmpeg treats options as positional. An option before -i
+# applies to the input and the rest apply to the output, so only the
+# output options after -i are sorted. -q:a 0 requests libmp3lame's
+# highest VBR quality (V0), letting bitrate adapt to content complexity
+# instead of spending a fixed rate on simple passages. No -ar is given,
+# so ffmpeg keeps the source's sample rate when libmp3lame supports it
+# directly (44100, 48000, 32000, and others), instead of downsampling
+# every file, most commonly 48kHz video audio, to 44100.
 vid2aud() {
 	cmd_exists ffmpeg || return
 	local dst src
 	find . -type f -maxdepth 1 \
-		\( -name \*.mp4 -o -name \*.m4v -o -name \*.avi -o -name \*.mkv \) |
+		\( \
+		-name \*.avi -o \
+		-name \*.flv -o \
+		-name \*.m4v -o \
+		-name \*.mkv -o \
+		-name \*.mov -o \
+		-name \*.mp4 -o \
+		-name \*.mpg -o \
+		-name \*.ogv -o \
+		-name \*.ts -o \
+		-name \*.webm -o \
+		-name \*.wmv \
+		\) |
 		while read -r src; do
 			src="${src#./}"
 			dst="${src%.*}".mp3
 			cmd_run ffmpeg \
 				-nostdin \
 				-i "$src" \
-				-ab 320k \
 				-ac 2 \
-				-ar 44100 \
 				-f mp3 \
+				-q:a 0 \
 				-vn \
 				"$dst"
 		done
