@@ -50,7 +50,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260818
+BASE_VERSION=0.9.20260819
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -621,7 +621,9 @@ issolid() {
 	log File "$fle" is solid.
 }
 
-# Verifies that all parameters are writable files or do not exist.
+# Verifies that all parameters are writable files or do not exist. Logs
+# and fails with BASE_RC_ARG_NO if called without arguments, or
+# BASE_RC_ARG_NE on the first unwritable or uncreatable file.
 iswritable() {
 	[ $# -gt 0 ] || {
 		loge No files specified to check.
@@ -630,11 +632,15 @@ iswritable() {
 	local arg
 	for arg; do
 		if file_exists "$arg"; then
-			[ -w "$arg" ] || return 1
-		else
-			touch -- "$arg" 2>/dev/null || return
-			rm -- "$arg"
+			[ -w "$arg" ] && continue
+			loge "$arg" is not writable, err=$?.
+			return $BASE_RC_ARG_NE
 		fi
+		touch -- "$arg" 2>/dev/null || {
+			loge "$arg" is not writable, err=$?.
+			return $BASE_RC_ARG_NE
+		}
+		rm -- "$arg"
 	done
 }
 
