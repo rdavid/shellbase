@@ -375,18 +375,39 @@ ellipsize() {
 		}'
 }
 
-# Verifies the existence of all files. Iterates through the arguments,
-# with each argument representing a file name. Fails if any of the specified
-# files do not exist. Without arguments it fails with BASE_RC_ARG_NO.
+# Checks that every argument names a file that exists. Every file found or
+# missing is logged unless -q is set. With no arguments it fails with
+# BASE_RC_ARG_NO.
+# Return code:
+#  - 0 when all files are present;
+#  - otherwise a count of the missing files that starts from BASE_RC_ARG_NE:
+#    one missing yields BASE_RC_ARG_NE, each further miss adds one, capped so
+#    the result stays within the shell's 0..255 return range.
+# Usage: file_exists [-q] fle1 [fle2 ...]
+# Options: -q (quiet mode - suppress found/missing logs, errors still log)
 file_exists() {
-	[ $# -gt 0 ] || {
+	local fle cnt=0 max=$((256 - BASE_RC_ARG_NE)) qui=false
+	[ "${1-}" = -q ] && {
+		qui=true
+		shift
+	}
+	[ $# -eq 0 ] && {
 		loge No files specified to check.
 		return $BASE_RC_ARG_NO
 	}
-	local arg
-	for arg; do
-		[ -e "$arg" ] || [ -L "$arg" ] || return $BASE_RC_ARG_NE
+	for fle; do
+		if [ -e "$fle" ] || [ -L "$fle" ]; then
+			[ "$qui" = false ] && log "$fle" exists.
+		else
+			[ "$qui" = false ] && logw "$fle": No such file.
+			cnt=$((cnt + 1))
+			[ "$cnt" -lt "$max" ] || {
+				loge "Missing file count is capped at $max."
+				break
+			}
+		fi
 	done
+	[ "$cnt" -eq 0 ] || return $((BASE_RC_ARG_NE + cnt - 1))
 }
 
 # Amends the last commit without changing its message and force-pushes the
@@ -630,7 +651,7 @@ iswritable() {
 	}
 	local arg
 	for arg; do
-		if file_exists "$arg"; then
+		if file_exists -q "$arg"; then
 			[ -w "$arg" ] && continue
 			loge "$arg" is not writable, err=$?.
 			return $BASE_RC_ARG_NE
@@ -677,15 +698,10 @@ map_del() {
 	}
 	local \
 		dir="$BASE_WIP"/map \
-		err \
 		key="$2" \
 		nme="$1"
 	local fle="$dir/$nme/$key"
-	file_exists "$fle" || {
-		err=$?
-		loge "$fle": No such file.
-		return $err
-	}
+	file_exists "$fle" || return
 	rm "$fle"
 	isempty "$dir/$nme" || return 0
 	rmdir "$dir/$nme"
@@ -1224,10 +1240,7 @@ vid2aud() {
 			src="${src#./}"
 			isreadable "$src" || continue
 			dst="${src%.*}".mp3
-			file_exists "$dst" && {
-				logw "$dst" already exists.
-				continue
-			}
+			file_exists "$dst" && continue
 			cmd_run ffmpeg \
 				-nostdin \
 				-i "$src" \
