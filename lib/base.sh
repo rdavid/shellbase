@@ -207,15 +207,15 @@ chrono_sto() {
 }
 
 # Checks that every argument names a command that exists and is executable.
-# Finding a command is the common case and stays silent; a missing one is
-# warned unless -q is set. With no arguments it fails with BASE_RC_ARG_NO.
+# Every command found or missing is logged unless -q is set. With no
+# arguments it fails with BASE_RC_ARG_NO.
 # Return code:
 #  - 0 when all commands are present;
 #  - otherwise a count of the missing commands that starts from BASE_RC_CMD_NE:
 #    one missing yields BASE_RC_CMD_NE, each further miss adds one, capped so
 #    the result stays within the shell's 0..255 return range.
 # Usage: cmd_exists [-q] cmd1 [cmd2 ...]
-# Options: -q (quiet mode - suppress warnings and errors)
+# Options: -q (quiet mode - suppress found/missing logs, errors still log)
 cmd_exists() {
 	local cmd cnt=0 max=$((256 - BASE_RC_CMD_NE)) qui=false
 	[ "${1-}" = -q ] && {
@@ -223,18 +223,20 @@ cmd_exists() {
 		shift
 	}
 	[ $# -eq 0 ] && {
-		[ "$qui" = false ] && loge No commands specified to check.
+		loge No commands specified to check.
 		return $BASE_RC_ARG_NO
 	}
 	for cmd; do
-		command -v "$cmd" >/dev/null 2>&1 || {
+		if command -v "$cmd" >/dev/null 2>&1; then
+			[ "$qui" = false ] && log "Command $cmd found."
+		else
 			[ "$qui" = false ] && logw "Command $cmd not found."
 			cnt=$((cnt + 1))
 			[ "$cnt" -lt "$max" ] || {
-				[ "$qui" = false ] && logw "Missing command count is capped at $max."
+				loge "Missing command count is capped at $max."
 				break
 			}
-		}
+		fi
 	done
 	[ "$cnt" -eq 0 ] || return $((BASE_RC_CMD_NE + cnt - 1))
 }
