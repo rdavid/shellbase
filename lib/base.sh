@@ -516,7 +516,7 @@ isempty() {
 	set -o nounset
 	cd -- "$old" >/dev/null 2>&1 || {
 		loge Could not return to the original directory: "$old", err=$?.
-		return $BASE_RC_CMD_NE
+		return $BASE_RC_ARG_NE
 	}
 	return $ret
 }
