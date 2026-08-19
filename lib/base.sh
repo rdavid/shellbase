@@ -374,9 +374,8 @@ ellipsize() {
 }
 
 # Verifies the existence of all files. Iterates through the arguments,
-# with each argument representing a file name. Logs and fails with
-# BASE_RC_ARG_NE on the first missing file, or with BASE_RC_ARG_NO if
-# called without arguments.
+# with each argument representing a file name. Fails if any of the specified
+# files do not exist. Without arguments it fails with BASE_RC_ARG_NO.
 file_exists() {
 	[ $# -gt 0 ] || {
 		loge No files specified to check.
@@ -384,9 +383,7 @@ file_exists() {
 	}
 	local arg
 	for arg; do
-		[ -e "$arg" ] || [ -L "$arg" ] && continue
-		loge "$arg" does not exist, err=$?.
-		return $BASE_RC_ARG_NE
+		[ -e "$arg" ] || [ -L "$arg" ] || return $BASE_RC_ARG_NE
 	done
 }
 
