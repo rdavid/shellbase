@@ -1220,10 +1220,7 @@ vid2aud() {
 		\) |
 		while read -r src; do
 			src="${src#./}"
-			isreadable "$src" || {
-				logw "$src" is not readable.
-				continue
-			}
+			isreadable "$src" || continue
 			dst="${src%.*}".mp3
 			file_exists "$dst" && {
 				logw "$dst" already exists.
