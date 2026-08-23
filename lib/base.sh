@@ -50,7 +50,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260819
+BASE_VERSION=0.9.20260823
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -127,7 +127,7 @@ cheat() {
 		loge Expected at most a single argument, got "$#".
 		return $BASE_RC_ARG_NO
 	}
-	cmd_exists curl && curl cht.sh/"${1-}"
+	cmd_exists -q curl && curl cht.sh/"${1-}"
 }
 
 # Calculates a duration from the start. There are 86400 seconds in a day,
@@ -432,7 +432,7 @@ gitfix() {
 # the colored, graphed git log through fzf for interactive browsing, and
 # ctrl-m on a selected commit opens its full diff in less.
 gitlog() {
-	cmd_exists fzf git less || return
+	cmd_exists -q fzf git less || return
 	git log \
 		--color=always \
 		--format="%C(auto)%h%d %s %C(black)%C(bold)%cr" \
@@ -605,7 +605,7 @@ isroot() {
 # with shasum, awk, grep, and head, ignoring the line where the hash is
 # defined.
 issolid() {
-	cmd_exists shasum || return
+	cmd_exists -q shasum || return
 	local \
 		err \
 		fle="$0" \
@@ -799,7 +799,7 @@ pdf2png() {
 # Jakob Westhoff:
 #  https://github.com/jakobwesthoff/prettytable.sh
 prettytable() {
-	cmd_exists column || return
+	cmd_exists -q column || return
 	local bdy col hdr inp
 	inp="$(cat)"
 	hdr="$(printf %s "$inp" | head -n1)" || handle_pipefails $?
@@ -820,7 +820,7 @@ prettytable() {
 # available on any Unix-like system. See:
 #  https://stackoverflow.com/q/28353409
 prettyuptime() {
-	cmd_exists uptime || {
+	cmd_exists -q uptime || {
 		local err=$?
 		printf '↑ err=%d' "$err"
 		return $err
@@ -1089,7 +1089,7 @@ url_exists() {
 		loge No URLs specified to check.
 		return $BASE_RC_ARG_NO
 	}
-	cmd_exists curl || return
+	cmd_exists -q curl || return
 	local arg out ret=0
 	for arg; do
 		if out="$(
@@ -1360,7 +1360,7 @@ base_cleanup() {
 # <cryptic_fan@hotmail.com> (September 2003):
 #  http://patorjk.com/software/taag/#p=display&f=Georgia11&t=shellbase
 base_display_banner() {
-	cmd_exists base64 || return
+	cmd_exists -q base64 || return
 	printf \
 		'ICAgICAgICAgICAgICwsICAgICAgICAgICAgICAgICAsLCAgICAsLCAgLCwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgYDdNTSAgICAgICAgICAgICAgIGA3TU0gIGA3TU0gKk1NICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgTU0gICAgICAgICAgICAgICAgIE1NICAgIE1NICBNTSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICxwUCJZYmQgIE1NcE1NTWIuICAuZ1AiWWEgICBNTSAgICBNTSAgTU0sZE1NYi4gICAsNiJZYi4gICxwUCJZYmQgIC5nUCJZYSAgCiAgICA4SSAgIGAiICBNTSAgICBNTSAsTScgICBZYiAgTU0gICAgTU0gIE1NICAgIGBNYiA4KSAgIE1NICA4SSAgIGAiICxNJyAgIFliIAogICAgYFlNTU1hLiAgTU0gICAgTU0gOE0iIiIiIiIgIE1NICAgIE1NICBNTSAgICAgTTggICxwbTlNTSAgYFlNTU1hLiA4TSIiIiIiIiAKICAgIEwuICAgSTggIE1NICAgIE1NIFlNLiAgICAsICBNTSAgICBNTSAgTU0uICAgLE05IDhNICAgTU0gIEwuICAgSTggWU0uICAgICwgCiAgICBNOW1tbVAnLkpNTUwgIEpNTUwuYE1ibW1kJy5KTU1MLi5KTU1MLlBeWWJtZFAnICBgTW9vOV5Zby5NOW1tbVAnICBgTWJtbWQnIAo=' |
 		base64 --decode
