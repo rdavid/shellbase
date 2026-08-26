@@ -1108,13 +1108,13 @@ user_exists() {
 		loge No users specified to check.
 		return $BASE_RC_ARG_NO
 	}
-	local arg ret=0
-	for arg; do
-		if id -- "$arg" >/dev/null 2>&1; then
-			log User "$arg" exists.
+	local ret=0 usr
+	for usr; do
+		if id -- "$usr" >/dev/null 2>&1; then
+			log User "$usr" exists.
 		else
 			ret=$?
-			logw "$arg": No such user.
+			logw "$usr": No such user.
 		fi
 	done
 	return $ret
