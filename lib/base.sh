@@ -1090,8 +1090,8 @@ url_exists() {
 		return $BASE_RC_ARG_NO
 	}
 	cmd_exists -q curl || return
-	local arg out ret=0
-	for arg; do
+	local out ret=0 url
+	for url; do
 		if out="$(
 			curl \
 				--head \
@@ -1099,13 +1099,13 @@ url_exists() {
 				--show-error \
 				--silent \
 				--write-out %\{http_code\} \
-				"$arg" \
+				"$url" \
 				2>&1
 		)"; then
-			log "URL $arg returns HTTP code $out."
+			log "URL $url returns HTTP code $out."
 		else
 			ret=$?
-			logw "URL $arg is unavailable. $(printf %s "$out" | head -n 1)."
+			logw "URL $url is unavailable. $(printf %s "$out" | head -n 1)."
 		fi
 	done
 	return $ret
