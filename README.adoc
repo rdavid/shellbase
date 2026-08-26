@@ -2,11 +2,11 @@
 :toc: macro
 :!toc-title:
 // URLs:
-:img-hoc: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fhitsofcode.com%2Fgithub%2Frdavid%2Fshellbase%2Fjson%3Fbranch%3Dmaster&query=%24.count&label=hits%20of%20code&color=5fafaf&labelColor=555555&style=flat
+:img-hoc: https://hitsofcode.com/github/rdavid/shellbase?branch=master&label=hits%20of%20code
 :img-license: https://img.shields.io/github/license/rdavid/shellbase?color=94bff3&labelColor=555555&logo=freebsd&logoColor=dcdccc&style=flat
-:img-releases: https://img.shields.io/github/v/release/rdavid/shellbase?color=dfaf8f&label=%20&labelColor=555555&logo=semver&logoColor=dcdccc&style=flat
+:img-releases: https://img.shields.io/github/v/release/rdavid/shellbase?color=8cd0d3&label=%20&labelColor=555555&logo=semver&logoColor=dcdccc&style=flat
 :img-test-bsd: https://img.shields.io/github/actions/workflow/status/rdavid/shellbase/test-bsd.yml?branch=master&color=7f9f7f&label=bsd&labelColor=555555&logo=freebsd&logoColor=dcdccc&style=flat
-:img-test-lnx: https://img.shields.io/github/actions/workflow/status/rdavid/shellbase/test-lnx.yml?branch=master&color=8cd0d3&label=lnx&labelColor=555555&logo=linux&logoColor=dcdccc&style=flat
+:img-test-lnx: https://img.shields.io/github/actions/workflow/status/rdavid/shellbase/test-lnx.yml?branch=master&color=dfaf8f&label=lnx&labelColor=555555&logo=linux&logoColor=dcdccc&style=flat
 :img-test-mac: https://img.shields.io/github/actions/workflow/status/rdavid/shellbase/test-mac.yml?branch=master&color=f0dfaf&label=mac&labelColor=555555&logo=apple&logoColor=dcdccc&style=flat
 :url-actionlint: https://github.com/rhysd/actionlint
 :url-base: https://github.com/rdavid/shellbase/blob/master/lib/base.sh
