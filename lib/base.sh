@@ -1207,24 +1207,24 @@ ver_ge() {
 # instead of spending a fixed rate on simple passages. No -ar is given,
 # so ffmpeg keeps the source's sample rate when libmp3lame supports it
 # directly (44100, 48000, 32000, and others), instead of downsampling
-# every file, most commonly 48kHz video audio, to 44100.
+# every file — most commonly 48kHz video audio — to 44100.
 vid2aud() {
 	cmd_exists ffmpeg || return
 	iswritable . || return
 	local dst src
 	find . -type f -maxdepth 1 \
 		\( \
-		-name \*.avi -o \
-		-name \*.flv -o \
-		-name \*.m4v -o \
-		-name \*.mkv -o \
-		-name \*.mov -o \
-		-name \*.mp4 -o \
-		-name \*.mpg -o \
-		-name \*.ogv -o \
-		-name \*.ts -o \
-		-name \*.webm -o \
-		-name \*.wmv \
+		-name '*.[Aa][Vv][Ii]' -o \
+		-name '*.[Ff][Ll][Vv]' -o \
+		-name '*.[Mm]4[Vv]' -o \
+		-name '*.[Mm][Kk][Vv]' -o \
+		-name '*.[Mm][Oo][Vv]' -o \
+		-name '*.[Mm][Pp]4' -o \
+		-name '*.[Mm][Pp][Gg]' -o \
+		-name '*.[Oo][Gg][Vv]' -o \
+		-name '*.[Tt][Ss]' -o \
+		-name '*.[Ww][Ee][Bb][Mm]' -o \
+		-name '*.[Ww][Mm][Vv]' \
 		\) |
 		while read -r src; do
 			src="${src#./}"
