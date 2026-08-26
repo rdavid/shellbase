@@ -50,7 +50,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260823
+BASE_VERSION=0.9.20260826
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -1158,7 +1158,7 @@ validate_var() {
 # Usage: var_exists [-q] var1 [var2 ...]
 # Options: -q (quiet mode - suppress errors and logs)
 var_exists() {
-	local arg cnt=0 max=$((256 - BASE_RC_VAR_NE)) qui=false var
+	local cnt=0 max=$((256 - BASE_RC_VAR_NE)) qui=false val var
 	[ "${1-}" = -q ] && {
 		qui=true
 		shift
@@ -1167,20 +1167,20 @@ var_exists() {
 		[ "$qui" = false ] && loge No variables specified to check.
 		return $BASE_RC_ARG_NO
 	}
-	for arg; do
-		case "$arg" in
+	for var; do
+		case "$var" in
 		'' | [!A-Za-z_]* | *[!A-Za-z0-9_]*)
-			[ "$qui" = false ] && loge "Invalid variable name $arg."
+			[ "$qui" = false ] && loge "Invalid variable name $var."
 			cnt=$((cnt + 1))
 			;;
 		*)
-			if ! eval "var=\${$arg-}"; then
-				[ "$qui" = false ] && loge "Failed to read variable $arg."
+			if ! eval "val=\${$var-}"; then
+				[ "$qui" = false ] && loge "Failed to read variable $var."
 				cnt=$((cnt + 1))
-			elif [ -n "$var" ]; then
-				[ "$qui" = false ] && log "Variable $arg is set to $var."
+			elif [ -n "$val" ]; then
+				[ "$qui" = false ] && log "Variable $var is set to $val."
 			else
-				[ "$qui" = false ] && log "Variable $arg is unset or null."
+				[ "$qui" = false ] && log "Variable $var is unset or null."
 				cnt=$((cnt + 1))
 			fi
 			;;
