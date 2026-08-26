@@ -1081,32 +1081,22 @@ tsout() {
 	printf '%s %s\n' "$tms" "$*"
 }
 
-# Checks whether all URLs exist. Any returned HTTP code is OK. In case of
-# error out has two lines: an error message and the HTTP error code. Without
-# arguments it fails with BASE_RC_ARG_NO.
+# Checks whether all URLs exist. Any returned HTTP code is OK, cmd_run logs
+# it and any curl failure. Without arguments it fails with BASE_RC_ARG_NO.
 url_exists() {
 	[ $# -gt 0 ] || {
 		loge No URLs specified to check.
 		return $BASE_RC_ARG_NO
 	}
-	cmd_exists -q curl || return
-	local out ret=0 url
+	local ret=0 url
 	for url; do
-		if out="$(
-			curl \
-				--head \
-				--output /dev/null \
-				--show-error \
-				--silent \
-				--write-out %\{http_code\} \
-				"$url" \
-				2>&1
-		)"; then
-			log "URL $url returns HTTP code $out."
-		else
-			ret=$?
-			logw "URL $url is unavailable. $(printf %s "$out" | head -n 1)."
-		fi
+		cmd_run curl \
+			--head \
+			--output /dev/null \
+			--show-error \
+			--silent \
+			--write-out %\{http_code\}\\n \
+			"$url" || ret=$?
 	done
 	return $ret
 }
