@@ -21,17 +21,17 @@ var_exists -q && exit 0
 # A single unset variable is the first failed check.
 ret=0
 var_exists -q UNDEFINED_VAR1ABLE || ret=$?
-[ "$ret" -eq "$BASE_RC_VAR_NE" ] || exit 0
+[ "$ret" -eq "$BASE_RC_ARG_NE" ] || exit 0
 
 # An invalid name and an unset variable are two failed checks.
 ret=0
 var_exists -q 1nvalid UNDEFINED_VAR1ABLE || ret=$?
-[ "$ret" -eq $((BASE_RC_VAR_NE + 1)) ] || exit 0
+[ "$ret" -eq $((BASE_RC_ARG_NE + 1)) ] || exit 0
 
 # Set variables do not add to the count of two failed checks.
 ret=0
 var_exists -q 1nvalid HOME UNDEFINED_VAR1ABLE USER || ret=$?
-[ "$ret" -eq $((BASE_RC_VAR_NE + 1)) ] || exit 0
+[ "$ret" -eq $((BASE_RC_ARG_NE + 1)) ] || exit 0
 var_exists \
 	-q \
 	HOME \

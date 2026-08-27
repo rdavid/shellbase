@@ -48,9 +48,8 @@ BASE_RC_CMD_NE=16
 BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
-BASE_RC_VAR_NE=17
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260827
+BASE_VERSION=0.9.20260828
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -1142,13 +1141,13 @@ validate_var() {
 # no arguments it fails with BASE_RC_ARG_NO.
 # Return code:
 #  - 0 when all variables are set and not null;
-#  - otherwise a count of the failed checks that starts from BASE_RC_VAR_NE:
-#    one failure yields BASE_RC_VAR_NE, each further failure adds one, capped
+#  - otherwise a count of the failed checks that starts from BASE_RC_ARG_NE:
+#    one failure yields BASE_RC_ARG_NE, each further failure adds one, capped
 #    so the result stays within the shell's 0..255 return range.
 # Usage: var_exists [-q] var1 [var2 ...]
 # Options: -q (quiet mode - suppress errors and logs)
 var_exists() {
-	local cnt=0 max=$((256 - BASE_RC_VAR_NE)) qui=false val var
+	local cnt=0 max=$((256 - BASE_RC_ARG_NE)) qui=false val var
 	[ "${1-}" = -q ] && {
 		qui=true
 		shift
@@ -1180,7 +1179,7 @@ var_exists() {
 			break
 		}
 	done
-	[ "$cnt" -eq 0 ] || return $((BASE_RC_VAR_NE + cnt - 1))
+	[ "$cnt" -eq 0 ] || return $((BASE_RC_ARG_NE + cnt - 1))
 }
 
 # Compares two versions and returns 0 if the first parameter is greater than
@@ -1723,7 +1722,6 @@ readonly \
 	BASE_RC_CON_NO \
 	BASE_RC_CON_TO \
 	BASE_RC_DIE_NO \
-	BASE_RC_VAR_NE \
 	BASE_SHOULD_CON \
 	BASE_VERSION
 base_main "$@"
