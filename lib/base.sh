@@ -580,10 +580,10 @@ isreadable() {
 		loge No files specified to check.
 		return $BASE_RC_ARG_NO
 	}
-	local arg
-	for arg; do
-		[ -r "$arg" ] && continue
-		loge "$arg" is not readable, err=$?.
+	local fle
+	for fle; do
+		[ -r "$fle" ] && continue
+		loge "$fle" is not readable, err=$?.
 		return $BASE_RC_ARG_NE
 	done
 }
@@ -648,18 +648,18 @@ iswritable() {
 		loge No files specified to check.
 		return $BASE_RC_ARG_NO
 	}
-	local arg
-	for arg; do
-		if file_exists -q "$arg"; then
-			[ -w "$arg" ] && continue
-			loge "$arg" is not writable, err=$?.
+	local fle
+	for fle; do
+		if file_exists -q "$fle"; then
+			[ -w "$fle" ] && continue
+			loge "$fle" is not writable, err=$?.
 			return $BASE_RC_ARG_NE
 		fi
-		touch -- "$arg" 2>/dev/null || {
-			loge "$arg" is not writable, err=$?.
+		touch -- "$fle" 2>/dev/null || {
+			loge "$fle" is not writable, err=$?.
 			return $BASE_RC_ARG_NE
 		}
-		rm -- "$arg"
+		rm -- "$fle"
 	done
 }
 
