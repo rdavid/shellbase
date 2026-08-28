@@ -769,12 +769,12 @@ nmea2gpx() {
 	done
 }
 
-# Converts all PDF files in current directory to JPEG files.
+# Converts all PDF files in the current directory to JPEG files.
 pdf2jpg() {
 	base_pdf2img -jpeg
 }
 
-# Converts all PDF files in current directory to PNG files.
+# Converts all PDF files in the current directory to PNG files.
 pdf2png() {
 	base_pdf2img -png
 }
@@ -1365,8 +1365,8 @@ base_display_usage() {
 			Usage: $BASE_IAM [-d] [-h] [-k] [-q] [-v] [-w] [-x] [-y] ...
 
 			Arguments:
-			  -d, --dir-wip     Allows specifying a custom directory for the work in
-			                    progress directory, with the default being /tmp.
+			  -d, --dir-wip     Allows specifying a custom directory for work in
+			                    progress, with the default being /tmp.
 			  -h, --help        Displays the help message.
 			  -k, --keep-wip    Preserves the work in progress directory upon
 			                    exiting.
@@ -1543,7 +1543,7 @@ base_main() {
 	# continue.
 	base_check_instances
 
-	# The usage has higher priority over version in case both options are set.
+	# Usage takes priority over version in case both options are set.
 	[ false = $use ] || {
 		base_display_usage
 		cya
