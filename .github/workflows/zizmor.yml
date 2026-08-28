@@ -29,7 +29,7 @@ jobs:
       - uses: actions/cache@v6.1.0
         with:
           path: ~/.cache/pip
-          key: pip-zizmor-1.26.1
-      - run: pipx run zizmor==1.26.1 .
+          key: pip-zizmor-1.29.0
+      - run: pipx run zizmor==1.29.0 .
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
