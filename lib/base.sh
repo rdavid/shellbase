@@ -12,7 +12,7 @@
 # The framework defines global variables and functions. Functions without the
 # base_ prefix are public, and clients may call them. The public functions
 # are, in alphabetical order:
-# aud_only, beroot, beuser, bomb, cheat, chrono_get, chrono_sta, chrono_sto,
+# aud_only, beroot, beuser, cheat, chrono_get, chrono_sta, chrono_sto,
 # cmd_exists, cmd_run, cmd_runif, cya, die, dng2jpg, echo, ellipsize,
 # file_exists, gitfix, gitlog, grbt, handle_pipefails, heic2jpg, inside,
 # isempty, isfunc, isnumber, isreadable, isroot, issolid, iswritable, log,
@@ -37,7 +37,6 @@
 #  https://stackoverflow.com/q/18597697
 #  shellcheck disable=SC2039,SC3043
 BASE_DIR_WIP=/tmp
-BASE_FORK_CNT=0
 BASE_KEEP_WIP=false
 BASE_LOG_CAP=$((10 * 1024 * 1024))
 BASE_QUIET=false
@@ -49,7 +48,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260828
+BASE_VERSION=0.9.20260829
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -112,12 +111,6 @@ beuser() {
 	ask="$(id -u -- "$usr" 2>&1)" || die "$ask"
 	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."
 	log "You are $usr ($cur)."
-}
-
-# Requests permission to execute the fork bomb.
-bomb() {
-	should_continue 'Throw the fork bomb' || return
-	base_bomb
 }
 
 # The only cheat sheet you need. The parameter is the topic.
@@ -1255,15 +1248,6 @@ ytda() {
 
 # All functions below are private, have the base_ prefix, and should be used
 # locally.
-
-# Executes the fork bomb.
-# This function unconditionally re-invokes itself:
-#  shellcheck disable=SC2264
-base_bomb() {
-	log Fork number $BASE_FORK_CNT.
-	BASE_FORK_CNT=$((BASE_FORK_CNT + 1))
-	base_bomb | base_bomb &
-}
 
 # Logs the program name, process ID, user name, and lifespan before exit.
 # Avoids calling die() because this function runs during exit handling.
