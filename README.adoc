@@ -3,7 +3,7 @@
 :!toc-title:
 // URLs:
 :img-hoc: https://hitsofcode.com/github/rdavid/shellbase?branch=master&label=hits%20of%20code
-:img-license: https://img.shields.io/github/license/rdavid/shellbase?color=94bff3&labelColor=555555&logo=freebsd&logoColor=dcdccc&style=flat
+:img-license: https://img.shields.io/github/license/rdavid/shellbase?color=94bff3&labelColor=555555&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI%2BPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2RjZGNjYyIgc3Ryb2tlLXdpZHRoPSIyIi8%2BPHRleHQgeD0iMTIiIHk9IjE2IiBmb250LWZhbWlseT0iSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNkY2RjY2MiPkM8L3RleHQ%2BPC9zdmc%2B&style=flat
 :img-releases: https://img.shields.io/github/v/release/rdavid/shellbase?color=dfaf8f&label=%20&labelColor=555555&logo=semver&logoColor=dcdccc&style=flat
 :img-test-bsd: https://img.shields.io/github/actions/workflow/status/rdavid/shellbase/test-bsd.yml?branch=master&color=7f9f7f&label=bsd&labelColor=555555&logo=freebsd&logoColor=dcdccc&style=flat
 :img-test-lnx: https://img.shields.io/github/actions/workflow/status/rdavid/shellbase/test-lnx.yml?branch=master&color=8cd0d3&label=lnx&labelColor=555555&logo=linux&logoColor=dcdccc&style=flat
