@@ -37,8 +37,7 @@ jobs:
           - fedora
           - ubi8
           - ubi9
-          # Temporary: skip ubi10.
-          # - ubi10
+          - ubi10
         os:
           - ubuntu-22.04
           - ubuntu-24.04
