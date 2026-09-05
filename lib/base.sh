@@ -48,7 +48,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260829
+BASE_VERSION=0.9.20260906
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -1093,23 +1093,39 @@ url_exists() {
 	return $ret
 }
 
-# Verifies the existence of all users. Without arguments it fails with
-# BASE_RC_ARG_NO. Relies on the id command, which exists on any POSIX system.
+# Verifies the existence of all users. Every user found or missing is logged
+# unless -q is set. Without arguments it fails with BASE_RC_ARG_NO. Relies on
+# the id command, which exists on any POSIX system.
+# Return code:
+#  - 0 when all users exist;
+#  - otherwise a count of the missing users that starts from BASE_RC_ARG_NE:
+#    one missing yields BASE_RC_ARG_NE, each further miss adds one, capped so
+#    the result stays within the shell's 0..255 return range.
+# Usage: user_exists [-q] usr1 [usr2 ...]
+# Options: -q (quiet mode - suppress found/missing logs, errors still log)
 user_exists() {
+	local cnt=0 max=$((256 - BASE_RC_ARG_NE)) qui=false usr
+	[ "${1-}" = -q ] && {
+		qui=true
+		shift
+	}
 	[ $# -gt 0 ] || {
 		loge No users specified to check.
 		return $BASE_RC_ARG_NO
 	}
-	local ret=0 usr
 	for usr; do
 		if id -- "$usr" >/dev/null 2>&1; then
-			log User "$usr" exists.
+			[ "$qui" = false ] && log User "$usr" exists.
 		else
-			ret=$?
-			logw "$usr": No such user.
+			[ "$qui" = false ] && logw "$usr": No such user.
+			cnt=$((cnt + 1))
 		fi
+		[ "$cnt" -lt "$max" ] || {
+			loge "Missing user count is capped at $max."
+			break
+		}
 	done
-	return $ret
+	[ "$cnt" -eq 0 ] || return $((BASE_RC_ARG_NE + cnt - 1))
 }
 
 # Deprecated: use cmd_exists directly. validate_cmd will be removed in a
