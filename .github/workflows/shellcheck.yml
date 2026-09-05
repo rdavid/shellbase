@@ -6,6 +6,7 @@ name: shellcheck
   pull_request:
     paths: &paths
       - '*.do'
+      - .github/workflows/shellcheck.yml
       - app/**
       - lib/**
   push:

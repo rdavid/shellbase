@@ -5,6 +5,7 @@ name: update
 'on':
   pull_request:
     paths: &paths
+      - .github/workflows/update.yml
       - app/update
       - lib/base.sh
       - README.adoc

@@ -6,6 +6,7 @@ name: shfmt
   pull_request:
     paths: &paths
       - '*.do'
+      - .github/workflows/shfmt.yml
       - app/**
       - lib/**
   push:

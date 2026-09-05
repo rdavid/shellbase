@@ -5,6 +5,7 @@ name: hadolint
 'on':
   pull_request:
     paths: &paths
+      - .github/workflows/hadolint.yml
       - container/**
   push:
     branches: [master]

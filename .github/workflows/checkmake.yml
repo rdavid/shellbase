@@ -5,6 +5,7 @@ name: checkmake
 'on':
   pull_request:
     paths: &paths
+      - .github/workflows/checkmake.yml
       - Makefile
   push:
     branches: [master]

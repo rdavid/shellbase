@@ -6,6 +6,7 @@ name: test-bsd
   pull_request:
     paths: &paths
       - '*.do'
+      - .github/workflows/test-bsd.yml
       - app/**
       - lib/**
       - Makefile
