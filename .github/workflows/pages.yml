@@ -58,4 +58,4 @@ jobs:
     timeout-minutes: 15
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v5.0.0
+        uses: actions/deploy-pages@v5.0.1
