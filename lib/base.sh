@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260907
+BASE_VERSION=0.9.20260908
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -546,20 +546,39 @@ isnumber() {
 	return 0
 }
 
-# Verifies that all parameters are readable files. Logs and fails with
-# BASE_RC_ARG_NO if called without arguments, or BASE_RC_ARG_NE on the
-# first unreadable file.
+# Verifies that all parameters are readable files. Every file found or
+# missing is logged unless -q is set. Without arguments it fails with
+# BASE_RC_ARG_NO.
+# Return code:
+#  - 0 when all files are readable;
+#  - otherwise a count of the unreadable files that starts from
+#    BASE_RC_ARG_NE: one miss yields BASE_RC_ARG_NE, each further miss adds
+#    one, capped so the result stays within the shell's 0..255 return range.
+# Usage: isreadable [-q] fle1 [fle2 ...]
+# Options: -q (quiet mode - suppress found/missing logs, errors still log)
 isreadable() {
+	local cnt=0 fle max=$((256 - BASE_RC_ARG_NE)) qui=false
+	[ "${1-}" = -q ] && {
+		qui=true
+		shift
+	}
 	[ $# -gt 0 ] || {
 		loge No files specified to check.
 		return $BASE_RC_ARG_NO
 	}
-	local fle
 	for fle; do
-		[ -r "$fle" ] && continue
-		loge "$fle" is not readable, err=$?.
-		return $BASE_RC_ARG_NE
+		if [ -r "$fle" ]; then
+			[ "$qui" = false ] && log "$fle" is readable.
+		else
+			[ "$qui" = false ] && logw "$fle" is not readable.
+			cnt=$((cnt + 1))
+		fi
+		[ "$cnt" -lt "$max" ] || {
+			loge "Unreadable file count is capped at $max."
+			break
+		}
 	done
+	[ "$cnt" -eq 0 ] || return $((BASE_RC_ARG_NE + cnt - 1))
 }
 
 # Checks if the current user is root. Uses `id -u` to get the numeric UID.
@@ -614,27 +633,47 @@ issolid() {
 	log File "$fle" is solid.
 }
 
-# Verifies that all parameters are writable files or do not exist. Logs
-# and fails with BASE_RC_ARG_NO if called without arguments, or
-# BASE_RC_ARG_NE on the first unwritable or uncreatable file.
+# Verifies that all parameters are writable files or creatable if missing.
+# Every file found or missing is logged unless -q is set. Without arguments
+# it fails with BASE_RC_ARG_NO.
+# Return code:
+#  - 0 when all files are writable or creatable;
+#  - otherwise a count of the unwritable files that starts from
+#    BASE_RC_ARG_NE: one miss yields BASE_RC_ARG_NE, each further miss adds
+#    one, capped so the result stays within the shell's 0..255 return range.
+# Usage: iswritable [-q] fle1 [fle2 ...]
+# Options: -q (quiet mode - suppress found/missing logs, errors still log)
 iswritable() {
+	local cnt=0 fle max=$((256 - BASE_RC_ARG_NE)) qui=false
+	[ "${1-}" = -q ] && {
+		qui=true
+		shift
+	}
 	[ $# -gt 0 ] || {
 		loge No files specified to check.
 		return $BASE_RC_ARG_NO
 	}
-	local fle
 	for fle; do
 		if file_exists -q "$fle"; then
-			[ -w "$fle" ] && continue
-			loge "$fle" is not writable, err=$?.
-			return $BASE_RC_ARG_NE
+			if [ -w "$fle" ]; then
+				[ "$qui" = false ] && log "$fle" is writable.
+			else
+				[ "$qui" = false ] && logw "$fle" is not writable.
+				cnt=$((cnt + 1))
+			fi
+		elif touch -- "$fle" 2>/dev/null; then
+			rm -- "$fle"
+			[ "$qui" = false ] && log "$fle" is writable.
+		else
+			[ "$qui" = false ] && logw "$fle" is not writable.
+			cnt=$((cnt + 1))
 		fi
-		touch -- "$fle" 2>/dev/null || {
-			loge "$fle" is not writable, err=$?.
-			return $BASE_RC_ARG_NE
+		[ "$cnt" -lt "$max" ] || {
+			loge "Unwritable file count is capped at $max."
+			break
 		}
-		rm -- "$fle"
 	done
+	[ "$cnt" -eq 0 ] || return $((BASE_RC_ARG_NE + cnt - 1))
 }
 
 # The information logger is silent with the --quiet flag.
