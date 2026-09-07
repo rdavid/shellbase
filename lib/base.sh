@@ -14,13 +14,12 @@
 # are, in alphabetical order:
 # aud_only, beroot, beuser, cheat, chrono_get, chrono_sta, chrono_sto,
 # cmd_exists, cmd_run, cmd_runif, cya, die, dng2jpg, echo, ellipsize,
-# file_exists, gitfix, gitlog, grbt, handle_pipefails, heic2jpg, inside,
-# isempty, isfunc, isnumber, isreadable, isroot, issolid, iswritable, log,
-# loge, logw, map_del, map_get, map_put, nmea2gpx, pdf2jpg, pdf2png,
-# prettytable, prettyuptime, realdir, realpath, retry, rev, semver,
-# should_continue, timestamp, tolog, tologe, tolower, totsout, tsout,
-# url_exists, user_exists, validate_cmd, validate_var, var_exists, ver_ge,
-# vid2aud, ytda.
+# file_exists, gitfix, gitlog, handle_pipefails, heic2jpg, inside, isempty,
+# isfunc, isnumber, isreadable, isroot, issolid, iswritable, log, loge, logw,
+# map_del, map_get, map_put, nmea2gpx, pdf2jpg, pdf2png, prettytable,
+# prettyuptime, realdir, realpath, retry, rev, semver, should_continue,
+# timestamp, tolog, tologe, tolower, totsout, tsout, url_exists, user_exists,
+# var_exists, ver_ge, vid2aud, ytda.
 #
 # Global variables carry the BASE_ prefix. Clients may use them and should
 # place temporary files under $BASE_WIP. Functions with the base_ prefix stay
@@ -48,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260906
+BASE_VERSION=0.9.20260907
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -444,24 +443,6 @@ gitlog() {
 			) << FZF-EOF
 			{}
 FZF-EOF"
-}
-
-# Generates a temporary commit, performs a rebase, and pushes the changes.
-# The rebase runs directly because cmd_run streams output through the
-# loggers and would detach the editor of the interactive rebase.
-grbt() {
-	logw grbt is deprecated and will be removed, use gitfix.
-	cmd_exists git || return
-	local br err
-	br="$(git branch --show-current 2>&1)" || {
-		err=$?
-		loge "$br"
-		return $err
-	}
-	cmd_run git commit --all --message tmp || return
-	cmd_run git push || return
-	git rebase --interactive HEAD~5 || return
-	cmd_run git push origin +"$br"
 }
 
 # Ignores exit code 141 (128 + SIGPIPE) from command pipes. The only
@@ -1126,20 +1107,6 @@ user_exists() {
 		}
 	done
 	[ "$cnt" -eq 0 ] || return $((BASE_RC_ARG_NE + cnt - 1))
-}
-
-# Deprecated: use cmd_exists directly. validate_cmd will be removed in a
-# future release. Makes sure all commands exist, otherwise dies.
-validate_cmd() {
-	logw validate_cmd is deprecated and will be removed, use cmd_exists.
-	cmd_exists "$@" || die
-}
-
-# Deprecated: use var_exists directly. validate_var will be removed in a
-# future release. Makes sure all variables are defined, otherwise dies.
-validate_var() {
-	logw validate_var is deprecated and will be removed, use var_exists.
-	var_exists "$@" || die
 }
 
 # Checks that every argument names a defined variable. A name has to be a
