@@ -39,6 +39,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - run: |
           srv=https://github.com/siderolabs/conform
+          sum=344dd5fad42c61bf739491b490d453943d06f9aaed5488a738c0bbd4588b6914
           ver=0.1.0-alpha.31
           url=$srv/releases/download/v$ver/conform-linux-amd64
           curl \
@@ -49,6 +50,7 @@ jobs:
             --show-error \
             --silent \
             "$url"
+          printf '%s  %s\n' "$sum" conform | sha256sum --check --status
           chmod +x conform
           if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
             ./conform enforce --base-branch "origin/$GITHUB_BASE_REF"

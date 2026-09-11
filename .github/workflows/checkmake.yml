@@ -35,13 +35,16 @@ jobs:
       - if: steps.cache.outputs.cache-hit != 'true'
         run: |
           srv=https://github.com/mrtazz/checkmake/releases/download
+          sum=e2effb876913f3ee2caef0ba35f6202c5e8a3cd55a077d8d2b9ce2034257b6af
           ver=0.3.2
           curl \
             --fail \
             --location \
             --output ./checkmake \
+            --retry 3 \
             --silent \
             --show-error \
             "$srv/v$ver/checkmake-v$ver.linux.amd64"
+          printf '%s  %s\n' "$sum" ./checkmake | sha256sum --check --status
           chmod +x ./checkmake
       - run: ./checkmake ./Makefile

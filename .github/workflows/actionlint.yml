@@ -1,5 +1,9 @@
 # SPDX-FileCopyrightText: 2025-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# The release tarball is fetched and verified directly, rather than piping
+# the project's own download-actionlint.bash into bash, because that script
+# does not verify a checksum against the downloaded binary.
 ---
 name: actionlint
 'on':
@@ -33,13 +37,18 @@ jobs:
           key: actionlint-1.7.12-${{ runner.os }}
       - if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          srv=https://raw.githubusercontent.com/rhysd/actionlint
+          srv=https://github.com/rhysd/actionlint/releases/download
+          sum=8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
           ver=1.7.12
+          tgz=actionlint_${ver}_linux_amd64.tar.gz
           curl \
             --fail \
             --location \
-            --silent \
+            --output "$tgz" \
+            --retry 3 \
             --show-error \
-            "$srv/v$ver/scripts/download-actionlint.bash" |
-            bash -s "$ver"
+            --silent \
+            "$srv/v$ver/$tgz"
+          printf '%s  %s\n' "$sum" "$tgz" | sha256sum --check --status
+          tar --extract --file "$tgz" actionlint
       - run: ./actionlint
