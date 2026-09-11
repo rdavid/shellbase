@@ -3,7 +3,7 @@
 #
 # Multiple redirections compete for stdout:
 #  hadolint global ignore=SC2261
-FROM ghcr.io/rdavid/goredoer:0.9.20260707 as goredoer
+FROM ghcr.io/rdavid/goredoer:0.9.20260909 as goredoer
 FROM archlinux:base
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
@@ -22,14 +22,14 @@ RUN \
 		bash>=5.3 \
 		dash>=0.5 \
 		diffutils>=3.12 \
-		fish>=4.8 \
+		fish>=4.9 \
 		ksh>=2020.0 \
 		perl \
 		shellcheck>=0.11 \
-		shfmt>=3.13 \
+		shfmt>=3.14 \
 		tcsh>=6.24 \
-		typos>=1.49 \
-		vale>=3.18 \
+		typos>=1.50 \
+		vale>=3.20 \
 		yamllint>=1.38 \
 		zsh>=5.9 \
 	&& ln -s /usr/bin/core_perl/shasum /usr/bin/shasum \

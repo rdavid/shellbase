@@ -3,8 +3,8 @@
 #
 # Packages install unpinned, tracking Fedora's latest:
 #  hadolint global ignore=DL3041
-FROM ghcr.io/rdavid/goredoer:0.9.20260707 as goredoer
-FROM fedora:45
+FROM ghcr.io/rdavid/goredoer:0.9.20260909 as goredoer
+FROM fedora:46
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
 	TIME_ZONE=Asia/Jerusalem \

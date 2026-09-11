@@ -3,7 +3,7 @@
 #
 # Packages install unpinned, tracking Debian trixie's latest:
 #  hadolint global ignore=DL3008
-FROM ghcr.io/rdavid/goredoer:0.9.20260707 as goredoer
+FROM ghcr.io/rdavid/goredoer:0.9.20260909 as goredoer
 FROM debian:trixie
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
