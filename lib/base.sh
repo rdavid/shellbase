@@ -523,13 +523,13 @@ isfunc() {
 		loge Expected a single argument, got "$#".
 		return $BASE_RC_ARG_NO
 	}
-	local str
-	str="$(type "$1" 2>&1)" || {
+	local knd
+	knd="$(type "$1" 2>&1)" || {
 		local err=$?
-		loge "$str"
+		loge "$knd"
 		return $err
 	}
-	inside "$str" function
+	inside "$knd" function
 }
 
 # Determines whether a variable is a number. This rejects empty strings and
@@ -584,13 +584,13 @@ isreadable() {
 # Checks if the current user is root. Uses `id -u` to get the numeric UID.
 # Returns success (0) if UID == 0 (root), otherwise failure (1).
 isroot() {
-	local err num
-	num="$(id -u 2>&1)" || {
+	local err uid
+	uid="$(id -u 2>&1)" || {
 		err=$?
-		loge "$num"
+		loge "$uid"
 		return $err
 	}
-	[ "$num" -eq 0 ]
+	[ "$uid" -eq 0 ]
 }
 
 # Verifies that the running script's content matches its SHA-1 hash, computed
