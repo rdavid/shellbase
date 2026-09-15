@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260908
+BASE_VERSION=0.9.20260915
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -853,30 +853,31 @@ prettyuptime() {
 	' | tr -d \\n
 }
 
-# Returns the absolute directory of a file. Without a single argument it
-# fails with BASE_RC_ARG_NO. See the description of realpath.
+# Resolves a file's absolute directory by changing into its dirname and
+# printing pwd -P, which expands any symlinks in the path. See the
+# description of realpath.
 realdir() {
 	[ $# -eq 1 ] || {
 		loge Expected a single argument, got "$#".
 		return $BASE_RC_ARG_NO
 	}
-	local dir str="$1"
-	dir="$(dirname -- "$str" 2>&1)" || die "$dir"
+	local dir fle="$1"
+	dir="$(dirname -- "$fle" 2>&1)" || die "$dir"
 	dir="$(CDPATH='' \cd -- "$dir" 2>&1 && pwd -P)" || die "$dir"
 	printf %s "$dir"
 }
 
-# Returns the absolute path of a file. Without a single argument it fails
-# with BASE_RC_ARG_NO. See:
+# Builds a file's absolute path by joining the symlink-resolved directory
+# from realdir with the file's basename. See:
 #  https://stackoverflow.com/q/3915040
 realpath() {
 	[ $# -eq 1 ] || {
 		loge Expected a single argument, got "$#".
 		return $BASE_RC_ARG_NO
 	}
-	local dir nme str="$1"
-	dir="$(realdir "$str")" || die
-	nme="$(basename -- "$str" 2>&1)" || die "$nme"
+	local dir nme fle="$1"
+	dir="$(realdir "$fle")" || die
+	nme="$(basename -- "$fle" 2>&1)" || die "$nme"
 	[ / = "$dir" ] && printf /%s "$nme" || printf %s/%s "$dir" "$nme"
 }
 
