@@ -29,7 +29,7 @@ RUN \
 		shfmt>=3.14 \
 		tcsh>=6.24 \
 		typos>=1.50 \
-		vale>=3.21 \
+		vale>=3.22 \
 		yamllint>=1.38 \
 		zsh>=5.9 \
 	&& ln -s /usr/bin/core_perl/shasum /usr/bin/shasum \
