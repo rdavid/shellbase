@@ -1252,9 +1252,12 @@ vid2aud() {
 	find . -type f -maxdepth 1 \( "$@" \) |
 		while read -r src; do
 			src="${src#./}"
-			isreadable "$src" || continue
+			isreadable "$src" || exit
 			dst="${src%.*}".mp3
-			file_exists "$dst" && continue
+			file_exists "$dst" && {
+				loge "$dst" already exists.
+				exit $BASE_RC_ARG_NE
+			}
 			cmd_run ffmpeg \
 				-nostdin \
 				-i "$src" \
@@ -1263,7 +1266,7 @@ vid2aud() {
 				-q:a 0 \
 				-vn \
 				"$dst"
-		done
+		done || return
 	should_continue "Remove the $cnt source files" || return 0
 	find . -type f -maxdepth 1 \( "$@" \) -exec rm -f {} +
 }
