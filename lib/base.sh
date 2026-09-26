@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260926
+BASE_VERSION=0.9.20260927
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -1227,7 +1227,7 @@ ver_ge() {
 vid2aud() {
 	cmd_exists ffmpeg || return
 	iswritable . || return
-	local cnt dst err src
+	local cnt dst end err src
 	set -- \
 		-name '*.[Aa][Vv][Ii]' -o \
 		-name '*.[Ff][Ll][Vv]' -o \
@@ -1267,7 +1267,8 @@ vid2aud() {
 				-vn \
 				"$dst"
 		done || return
-	should_continue "Remove the $cnt source files" || return 0
+	[ "$cnt" -ne 1 ] && end=s
+	should_continue "Remove the $cnt source file$end" || return 0
 	find . -type f -maxdepth 1 \( "$@" \) -exec rm -f {} +
 }
 
