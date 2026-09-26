@@ -201,7 +201,7 @@ chrono_sto() {
 # Every command found or missing is logged unless -q is set. With no
 # arguments it fails with BASE_RC_ARG_NO.
 # Return code:
-#  - 0 when all commands are present;
+#  - 0 when all commands are present.
 #  - otherwise a count of the missing commands that starts from BASE_RC_CMD_NE:
 #    one missing yields BASE_RC_CMD_NE, each further miss adds one, capped so
 #    the result stays within the shell's 0..255 return range.
@@ -234,14 +234,14 @@ cmd_exists() {
 
 # Runs a command after confirming it exists. Without -q it logs the command,
 # streams its output through the loggers, and reports a non-zero exit as an
-# error; -q runs it silently, discarding output and skipping both logs. Returns
+# error. -q runs it silently, discarding output and skipping both logs. Returns
 # the cmd_exists code when the command is absent or unspecified, otherwise the
 # command's own code.
 # Usage: cmd_run [-q] cmd [arg ...]
 # Options: -q (quiet mode - suppress logs and warnings)
 # Streaming splits the command across both loggers: 2>&1 1>&3 sends stderr to
 # tologe and stdout, via fd 3, to tolog. A pipeline reports only its last stage
-# and pipefail is optional, so the exit code cannot ride the pipes; exec 4>&1
+# and pipefail is optional, so the exit code cannot ride the pipes. exec 4>&1
 # aliases fd 4 to the command substitution's stdout and printf writes the code
 # there, past the pipes, for err to capture.
 # ${1-} stays unquoted so an absent command drops out:
@@ -370,7 +370,7 @@ ellipsize() {
 # missing is logged unless -q is set. With no arguments it fails with
 # BASE_RC_ARG_NO.
 # Return code:
-#  - 0 when all files are present;
+#  - 0 when all files are present.
 #  - otherwise a count of the missing files that starts from BASE_RC_ARG_NE:
 #    one missing yields BASE_RC_ARG_NE, each further miss adds one, capped so
 #    the result stays within the shell's 0..255 return range.
@@ -550,7 +550,7 @@ isnumber() {
 # missing is logged unless -q is set. Without arguments it fails with
 # BASE_RC_ARG_NO.
 # Return code:
-#  - 0 when all files are readable;
+#  - 0 when all files are readable.
 #  - otherwise a count of the unreadable files that starts from
 #    BASE_RC_ARG_NE: one miss yields BASE_RC_ARG_NE, each further miss adds
 #    one, capped so the result stays within the shell's 0..255 return range.
@@ -637,7 +637,7 @@ issolid() {
 # Every file found or missing is logged unless -q is set. Without arguments
 # it fails with BASE_RC_ARG_NO.
 # Return code:
-#  - 0 when all files are writable or creatable;
+#  - 0 when all files are writable or creatable.
 #  - otherwise a count of the unwritable files that starts from
 #    BASE_RC_ARG_NE: one miss yields BASE_RC_ARG_NE, each further miss adds
 #    one, capped so the result stays within the shell's 0..255 return range.
@@ -1118,7 +1118,7 @@ url_exists() {
 # unless -q is set. Without arguments it fails with BASE_RC_ARG_NO. Relies on
 # the id command, which exists on any POSIX system.
 # Return code:
-#  - 0 when all users exist;
+#  - 0 when all users exist.
 #  - otherwise a count of the missing users that starts from BASE_RC_ARG_NE:
 #    one missing yields BASE_RC_ARG_NE, each further miss adds one, capped so
 #    the result stays within the shell's 0..255 return range.
@@ -1150,13 +1150,13 @@ user_exists() {
 }
 
 # Checks that every argument names a defined variable. A name has to be a
-# POSIX identifier: [A-Za-z_][A-Za-z0-9_]*; it is read with the ${name-}
+# POSIX identifier: [A-Za-z_][A-Za-z0-9_]*. It is read with the ${name-}
 # expansion, which keeps set -o nounset from failing on an undefined name.
 # Each check is logged unless -q is set: a set variable with its value, an
 # unset or null one by name, an invalid or unreadable name as an error. With
 # no arguments it fails with BASE_RC_ARG_NO.
 # Return code:
-#  - 0 when all variables are set and not null;
+#  - 0 when all variables are set and not null.
 #  - otherwise a count of the failed checks that starts from BASE_RC_ARG_NE:
 #    one failure yields BASE_RC_ARG_NE, each further failure adds one, capped
 #    so the result stays within the shell's 0..255 return range.
