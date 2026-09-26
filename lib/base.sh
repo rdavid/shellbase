@@ -47,7 +47,7 @@ BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260915
+BASE_VERSION=0.9.20260926
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. xargs handles white spaces while
@@ -1213,22 +1213,22 @@ ver_ge() {
 	loge Sort failed with $err.
 }
 
-# Converts all video files in the current directory to MP3 files. find
-# matches the avi, flv, m4v, mkv, mov, mp4, mpg, ogv, ts, webm, and wmv
-# extensions. ffmpeg treats options as positional. An option before -i
-# applies to the input and the rest apply to the output, so only the
-# output options after -i are sorted. -q:a 0 requests libmp3lame's
-# highest VBR quality (V0), letting bitrate adapt to content complexity
-# instead of spending a fixed rate on simple passages. No -ar is given,
-# so ffmpeg keeps the source's sample rate when libmp3lame supports it
-# directly (44100, 48000, 32000, and others), instead of downsampling
-# every file — most commonly 48kHz video audio — to 44100.
+# Converts all video files in the current directory to MP3 files, then offers
+# to remove the originals. Declining is not an error. find matches the avi,
+# flv, m4v, mkv, mov, mp4, mpg, ogv, ts, webm, and wmv extensions and returns
+# early if none are found. ffmpeg treats options as positional. An option
+# before -i applies to the input and the rest apply to the output, so only the
+# output options after -i are sorted. -q:a 0 requests libmp3lame's highest VBR
+# quality (V0), letting bitrate adapt to content complexity instead of spending
+# a fixed rate on simple passages. No -ar is given, so ffmpeg keeps the
+# source's sample rate when libmp3lame supports it directly (44100, 48000,
+# 32000, and others), instead of downsampling every file — most commonly 48kHz
+# video audio — to 44100.
 vid2aud() {
 	cmd_exists ffmpeg || return
 	iswritable . || return
-	local dst src
-	find . -type f -maxdepth 1 \
-		\( \
+	local cnt dst err src
+	set -- \
 		-name '*.[Aa][Vv][Ii]' -o \
 		-name '*.[Ff][Ll][Vv]' -o \
 		-name '*.[Mm]4[Vv]' -o \
@@ -1239,8 +1239,17 @@ vid2aud() {
 		-name '*.[Oo][Gg][Vv]' -o \
 		-name '*.[Tt][Ss]' -o \
 		-name '*.[Ww][Ee][Bb][Mm]' -o \
-		-name '*.[Ww][Mm][Vv]' \
-		\) |
+		-name '*.[Ww][Mm][Vv]'
+	cnt="$(find . -type f -maxdepth 1 \( "$@" \) | wc -l | xargs)" || {
+		err=$?
+		loge Something went wrong.
+		return $err
+	}
+	[ "$cnt" -eq 0 ] && {
+		log Nothing to convert.
+		return 0
+	}
+	find . -type f -maxdepth 1 \( "$@" \) |
 		while read -r src; do
 			src="${src#./}"
 			isreadable "$src" || continue
@@ -1255,6 +1264,8 @@ vid2aud() {
 				-vn \
 				"$dst"
 		done
+	should_continue "Remove the $cnt source files" || return 0
+	find . -type f -maxdepth 1 \( "$@" \) -exec rm -f {} +
 }
 
 # Downloads a video from YouTube or another host supported by yt-dlp.
