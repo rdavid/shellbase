@@ -47,6 +47,7 @@ BASE_RC_CMD_NF=127
 BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
+BASE_RC_MAXVAL=127
 BASE_SHOULD_CON=false
 BASE_VERSION=0.9.20260927
 
@@ -203,11 +204,11 @@ chrono_sto() {
 #  - 0 when all commands are present.
 #  - otherwise a count of the missing commands that starts from BASE_RC_CMD_NE:
 #    one missing yields BASE_RC_CMD_NE, each further miss adds one, capped so
-#    the result stays below BASE_RC_CMD_NF.
+#    the result stays below BASE_RC_MAXVAL.
 # Usage: cmd_exists [-q] cmd1 [cmd2 ...]
 # Options: -q (quiet mode - suppress found/missing logs, errors still log)
 cmd_exists() {
-	local cmd cnt=0 max=$((BASE_RC_CMD_NF - BASE_RC_CMD_NE)) qui=false
+	local cmd cnt=0 max=$((BASE_RC_MAXVAL - BASE_RC_CMD_NE)) qui=false
 	[ "${1-}" = -q ] && {
 		qui=true
 		shift
@@ -372,11 +373,11 @@ ellipsize() {
 #  - 0 when all files are present.
 #  - otherwise a count of the missing files that starts from BASE_RC_ARG_NE:
 #    one missing yields BASE_RC_ARG_NE, each further miss adds one, capped so
-#    the result stays below BASE_RC_CMD_NF.
+#    the result stays below BASE_RC_MAXVAL.
 # Usage: file_exists [-q] fle1 [fle2 ...]
 # Options: -q (quiet mode - suppress found/missing logs, errors still log)
 file_exists() {
-	local fle cnt=0 max=$((BASE_RC_CMD_NF - BASE_RC_ARG_NE)) qui=false
+	local fle cnt=0 max=$((BASE_RC_MAXVAL - BASE_RC_ARG_NE)) qui=false
 	[ "${1-}" = -q ] && {
 		qui=true
 		shift
@@ -552,11 +553,11 @@ isnumber() {
 #  - 0 when all files are readable.
 #  - otherwise a count of the unreadable files that starts from
 #    BASE_RC_ARG_NE: one miss yields BASE_RC_ARG_NE, each further miss adds
-#    one, capped so the result stays below BASE_RC_CMD_NF.
+#    one, capped so the result stays below BASE_RC_MAXVAL.
 # Usage: isreadable [-q] fle1 [fle2 ...]
 # Options: -q (quiet mode - suppress found/missing logs, errors still log)
 isreadable() {
-	local cnt=0 fle max=$((BASE_RC_CMD_NF - BASE_RC_ARG_NE)) qui=false
+	local cnt=0 fle max=$((BASE_RC_MAXVAL - BASE_RC_ARG_NE)) qui=false
 	[ "${1-}" = -q ] && {
 		qui=true
 		shift
@@ -639,11 +640,11 @@ issolid() {
 #  - 0 when all files are writable or creatable.
 #  - otherwise a count of the unwritable files that starts from
 #    BASE_RC_ARG_NE: one miss yields BASE_RC_ARG_NE, each further miss adds
-#    one, capped so the result stays below BASE_RC_CMD_NF.
+#    one, capped so the result stays below BASE_RC_MAXVAL.
 # Usage: iswritable [-q] fle1 [fle2 ...]
 # Options: -q (quiet mode - suppress found/missing logs, errors still log)
 iswritable() {
-	local cnt=0 fle max=$((BASE_RC_CMD_NF - BASE_RC_ARG_NE)) qui=false
+	local cnt=0 fle max=$((BASE_RC_MAXVAL - BASE_RC_ARG_NE)) qui=false
 	[ "${1-}" = -q ] && {
 		qui=true
 		shift
@@ -1120,11 +1121,11 @@ url_exists() {
 #  - 0 when all users exist.
 #  - otherwise a count of the missing users that starts from BASE_RC_ARG_NE:
 #    one missing yields BASE_RC_ARG_NE, each further miss adds one, capped so
-#    the result stays below BASE_RC_CMD_NF.
+#    the result stays below BASE_RC_MAXVAL.
 # Usage: user_exists [-q] usr1 [usr2 ...]
 # Options: -q (quiet mode - suppress found/missing logs, errors still log)
 user_exists() {
-	local cnt=0 max=$((BASE_RC_CMD_NF - BASE_RC_ARG_NE)) qui=false usr
+	local cnt=0 max=$((BASE_RC_MAXVAL - BASE_RC_ARG_NE)) qui=false usr
 	[ "${1-}" = -q ] && {
 		qui=true
 		shift
@@ -1158,11 +1159,11 @@ user_exists() {
 #  - 0 when all variables are set and not null.
 #  - otherwise a count of the failed checks that starts from BASE_RC_ARG_NE:
 #    one failure yields BASE_RC_ARG_NE, each further failure adds one, capped
-#    so the result stays below BASE_RC_CMD_NF.
+#    so the result stays below BASE_RC_MAXVAL.
 # Usage: var_exists [-q] var1 [var2 ...]
 # Options: -q (quiet mode - suppress errors and logs)
 var_exists() {
-	local cnt=0 max=$((BASE_RC_CMD_NF - BASE_RC_ARG_NE)) qui=false val var
+	local cnt=0 max=$((BASE_RC_MAXVAL - BASE_RC_ARG_NE)) qui=false val var
 	[ "${1-}" = -q ] && {
 		qui=true
 		shift
@@ -1744,6 +1745,7 @@ readonly \
 	BASE_RC_CON_NO \
 	BASE_RC_CON_TO \
 	BASE_RC_DIE_NO \
+	BASE_RC_MAXVAL \
 	BASE_SHOULD_CON \
 	BASE_VERSION
 base_main "$@"
