@@ -65,10 +65,17 @@ for f in ./container/*/Containerfile; do
 		loge "$nme" "$dur": "$hsh"
 		continue
 	}
-	cmd_run podman run --rm --rmi "$hsh" "$EXE" lint test ||
+	err=0
+	cmd_run podman run --rm --rmi "$hsh" "$EXE" lint test || {
+		err=$?
 		ERR=$((ERR + 1))
+	}
 	dur="$(chrono_sto run)" || die Unable to stop timer.
-	log "$nme" "$dur".
+	if [ "$err" -ne 0 ]; then
+		loge "$nme" "$dur", err="$err".
+	else
+		log "$nme" "$dur".
+	fi
 done
 [ "$STP" = false ] || cmd_run podman machine stop
 [ "$ERR" = 0 ] || die "$ERR" container image\(s\) failed.
