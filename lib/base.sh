@@ -50,11 +50,12 @@ BASE_SHOULD_CON=false
 BASE_VERSION=0.9.20260927
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
-# removes empty directories if they exist. xargs handles white spaces while
-# counting the matched files. The confirmation message is deliberately not
-# indented: leading tabs would appear verbatim in the prompt.
+# removes empty directories if they exist. A failed removal does not abort the
+# rest of the batch. xargs handles white spaces while counting the matched
+# files. The confirmation message is deliberately not indented: leading tabs
+# would appear verbatim in the prompt.
 aud_only() {
-	local cnt err lst msg
+	local cnt err fle lst msg
 	lst=$(
 		find . -type f \
 			! \( \
@@ -81,13 +82,10 @@ $lst
 Total $cnt files"
 	should_continue "$msg" || return
 	log Removing "$cnt" files.
-	cmd_run find . -type f \
-		! \( \
-		-name '*.[Mm][Pp]3' -o \
-		-name '*.[Mm]4[Aa]' -o \
-		-name '*.[Ff][Ll][Aa][Cc]' \
-		\) \
-		-exec rm -f {} + || return
+	printf %s\\n "$lst" |
+		while IFS= read -r fle; do
+			cmd_run rm -f -- "$fle" || continue
+		done
 	cmd_run find . -type d -empty -delete
 }
 
