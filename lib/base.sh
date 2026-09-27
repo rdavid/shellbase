@@ -952,7 +952,7 @@ semver() {
 	cmd_run grep --perl-regexp . /dev/null || {
 		[ $? -le 1 ] || {
 			loge GNU grep is required.
-			return $BASE_RC_CMD_NE
+			return $BASE_RC_CMD_NF
 		}
 		log GNU grep check passed.
 	}
