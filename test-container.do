@@ -24,7 +24,7 @@ BSH="$(
 	exit $err
 }
 readonly \
-	BASE_APP_VERSION=0.9.20260720 \
+	BASE_APP_VERSION=0.9.20260928 \
 	BASE_MIN_VERSION=0.9.20260707 \
 	BSH
 . "$BSH"
@@ -60,8 +60,9 @@ for f in ./container/*/Containerfile; do
 			. \
 			2>&1
 	)" || {
-		loge "$hsh"
 		ERR=$((ERR + 1))
+		dur="$(chrono_sto run)" || die Unable to stop timer.
+		loge "$nme" "$dur": "$hsh"
 		continue
 	}
 	cmd_run podman run --rm --rmi "$hsh" "$EXE" lint test ||
