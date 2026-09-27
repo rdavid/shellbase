@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: 0BSD
 #
 # Verifies that cmd_runif succeeds for an existing command and treats a
-# missing command, or one that exits with BASE_RC_CMD_NF, as a skipped no-op.
+# missing command as a skipped no-op.
 #
 # File not following:
 #  shellcheck disable=SC1090
@@ -14,5 +14,4 @@ cmd_runif : &&
 	cmd_runif -q : &&
 	cmd_runif printf '' &&
 	cmd_runif c0mmand_n0t_f0und &&
-	cmd_runif -q c0mmand_n0t_f0und &&
-	cmd_runif -q sh -c "exit $BASE_RC_CMD_NF"
+	cmd_runif -q c0mmand_n0t_f0und

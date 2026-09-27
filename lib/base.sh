@@ -271,16 +271,29 @@ cmd_run() {
 }
 
 # Like cmd_run for optional tools: a missing command becomes a skipped no-op
-# returning 0 while every other outcome keeps cmd_run's own code. It runs the
-# command through cmd_run and remaps only BASE_RC_CMD_NF, command not found, to
-# 0, so a real failure still propagates. A command that itself exits with
-# BASE_RC_CMD_NF cannot be told apart from a missing one and also counts as
-# skipped. Both $? expansions occur while $? still holds cmd_run's code, so the
-# remap is exact.
+# returning 0, logging unless -q is set, while every other outcome, including a
+# real failure from the command itself, keeps cmd_run's own code. Checks with
+# cmd_exists -q first, consuming -q the same way cmd_exists does. A failure
+# other than BASE_RC_ARG_NE, missing command, from that check propagates
+# unchanged instead of being treated as a skip.
 # Usage: cmd_runif [-q] cmd [arg ...]
 # Options: -q (quiet mode - suppress logs and warnings)
+# ${1-} stays unquoted so an absent command drops out:
+#  shellcheck disable=SC2086
 cmd_runif() {
-	cmd_run "$@" || return $(($? == BASE_RC_CMD_NF ? 0 : $?))
+	local err qui=false
+	[ "${1-}" = -q ] && {
+		qui=true
+		shift
+	}
+	cmd_exists -q ${1-} || {
+		err=$?
+		[ "$err" -ne "$BASE_RC_ARG_NE" ] && return "$err"
+		[ "$qui" = false ] && log "Command $1 not found."
+		return 0
+	}
+	[ "$qui" = true ] && set -- -q "$@"
+	cmd_run "$@"
 }
 
 # Prints all parameters to the log and exits with a success code. The subshell
