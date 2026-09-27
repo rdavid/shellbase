@@ -43,6 +43,7 @@ BASE_RC_ARG_NE=15
 BASE_RC_ARG_NO=11
 BASE_RC_ARG_WA=12
 BASE_RC_CMD_NE=16
+BASE_RC_CMD_NF=127
 BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
@@ -230,11 +231,12 @@ cmd_exists() {
 	[ "$cnt" -eq 0 ] || return $((BASE_RC_CMD_NE + cnt - 1))
 }
 
-# Runs a command after confirming it exists. Without -q it logs the command,
-# streams its output through the loggers, and reports a non-zero exit as an
-# error. -q runs it silently, discarding output and skipping both logs. Returns
-# the cmd_exists code when the command is absent or unspecified, otherwise the
-# command's own code.
+# Runs a command. Without -q it logs the command, streams its output through
+# the loggers, and reports a non-zero exit as an error. -q runs it silently,
+# discarding output and skipping both logs. A missing command is not checked
+# for up front: it surfaces as an ordinary failure, with the shell's own "not
+# found" message reaching tologe and its exit code becoming the return value,
+# BASE_RC_CMD_NF (127), the POSIX convention for command not found.
 # Usage: cmd_run [-q] cmd [arg ...]
 # Options: -q (quiet mode - suppress logs and warnings)
 # Streaming splits the command across both loggers: 2>&1 1>&3 sends stderr to
@@ -242,15 +244,14 @@ cmd_exists() {
 # and pipefail is optional, so the exit code cannot ride the pipes. exec 4>&1
 # aliases fd 4 to the command substitution's stdout and printf writes the code
 # there, past the pipes, for err to capture.
-# ${1-} stays unquoted so an absent command drops out:
-#  shellcheck disable=SC2086,SC2069
+# Swaps stdout and stderr so each stream reaches its own logger:
+#  shellcheck disable=SC2069
 cmd_run() {
 	[ "${1-}" = -q ] && {
 		shift
-		cmd_exists -q ${1-} && "$@" >/dev/null 2>&1
+		"$@" >/dev/null 2>&1
 		return
 	}
-	cmd_exists ${1-} || return
 	log "» $*"
 	local err
 	err=$(
@@ -271,15 +272,15 @@ cmd_run() {
 
 # Like cmd_run for optional tools: a missing command becomes a skipped no-op
 # returning 0 while every other outcome keeps cmd_run's own code. It runs the
-# command through cmd_run and remaps only BASE_RC_CMD_NE to 0, so a real
-# failure, or an unspecified command failing with BASE_RC_ARG_NO, still
-# propagates. A command that itself exits with BASE_RC_CMD_NE cannot be told
-# apart from a missing one and also counts as skipped. Both $? expansions
-# occur while $? still holds cmd_run's code, so the remap is exact.
+# command through cmd_run and remaps only BASE_RC_CMD_NF, command not found, to
+# 0, so a real failure still propagates. A command that itself exits with
+# BASE_RC_CMD_NF cannot be told apart from a missing one and also counts as
+# skipped. Both $? expansions occur while $? still holds cmd_run's code, so the
+# remap is exact.
 # Usage: cmd_runif [-q] cmd [arg ...]
 # Options: -q (quiet mode - suppress logs and warnings)
 cmd_runif() {
-	cmd_run "$@" || return $(($? == BASE_RC_CMD_NE ? 0 : $?))
+	cmd_run "$@" || return $(($? == BASE_RC_CMD_NF ? 0 : $?))
 }
 
 # Prints all parameters to the log and exits with a success code. The subshell
@@ -908,7 +909,7 @@ retry() {
 		log Retry "$cnt"/"$max".
 		cmd_run "$@" && return 0
 		err=$?
-		[ "$err" -eq $BASE_RC_CMD_NE ] && return $err
+		[ "$err" -eq $BASE_RC_CMD_NF ] && return $err
 		[ "$cnt" -lt "$max" ] && {
 			log Sleeping "$dly"s before next retry.
 			sleep "$dly"
@@ -1739,6 +1740,7 @@ readonly \
 	BASE_RC_ARG_NO \
 	BASE_RC_ARG_WA \
 	BASE_RC_CMD_NE \
+	BASE_RC_CMD_NF \
 	BASE_RC_CON_NO \
 	BASE_RC_CON_TO \
 	BASE_RC_DIE_NO \
