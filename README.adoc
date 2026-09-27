@@ -95,63 +95,63 @@ collection, and support for concurrent instances.
 `shellbase` defines global variables and functions.
 Clients may call any function without the `base_` prefix.
 The public functions are, in alphabetical order:
-{url-base}#L59[`aud_only`],
-{url-base}#L95[`beroot`],
-{url-base}#L102[`beuser`],
-{url-base}#L116[`cheat`],
-{url-base}#L127[`chrono_get`],
-{url-base}#L172[`chrono_sta`],
-{url-base}#L189[`chrono_sto`],
-{url-base}#L210[`cmd_exists`],
-{url-base}#L250[`cmd_run`],
-{url-base}#L283[`cmd_runif`],
-{url-base}#L292[`cya`],
-{url-base}#L302[`die`],
-{url-base}#L310[`dng2jpg`],
-{url-base}#L319[`echo`],
-{url-base}#L339[`ellipsize`],
-{url-base}#L379[`file_exists`],
-{url-base}#L409[`gitfix`],
-{url-base}#L425[`gitlog`],
-{url-base}#L451[`handle_pipefails`],
-{url-base}#L462[`heic2jpg`],
-{url-base}#L475[`inside`],
-{url-base}#L492[`isempty`],
-{url-base}#L521[`isfunc`],
-{url-base}#L538[`isnumber`],
-{url-base}#L559[`isreadable`],
-{url-base}#L586[`isroot`],
-{url-base}#L599[`issolid`],
-{url-base}#L646[`iswritable`],
-{url-base}#L680[`log`],
-{url-base}#L689[`loge`],
-{url-base}#L697[`logw`],
-{url-base}#L706[`map_del`],
-{url-base}#L725[`map_get`],
-{url-base}#L751[`map_put`],
-{url-base}#L772[`nmea2gpx`],
-{url-base}#L786[`pdf2jpg`],
-{url-base}#L791[`pdf2png`],
-{url-base}#L813[`prettytable`],
-{url-base}#L834[`prettyuptime`],
-{url-base}#L859[`realdir`],
-{url-base}#L873[`realpath`],
-{url-base}#L891[`retry`],
-{url-base}#L929[`rev`],
-{url-base}#L947[`semver`],
-{url-base}#L976[`should_continue`],
-{url-base}#L1034[`timestamp`],
-{url-base}#L1054[`tolog`],
-{url-base}#L1060[`tologe`],
-{url-base}#L1067[`tolower`],
-{url-base}#L1085[`totsout`],
-{url-base}#L1091[`tsout`],
-{url-base}#L1099[`url_exists`],
-{url-base}#L1127[`user_exists`],
-{url-base}#L1165[`var_exists`],
-{url-base}#L1205[`ver_ge`],
-{url-base}#L1227[`vid2aud`],
-{url-base}#L1276[`ytda`].
+{url-base}#L58[`aud_only`],
+{url-base}#L94[`beroot`],
+{url-base}#L101[`beuser`],
+{url-base}#L115[`cheat`],
+{url-base}#L126[`chrono_get`],
+{url-base}#L171[`chrono_sta`],
+{url-base}#L188[`chrono_sto`],
+{url-base}#L209[`cmd_exists`],
+{url-base}#L249[`cmd_run`],
+{url-base}#L282[`cmd_runif`],
+{url-base}#L291[`cya`],
+{url-base}#L301[`die`],
+{url-base}#L309[`dng2jpg`],
+{url-base}#L318[`echo`],
+{url-base}#L338[`ellipsize`],
+{url-base}#L378[`file_exists`],
+{url-base}#L408[`gitfix`],
+{url-base}#L424[`gitlog`],
+{url-base}#L450[`handle_pipefails`],
+{url-base}#L461[`heic2jpg`],
+{url-base}#L474[`inside`],
+{url-base}#L491[`isempty`],
+{url-base}#L520[`isfunc`],
+{url-base}#L537[`isnumber`],
+{url-base}#L558[`isreadable`],
+{url-base}#L585[`isroot`],
+{url-base}#L598[`issolid`],
+{url-base}#L645[`iswritable`],
+{url-base}#L679[`log`],
+{url-base}#L688[`loge`],
+{url-base}#L696[`logw`],
+{url-base}#L705[`map_del`],
+{url-base}#L724[`map_get`],
+{url-base}#L750[`map_put`],
+{url-base}#L771[`nmea2gpx`],
+{url-base}#L785[`pdf2jpg`],
+{url-base}#L790[`pdf2png`],
+{url-base}#L812[`prettytable`],
+{url-base}#L833[`prettyuptime`],
+{url-base}#L858[`realdir`],
+{url-base}#L872[`realpath`],
+{url-base}#L890[`retry`],
+{url-base}#L928[`rev`],
+{url-base}#L946[`semver`],
+{url-base}#L975[`should_continue`],
+{url-base}#L1033[`timestamp`],
+{url-base}#L1053[`tolog`],
+{url-base}#L1059[`tologe`],
+{url-base}#L1066[`tolower`],
+{url-base}#L1084[`totsout`],
+{url-base}#L1090[`tsout`],
+{url-base}#L1098[`url_exists`],
+{url-base}#L1126[`user_exists`],
+{url-base}#L1164[`var_exists`],
+{url-base}#L1204[`ver_ge`],
+{url-base}#L1226[`vid2aud`],
+{url-base}#L1275[`ytda`].
 
 Global variables carry the `BASE_` prefix.
 Clients may use them and should place temporary files under `$BASE_WIP`.
@@ -210,9 +210,9 @@ log I\'m using the shellbase.
 ----
 
 The framework provides three loggers:
-{url-base}#L680[`log`] for information,
-{url-base}#L689[`loge`] for errors, and
-{url-base}#L697[`logw`] for warnings.
+{url-base}#L679[`log`] for information,
+{url-base}#L688[`loge`] for errors, and
+{url-base}#L696[`logw`] for warnings.
 Each logger prints to standard error.
 In non-interactive mode, each also appends the message to the log file under
 a single lowercase level tag: `i` for information, `e` for errors, and `w`
@@ -236,7 +236,7 @@ eval "$(
 log I\'m using the shellbase.
 ----
 
-{url-base}#L819[`prettytable`] example:
+{url-base}#L818[`prettytable`] example:
 
 [,sh]
 ----

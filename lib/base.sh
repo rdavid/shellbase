@@ -42,7 +42,6 @@ BASE_QUIET=false
 BASE_RC_ARG_NE=15
 BASE_RC_ARG_NO=11
 BASE_RC_ARG_WA=12
-BASE_RC_CMD_NE=16
 BASE_RC_CMD_NF=127
 BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
@@ -202,13 +201,13 @@ chrono_sto() {
 # arguments it fails with BASE_RC_ARG_NO.
 # Return code:
 #  - 0 when all commands are present.
-#  - otherwise a count of the missing commands that starts from BASE_RC_CMD_NE:
-#    one missing yields BASE_RC_CMD_NE, each further miss adds one, capped so
+#  - otherwise a count of the missing commands that starts from BASE_RC_ARG_NE:
+#    one missing yields BASE_RC_ARG_NE, each further miss adds one, capped so
 #    the result stays below BASE_RC_MAXVAL.
 # Usage: cmd_exists [-q] cmd1 [cmd2 ...]
 # Options: -q (quiet mode - suppress found/missing logs, errors still log)
 cmd_exists() {
-	local cmd cnt=0 max=$((BASE_RC_MAXVAL - BASE_RC_CMD_NE)) qui=false
+	local cmd cnt=0 max=$((BASE_RC_MAXVAL - BASE_RC_ARG_NE)) qui=false
 	[ "${1-}" = -q ] && {
 		qui=true
 		shift
@@ -229,7 +228,7 @@ cmd_exists() {
 			}
 		fi
 	done
-	[ "$cnt" -eq 0 ] || return $((BASE_RC_CMD_NE + cnt - 1))
+	[ "$cnt" -eq 0 ] || return $((BASE_RC_ARG_NE + cnt - 1))
 }
 
 # Runs a command. Without -q it logs the command, streams its output through
@@ -1740,7 +1739,6 @@ readonly \
 	BASE_RC_ARG_NE \
 	BASE_RC_ARG_NO \
 	BASE_RC_ARG_WA \
-	BASE_RC_CMD_NE \
 	BASE_RC_CMD_NF \
 	BASE_RC_CON_NO \
 	BASE_RC_CON_TO \
