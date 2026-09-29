@@ -296,26 +296,24 @@ cmd_runif() {
 	cmd_run "$@"
 }
 
-# Prints all parameters to the log and exits with the current exit code,
-# which may be non-zero. The subshell restores $? for base_exit, which reads
-# it. oh-my-zsh has the lol plugin, which defines an alias to cya. Remove the
-# plugin:
+# Prints all parameters to the log and passes the current exit code, which
+# may be non-zero, to base_exit. oh-my-zsh has the lol plugin, which defines
+# an alias to cya. Remove the plugin:
 #  https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/lol
 cya() {
 	local err=$?
 	[ $# = 0 ] || log "$@"
-	(exit $err)
-	base_exit
+	base_exit $err
 }
 
-# Prints all parameters as an error message and exits with the error code. It
-# attempts to retain the original code. Otherwise it uses BASE_RC_DIE_NO, so
-# err is always non-zero.
+# Prints all parameters as an error message and passes the error code to
+# base_exit. It attempts to retain the original code. Otherwise it uses
+# BASE_RC_DIE_NO, so err is always non-zero.
 die() {
 	local err=$?
 	[ $# = 0 ] || loge "$@"
 	[ $err -ne 0 ] || err=$BASE_RC_DIE_NO
-	(exit $err) || base_exit
+	base_exit $err
 }
 
 # Converts DNG files in the current directory to JPEG.
@@ -1462,18 +1460,19 @@ base_display_warranty() {
 		printf %s\\n "$war"
 }
 
-# Terminates with the given error code, which may be zero. Called from cya
-# and die. In interactive mode, avoids killing the shell: logs the outcome
-# and returns the error code instead of exiting.
+# Terminates with the error code given as the first parameter, defaulting to
+# zero when omitted. Called from cya and die. In interactive mode, avoids
+# killing the shell: logs the outcome and returns the error code instead of
+# exiting.
 base_exit() {
-	local err=$? msg=Still\ alive
-	base_is_interactive || exit $err
-	if [ $err -eq 0 ]; then
+	local err="${1:-0}" msg=Still\ alive
+	base_is_interactive || exit "$err"
+	if [ "$err" -eq 0 ]; then
 		log "$msg."
 	else
 		logw "$msg, err=$err."
 	fi
-	return $err
+	return "$err"
 }
 
 # Logs the program name, process ID, and user name at startup.
