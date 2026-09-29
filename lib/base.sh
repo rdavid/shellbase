@@ -296,9 +296,9 @@ cmd_runif() {
 	cmd_run "$@"
 }
 
-# Prints all parameters to the log and exits with a success code. The subshell
-# restores $? for base_exit, which reads it. The err value may be zero.
-# oh-my-zsh has the lol plugin, which defines an alias to cya. Remove the
+# Prints all parameters to the log and exits with the current exit code,
+# which may be non-zero. The subshell restores $? for base_exit, which reads
+# it. oh-my-zsh has the lol plugin, which defines an alias to cya. Remove the
 # plugin:
 #  https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/lol
 cya() {
