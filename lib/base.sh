@@ -48,7 +48,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_MAXVAL=127
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260927
+BASE_VERSION=0.9.20260929
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. A failed removal does not abort the
@@ -81,7 +81,7 @@ aud_only() {
 	msg="Remove the following files:
 $lst
 Total $cnt files"
-	should_continue "$msg" || return
+	should_continue "$msg" || return 0
 	log Removing "$cnt" files.
 	printf %s\\n "$lst" |
 		while IFS= read -r fle; do
@@ -426,7 +426,7 @@ gitfix() {
 		loge "$sub"
 		return $err
 	}
-	should_continue "Amend and force-push: $sub" || return
+	should_continue "Amend and force-push: $sub" || return 0
 	cmd_run git commit --amend --no-edit || return
 	cmd_run git push --force-with-lease || return
 }
@@ -1482,7 +1482,7 @@ base_img2jpg() {
 		-name "$pat" \
 		-type f \
 		-exec magick mogrify -format jpg -monitor {} + || return
-	should_continue 'Remove the source files' || return
+	should_continue 'Remove the source files' || return 0
 	cmd_run find . \
 		-maxdepth 1 \
 		-name "$pat" \
