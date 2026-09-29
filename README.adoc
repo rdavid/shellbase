@@ -150,8 +150,8 @@ The public functions are, in alphabetical order:
 {url-base}#L1139[`user_exists`],
 {url-base}#L1177[`var_exists`],
 {url-base}#L1217[`ver_ge`],
-{url-base}#L1239[`vid2aud`],
-{url-base}#L1288[`ytda`].
+{url-base}#L1241[`vid2aud`],
+{url-base}#L1303[`ytda`].
 
 Global variables carry the `BASE_` prefix.
 Clients may use them and should place temporary files under `$BASE_WIP`.

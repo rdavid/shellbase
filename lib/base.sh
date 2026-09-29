@@ -1228,41 +1228,50 @@ ver_ge() {
 # Converts all video files in the current directory to MP3 files, then offers
 # to remove the originals. Declining is not an error. find matches the avi,
 # flv, m4v, mkv, mov, mp4, mpg, ogv, ts, webm, and wmv extensions and returns
-# early if none are found. ffmpeg treats options as positional. An option
-# before -i applies to the input and the rest apply to the output, so only the
-# output options after -i are sorted. -q:a 0 requests libmp3lame's highest VBR
-# quality (V0), letting bitrate adapt to content complexity instead of spending
-# a fixed rate on simple passages. No -ar is given, so ffmpeg keeps the
-# source's sample rate when libmp3lame supports it directly (44100, 48000,
-# 32000, and others), instead of downsampling every file — most commonly 48kHz
-# video audio — to 44100.
+# early if none are found. xargs handles white spaces while counting the
+# matched files. The confirmation message is deliberately not indented:
+# leading tabs would appear verbatim in the prompt. ffmpeg treats options as
+# positional. An option before -i applies to the input and the rest apply to
+# the output, so only the output options after -i are sorted. -q:a 0 requests
+# libmp3lame's highest VBR quality (V0), letting bitrate adapt to content
+# complexity instead of spending a fixed rate on simple passages. No -ar is
+# given, so ffmpeg keeps the source's sample rate when libmp3lame supports it
+# directly (44100, 48000, 32000, and others), instead of downsampling every
+# file — most commonly 48kHz video audio — to 44100.
 vid2aud() {
 	cmd_exists ffmpeg || return
 	iswritable . || return
-	local cnt dst end err src
-	set -- \
-		-name '*.[Aa][Vv][Ii]' -o \
-		-name '*.[Ff][Ll][Vv]' -o \
-		-name '*.[Mm]4[Vv]' -o \
-		-name '*.[Mm][Kk][Vv]' -o \
-		-name '*.[Mm][Oo][Vv]' -o \
-		-name '*.[Mm][Pp]4' -o \
-		-name '*.[Mm][Pp][Gg]' -o \
-		-name '*.[Oo][Gg][Vv]' -o \
-		-name '*.[Tt][Ss]' -o \
-		-name '*.[Ww][Ee][Bb][Mm]' -o \
-		-name '*.[Ww][Mm][Vv]'
-	cnt="$(find . -type f -maxdepth 1 \( "$@" \) | wc -l | xargs)" || {
+	local cnt dst end err lst msg src
+	lst=$(
+		find . -type f -maxdepth 1 \( \
+			-name '*.[Aa][Vv][Ii]' -o \
+			-name '*.[Ff][Ll][Vv]' -o \
+			-name '*.[Mm]4[Vv]' -o \
+			-name '*.[Mm][Kk][Vv]' -o \
+			-name '*.[Mm][Oo][Vv]' -o \
+			-name '*.[Mm][Pp]4' -o \
+			-name '*.[Mm][Pp][Gg]' -o \
+			-name '*.[Oo][Gg][Vv]' -o \
+			-name '*.[Tt][Ss]' -o \
+			-name '*.[Ww][Ee][Bb][Mm]' -o \
+			-name '*.[Ww][Mm][Vv]' \
+			\) 2>&1
+	) || {
 		err=$?
-		loge Something went wrong.
+		loge Something went wrong: "$lst"
 		return $err
 	}
-	[ "$cnt" -eq 0 ] && {
+	[ -z "$lst" ] && {
 		log Nothing to convert.
 		return 0
 	}
-	find . -type f -maxdepth 1 \( "$@" \) |
-		while read -r src; do
+	cnt="$(printf %s\\n "$lst" | wc -l | xargs)" || {
+		err=$?
+		loge Something went wrong: "$cnt"
+		return $err
+	}
+	printf %s\\n "$lst" |
+		while IFS= read -r src; do
 			src="${src#./}"
 			isreadable "$src" || exit
 			dst="${src%.*}".mp3
@@ -1280,8 +1289,14 @@ vid2aud() {
 				"$dst"
 		done || return
 	[ "$cnt" -ne 1 ] && end=s
-	should_continue "Remove the $cnt source file$end" || return 0
-	find . -type f -maxdepth 1 \( "$@" \) -exec rm -f {} +
+	msg="Remove the following source file$end:
+$lst
+Total $cnt file$end"
+	should_continue "$msg" || return 0
+	printf %s\\n "$lst" |
+		while IFS= read -r src; do
+			cmd_run rm -f -- "$src" || continue
+		done
 }
 
 # Downloads a video from YouTube or another host supported by yt-dlp.
