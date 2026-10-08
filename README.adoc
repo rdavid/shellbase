@@ -20,6 +20,7 @@
 :url-goredoer: https://rdavid.github.io/goredoer/
 :url-hadolint: https://hadolint.com/
 :url-hoc: https://hitsofcode.com/view/github/rdavid/shellbase?branch=master
+:url-homebrew: https://brew.sh
 :url-license: https://github.com/rdavid/shellbase/blob/master/LICENSES/0BSD.txt
 :url-pages: https://rdavid.github.io/shellbase/
 :url-pulse: https://rdavid.github.io/pulse/
@@ -32,6 +33,7 @@
 :url-sh3: https://www.grymoire.com/Unix/Sh.html
 :url-shellcheck: https://www.shellcheck.net/
 :url-shfmt: https://github.com/mvdan/sh
+:url-tap: https://rdavid.github.io/homebrew-tap/
 :url-test-bsd: https://github.com/rdavid/shellbase/actions/workflows/test-bsd.yml
 :url-test-lnx: https://github.com/rdavid/shellbase/actions/workflows/test-lnx.yml
 :url-test-mac: https://github.com/rdavid/shellbase/actions/workflows/test-mac.yml
@@ -179,6 +181,13 @@ Install the file from the repository:
 ----
 git clone https://github.com/rdavid/shellbase.git &&
   ./shellbase/app/install
+----
+
+Or install the file with {url-homebrew}[Homebrew] from the {url-tap}[tap]:
+
+[,sh]
+----
+brew install rdavid/tap/shellbase
 ----
 
 Or install the file from a release.
