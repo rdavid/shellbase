@@ -21,6 +21,7 @@
 :url-hadolint: https://hadolint.com/
 :url-hoc: https://hitsofcode.com/view/github/rdavid/shellbase?branch=master
 :url-license: https://github.com/rdavid/shellbase/blob/master/LICENSES/0BSD.txt
+:url-pages: https://rdavid.github.io/shellbase/
 :url-pulse: https://rdavid.github.io/pulse/
 :url-redo: http://cr.yp.to/redo.html
 :url-releases: https://github.com/rdavid/shellbase/releases
@@ -91,6 +92,9 @@ It follows POSIX, the Portable Operating System Interface standard, and runs
 on any Unix-like system.
 The framework provides logging, validation helpers, signal handling, garbage
 collection, and support for concurrent instances.
+ifndef::pages-build[]
+The framework also has a {url-pages}[website].
+endif::[]
 
 `shellbase` defines global variables and functions.
 Clients may call any function without the `base_` prefix.
