@@ -61,8 +61,8 @@
 [subs=attributes+]
 ++++
 <div align="right">
-<a href="{url-test-bsd}"><img src="{img-test-bsd}" alt="text bsd"></a>
-<a href="{url-test-lnx}"><img src="{img-test-lnx}" alt="text lnx"></a>
+<a href="{url-test-bsd}"><img src="{img-test-bsd}" alt="test bsd"></a>
+<a href="{url-test-lnx}"><img src="{img-test-lnx}" alt="test lnx"></a>
 <a href="{url-test-mac}"><img src="{img-test-mac}" alt="test mac"></a>
 <a href="{url-releases}"><img src="{img-releases}" alt="release"></a>
 <a href="{url-hoc}"><img src="{img-hoc}" alt="hits of code"></a>
@@ -178,7 +178,7 @@ git clone https://github.com/rdavid/shellbase.git &&
 ----
 
 Or install the file from a release.
-Some operating systems demand administrative rights to write to
+Some operating systems require administrative rights to write to
 `/usr/local/bin`.
 Prefix `tar` with `sudo` or `doas` when needed:
 
