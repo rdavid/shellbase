@@ -48,7 +48,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_MAXVAL=127
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20260929
+BASE_VERSION=0.9.20261010
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. A failed removal does not abort the
@@ -1409,7 +1409,7 @@ base_display_usage() {
 	local use
 	use="$(
 		cat <<-EOM 2>&1
-			Usage: $BASE_IAM [-d] [-h] [-k] [-q] [-v] [-w] [-x] [-y] ...
+			Usage: $BASE_IAM [-d] [-h] [-k] [-q] [-t] [-v] [-w] [-x] [-y] ...
 
 			Arguments:
 			  -d, --dir-wip     Allows specifying a custom directory for work in
