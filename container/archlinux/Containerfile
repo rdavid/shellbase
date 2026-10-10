@@ -3,7 +3,7 @@
 #
 # Multiple redirections compete for stdout:
 #  hadolint global ignore=SC2261
-FROM ghcr.io/rdavid/goredoer:0.9.20260909 as goredoer
+FROM ghcr.io/rdavid/goredoer:0.9.20261010 as goredoer
 FROM archlinux:base
 LABEL maintainer=David\ Rabkin\ <david@rabkin.co.il>
 ENV \
