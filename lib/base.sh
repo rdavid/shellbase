@@ -723,12 +723,11 @@ map_del() {
 		key="$2" \
 		nme="$1"
 	local fle="$dir/$nme/$key"
-	file_exists -q "$fle" || return
-	rm "$fle"
+	cmd_run -q rm -- "$fle" || return
 	isempty "$dir/$nme" || return 0
-	rmdir "$dir/$nme"
+	cmd_run -q rmdir -- "$dir/$nme"
 	isempty "$dir" || return 0
-	rmdir "$dir"
+	cmd_run -q rmdir -- "$dir"
 }
 
 # Reads a value from the key-value store.
