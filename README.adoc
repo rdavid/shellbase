@@ -249,7 +249,7 @@ eval "$(
 log I\'m using the shellbase.
 ----
 
-{url-base}#L831[`prettytable`] example:
+{url-base}#L823[`prettytable`] example:
 
 [,sh]
 ----

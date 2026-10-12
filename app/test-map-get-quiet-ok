@@ -14,6 +14,6 @@ ret=0
 out="$(map_get a key2 2>&1)" || ret=$?
 [ "$ret" -ne 0 ] || die Expected map_get to fail.
 [ "$(printf %s\\n "$out" | wc -l)" -eq 1 ] || die Expected one line: "$out".
-case "$out" in *'Unable to read'*) ;; *) die Missing error: "$out". ;; esac
+case "$out" in *'is not readable'*) ;; *) die Missing error: "$out". ;; esac
 map_del a key1
 log Missing key was reported once.

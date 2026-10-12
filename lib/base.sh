@@ -746,7 +746,7 @@ map_get() {
 	local fle="$dir/$nme/$key"
 	isreadable -q "$fle" || {
 		err=$?
-		loge Unable to read "$fle".
+		loge "$fle" is not readable.
 		return $err
 	}
 	val="$(cat "$fle" 2>&1)" || {
