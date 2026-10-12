@@ -1,0 +1,17 @@
+#!/bin/sh
+# vi: lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Verifies that issolid reports an unreadable script with a single message.
+#
+# File not following:
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
+ret=0
+out="$(sh -c '. "$1" && issolid' /n0t/ex1sted "$BSH" 2>&1)" || ret=$?
+[ "$ret" -ne 0 ] || die Expected issolid to fail.
+msg="$(printf %s\\n "$out" | grep --count 'is not readable')" || :
+[ "$msg" -eq 1 ] || die Expected one message: "$out".
+log Unreadable script was reported once.

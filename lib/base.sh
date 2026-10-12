@@ -104,7 +104,7 @@ beuser() {
 		return $BASE_RC_ARG_NO
 	}
 	local ask cur usr="$1"
-	user_exists "$usr" || die "$usr": No such user.
+	user_exists -q "$usr" || die "$usr": No such user.
 	cur="$(id -u 2>&1)" || die "$cur"
 	ask="$(id -u -- "$usr" 2>&1)" || die "$ask"
 	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."
@@ -615,7 +615,7 @@ issolid() {
 		lne \
 		tmp="$BASE_WIP"/hashless \
 		pat=^BASE_APP_HASH
-	isreadable "$fle" || die File "$fle" is not readable.
+	isreadable -q "$fle" || die File "$fle" is not readable.
 	lne="$(
 		grep --regexp "$pat" "$fle"
 	)" || {

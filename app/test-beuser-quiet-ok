@@ -1,0 +1,17 @@
+#!/bin/sh
+# vi: lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Verifies that beuser reports a nonexistent user with a single message.
+#
+# File not following:
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
+ret=0
+out="$(beuser n0t_ex1sted_uzer 2>&1)" || ret=$?
+[ "$ret" -ne 0 ] || die Expected beuser to fail.
+msg="$(printf %s\\n "$out" | grep --count 'No such user')" || :
+[ "$msg" -eq 1 ] || die Expected one message: "$out".
+log Missing user was reported once.
