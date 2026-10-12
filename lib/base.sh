@@ -48,7 +48,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_MAXVAL=127
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20261010
+BASE_VERSION=0.9.20261012
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. A failed removal does not abort the
@@ -723,7 +723,7 @@ map_del() {
 		key="$2" \
 		nme="$1"
 	local fle="$dir/$nme/$key"
-	file_exists "$fle" || return
+	file_exists -q "$fle" || return
 	rm "$fle"
 	isempty "$dir/$nme" || return 0
 	rmdir "$dir/$nme"
@@ -744,7 +744,7 @@ map_get() {
 		nme="$1" \
 		val
 	local fle="$dir/$nme/$key"
-	isreadable "$fle" || {
+	isreadable -q "$fle" || {
 		err=$?
 		loge Unable to read "$fle".
 		return $err

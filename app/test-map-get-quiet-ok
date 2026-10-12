@@ -1,0 +1,19 @@
+#!/bin/sh
+# vi: lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Verifies that map_get reports a missing key with a single error message.
+#
+# File not following:
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
+map_put a key1 val1
+ret=0
+out="$(map_get a key2 2>&1)" || ret=$?
+[ "$ret" -ne 0 ] || die Expected map_get to fail.
+[ "$(printf %s\\n "$out" | wc -l)" -eq 1 ] || die Expected one line: "$out".
+case "$out" in *'Unable to read'*) ;; *) die Missing error: "$out". ;; esac
+map_del a key1
+log Missing key was reported once.

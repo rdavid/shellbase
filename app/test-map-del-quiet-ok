@@ -1,0 +1,18 @@
+#!/bin/sh
+# vi: lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Verifies that map_del fails silently for a key that was never put.
+#
+# File not following:
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
+map_put a key1 val1
+ret=0
+out="$(map_del a key2 2>&1)" || ret=$?
+[ "$ret" -ne 0 ] || die Expected map_del to fail.
+[ -z "$out" ] || die Unexpected output: "$out".
+map_del a key1
+log Missing key was rejected quietly.
