@@ -1,0 +1,27 @@
+#!/bin/sh
+# vi: lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Verifies that vid2aud refuses to overwrite an existing MP3 file and reports
+# it with a single message. Skips quietly when ffmpeg is not installed.
+#
+# File not following:
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
+cmd_exists -q ffmpeg || {
+	log Skipped, ffmpeg is not installed.
+	exit 0
+}
+dir="$BASE_WIP"/vid
+mkdir "$dir" || die 1
+cd "$dir" || die 2
+touch song.avi song.mp3 || die 3
+ret=0
+out="$(vid2aud 2>&1)" || ret=$?
+[ "$ret" -ne 0 ] || die Expected vid2aud to fail.
+msg="$(printf %s\\n "$out" | grep --count 'exists')" || :
+[ "$msg" -eq 1 ] || die Expected one message: "$out".
+case "$out" in *'already exists'*) ;; *) die Missing error: "$out". ;; esac
+log Existing file was reported once.
