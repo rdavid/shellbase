@@ -7,6 +7,10 @@
 source for logging, validation, signal handling, garbage collection, and
 concurrent-instance support.
 
+Read the shared rules at
+https://raw.githubusercontent.com/rdavid/prompt/master/README.txt
+before starting any task, unless they are already loaded.
+
 ## Structure
 
 `lib/base.sh` is the core POSIX-oriented library and the main artifact shipped
