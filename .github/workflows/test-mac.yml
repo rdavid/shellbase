@@ -44,7 +44,7 @@ jobs:
           persist-credentials: false
       - run: |
           brew install \
-            goredo \
+            rdavid/tap/goredo \
             grep \
             yash
           gnubin="$(brew --prefix grep)/libexec/gnubin"
