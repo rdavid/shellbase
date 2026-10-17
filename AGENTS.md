@@ -22,8 +22,8 @@ configuration lives in `.github/workflows/` and `.github/styles/`. Treat
 
 ## Build
 
-This project uses `redo` (or `goredo`) as the primary task runner. `make` is only
-a thin proxy.
+This project uses `redo` (or `goredo`) as the primary task runner. `make` is
+only a thin proxy, so use `make test` only if you need the wrapper.
 
 - `redo all`: run the default build target.
 - `redo lint`: run `actionlint`, `checkmake`, `conform`, `dash`, `hadolint`,
@@ -35,8 +35,6 @@ a thin proxy.
 - `./app/install`: install `lib/base.sh` into the expected local path.
 - `./app/update`: lint `README.adoc`'s function links against `lib/base.sh`.
   Add `--action` to regenerate them.
-
-Use `make test` only if you need the compatibility wrapper.
 
 `./app/update` requires GNU grep. On macOS, run it with GNU grep first on
 `PATH` (for example
