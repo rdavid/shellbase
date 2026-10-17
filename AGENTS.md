@@ -7,7 +7,7 @@
 source for logging, validation, signal handling, garbage collection, and
 concurrent-instance support.
 
-## Project Structure & Module Organization
+## Structure
 
 `lib/base.sh` is the core POSIX-oriented library and the main artifact shipped
 by this repository. `app/` contains helper scripts such as `install`, `update`,
@@ -16,7 +16,7 @@ coverage lives under `container/<distro>/Containerfile`, and CI/lint
 configuration lives in `.github/workflows/` and `.github/styles/`. Treat
 `.redo/` as build metadata for the `redo` workflow, not hand-edited source.
 
-## Build, Test, and Development Commands
+## Build
 
 This project uses `redo` (or `goredo`) as the primary task runner. `make` is only
 a thin proxy.
@@ -40,7 +40,7 @@ Use `make test` only if you need the compatibility wrapper.
 the BSD grep on `PATH` by default, its GNU-grep guard exits 0 quietly and
 leaves `README.adoc` untouched instead of failing loudly.
 
-## Coding Style & Naming Conventions
+## Style
 
 Every script opens with the same header shape: the `#!/bin/sh` shebang
 (omitted in `*.do` files, which `redo` executes directly), the
@@ -63,7 +63,7 @@ to regenerate the alphabetical function-list block. The `log`, `loge`,
 `logw`, and `prettytable` prose links elsewhere in `README.adoc` are
 hand-maintained and must be fixed manually.
 
-## Testing Guidelines
+## Testing
 
 Add or update an executable script in `app/` for every behavior change. Use
 `*-ok` for success cases and `*-no` for failure paths. Run
@@ -74,7 +74,7 @@ In `*-no` scripts, assert by appending `|| exit 0` to the check itself, so an
 unexpected success falls through to `exit 0` and the test harness, which
 expects a `*-no` script to fail, flags it.
 
-## Commit & Pull Request Guidelines
+## Commits
 
 Before committing, update `BASE_VERSION` in `lib/base.sh`,
 `BASE_APP_VERSION` in every other changed file that declares it, and the
