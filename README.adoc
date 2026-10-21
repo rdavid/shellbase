@@ -173,9 +173,12 @@ for example projects built on the framework.
 
 == Install
 
-The framework ships as a single non-executable POSIX shell script,
-{url-base}[`base.sh`].
-Install the file from the repository:
+The framework is a single POSIX shell script, {url-base}[`base.sh`], that
+your scripts source.
+It needs no build step.
+Install it in one of three ways.
+
+Clone the repository and run the installer:
 
 [,sh]
 ----
@@ -183,17 +186,16 @@ git clone https://github.com/rdavid/shellbase.git &&
   ./shellbase/app/install
 ----
 
-Or install the file with {url-homebrew}[Homebrew] from the {url-tap}[tap]:
+Use {url-homebrew}[Homebrew] with the {url-tap}[tap]:
 
 [,sh]
 ----
 brew install rdavid/tap/shellbase
 ----
 
-Or install the file from a release.
+Extract `base.sh` from a release archive.
 Some operating systems require administrative rights to write to
-`/usr/local/bin`.
-Prefix `tar` with `sudo` or `doas` when needed:
+`/usr/local/bin`, so prefix `tar` with `sudo` or `doas` when needed:
 
 [,sh]
 ----
@@ -210,8 +212,8 @@ curl --location --silent $SRC |
 
 == Using
 
-Verify `/usr/local/bin` appears in your `PATH`.
-Then source the framework from your script:
+Make sure `base.sh` is in a `PATH` directory.
+Then source the framework in your script:
 
 [,sh]
 ----
@@ -226,12 +228,12 @@ The framework provides three loggers:
 {url-base}#L690[`log`] for information,
 {url-base}#L699[`loge`] for errors, and
 {url-base}#L707[`logw`] for warnings.
-Each logger prints to standard error.
-In non-interactive mode, each also appends the message to the log file under
-a single lowercase level tag: `i` for information, `e` for errors, and `w`
-for warnings.
+Each logger writes to standard error.
+In non-interactive mode, it also appends the message to the log file with a
+one-letter level tag: `i` for information, `e` for errors, and `w` for
+warnings.
 
-Try `shellbase` without installation:
+To try `shellbase` without installing it, source it straight from a release:
 
 [,sh]
 ----
