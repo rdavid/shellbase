@@ -17,7 +17,7 @@ BSH="$(
 	exit "$err"
 }
 readonly \
-	BASE_APP_VERSION=0.9.20260720 \
+	BASE_APP_VERSION=0.9.20261022 \
 	BASE_MIN_VERSION=0.9.20260707 \
 	BSH \
 	DST=/usr/local/bin \
@@ -37,7 +37,7 @@ process() {
 	local msg new old
 	new="$(sh "$BSH" --quiet --version 2>&1)" || die "$new"
 	file_exists "$TGT" || {
-		cmd_run cp "$BSH" "$TGT"
+		cmd_run cp -p "$BSH" "$TGT"
 		printf '%s is installed in %s.\n' "$new" "$DST"
 		return
 	}
@@ -49,7 +49,7 @@ process() {
 		msg="$new is already installed in $DST. Continue anyway" ||
 		msg="$old is installed in $DST. Update to $new"
 	if should_continue "$msg"; then
-		cmd_run cp -f "$BSH" "$TGT"
+		cmd_run cp -f -p "$BSH" "$TGT"
 		printf '%s is updated to %s in %s.\n' "$old" "$new" "$DST"
 	fi
 }
