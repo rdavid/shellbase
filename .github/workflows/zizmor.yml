@@ -30,6 +30,6 @@ jobs:
         with:
           path: ~/.cache/pip
           key: pip-zizmor-1.30.0
-      - run: pipx run zizmor==1.30.0 .
+      - run: pipx run zizmor==1.31.1 .
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
