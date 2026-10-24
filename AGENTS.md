@@ -14,16 +14,18 @@ before starting any task, unless they are already loaded.
 ## Structure
 
 `lib/base.sh` is the core POSIX-oriented library and the main artifact shipped
-by this repository. `app/` contains helper scripts such as `install`, `update`,
-and executable test cases named `test-*-ok` and `test-*-no`. Container
-coverage lives under `container/<distro>/Containerfile`, and CI/lint
-configuration lives in `.github/workflows/` and `.github/styles/`. Treat
-`.redo/` as build metadata for the `redo` workflow, not hand-edited source.
+by this repository.
+`app/` contains helper scripts such as `install`, `update`, and executable
+test cases named `test-*-ok` and `test-*-no`.
+Container coverage lives under `container/<distro>/Containerfile`.
+CI and lint configuration lives in `.github/workflows/` and `.github/styles/`.
+Treat `.redo/` as build metadata for the `redo` workflow, not hand-edited
+source.
 
 ## Build
 
-This project uses `redo` (or `goredo`) as the primary task runner. `make` is
-only a thin proxy, so use `make test` only if you need the wrapper.
+This project uses `redo` (or `goredo`) as the primary task runner.
+`make` is only a thin proxy, so use `make test` only if you need the wrapper.
 
 - `redo all`: run the default build target.
 - `redo lint`: run `actionlint`, `checkmake`, `conform`, `dash`, `hadolint`,
@@ -36,45 +38,48 @@ only a thin proxy, so use `make test` only if you need the wrapper.
 - `./app/update`: lint `README.adoc`'s function links against `lib/base.sh`.
   Add `--action` to regenerate them.
 
-`./app/update` requires GNU grep. On macOS, run it with GNU grep first on
-`PATH` (for example
-`PATH=/opt/homebrew/opt/grep/libexec/gnubin:$PATH ./app/update --action`). With
-the BSD grep on `PATH` by default, its GNU-grep guard exits 0 quietly and
-leaves `README.adoc` untouched instead of failing loudly.
+`./app/update` requires GNU grep.
+On macOS, run it with GNU grep first on `PATH`.
+For example:
+`PATH=/opt/homebrew/opt/grep/libexec/gnubin:$PATH ./app/update --action`.
+With the BSD grep on `PATH` by default, its GNU-grep guard exits 0 quietly.
+It then leaves `README.adoc` untouched instead of failing loudly.
 
 ## Style
 
 Scripts follow the shared header layout, omit the shebang in `*.do` files,
-and source `lib/base.sh` right after the header. Use 2-space indentation and
-no tabs. Public functions in `lib/base.sh` are unprefixed,
-internal helpers use `base_`, and global variables use the `BASE_` prefix.
+and source `lib/base.sh` right after the header.
+Use 2-space indentation and no tabs.
+Public functions in `lib/base.sh` are unprefixed.
+Internal helpers use `base_`, and global variables use the `BASE_` prefix.
 Name local variables with no more than three letters, for example `cnt`,
-`dly`, or `err`. Keep new test files aligned with the current pattern, for
-example `app/test-realpath-ok`.
+`dly`, or `err`.
+Keep new test files aligned with the current pattern, for example
+`app/test-realpath-ok`.
 
 In `lib/base.sh`, list public functions alphabetically, then `base_` helpers
 alphabetically, with no `main`.
 
 `README.adoc` links every public function to its exact line in
-`lib/base.sh` (for example `{url-base}#L58[`aud_only`]`). Any edit to
-`lib/base.sh` that shifts line numbers requires running `./app/update --action`
-to regenerate the alphabetical function-list block. The `log`, `loge`,
-`logw`, and `prettytable` prose links elsewhere in `README.adoc` are
-hand-maintained and must be fixed manually.
+`lib/base.sh` (for example `{url-base}#L58[`aud_only`]`).
+Any edit to `lib/base.sh` that shifts line numbers requires running
+`./app/update --action` to regenerate the alphabetical function-list block.
+The `log`, `loge`, `logw`, and `prettytable` prose links elsewhere in
+`README.adoc` are hand-maintained and must be fixed manually.
 
 ## Testing
 
-Add or update an executable script in `app/` for every behavior change. Use
-`*-ok` for success cases and `*-no` for failure paths. Run
-`redo test-container` when changing portability-sensitive shell logic,
+Add or update an executable script in `app/` for every behavior change.
+Use `*-ok` for success cases and `*-no` for failure paths.
+Run `redo test-container` when changing portability-sensitive shell logic,
 container files, or CI behavior.
 
-In `*-no` scripts, assert by appending `|| exit 0` to the check itself, so an
-unexpected success falls through to `exit 0` and the test harness, which
-expects a `*-no` script to fail, flags it.
+In `*-no` scripts, assert by appending `|| exit 0` to the check itself.
+An unexpected success then falls through to `exit 0`.
+The test harness expects a `*-no` script to fail, so it flags that case.
 
 ## Commits
 
 Set `BASE_VERSION` in `lib/base.sh` and `BASE_APP_VERSION` in every other
-changed file that declares it. Update the `SPDX-FileCopyrightText` year in
-every changed file.
+changed file that declares it.
+Update the `SPDX-FileCopyrightText` year in every changed file.
