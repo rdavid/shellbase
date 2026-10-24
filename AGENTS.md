@@ -44,12 +44,9 @@ leaves `README.adoc` untouched instead of failing loudly.
 
 ## Style
 
-Every script opens with the same header shape: the `#!/bin/sh` shebang
-(omitted in `*.do` files, which `redo` executes directly), the
-`# vi: lbr noet sw=2 ts=2 tw=79 wrap` modeline, the two SPDX lines, then any
-`shellcheck disable` block or description comment, before sourcing
-`lib/base.sh`. Match this layout when adding a new file. Use 2-space
-indentation and no tabs. Public functions in `lib/base.sh` are unprefixed,
+Scripts follow the shared header layout, omit the shebang in `*.do` files,
+and source `lib/base.sh` right after the header. Use 2-space indentation and
+no tabs. Public functions in `lib/base.sh` are unprefixed,
 internal helpers use `base_`, and global variables use the `BASE_` prefix.
 Name local variables with no more than three letters, for example `cnt`,
 `dly`, or `err`. Keep new test files aligned with the current pattern, for
@@ -78,7 +75,6 @@ expects a `*-no` script to fail, flags it.
 
 ## Commits
 
-Before committing, update `BASE_VERSION` in `lib/base.sh`,
-`BASE_APP_VERSION` in every other changed file that declares it, and the
-`SPDX-FileCopyrightText` year in every changed file, but only when the file
-has a substantive change. Versions are date-based (`0.9.YYYYMMDD`).
+Set `BASE_VERSION` in `lib/base.sh` and `BASE_APP_VERSION` in every other
+changed file that declares it. Update the `SPDX-FileCopyrightText` year in
+every changed file.
