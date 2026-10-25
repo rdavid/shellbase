@@ -1,6 +1,3 @@
-# SPDX-FileCopyrightText: 2026 David Rabkin
-# SPDX-License-Identifier: 0BSD
-
 # Repository Guidelines
 
 `shellbase` is a POSIX-oriented shell framework (`lib/base.sh`) that scripts
@@ -19,6 +16,7 @@ by this repository.
 test cases named `test-*-ok` and `test-*-no`.
 Container coverage lives under `container/<distro>/Containerfile`.
 CI and lint configuration lives in `.github/workflows/` and `.github/styles/`.
+Targets live in `*.do` files, which `redo` executes directly.
 Treat `.redo/` as build metadata for the `redo` workflow, not hand-edited
 source.
 
@@ -52,8 +50,10 @@ and source `lib/base.sh` right after the header.
 Use 2-space indentation and no tabs.
 Public functions in `lib/base.sh` are unprefixed.
 Internal helpers use `base_`, and global variables use the `BASE_` prefix.
-Name local variables with no more than three letters, for example `cnt`,
-`dly`, or `err`.
+Name local variables in functions with no more than three letters, for
+example `cnt`, `dly`, or `err`.
+Keep script-level variables in `*.do` files capitalized, for example `STP`
+or `EXE`.
 Keep new test files aligned with the current pattern, for example
 `app/test-realpath-ok`.
 
@@ -80,6 +80,7 @@ The test harness expects a `*-no` script to fail, so it flags that case.
 
 ## Commits
 
-Set `BASE_VERSION` in `lib/base.sh` and `BASE_APP_VERSION` in every other
-changed file that declares it.
-Update the `SPDX-FileCopyrightText` year in every changed file.
+Follow the shared Licensing rules for versions and copyright years.
+The version variable in `lib/base.sh` is `BASE_VERSION`, not
+`BASE_APP_VERSION`.
+Run `redo lint` and `redo test` before committing.

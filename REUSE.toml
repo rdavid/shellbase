@@ -10,6 +10,7 @@ path = [
 	".gitignore",
 	".redo/**",
 	".vale.ini",
+	"AGENTS.md",
 	"lint",
 	"README.adoc",
 ]
