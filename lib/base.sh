@@ -48,7 +48,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_MAXVAL=127
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20261022
+BASE_VERSION=0.9.20261028
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. A failed removal does not abort the
@@ -473,22 +473,16 @@ heic2jpg() {
 	base_img2jpg '*.[hH][eE][iI][cC]'
 }
 
-# Returns true if $2 is inside $1. Uses a case statement because it is a shell
-# built-in and faster than grep:
-#  echo $1 | grep -s "$2" >/dev/null
-# or this:
-#  echo $1 | grep -qs "$2"
-# or expr:
-#  expr "$1" : ".*$2" >/dev/null && return 0 # true
-# Case does not require another shell process. See:
+# Determines whether the second parameter is a substring of the first. The
+# substring is matched as a glob pattern. This uses a case statement because
+# it is a shell built-in and needs no extra process, unlike grep or expr. See:
 #  https://www.grymoire.com/Unix/Sh.html#toc-uh-96
 inside() {
 	[ $# -eq 2 ] || {
 		loge Expected two arguments, got "$#".
 		return $BASE_RC_ARG_NO
 	}
-	case "$1" in *$2*) return 0 ;; esac
-	return 1
+	case "$1" in *$2*) ;; *) return 1 ;; esac
 }
 
 # Determines whether a directory is empty, counting visible and hidden
@@ -542,18 +536,15 @@ isfunc() {
 	inside "$knd" function
 }
 
-# Determines whether a variable is a number. This rejects empty strings and
-# strings containing non-digits while accepting everything else. See:
+# Determines whether a value is a number. This accepts only non-empty strings
+# made of decimal digits and rejects everything else. See:
 #  https://stackoverflow.com/q/806906
 isnumber() {
 	[ $# -eq 1 ] || {
 		loge Expected a single argument, got "$#".
 		return $BASE_RC_ARG_NO
 	}
-	case "$1" in
-	'' | *[!0-9]*) return 1 ;;
-	esac
-	return 0
+	case "$1" in '' | *[!0-9]*) return 1 ;; esac
 }
 
 # Verifies that all parameters are readable files. Every file found or
