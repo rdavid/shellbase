@@ -48,7 +48,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_MAXVAL=127
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20261028
+BASE_VERSION=0.9.20261031
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. A failed removal does not abort the
@@ -908,7 +908,7 @@ retry() {
 	}
 	while [ "$cnt" -le "$max" ]; do
 		log Retry "$cnt"/"$max".
-		cmd_run "$@" && return 0
+		cmd_run "$@" && return
 		err=$?
 		[ "$err" -eq $BASE_RC_CMD_NF ] && return $err
 		[ "$cnt" -lt "$max" ] && {
@@ -974,7 +974,7 @@ semver() {
 # 'y' or if no input is detected after a timeout. If parameters are provided,
 # they are used as the question. Otherwise, the default message is used.
 should_continue() {
-	[ $BASE_SHOULD_CON = true ] && return 0
+	[ $BASE_SHOULD_CON = true ] && return
 	local ans dad="$$" dog msg old tmo=20
 	old="$(stty -g 2>&1)" || die "$old"
 
