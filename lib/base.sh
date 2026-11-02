@@ -1317,8 +1317,12 @@ base_bye() {
 	[ $err -eq 0 ] && log "$msg." || logw "$msg, err=$err."
 }
 
-# Asks to continue if multiple instances are running.
-base_check_instances() {
+# Asks to continue if multiple instances are running. Finds process IDs of all
+# possible instances in /tmp/<script-name.*>/pid and writes them to the pipe.
+# Loop reads the PIDs from the pipe and counts only running processes. Writes
+# the PID of this instance, which is running. Asks permission in case of
+# multiple instances.
+base_check_instance() {
 	local \
 		ins=0 \
 		end \
@@ -1326,20 +1330,12 @@ base_check_instances() {
 		pip="$BASE_WIP"/pip \
 		pro \
 		vrb
-
-	# Finds process IDs of all possible instances in /tmp/<script-name.*>/pid and
-	# writes them to the pipe. Loop reads the PIDs from the pipe and counts only
-	# running processes.
 	mkfifo "$pip"
 	find "$BASE_WIP/../$BASE_IAM".* -name "pid" -exec cat {} \; >"$pip" &
 	while read -r pro; do
 		kill -0 "$pro" >/dev/null 2>&1 && ins=$((ins + 1))
 	done <"$pip"
-
-	# This instance is running.
 	echo $$ >"$pid"
-
-	# Asks permission in case of multiple instances.
 	[ $ins -ne 0 ] || return 0
 	if [ $ins -gt 1 ]; then
 		end=es
@@ -1582,7 +1578,7 @@ base_main() {
 	trap base_cleanup EXIT
 	trap base_sig_cleanup HUP INT QUIT TERM
 	base_check_version
-	base_check_instances
+	base_check_instance
 	[ false = $use ] || {
 		base_display_usage
 		cya
