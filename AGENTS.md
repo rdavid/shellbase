@@ -10,8 +10,7 @@ before starting any task, unless they are already loaded.
 
 ## Structure
 
-`lib/base.sh` is the core POSIX-oriented library and the main artifact shipped
-by this repository.
+`lib/base.sh` is the core library and the main artifact this repository ships.
 `app/` contains helper scripts such as `install`, `update`, and executable
 test cases named `test-*-ok` and `test-*-no`.
 Container coverage lives under `container/<distro>/Containerfile`.
@@ -23,7 +22,7 @@ source.
 ## Build
 
 This project uses `redo` (or `goredo`) as the primary task runner.
-`make` is only a thin proxy, so use `make test` only if you need the wrapper.
+`make` is a thin proxy.
 
 - `redo all`: run the default build target.
 - `redo lint`: run `actionlint`, `checkmake`, `conform`, `dash`, `hadolint`,
@@ -33,15 +32,16 @@ This project uses `redo` (or `goredo`) as the primary task runner.
 - `redo test-container`: run the test suite inside the supported container
   images.
 - `./app/install`: install `lib/base.sh` into the expected local path.
-- `./app/update`: lint `README.adoc`'s function links against `lib/base.sh`.
+- `./app/update`: check the function links in `README.adoc` against
+  `lib/base.sh`.
   Add `--action` to regenerate them.
 
 `./app/update` requires GNU grep.
-On macOS, run it with GNU grep first on `PATH`.
+On macOS, put GNU grep first on `PATH`.
 For example:
 `PATH=/opt/homebrew/opt/grep/libexec/gnubin:$PATH ./app/update --action`.
-With the BSD grep on `PATH` by default, its GNU-grep guard exits 0 quietly.
-It then leaves `README.adoc` untouched instead of failing loudly.
+With the default BSD grep, the script exits 0 quietly.
+It leaves `README.adoc` untouched instead of failing loudly.
 
 ## Style
 
@@ -50,8 +50,8 @@ and source `lib/base.sh` right after the header.
 Use 2-space indentation and no tabs.
 Public functions in `lib/base.sh` are unprefixed.
 Internal helpers use `base_`, and global variables use the `BASE_` prefix.
-Name local variables in functions with no more than three letters, for
-example `cnt`, `dly`, or `err`.
+Limit local variable names in functions to three letters, for example `cnt`,
+`dly`, or `err`.
 Keep script-level variables in `*.do` files capitalized, for example `STP`
 or `EXE`.
 Keep new test files aligned with the current pattern, for example
@@ -65,7 +65,7 @@ alphabetically, with no `main`.
 Any edit to `lib/base.sh` that shifts line numbers requires running
 `./app/update --action` to regenerate the alphabetical function-list block.
 The `log`, `loge`, `logw`, and `prettytable` prose links elsewhere in
-`README.adoc` are hand-maintained and must be fixed manually.
+`README.adoc` are hand-maintained, so update them manually.
 
 ## Testing
 
@@ -76,11 +76,9 @@ container files, or CI behavior.
 
 In `*-no` scripts, assert by appending `|| exit 0` to the check itself.
 An unexpected success then falls through to `exit 0`.
-The test harness expects a `*-no` script to fail, so it flags that case.
+The harness expects a `*-no` script to fail, so it flags that case.
 
 ## Commits
 
-Follow the shared Licensing rules for versions and copyright years.
-The version variable in `lib/base.sh` is `BASE_VERSION`, not
-`BASE_APP_VERSION`.
+The version variable in `lib/base.sh` is `BASE_VERSION`.
 Run `redo lint` and `redo test` before committing.
