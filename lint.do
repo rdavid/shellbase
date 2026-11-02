@@ -21,6 +21,7 @@ redo-ifchange \
 	./container/*/Containerfile \
 	./lib/* \
 	./*.do \
+	./AGENTS.md \
 	./Makefile \
 	./README.adoc
 BSH="$(
@@ -31,7 +32,7 @@ BSH="$(
 	exit $err
 }
 readonly \
-	BASE_APP_VERSION=0.9.20260817 \
+	BASE_APP_VERSION=0.9.20261103 \
 	BASE_MIN_VERSION=0.9.20260707 \
 	BSH
 . "$BSH"
@@ -55,7 +56,9 @@ cmd_runif shfmt -d \
 	./lib/*
 cmd_runif typos
 cmd_runif vale sync
-cmd_runif vale ./README.adoc
+cmd_runif vale \
+	./AGENTS.md \
+	./README.adoc
 cmd_runif yamllint \
 	./.github/*.yml \
 	./.github/workflows/*.yml
