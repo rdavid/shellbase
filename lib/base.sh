@@ -48,7 +48,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_MAXVAL=127
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20261031
+BASE_VERSION=0.9.20261103
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. A failed removal does not abort the
@@ -1352,6 +1352,14 @@ base_check_instances() {
 		cya Stop working.
 }
 
+# Continues only if shellbase meets the caller's minimum required version.
+base_check_version() {
+	if var_exists -q BASE_MIN_VERSION; then
+		ver_ge "$BASE_VERSION" "$BASE_MIN_VERSION" ||
+			die "Shellbase is $BASE_VERSION, needs $BASE_MIN_VERSION or above."
+	fi
+}
+
 # General exit handler. Called on EXIT. A non-empty first parameter suppresses
 # the exit call. Keeps the WIP directory of the last finished instance. Calls
 # base_bye just before moving or deleting the WIP directory.
@@ -1526,29 +1534,18 @@ else
 	}
 fi
 
-# Loops through arguments before any logging. Handles only arguments with
-# 'do-and-exit' logic. Sets global variables. Creates the log file so it is
-# writable. Otherwise base_write_to_file skips every write because [ -w ] is
+# Sets the script name without the extension, if any. Creates a working
+# directory, where busybox mktemp requires six Xs. Creates the log file so it
+# is writable. Otherwise base_write_to_file skips every write because [ -w ] is
 # false on a missing file.
-base_main() {
-	local arg err use=false ver=false war=false
-	for arg; do
-		case "$arg" in
-		-h | --help) use=true ;;
-		-v | --version) ver=true ;;
-		-w | --warranty) war=true ;;
-		esac
-	done
+base_init_workspace() {
+	local err
 	BASE_IAM="$(basename -- "$0" 2>&1)" || {
 		err=$?
 		printf >&2 %s\\n "$BASE_IAM"
 		exit $err
 	}
-
-	# Drops the extension, if any.
 	BASE_IAM="${BASE_IAM%.*}"
-
-	# Busybox implementation of mktemp requires six Xs.
 	BASE_WIP="$(mktemp -d "$BASE_DIR_WIP/$BASE_IAM.XXXXXX" 2>&1)" || {
 		err=$?
 		printf >&2 %s\\n "$BASE_WIP"
@@ -1564,24 +1561,28 @@ base_main() {
 		printf >&2 %s\\n "Unable to create $BASE_LOG."
 		exit $err
 	}
-	base_hi
+}
 
-	# Handles signals. See:
-	#  https://mywiki.wooledge.org/SignalTrap
+# Loops through arguments before any logging and handles only those with
+# 'do-and-exit' logic. Sets global variables. Handles signals, see
+# https://mywiki.wooledge.org/SignalTrap. Detects previously run processes
+# with the same name and asks to continue if found. Usage takes priority over
+# version in case both options are set.
+base_main() {
+	local arg use=false ver=false war=false
+	for arg; do
+		case "$arg" in
+		-h | --help) use=true ;;
+		-v | --version) ver=true ;;
+		-w | --warranty) war=true ;;
+		esac
+	done
+	base_init_workspace
+	base_hi
 	trap base_cleanup EXIT
 	trap base_sig_cleanup HUP INT QUIT TERM
-
-	# Continues only if shellbase meets the caller's minimum required version.
-	if var_exists -q BASE_MIN_VERSION; then
-		ver_ge "$BASE_VERSION" "$BASE_MIN_VERSION" ||
-			die "Shellbase is $BASE_VERSION, needs $BASE_MIN_VERSION or above."
-	fi
-
-	# Detects previously run processes with the same name. If found, asks to
-	# continue.
+	base_check_version
 	base_check_instances
-
-	# Usage takes priority over version in case both options are set.
 	[ false = $use ] || {
 		base_display_usage
 		cya
