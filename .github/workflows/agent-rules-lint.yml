@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Lints AGENTS.md for vague wording, contradictory rules, and excessive length.
+# The wheel is installed into a throwaway virtual environment with hash
+# checking, because the package has no dependencies and Ubuntu 24.04 refuses
+# system-wide pip installs.
+---
+name: agent-rules-lint
+'on':
+  pull_request:
+    paths: &paths
+      - .github/workflows/agent-rules-lint.yml
+      - AGENTS.md
+  push:
+    branches: [master]
+    paths: *paths
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+defaults:
+  run:
+    shell: sh
+jobs:
+  agent-rules-lint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - run: |
+          sum=ce6543714ea5557539c1dd192423c1894d903be772c3f752e607fa11a8696548
+          ver=0.2.0
+          python3 -m venv "$RUNNER_TEMP/venv"
+          printf 'agent-rules-lint==%s --hash=sha256:%s\n' "$ver" "$sum" \
+            >"$RUNNER_TEMP/requirements.txt"
+          "$RUNNER_TEMP/venv/bin/pip" install \
+            --quiet \
+            --require-hashes \
+            --requirement "$RUNNER_TEMP/requirements.txt"
+          "$RUNNER_TEMP/venv/bin/agent-rules-lint" --warnings-as-errors .

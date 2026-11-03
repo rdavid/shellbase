@@ -37,6 +37,7 @@ readonly \
 	BSH
 . "$BSH"
 cmd_runif actionlint
+cmd_runif agent-rules-lint --warnings-as-errors .
 cmd_runif checkmake ./Makefile
 cmd_runif conform enforce --commit-ref HEAD
 for f in ./*.do ./app/* ./lib/*; do

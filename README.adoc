@@ -9,6 +9,7 @@
 :img-test-lnx: https://img.shields.io/github/actions/workflow/status/rdavid/shellbase/test-lnx.yml?branch=master&color=8cd0d3&label=lnx&labelColor=555555&logo=linux&logoColor=dcdccc&style=flat
 :img-test-mac: https://img.shields.io/github/actions/workflow/status/rdavid/shellbase/test-mac.yml?branch=master&color=f0dfaf&label=mac&labelColor=555555&logo=apple&logoColor=dcdccc&style=flat
 :url-actionlint: https://rhysd.github.io/actionlint/
+:url-agent-rules-lint: https://pypi.org/project/agent-rules-lint/
 :url-base: https://github.com/rdavid/shellbase/blob/master/lib/base.sh
 :url-checkmake: https://github.com/mrtazz/checkmake
 :url-conform: https://github.com/siderolabs/conform
@@ -281,6 +282,7 @@ The project uses Daniel J. Bernstein's build system, {url-redo}[`redo`].
 You can install Sergey Matveev's {url-goredo}[`goredo`] implementation.
 `redo lint` applies the following linters to the source files:
 {url-actionlint}[`actionlint`],
+{url-agent-rules-lint}[`agent-rules-lint`],
 {url-checkmake}[`checkmake`],
 {url-conform}[`conform`],
 {url-gitleaks}[`gitleaks`],
