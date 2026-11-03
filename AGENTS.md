@@ -1,9 +1,8 @@
-# Repository Guidelines
+# Guidelines
 
 `shellbase` is a POSIX-oriented shell framework (`lib/base.sh`) that scripts
 source for logging, validation, signal handling, garbage collection, and
 concurrent-instance support.
-
 Read the shared rules at
 https://raw.githubusercontent.com/rdavid/prompt/master/README.txt
 before starting any task, unless they are already loaded.
@@ -18,6 +17,8 @@ CI and lint configuration lives in `.github/workflows/` and `.github/styles/`.
 Targets live in `*.do` files, which `redo` executes directly.
 Treat `.redo/` as build metadata for the `redo` workflow, not hand-edited
 source.
+The version variable in `lib/base.sh` is `BASE_VERSION`.
+Run `redo lint` and `redo test` before committing.
 
 ## Build
 
@@ -35,13 +36,12 @@ This project uses `redo` (or `goredo`) as the primary task runner.
 - `./app/update`: check the function links in `README.adoc` against
   `lib/base.sh`.
   Add `--action` to regenerate them.
-
-`./app/update` requires GNU grep.
-On macOS, put GNU grep first on `PATH`.
-For example:
-`PATH=/opt/homebrew/opt/grep/libexec/gnubin:$PATH ./app/update --action`.
-With the default BSD grep, the script exits 0 quietly.
-It leaves `README.adoc` untouched instead of failing loudly.
+  It requires GNU grep.
+  On macOS, put GNU grep first on `PATH`.
+  For example:
+  `PATH=/opt/homebrew/opt/grep/libexec/gnubin:$PATH ./app/update --action`.
+  With the default BSD grep, the script exits 0 quietly.
+  It leaves `README.adoc` untouched instead of failing loudly.
 
 ## Style
 
@@ -56,10 +56,8 @@ Keep script-level variables in `*.do` files capitalized, for example `STP`
 or `EXE`.
 Keep new test files aligned with the current pattern, for example
 `app/test-realpath-ok`.
-
 In `lib/base.sh`, list public functions alphabetically, then `base_` helpers
 alphabetically, with no `main`.
-
 `README.adoc` links every public function to its exact line in
 `lib/base.sh` (for example `{url-base}#L58[`aud_only`]`).
 Any edit to `lib/base.sh` that shifts line numbers requires running
@@ -73,12 +71,6 @@ Add or update an executable script in `app/` for every behavior change.
 Use `*-ok` for success cases and `*-no` for failure paths.
 Run `redo test-container` when changing portability-sensitive shell logic,
 container files, or CI behavior.
-
 In `*-no` scripts, assert by appending `|| exit 0` to the check itself.
 An unexpected success then falls through to `exit 0`.
 The harness expects a `*-no` script to fail, so it flags that case.
-
-## Commits
-
-The version variable in `lib/base.sh` is `BASE_VERSION`.
-Run `redo lint` and `redo test` before committing.
