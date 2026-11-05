@@ -3,11 +3,9 @@
 # SPDX-FileCopyrightText: 2020-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 #
-# The shellbase framework serves as a foundation for Unix shell scripts. It
-# mostly follows POSIX, the Portable Operating System Interface standard, and
-# runs across Unix-like systems. The framework offers essential services,
-# including logging, validation helpers, signal handling, garbage collection,
-# and support for concurrent instances.
+# shellbase is a POSIX shell framework for logging, validation, signal
+# handling, garbage collection, and concurrent instances. It runs on any
+# Unix-like system.
 #
 # The framework defines global variables and functions. Functions without the
 # base_ prefix are public, and clients may call them. The public functions
@@ -48,7 +46,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_MAXVAL=127
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20261103
+BASE_VERSION=0.9.20261106
 
 # Removes any file besides mp3, m4a, flac in the current directory, then
 # removes empty directories if they exist. A failed removal does not abort the
