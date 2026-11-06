@@ -144,19 +144,19 @@ The public functions are, in alphabetical order:
 {url-base}#L889[`retry`],
 {url-base}#L927[`rev`],
 {url-base}#L945[`semver`],
-{url-base}#L974[`should_continue`],
-{url-base}#L1032[`timestamp`],
-{url-base}#L1052[`tolog`],
-{url-base}#L1058[`tologe`],
-{url-base}#L1065[`tolower`],
-{url-base}#L1083[`totsout`],
-{url-base}#L1089[`tsout`],
-{url-base}#L1097[`url_exists`],
-{url-base}#L1125[`user_exists`],
-{url-base}#L1163[`var_exists`],
-{url-base}#L1203[`ver_ge`],
-{url-base}#L1227[`vid2aud`],
-{url-base}#L1289[`ytda`].
+{url-base}#L984[`should_continue`],
+{url-base}#L1025[`timestamp`],
+{url-base}#L1045[`tolog`],
+{url-base}#L1051[`tologe`],
+{url-base}#L1058[`tolower`],
+{url-base}#L1076[`totsout`],
+{url-base}#L1082[`tsout`],
+{url-base}#L1090[`url_exists`],
+{url-base}#L1118[`user_exists`],
+{url-base}#L1156[`var_exists`],
+{url-base}#L1196[`ver_ge`],
+{url-base}#L1220[`vid2aud`],
+{url-base}#L1282[`ytda`].
 
 Global variables carry the `BASE_` prefix.
 Clients may use them and should place temporary files under `$BASE_WIP`.

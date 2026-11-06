@@ -29,10 +29,10 @@
 # stay writable to survive double sourcing in interactive mode. A better
 # solution may exist.
 #
-# The script uses local variables, which POSIX omits but most shells support.
-# See:
+# The script uses local variables and pipefail, which POSIX omits but most
+# shells support. See:
 #  https://stackoverflow.com/q/18597697
-#  shellcheck disable=SC2039,SC3043
+#  shellcheck disable=SC2039,SC3040,SC3043
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
 BASE_LOG_CAP=$((10 * 1024 * 1024))
@@ -971,14 +971,20 @@ semver() {
 # Asks for permission to continue. Returns an error code if the input is not
 # 'y' or if no input is detected after a timeout. If parameters are provided,
 # they are used as the question. Otherwise, the default message is used.
+#
+# The trap callback restores the default base_sig_cleanup trap callback,
+# reverts the default TTY settings, and adds a newline before any output to
+# compensate for the missing newline after the prompt. A watchdog process
+# terminates the parent process and its child processes using a common unique
+# process group ID, identified by the negative parent PID. The question prints
+# without a newline so the answer stays on the same line, and it is not logged.
+# A child process reads the first character from stdin and may be interrupted
+# after a timeout. A newline then compensates for the question without a
+# newline before any printing. The wait command may return an error code.
 should_continue() {
 	[ $BASE_SHOULD_CON = true ] && return
 	local ans dad="$$" dog msg old tmo=20
 	old="$(stty -g 2>&1)" || die "$old"
-
-	# The trap callback restores the default base_sig_cleanup trap callback,
-	# reverts the default TTY settings, and adds a newline before any output to
-	# compensate for the missing newline after the prompt.
 	trap '
 		trap base_sig_cleanup TERM
 		stty "$old"
@@ -986,10 +992,6 @@ should_continue() {
 		logw User did not respond.
 		return $BASE_RC_CON_TO
 	' TERM
-
-	# Runs a watchdog process that terminates the parent process and its child
-	# processes using a common unique process group ID, identified by the
-	# negative parent PID.
 	set +m
 	(
 		sleep "$tmo"
@@ -998,21 +1000,12 @@ should_continue() {
 	dog="$!"
 	set -m
 	log "Parent process $dad created watchdog process $dog."
-
-	# Prints the question without a newline so the answer stays on the same
-	# line. The question is not logged.
 	msg="${*:-Do you want to continue}"
 	printf '%s? [y/N] ' "$msg"
 	stty raw -echo
-
-	# Runs a child process to read the first character from stdin. This process
-	# may be interrupted after a timeout.
 	ans=$(head -c 1 2>&1) || die "$ans"
 	trap base_sig_cleanup TERM
 	stty "$old"
-
-	# Adds a newline before any printing to compensate for the question without
-	# a newline. The wait command may return an error code.
 	printf \\n
 	kill "$dog"
 	set +m
@@ -1685,20 +1678,17 @@ base_write_to_file() {
 }
 
 # Entry point. Prints the banner and returns immediately in interactive mode.
+# Enables pipefail only when the shell supports it. The option is not yet in
+# POSIX but is slated for inclusion:
+#  https://www.austingroupbugs.net/view.php?id=789
+# Loops through command-line arguments of the script. Handles only arguments
+# with set-and-go logic.
 base_is_interactive && {
 	base_display_banner || :
 	return 0
 }
 set -o errexit -o nounset
-
-# Enables pipefail only when the shell supports it. The option is not yet in
-# POSIX but is slated for inclusion:
-#  https://www.austingroupbugs.net/view.php?id=789
-#  shellcheck disable=SC3040
 (set -o pipefail 2>/dev/null) && set -o pipefail
-
-# Loops through command-line arguments of the script. Handles only arguments
-# with set-and-go logic.
 cnt=0
 skp=false
 for arg; do
@@ -1727,8 +1717,6 @@ for arg; do
 	-x | --execute) set -x ;;
 	-y | --yes) BASE_SHOULD_CON=true ;;
 	*)
-
-		# If an argument is not skipped, sets it back to all.
 		if [ $skp = false ]; then
 			set -- "$@" "$arg"
 		else
