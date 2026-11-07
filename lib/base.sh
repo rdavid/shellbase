@@ -3,9 +3,9 @@
 # SPDX-FileCopyrightText: 2020-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 #
-# shellbase is a POSIX shell framework for logging, validation, signal
-# handling, garbage collection, and concurrent instances. It runs on any
-# Unix-like system.
+# shellbase is a Unix shell framework for logging, validation, signal
+# handling, garbage collection, and concurrent instances. It follows POSIX, the
+# Portable Operating System Interface, and runs on any Unix-like system.
 #
 # The framework defines global variables and functions. Functions without the
 # base_ prefix are public, and clients may call them. The public functions
@@ -61,13 +61,13 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_MAXVAL=127
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20261107
+BASE_VERSION=0.9.20261108
 
 # Removes every file other than mp3, m4a, and flac under the current directory,
 # then removes empty directories. Asks for confirmation first, and declining is
 # not an error. A failed removal does not abort the rest of the batch. xargs
 # trims the padding that wc adds to the count. The confirmation message is
-# deliberately not indented: leading tabs would appear verbatim in the prompt.
+# deliberately not indented. Leading tabs would appear verbatim in the prompt.
 aud_only() {
 	local cnt err fle lst msg
 	lst=$(
@@ -248,8 +248,8 @@ cmd_exists() {
 # Runs a command. Without -q it logs the command, streams its output through
 # the loggers, and reports a non-zero exit as an error. -q runs it silently,
 # discarding output and skipping both logs. A missing command is not checked
-# for up front: it surfaces as an ordinary failure, with the shell's own "not
-# found" message reaching tologe and its exit code becoming the return value,
+# up front. It surfaces as an ordinary failure. The shell's own "not found"
+# message reaches tologe, and its exit code becomes the return value,
 # BASE_RC_CMD_NF (127), the POSIX convention for command not found.
 #
 # Streaming splits the command across both loggers: 2>&1 1>&3 sends stderr to
@@ -285,10 +285,10 @@ cmd_run() {
 	return "$err"
 }
 
-# Like cmd_run for optional tools: a missing command becomes a skipped no-op
-# returning 0, logged unless -q is set. Every other outcome, including a real
-# failure from the command itself, keeps cmd_run's own code. With no command it
-# fails with BASE_RC_ARG_NO.
+# Works like cmd_run for optional tools. A missing command becomes a skipped
+# no-op returning 0, logged unless -q is set. Every other outcome, including a
+# real failure of the command itself, keeps cmd_run's own code. With no command
+# it fails with BASE_RC_ARG_NO.
 # Usage: cmd_runif [-q] cmd [arg ...]
 # Options: -q (quiet mode - suppress logs and warnings)
 # ${1-} stays unquoted so an absent command drops out:
@@ -601,9 +601,9 @@ isreadable() {
 	[ "$cnt" -eq 0 ] || return $((BASE_RC_ARG_NE + cnt - 1))
 }
 
-# Checks if the current user is root. Uses `id -u` to get the numeric UID.
-# Returns success (0) if UID == 0 (root), otherwise failure (1). Unlike beroot,
-# it does not call die.
+# Determines whether the script runs as the root user, based on the numeric
+# UID from id -u. Returns 0 for UID 0, 1 otherwise, and the code of a failed id
+# call after logging it. Unlike beroot, it does not call die.
 isroot() {
 	local err uid
 	uid="$(id -u 2>&1)" || {
@@ -747,7 +747,7 @@ map_del() {
 }
 
 # Prints a value from the key-value store. The parameters are the map name and
-# the key.
+# the key. A missing key logs one error and fails.
 map_get() {
 	[ $# -eq 2 ] || {
 		loge Expected two arguments, got "$#".
@@ -973,7 +973,7 @@ rev() {
 #  1.2.3+meta
 #  1.2.3-4-alpha
 # Uses GNU grep with PCRE option and fails with BASE_RC_CMD_NF without it.
-# Probes support by matching against the always-empty /dev/null: grep exits 0
+# Probes support by matching against the always-empty /dev/null. grep exits 0
 # for a match, 1 for no match, and 2 or higher for a real error, such as an
 # unrecognized option. A match is impossible here, so an exit code of 1 or less
 # means grep understood the option, while 2 or higher means it did not.
@@ -1008,16 +1008,15 @@ semver() {
 # at once with --yes. If parameters are provided, they are used as the
 # question. Otherwise, the default message is used.
 #
-# The trap callback restores the default base_sig_cleanup trap callback,
-# reverts the default TTY settings, and adds a newline before any output to
-# compensate for the missing newline after the prompt. A watchdog process
-# terminates the parent process and its child processes using a common unique
-# process group ID, identified by the negative parent PID. The question prints
-# without a newline so the answer stays on the same line, and it is not logged.
-# A child process reads the first character from stdin and may be interrupted
-# after a timeout. A newline then compensates for the question without a
-# newline before any printing. The error code of the wait command is ignored
-# because the watchdog was just killed.
+# A watchdog process sleeps for the timeout and then kills the parent and its
+# children through their shared process group, which the negative parent PID
+# names. The TERM trap then restores the base_sig_cleanup trap and the saved
+# TTY settings, and prints the newline that the prompt lacks. The question
+# prints without a newline so the answer stays on the same line, and it is not
+# logged. head reads a single character from stdin in raw mode. An answer in
+# time restores the same trap and settings, prints the missing newline, and
+# kills the watchdog. The code of the wait command is ignored because the
+# watchdog was just killed.
 should_continue() {
 	[ $BASE_SHOULD_CON = true ] && return
 	local ans dad="$$" dog msg old tmo=20
@@ -1077,7 +1076,7 @@ timestamp() {
 # 		2>&1 1>&3 3>&- | tologe
 # } \
 # 	3>&1 1>&2 | tolog
-# Order will always be indeterminate. See:
+# The order of lines across the two streams stays indeterminate. See:
 #  https://stackoverflow.com/q/9112979
 tolog() {
 	local lne
@@ -1188,9 +1187,9 @@ user_exists() {
 # Checks that every argument names a defined variable. A name has to be a
 # POSIX identifier: [A-Za-z_][A-Za-z0-9_]*. It is read with the ${name-}
 # expansion, which keeps set -o nounset from failing on an undefined name.
-# Each check is logged unless -q is set: a set variable with its value, an
-# unset or null one by name, an invalid or unreadable name as an error. With
-# no arguments it fails with BASE_RC_ARG_NO.
+# Each check is logged unless -q is set. A set variable appears with its
+# value, an unset or null one by name, and an invalid or unreadable name as an
+# error. With no arguments it fails with BASE_RC_ARG_NO.
 # Return code:
 #  - 0 when all variables are set and not null.
 #  - otherwise a count of the failed checks that starts from BASE_RC_ARG_NE:
@@ -1235,8 +1234,8 @@ var_exists() {
 }
 
 # Compares two versions and returns 0 if the first parameter is greater than
-# or equal to the second, or 1 otherwise. On error, reports it and returns 0.
-# Uses single-letter sort options for compatibility. For more information, see:
+# or equal to the second, or 1 otherwise. Logs a sort failure and returns 0.
+# Uses single-letter sort options for compatibility. See:
 #  https://unix.stackexchange.com/q/285924
 ver_ge() {
 	[ $# -eq 2 ] || {
@@ -1253,15 +1252,15 @@ ver_ge() {
 # to remove the originals. Declining is not an error. find matches the avi,
 # flv, m4v, mkv, mov, mp4, mpg, ogv, ts, webm, and wmv extensions and returns
 # early if none are found. xargs trims the padding that wc adds to the count.
-# The confirmation message is deliberately not indented: leading tabs would
+# The confirmation message is deliberately not indented. Leading tabs would
 # appear verbatim in the prompt. ffmpeg treats options as positional. An option
 # before -i applies to the input and the rest apply to the output, so only the
-# output options after -i are sorted. -q:a 0 requests
-# libmp3lame's highest VBR quality (V0), letting bitrate adapt to content
-# complexity instead of spending a fixed rate on simple passages. No -ar is
-# given, so ffmpeg keeps the source's sample rate when libmp3lame supports it
-# directly (44100, 48000, 32000, and others), instead of downsampling every
-# file — most commonly 48kHz video audio — to 44100.
+# output options after -i are sorted. The -q:a 0 option requests libmp3lame's
+# highest VBR quality (V0), letting the bitrate adapt to content complexity
+# instead of spending a fixed rate on simple passages. No -ar option is given,
+# so ffmpeg keeps the source sample rate when libmp3lame supports it directly,
+# such as 44100, 48000, or 32000. Otherwise every file, most often 48 kHz
+# video audio, would drop to 44100.
 vid2aud() {
 	cmd_exists ffmpeg || return
 	iswritable . || return
@@ -1497,7 +1496,7 @@ base_display_warranty() {
 
 # Terminates with the error code given as the first parameter, defaulting to
 # zero when omitted. Called from cya and die. In interactive mode, avoids
-# killing the shell: logs the outcome and returns the error code instead of
+# killing the shell. It logs the outcome and returns the error code instead of
 # exiting.
 base_exit() {
 	local err="${1:-0}" msg=Still\ alive
