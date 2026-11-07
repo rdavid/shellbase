@@ -26,7 +26,7 @@ BASE_APP_USAGE="$(
 }
 readonly \
 	BASE_APP_USAGE \
-	BASE_APP_VERSION=0.9.20260720 \
+	BASE_APP_VERSION=0.9.20261108 \
 	BASE_MIN_VERSION=0.9.20260718 \
 	BSH \
 	TGT=README.adoc
@@ -38,7 +38,7 @@ readonly \
 	MID="$BASE_WIP"/mid \
 	OUT="$BASE_WIP"/out
 
-# Parses arguments, validates the environment, analyzes the source, and updates.
+# Parses arguments, checks the environment, analyzes the source, and updates.
 main() {
 	parse "$@"
 	validate
@@ -46,8 +46,8 @@ main() {
 	update
 }
 
-# Parses base.sh for functions and re-creates the README. Uses GNU grep with
-# the PCRE option.
+# Builds a new README with links to every public function in base.sh. Uses
+# GNU grep with the PCRE option.
 analyze() {
 	local num
 	num="$(awk '/The public functions are/ {print FNR}' "$TGT" 2>&1)" ||

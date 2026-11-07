@@ -4,9 +4,8 @@
 # SPDX-License-Identifier: 0BSD
 #
 # Verifies that retry stops after the first attempt, without sleeping or
-# retrying, when the command itself is missing. Checks that fail on an
-# unexpected zero exit here fall through to the harness, which expects a
-# -no script to fail and flags the unexpected success.
+# retrying, when the command itself is missing. A check that fails exits with
+# zero. The harness expects a -no script to fail and flags that success.
 #
 # File not following:
 #  shellcheck disable=SC1090

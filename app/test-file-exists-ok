@@ -3,8 +3,8 @@
 # SPDX-FileCopyrightText: 2022-2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
 #
-# Verifies that file_exists succeeds for existing files, directories, and
-# glob matches, and fails otherwise.
+# Verifies that file_exists succeeds for existing files, directories, glob
+# matches, and names that start with a dash, and fails otherwise.
 #
 # File not following:
 #  shellcheck disable=SC1090

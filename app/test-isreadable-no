@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: 0BSD
 #
 # Verifies that isreadable fails when one of the given files is not
-# readable.
+# readable. Root reads any file, so the script dies early when run as root.
 #
 # File not following:
 #  shellcheck disable=SC1090

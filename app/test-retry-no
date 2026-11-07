@@ -2,13 +2,16 @@
 # vi: lbr noet sw=2 ts=2 tw=79 wrap
 # SPDX-FileCopyrightText: 2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# Verifies that retry fails for a zero, non-numeric, or missing attempt count,
+# and for a command that keeps failing. A zero exit from any case ends the
+# chain early and makes this -no script succeed. The harness flags that as a
+# regression.
+#
 # File not following:
 #  shellcheck disable=SC1090
 BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 . "$BSH"
-
-# Each case must fail: a zero exit anywhere short-circuits the chain and makes
-# this -no script return positive, which the harness flags as a regression.
 retry -n 0 : ||
 	retry -n foo : ||
 	retry -n ||

@@ -4,8 +4,7 @@
 # SPDX-License-Identifier: 0BSD
 #
 # Verifies that chrono_sta, chrono_get, and chrono_sto track multiple named
-# stopwatches independently, and that restarting a stopwatch with chrono_sta
-# resets it.
+# stopwatches independently. Starting a stopwatch that already runs resets it.
 #
 # File not following:
 #  shellcheck disable=SC1090
@@ -20,8 +19,6 @@ dur="$(chrono_get foo)" || die
 log Foo get in "$dur".
 dur="$(chrono_sto foo)" || die
 log Foo sto in "$dur".
-
-# A stopwatch with the same name is legitimate and functions as a reset.
 chrono_sta foobar
 dur="$(chrono_sto bar)" || die
 log Bar sto in "$dur".
