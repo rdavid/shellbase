@@ -1,0 +1,30 @@
+#!/bin/sh
+# vi: lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Verifies that vid2aud converts a single video and removes the original. The
+# singular prompt must not trip nounset. A stub replaces ffmpeg, so the test
+# needs no real conversion.
+#
+# File not following:
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+set -- --yes
+. "$BSH"
+bin="$BASE_WIP"/bin
+dir="$BASE_WIP"/vid
+mkdir "$bin" "$dir" || die 1
+cat <<'EOM' >"$bin"/ffmpeg || die 2
+#!/bin/sh
+for arg; do :; done
+: >"$arg"
+EOM
+chmod +x "$bin"/ffmpeg || die 3
+PATH="$bin:$PATH"
+cd "$dir" || die 4
+touch song.avi || die 5
+vid2aud || die Expected vid2aud to succeed.
+[ -e song.mp3 ] || die Expected song.mp3 to exist.
+[ ! -e song.avi ] || die Expected song.avi to be removed.
+log Single video was converted and removed.

@@ -1259,9 +1259,9 @@ ver_ge() {
 vid2aud() {
 	cmd_exists ffmpeg || return
 	iswritable . || return
-	local cnt dst end err lst msg src
+	local cnt dst end='' err lst msg src
 	lst=$(
-		find . -type f -maxdepth 1 \( \
+		find . -maxdepth 1 -type f \( \
 			-name '*.[Aa][Vv][Ii]' -o \
 			-name '*.[Ff][Ll][Vv]' -o \
 			-name '*.[Mm]4[Vv]' -o \
