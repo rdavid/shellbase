@@ -4,11 +4,16 @@
 version: 2
 updates:
   - package-ecosystem: docker
-    directory: /container
+    directories:
+      - /container/*
     schedule:
       interval: daily
     cooldown:
       default-days: 7
+    groups:
+      container:
+        patterns:
+          - '*'
   - package-ecosystem: github-actions
     directory: /
     schedule:

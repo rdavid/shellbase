@@ -52,7 +52,8 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install --no-install-recommends --yes podman
-      - env:
+      - id: build
+        env:
           img: ${{ matrix.img }}
         run: |
           podman build \
@@ -63,4 +64,9 @@ jobs:
       - env:
           img: ${{ matrix.img }}
         run: |
-          podman run --rm "$img:latest" lint test
+          podman run --rm "$img:latest" lint
+      - if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        env:
+          img: ${{ matrix.img }}
+        run: |
+          podman run --rm "$img:latest" test

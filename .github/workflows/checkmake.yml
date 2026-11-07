@@ -23,6 +23,8 @@ jobs:
   checkmake:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    env:
+      ver: 0.3.2
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -31,12 +33,11 @@ jobs:
         uses: actions/cache@v6.1.0
         with:
           path: ./checkmake
-          key: checkmake-0.3.2-${{ runner.os }}
+          key: checkmake-${{ env.ver }}-${{ runner.os }}
       - if: steps.cache.outputs.cache-hit != 'true'
         run: |
           srv=https://github.com/mrtazz/checkmake/releases/download
           sum=e2effb876913f3ee2caef0ba35f6202c5e8a3cd55a077d8d2b9ce2034257b6af
-          ver=0.3.2
           curl \
             --fail \
             --location \

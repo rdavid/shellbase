@@ -41,7 +41,7 @@ jobs:
         with:
           prepare: |
             pkg update
-            pkg install -y \
+            pkg install --yes \
               bash \
               curl \
               goredo \

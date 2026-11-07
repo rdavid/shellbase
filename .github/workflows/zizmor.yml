@@ -22,6 +22,8 @@ jobs:
   zizmor:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    env:
+      ver: 1.31.1
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -29,7 +31,7 @@ jobs:
       - uses: actions/cache@v6.1.0
         with:
           path: ~/.cache/pip
-          key: pip-zizmor-1.30.0
-      - run: pipx run zizmor==1.31.1 .
+          key: pip-zizmor-${{ env.ver }}
+      - run: pipx run "zizmor==$ver" .
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -26,6 +26,8 @@ jobs:
   actionlint:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    env:
+      ver: 1.7.12
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -34,12 +36,11 @@ jobs:
         uses: actions/cache@v6.1.0
         with:
           path: ./actionlint
-          key: actionlint-1.7.12-${{ runner.os }}
+          key: actionlint-${{ env.ver }}-${{ runner.os }}
       - if: steps.cache.outputs.cache-hit != 'true'
         run: |
           srv=https://github.com/rhysd/actionlint/releases/download
           sum=8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
-          ver=1.7.12
           tgz=actionlint_${ver}_linux_amd64.tar.gz
           curl \
             --fail \
