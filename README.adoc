@@ -90,14 +90,17 @@ endif::[]
 
 == About
 
-`shellbase` is a POSIX shell framework for logging, validation, signal
+`shellbase` is a Unix shell framework for logging, validation, signal
 handling, garbage collection, and concurrent instances.
-It runs on any Unix-like system.
+It follows POSIX, the Portable Operating System Interface, and runs on any
+Unix-like system.
+Continuous integration tests it on FreeBSD, macOS, and Linux distributions
+such as Alpine, Arch Linux, Debian, Fedora, and Red Hat UBI.
 ifndef::pages-build[]
 The framework also has a {url-pages}[website].
 endif::[]
 
-`shellbase` defines global variables and functions.
+Sourcing `shellbase` gives a script a set of global variables and functions.
 Clients may call any function without the `base_` prefix.
 The public functions are, in alphabetical order:
 {url-base}#L71[`aud_only`],

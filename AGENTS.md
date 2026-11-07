@@ -1,8 +1,10 @@
 # Guidelines
 
-`shellbase` is a POSIX-oriented shell framework (`lib/base.sh`) that scripts
-source for logging, validation, signal handling, garbage collection, and
-concurrent-instance support.
+`shellbase` is a Unix shell framework (`lib/base.sh`) for logging, validation,
+signal handling, garbage collection, and concurrent instances.
+It follows POSIX, the Portable Operating System Interface, and runs on any
+Unix-like system.
+Sourcing it gives a script a set of global variables and functions.
 Read the shared rules at
 https://raw.githubusercontent.com/rdavid/prompt/master/README.txt
 before starting any task, unless they are already loaded.
@@ -27,8 +29,8 @@ This project uses `redo` (or `goredo`) as the primary task runner.
 
 - `redo all`: run the default build target.
 - `redo lint`: run `actionlint`, `agent-rules-lint`, `checkmake`, `conform`,
-  `dash`, `hadolint`, `mksh`, `reuse`, `shellcheck`, `shfmt`, `typos`, `vale`,
-  `yamllint`, and `zizmor`.
+  `dash`, `gitleaks`, `hadolint`, `mksh`, `reuse`, `shellcheck`, `shfmt`,
+  `typos`, `vale`, `yamllint`, and `zizmor`.
 - `redo test`: execute unit tests against the shells installed locally.
 - `redo test-container`: run the test suite inside the supported container
   images.
