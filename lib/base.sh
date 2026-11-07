@@ -24,14 +24,29 @@
 # internal, and clients shouldn't call them. All names appear in alphabetical
 # order.
 #
-# Command line parameters may change the following variables. They become
-# readonly after the parsing of the command line. BASE_RC_... and BASE_VERSION
-# stay writable to survive double sourcing in interactive mode. A better
-# solution may exist.
+# Clients may set BASE_APP_USAGE, BASE_APP_VERSION, BASE_APP_WARRANTY, and
+# BASE_MIN_VERSION before sourcing the file. issolid reads BASE_APP_HASH from
+# the script itself. Functions fail with BASE_RC_ARG_NO on invalid arguments.
 #
-# The script uses local variables and pipefail, which POSIX omits but most
-# shells support. See:
+# Command line parameters may change some of the following variables. A
+# non-interactive run makes all of them readonly after parsing the command
+# line. An interactive shell returns before that, so they stay writable and
+# the file can be sourced twice.
+#
+# The BASE_RC_ variables name these return codes:
+#  - BASE_RC_ARG_NE: the first code for missing items, see cmd_exists.
+#  - BASE_RC_ARG_NO: wrong or missing arguments.
+#  - BASE_RC_ARG_WA: a --dir-wip directory that is not writable.
+#  - BASE_RC_CMD_NF: a command that is not found.
+#  - BASE_RC_CON_NO: a negative answer to should_continue.
+#  - BASE_RC_CON_TO: a timeout in should_continue.
+#  - BASE_RC_DIE_NO: a call to die with a zero exit code.
+#  - BASE_RC_MAXVAL: the ceiling for counted return codes.
+#
+# The script uses local variables, which POSIX omits, and pipefail, which POSIX
+# adds only in its 2024 edition. Most shells support both. See:
 #  https://stackoverflow.com/q/18597697
+# Allows these non-POSIX features:
 #  shellcheck disable=SC2039,SC3040,SC3043
 BASE_DIR_WIP=/tmp
 BASE_KEEP_WIP=false
@@ -46,13 +61,13 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_MAXVAL=127
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20261106
+BASE_VERSION=0.9.20261107
 
-# Removes any file besides mp3, m4a, flac in the current directory, then
-# removes empty directories if they exist. A failed removal does not abort the
-# rest of the batch. xargs handles white spaces while counting the matched
-# files. The confirmation message is deliberately not indented: leading tabs
-# would appear verbatim in the prompt.
+# Removes every file other than mp3, m4a, and flac under the current directory,
+# then removes empty directories. Asks for confirmation first, and declining is
+# not an error. A failed removal does not abort the rest of the batch. xargs
+# trims the padding that wc adds to the count. The confirmation message is
+# deliberately not indented: leading tabs would appear verbatim in the prompt.
 aud_only() {
 	local cnt err fle lst msg
 	lst=$(
@@ -88,14 +103,14 @@ Total $cnt files"
 	cmd_run find . -type d -empty -delete
 }
 
-# Checks if the script is run by the root user.
+# Calls die unless the script runs as the root user.
 beroot() {
 	beuser root
 }
 
-# Checks if the script is run by a user. Without a single argument it fails
-# with BASE_RC_ARG_NO. Relies on the id command, which exists on any POSIX
-# system.
+# Calls die unless the script runs as the given user. Without a single argument
+# it fails with BASE_RC_ARG_NO. Relies on the id command, which exists on any
+# POSIX system.
 beuser() {
 	[ $# -eq 1 ] || {
 		loge Expected a single argument, got "$#".
@@ -109,7 +124,8 @@ beuser() {
 	log "You are $usr ($cur)."
 }
 
-# The only cheat sheet you need. The parameter is the topic.
+# Prints a cheat sheet from cht.sh. The optional parameter is the topic. Fails
+# when curl is missing.
 cheat() {
 	[ $# -le 1 ] || {
 		loge Expected at most a single argument, got "$#".
@@ -118,9 +134,9 @@ cheat() {
 	cmd_exists -q curl && curl cht.sh/"${1-}"
 }
 
-# Calculates a duration from the start. There are 86400 seconds in a day,
-# 3600 in an hour, and 60 in a minute. The only parameter is the stopwatch
-# name.
+# Prints the time elapsed since chrono_sta, for example "1 hour, 2 minutes and
+# 3 seconds". There are 86400 seconds in a day, 3600 in an hour, and 60 in a
+# minute. The only parameter is the stopwatch name.
 chrono_get() {
 	[ $# -eq 1 ] || {
 		loge Expected a single argument, got "$#".
@@ -180,7 +196,7 @@ chrono_sta() {
 	map_put "$nme" sta "$now"
 }
 
-# Calculates a duration from the start and cleans inner data. The only
+# Prints the time elapsed since chrono_sta and removes the stopwatch. The only
 # parameter is the stopwatch name. Without a single argument it fails with
 # BASE_RC_ARG_NO.
 chrono_sto() {
@@ -194,9 +210,9 @@ chrono_sto() {
 	printf %s "$dur"
 }
 
-# Checks that every argument names a command that exists and is executable.
-# Every command found or missing is logged unless -q is set. With no
-# arguments it fails with BASE_RC_ARG_NO.
+# Checks that every argument resolves to something the shell can run, such as
+# a command, a function, or a built-in. Every command found or missing is
+# logged unless -q is set. With no arguments it fails with BASE_RC_ARG_NO.
 # Return code:
 #  - 0 when all commands are present.
 #  - otherwise a count of the missing commands that starts from BASE_RC_ARG_NE:
@@ -235,13 +251,14 @@ cmd_exists() {
 # for up front: it surfaces as an ordinary failure, with the shell's own "not
 # found" message reaching tologe and its exit code becoming the return value,
 # BASE_RC_CMD_NF (127), the POSIX convention for command not found.
-# Usage: cmd_run [-q] cmd [arg ...]
-# Options: -q (quiet mode - suppress logs and warnings)
+#
 # Streaming splits the command across both loggers: 2>&1 1>&3 sends stderr to
 # tologe and stdout, via fd 3, to tolog. A pipeline reports only its last stage
 # and pipefail is optional, so the exit code cannot ride the pipes. exec 4>&1
 # aliases fd 4 to the command substitution's stdout and printf writes the code
 # there, past the pipes, for err to capture.
+# Usage: cmd_run [-q] cmd [arg ...]
+# Options: -q (quiet mode - suppress logs and warnings)
 # Swaps stdout and stderr so each stream reaches its own logger:
 #  shellcheck disable=SC2069
 cmd_run() {
@@ -269,11 +286,9 @@ cmd_run() {
 }
 
 # Like cmd_run for optional tools: a missing command becomes a skipped no-op
-# returning 0, logging unless -q is set, while every other outcome, including a
-# real failure from the command itself, keeps cmd_run's own code. Checks with
-# cmd_exists -q first, consuming -q the same way cmd_exists does. A failure
-# other than BASE_RC_ARG_NE, missing command, from that check propagates
-# unchanged instead of being treated as a skip.
+# returning 0, logged unless -q is set. Every other outcome, including a real
+# failure from the command itself, keeps cmd_run's own code. With no command it
+# fails with BASE_RC_ARG_NO.
 # Usage: cmd_runif [-q] cmd [arg ...]
 # Options: -q (quiet mode - suppress logs and warnings)
 # ${1-} stays unquoted so an absent command drops out:
@@ -294,9 +309,9 @@ cmd_runif() {
 	cmd_run "$@"
 }
 
-# Prints all parameters to the log and passes the current exit code, which
-# may be non-zero, to base_exit. oh-my-zsh has the lol plugin, which defines
-# an alias to cya. Remove the plugin:
+# Logs all parameters and passes the current exit code, which may be non-zero,
+# to base_exit. The lol plugin of oh-my-zsh defines an alias to cya, so it has
+# to be removed:
 #  https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/lol
 cya() {
 	local err=$?
@@ -304,9 +319,9 @@ cya() {
 	base_exit $err
 }
 
-# Prints all parameters as an error message and passes the error code to
-# base_exit. It attempts to retain the original code. Otherwise it uses
-# BASE_RC_DIE_NO, so err is always non-zero.
+# Logs all parameters as an error and passes the current exit code to
+# base_exit. Falls back to BASE_RC_DIE_NO when that code is zero, so the result
+# is never zero.
 die() {
 	local err=$?
 	[ $# = 0 ] || loge "$@"
@@ -314,7 +329,8 @@ die() {
 	base_exit $err
 }
 
-# Converts DNG files in the current directory to JPEG.
+# Converts DNG files in the current directory to JPEG, then offers to remove
+# the originals.
 dng2jpg() {
 	base_img2jpg '*.[dD][nN][gG]'
 }
@@ -339,10 +355,10 @@ echo() {
 }
 
 # Truncates a string to a given maximum length, inserting an ellipsis in the
-# middle if necessary. The resulting string is never longer than that maximum
-# length. The original string is returned if it is already shorter than or
-# equal to it. Relies on the awk command, which exists on any POSIX system. The
-# implementation is inspired by yegor256's ellipsized:
+# middle if necessary. A string that already fits is returned unchanged. The
+# result never exceeds the maximum, except that a maximum below 3 still yields
+# the three-character ellipsis. Relies on the awk command, which exists on any
+# POSIX system. The implementation is inspired by yegor256's ellipsized:
 #  https://github.com/yegor256/ellipsized
 ellipsize() {
 	[ $# -eq 2 ] || {
@@ -374,9 +390,9 @@ ellipsize() {
 		}'
 }
 
-# Checks that every argument names a file that exists. Every file found or
-# missing is logged unless -q is set. With no arguments it fails with
-# BASE_RC_ARG_NO.
+# Checks that every argument names a file that exists. A dangling symlink
+# counts as present. Every file found or missing is logged unless -q is set.
+# With no arguments it fails with BASE_RC_ARG_NO.
 # Return code:
 #  - 0 when all files are present.
 #  - otherwise a count of the missing files that starts from BASE_RC_ARG_NE:
@@ -411,9 +427,9 @@ file_exists() {
 
 # Amends the last commit without changing its message and force-pushes the
 # result. Prompts for confirmation before amending, showing the commit
-# subject so the user knows what they are about to overwrite. Returns early
-# if there is nothing staged to fold into the commit. cmd_run checks that
-# git exists, so gitfix does not need its own cmd_exists guard.
+# subject so the user knows what they are about to overwrite. Fails early if
+# nothing is staged to fold into the commit. A missing git fails inside
+# cmd_run, so gitfix does not need its own cmd_exists guard.
 gitfix() {
 	cmd_run git commit --dry-run --quiet || return
 	local err sub
@@ -427,9 +443,10 @@ gitfix() {
 	cmd_run git push --force-with-lease || return
 }
 
-# Allows users to navigate the history of commits in a Git repository. Pipes
-# the colored, graphed git log through fzf for interactive browsing, and
-# ctrl-m on a selected commit opens its full diff in less.
+# Allows users to navigate the history of commits in a Git repository. Passes
+# all parameters to git log and pipes its colored graph through fzf for
+# interactive browsing. ctrl-m on a selected commit opens its full diff in
+# less, and ctrl-s toggles sorting.
 gitlog() {
 	cmd_exists -q fzf git less || return
 	git log \
@@ -453,8 +470,8 @@ gitlog() {
 FZF-EOF"
 }
 
-# Ignores exit code 141 (128 + SIGPIPE) from command pipes. The only
-# parameter is the exit code to check. See:
+# Ignores exit code 141 (128 + SIGPIPE) from command pipes and returns any
+# other code unchanged. The only parameter is the exit code to check. See:
 #  https://stackoverflow.com/q/22464786
 handle_pipefails() {
 	[ $# -eq 1 ] || {
@@ -466,7 +483,8 @@ handle_pipefails() {
 	log Ignore the pipe failure with the error code "$err".
 }
 
-# Converts HEIC files in the current directory to JPEG.
+# Converts HEIC files in the current directory to JPEG, then offers to remove
+# the originals.
 heic2jpg() {
 	base_img2jpg '*.[hH][eE][iI][cC]'
 }
@@ -485,11 +503,15 @@ inside() {
 
 # Determines whether a directory is empty, counting visible and hidden
 # entries alike, and treating a broken symlink as present even though
-# [ -e ] alone would miss it. Returns 0 if empty, 1 otherwise. The only
-# parameter is the directory. $PWD is captured before entering it and used
-# to restore the original directory on return, rather than relying on
-# $OLDPWD, since nounset is re-enabled before that reference and $PWD is a
-# POSIX-maintained variable rather than a cd side effect. See:
+# [ -e ] alone would miss it. The only parameter is the directory. Returns 0
+# if empty, 1 otherwise, and BASE_RC_ARG_NE if the directory is not accessible.
+# The three globs cover every name and replace the positional parameters. An
+# unmatched glob stays literal, so a fourth parameter proves that an entry
+# exists. Otherwise the loop tests each parameter. nounset is off while $4 is
+# read. $PWD is captured before entering the directory and used to restore it
+# on return, rather than relying on $OLDPWD, since nounset is re-enabled before
+# that reference and $PWD is a POSIX-maintained variable rather than a cd side
+# effect. See:
 #  https://unix.stackexchange.com/q/202243
 isempty() {
 	[ $# -eq 1 ] || {
@@ -545,9 +567,8 @@ isnumber() {
 	case "$1" in '' | *[!0-9]*) return 1 ;; esac
 }
 
-# Verifies that all parameters are readable files. Every file found or
-# missing is logged unless -q is set. Without arguments it fails with
-# BASE_RC_ARG_NO.
+# Verifies that all parameters are readable files. Each outcome is logged
+# unless -q is set. Without arguments it fails with BASE_RC_ARG_NO.
 # Return code:
 #  - 0 when all files are readable.
 #  - otherwise a count of the unreadable files that starts from
@@ -581,7 +602,8 @@ isreadable() {
 }
 
 # Checks if the current user is root. Uses `id -u` to get the numeric UID.
-# Returns success (0) if UID == 0 (root), otherwise failure (1).
+# Returns success (0) if UID == 0 (root), otherwise failure (1). Unlike beroot,
+# it does not call die.
 isroot() {
 	local err uid
 	uid="$(id -u 2>&1)" || {
@@ -592,9 +614,10 @@ isroot() {
 	[ "$uid" -eq 0 ]
 }
 
-# Verifies that the running script's content matches its SHA-1 hash, computed
-# with shasum, awk, grep, and head, ignoring the line where the hash is
-# defined.
+# Verifies that the running script matches the SHA-1 hash in its BASE_APP_HASH
+# line. Extracts the hash with grep, head, and awk, strips the line from a copy
+# under $BASE_WIP, and checks the copy with shasum. Calls die when the script
+# is not readable.
 issolid() {
 	cmd_exists -q shasum || return
 	local \
@@ -632,9 +655,9 @@ issolid() {
 	log File "$fle" is solid.
 }
 
-# Verifies that all parameters are writable files or creatable if missing.
-# Every file found or missing is logged unless -q is set. Without arguments
-# it fails with BASE_RC_ARG_NO.
+# Verifies that all parameters are writable files or creatable if missing. A
+# missing file is created and removed again to prove it. Each outcome is logged
+# unless -q is set. Without arguments it fails with BASE_RC_ARG_NO.
 # Return code:
 #  - 0 when all files are writable or creatable.
 #  - otherwise a count of the unwritable files that starts from
@@ -675,7 +698,8 @@ iswritable() {
 	[ "$cnt" -eq 0 ] || return $((BASE_RC_ARG_NE + cnt - 1))
 }
 
-# The information logger is silent with the --quiet flag.
+# The information logger prints to stderr unless --quiet is set. A
+# non-interactive shell also appends the message to the log file.
 log() {
 	local tms
 	tms="$(timestamp)" || exit $?
@@ -684,7 +708,8 @@ log() {
 	base_is_interactive || base_write_to_file "$tms" i "$*"
 }
 
-# The error logger always prints to stderr.
+# The error logger always prints to stderr. A non-interactive shell also
+# appends the message to the log file.
 loge() {
 	local tms
 	tms="$(timestamp)" || exit $?
@@ -692,7 +717,8 @@ loge() {
 	base_is_interactive || base_write_to_file "$tms" e "$*"
 }
 
-# The warning logger is silent with the --quiet flag.
+# The warning logger prints to stderr unless --quiet is set. A non-interactive
+# shell also appends the message to the log file.
 logw() {
 	local tms
 	tms="$(timestamp)" || exit $?
@@ -701,7 +727,8 @@ logw() {
 	base_is_interactive || base_write_to_file "$tms" w "$*"
 }
 
-# Deletes a key from the key-value store.
+# Deletes a key from the key-value store and drops the directories it leaves
+# empty. The parameters are the map name and the key.
 map_del() {
 	[ $# -eq 2 ] || {
 		loge Expected two arguments, got "$#".
@@ -719,7 +746,8 @@ map_del() {
 	cmd_run -q rmdir -- "$dir"
 }
 
-# Reads a value from the key-value store.
+# Prints a value from the key-value store. The parameters are the map name and
+# the key.
 map_get() {
 	[ $# -eq 2 ] || {
 		loge Expected two arguments, got "$#".
@@ -745,7 +773,9 @@ map_get() {
 	printf %s "$val"
 }
 
-# Adds a key-value pair to the key-value store.
+# Adds a key-value pair to the key-value store, overwriting an existing key.
+# The store lives under $BASE_WIP/map, with one directory per map and one file
+# per key. The parameters are the map name, the key, and the value.
 map_put() {
 	[ $# -eq 3 ] || {
 		loge Expected three arguments, got "$#".
@@ -790,8 +820,8 @@ pdf2png() {
 	base_pdf2img -png
 }
 
-# Draws an ASCII table with sized columns. Columns are tab-separated. Expects
-# input as:
+# Reads tab-separated rows from stdin and draws an ASCII table with sized
+# columns, treating the first row as the header. Expects input as:
 # {
 # 	printf 'ID\tNAME\tTITLE\n'
 # 	printf '123456789\tJohn Foo\tDirector\n'
@@ -804,7 +834,7 @@ pdf2png() {
 # |123456789  |John Foo  |Director  |
 # |12         |Mike Bar  |Engineer  |
 # +-----------+----------+----------+
-# The sed script needs double quotes for its escaped last-line address. Sed
+# The sed script turns the padding of the three border lines into dashes. Sed
 # is available on any Unix-like system. The implementation is inspired by
 # Jakob Westhoff:
 #  https://github.com/jakobwesthoff/prettytable.sh
@@ -826,8 +856,9 @@ prettytable() {
 		sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g"
 }
 
-# Displays uptime in a human-readable format using the sed and tr commands,
-# available on any Unix-like system. See:
+# Prints uptime in a human-readable format after an arrow, using the sed and tr
+# commands, available on any Unix-like system. Prints the arrow with the error
+# code when uptime is missing. See:
 #  https://stackoverflow.com/q/28353409
 prettyuptime() {
 	cmd_exists -q uptime || {
@@ -852,8 +883,9 @@ prettyuptime() {
 }
 
 # Resolves a file's absolute directory by changing into its dirname and
-# printing pwd -P, which expands any symlinks in the path. See the
-# description of realpath.
+# printing pwd -P, which expands any symlinks in the path. Empties CDPATH so cd
+# resolves only the given path, and \cd bypasses any alias. Calls die on
+# failure. See the description of realpath.
 realdir() {
 	[ $# -eq 1 ] || {
 		loge Expected a single argument, got "$#".
@@ -866,7 +898,8 @@ realdir() {
 }
 
 # Builds a file's absolute path by joining the symlink-resolved directory
-# from realdir with the file's basename. See:
+# from realdir with the file's basename. A symlink in the last component stays
+# unresolved, unlike in the realpath command. Calls die on failure. See:
 #  https://stackoverflow.com/q/3915040
 realpath() {
 	[ $# -eq 1 ] || {
@@ -884,7 +917,8 @@ realpath() {
 # each attempt and exit code, plus a final error if all are exhausted. Stops
 # after the first attempt, without sleeping or retrying, when the command
 # itself is missing, since a missing command will not appear between
-# attempts.
+# attempts. Returns the last exit code on failure. Without a command or with an
+# invalid count it fails with BASE_RC_ARG_NO.
 # Usage: retry [-n num] cmd [arg ...]
 retry() {
 	local cnt=1 dly=1 err max=5
@@ -932,16 +966,17 @@ rev() {
 	}' "$@"
 }
 
-# Extracts semantic versioning from a string. See:
+# Prints the semantic version that ends a string. Prints 0.0.0+nil and returns
+# grep's code when there is none. See:
 #  https://semver.org
 #  1.2.3
 #  1.2.3+meta
 #  1.2.3-4-alpha
-# Uses GNU grep with PCRE option. Probes support by matching against the
-# always-empty /dev/null: grep exits 0 for a match, 1 for no match, and 2 or
-# higher for a real error, such as an unrecognized option. A match is
-# impossible here, so an exit code of 1 or less means grep understood the
-# option, while 2 or higher means it did not.
+# Uses GNU grep with PCRE option and fails with BASE_RC_CMD_NF without it.
+# Probes support by matching against the always-empty /dev/null: grep exits 0
+# for a match, 1 for no match, and 2 or higher for a real error, such as an
+# unrecognized option. A match is impossible here, so an exit code of 1 or less
+# means grep understood the option, while 2 or higher means it did not.
 semver() {
 	[ $# -eq 1 ] || {
 		loge Expected a single argument, got "$#".
@@ -968,9 +1003,10 @@ semver() {
 	return "$ret"
 }
 
-# Asks for permission to continue. Returns an error code if the input is not
-# 'y' or if no input is detected after a timeout. If parameters are provided,
-# they are used as the question. Otherwise, the default message is used.
+# Asks for permission to continue. Returns BASE_RC_CON_NO unless the answer is
+# y or Y, and BASE_RC_CON_TO if no answer arrives within 20 seconds. Returns 0
+# at once with --yes. If parameters are provided, they are used as the
+# question. Otherwise, the default message is used.
 #
 # The trap callback restores the default base_sig_cleanup trap callback,
 # reverts the default TTY settings, and adds a newline before any output to
@@ -980,7 +1016,8 @@ semver() {
 # without a newline so the answer stays on the same line, and it is not logged.
 # A child process reads the first character from stdin and may be interrupted
 # after a timeout. A newline then compensates for the question without a
-# newline before any printing. The wait command may return an error code.
+# newline before any printing. The error code of the wait command is ignored
+# because the watchdog was just killed.
 should_continue() {
 	[ $BASE_SHOULD_CON = true ] && return
 	local ans dad="$$" dog msg old tmo=20
@@ -1021,7 +1058,7 @@ should_continue() {
 	esac
 }
 
-# Returns the current time as a timestamp.
+# Prints the current time as YYYYMMDD-HH:MM:SS. Exits if date fails.
 timestamp() {
 	local err tms
 	tms="$(date +%Y%m%d-%H:%M:%S 2>&1)" || {
@@ -1037,7 +1074,7 @@ timestamp() {
 # trick:
 # {
 # 	a-command \
-#			2>&1 1>&3 3>&- | tologe
+# 		2>&1 1>&3 3>&- | tologe
 # } \
 # 	3>&1 1>&2 | tolog
 # Order will always be indeterminate. See:
@@ -1047,14 +1084,15 @@ tolog() {
 	while IFS= read -r lne; do log "$lne"; done
 }
 
-# See the comment for tolog.
+# Redirects input to the error logger line by line. See the comment for tolog.
 tologe() {
 	local lne
 	while IFS= read -r lne; do loge "$lne"; done
 }
 
-# Renames files and directories recursively in the current directory to
-# lowercase.
+# Renames files and directories under the current directory to lowercase,
+# children before parents. Skips hidden entries. Overwrites an existing target
+# without asking and logs a failed rename without stopping.
 tolower() {
 	local dst out src
 	find . -not -path . -not -path '*/.*' -depth |
@@ -1078,15 +1116,16 @@ totsout() {
 	while IFS= read -r lne; do tsout "$lne"; done
 }
 
-# Prepends the output string with a timestamp.
+# Prints all parameters after a timestamp.
 tsout() {
 	local tms
 	tms="$(timestamp)" || exit $?
 	printf '%s %s\n' "$tms" "$*"
 }
 
-# Checks whether all URLs exist. Any returned HTTP code is OK, cmd_run logs
-# it and any curl failure. Without arguments it fails with BASE_RC_ARG_NO.
+# Checks whether all URLs exist. Any returned HTTP code counts as success, and
+# cmd_run logs it along with any curl failure. Returns the code of the last
+# failed URL. Without arguments it fails with BASE_RC_ARG_NO.
 url_exists() {
 	[ $# -gt 0 ] || {
 		loge No URLs specified to check.
@@ -1207,11 +1246,11 @@ ver_ge() {
 # Converts all video files in the current directory to MP3 files, then offers
 # to remove the originals. Declining is not an error. find matches the avi,
 # flv, m4v, mkv, mov, mp4, mpg, ogv, ts, webm, and wmv extensions and returns
-# early if none are found. xargs handles white spaces while counting the
-# matched files. The confirmation message is deliberately not indented:
-# leading tabs would appear verbatim in the prompt. ffmpeg treats options as
-# positional. An option before -i applies to the input and the rest apply to
-# the output, so only the output options after -i are sorted. -q:a 0 requests
+# early if none are found. xargs trims the padding that wc adds to the count.
+# The confirmation message is deliberately not indented: leading tabs would
+# appear verbatim in the prompt. ffmpeg treats options as positional. An option
+# before -i applies to the input and the rest apply to the output, so only the
+# output options after -i are sorted. -q:a 0 requests
 # libmp3lame's highest VBR quality (V0), letting bitrate adapt to content
 # complexity instead of spending a fixed rate on simple passages. No -ar is
 # given, so ffmpeg keeps the source's sample rate when libmp3lame supports it
@@ -1278,7 +1317,8 @@ Total $cnt file$end"
 		done
 }
 
-# Downloads a video from YouTube or another host supported by yt-dlp.
+# Downloads a video from YouTube or another host supported by yt-dlp. Passes
+# all parameters to yt-dlp, then runs renamr on the result if it is installed.
 ytda() {
 	cmd_run yt-dlp \
 		--add-metadata \
@@ -1290,8 +1330,8 @@ ytda() {
 	cmd_runif renamr --act
 }
 
-# All functions below are private, have the base_ prefix, and should be used
-# locally.
+# All functions below are private and have the base_ prefix. Clients shouldn't
+# call them.
 
 # Logs the program name, process ID, user name, and lifespan before exit.
 # Avoids calling die() because this function runs during exit handling.
@@ -1308,11 +1348,11 @@ base_bye() {
 	[ $err -eq 0 ] && log "$msg." || logw "$msg, err=$err."
 }
 
-# Asks to continue if multiple instances are running. Finds process IDs of all
-# possible instances in /tmp/<script-name.*>/pid and writes them to the pipe.
-# Loop reads the PIDs from the pipe and counts only running processes. Writes
-# the PID of this instance, which is running. Asks permission in case of
-# multiple instances.
+# Asks to continue if other instances are running and calls cya on refusal.
+# Finds process IDs of all possible instances in <dir-wip>/<script-name.*>/pid
+# and writes them to a named pipe, which keeps the counting loop in the current
+# shell. The loop counts only running processes. Writes the PID of this
+# instance afterward, so the count excludes it.
 base_check_instance() {
 	local \
 		ins=0 \
@@ -1339,7 +1379,8 @@ base_check_instance() {
 		cya Stop working.
 }
 
-# Continues only if shellbase meets the caller's minimum required version.
+# Continues only if shellbase meets the caller's minimum required version, set
+# in BASE_MIN_VERSION. Skips the check without that variable.
 base_check_version() {
 	if var_exists -q BASE_MIN_VERSION; then
 		ver_ge "$BASE_VERSION" "$BASE_MIN_VERSION" ||
@@ -1347,9 +1388,11 @@ base_check_version() {
 	fi
 }
 
-# General exit handler. Called on EXIT. A non-empty first parameter suppresses
-# the exit call. Keeps the WIP directory of the last finished instance. Calls
-# base_bye just before moving or deleting the WIP directory.
+# General exit handler. Called on EXIT. Any first parameter suppresses the exit
+# call. With --keep-wip, moves the WIP directory to a per-user path, replacing
+# the one of the last finished instance. Otherwise deletes it. Calls base_bye
+# just before moving or deleting the WIP directory. The (exit $err) subshell
+# restores the exit code for base_bye to read.
 # Note that A && B || C is not if-then-else:
 #  shellcheck disable=SC2015
 base_cleanup() {
@@ -1376,7 +1419,7 @@ base_cleanup() {
 	[ -n "${1+x}" ] || exit $err
 }
 
-# Displays the shellbase banner. Width: 79 characters. Height: 8 lines.
+# Displays the shellbase banner. Width: 78 characters. Height: 8 lines.
 # Generated with the Georgia 11 font by Richard Sabey
 # <cryptic_fan@hotmail.com> (September 2003):
 #  http://patorjk.com/software/taag/#p=display&f=Georgia11&t=shellbase
@@ -1387,7 +1430,7 @@ base_display_banner() {
 		base64 --decode
 }
 
-# Prints the usage instructions.
+# Prints the usage instructions, followed by BASE_APP_USAGE if it is set.
 base_display_usage() {
 	base_display_banner
 	printf \\n
@@ -1416,7 +1459,8 @@ base_display_usage() {
 		printf %s\\n "$use"
 }
 
-# Prints the shellbase version and the application version.
+# Prints the shellbase version, and the application version if BASE_APP_VERSION
+# is set.
 base_display_version() {
 	var_exists -q BASE_APP_VERSION &&
 		printf \
@@ -1425,8 +1469,8 @@ base_display_version() {
 		printf 'shellbase %s\n' "$BASE_VERSION"
 }
 
-# Prints the license text. The 0BSD license is intentionally written without
-# line breaks.
+# Prints the license text, followed by BASE_APP_WARRANTY if it is set. The 0BSD
+# license is intentionally written without line breaks.
 base_display_warranty() {
 	base_display_banner
 	printf \\n
@@ -1460,7 +1504,8 @@ base_exit() {
 	return "$err"
 }
 
-# Logs the program name, process ID, and user name at startup.
+# Logs the program name, process ID, and user name at startup, then starts the
+# lifespan stopwatch.
 base_hi() {
 	local usr
 	usr="$(id -nu 2>&1)" || die "$usr"
@@ -1468,7 +1513,8 @@ base_hi() {
 	chrono_sta lifespan || die
 }
 
-# Converts files matching the given pattern in the current directory to JPEG.
+# Converts files matching the given pattern in the current directory to JPEG,
+# then offers to remove the originals.
 base_img2jpg() {
 	[ $# -eq 1 ] || {
 		loge Expected single file pattern, got "$#".
@@ -1500,9 +1546,9 @@ else
 	}
 fi
 
-# The [ -t 1 ] check works only when the function is not called from a
-# subshell. It returns false when stdout is not a tty. Use colors only when
-# connected to a terminal.
+# Runs the [ -t 1 ] check once at source time because it returns false inside a
+# command substitution, whose stdout is a pipe. Sets the color codes only when
+# stdout is a terminal and defines base_is_tty accordingly.
 if [ -t 1 ]; then
 	BASE_FMT_GREEN=$(printf '\033[32m')
 	BASE_FMT_RED=$(printf '\033[31m')
@@ -1524,7 +1570,8 @@ fi
 # Sets the script name without the extension, if any. Creates a working
 # directory, where busybox mktemp requires six Xs. Creates the log file so it
 # is writable. Otherwise base_write_to_file skips every write because [ -w ] is
-# false on a missing file.
+# false on a missing file. Reports failures with printf because the loggers
+# need BASE_LOG.
 base_init_workspace() {
 	local err
 	BASE_IAM="$(basename -- "$0" 2>&1)" || {
@@ -1550,11 +1597,12 @@ base_init_workspace() {
 	}
 }
 
-# Loops through arguments before any logging and handles only those with
-# 'do-and-exit' logic. Sets global variables. Handles signals, see
-# https://mywiki.wooledge.org/SignalTrap. Detects previously run processes
-# with the same name and asks to continue if found. Usage takes priority over
-# version in case both options are set.
+# Loops through arguments before any logging and only notes those with
+# 'do-and-exit' logic. Sets global variables and handles signals. See:
+#  https://mywiki.wooledge.org/SignalTrap
+# Checks the required version. Detects running processes with the same name and
+# asks to continue if found. Then handles the noted options, where usage takes
+# priority over version and version over warranty.
 base_main() {
 	local arg use=false ver=false war=false
 	for arg; do
@@ -1605,7 +1653,8 @@ base_pdf2img() {
 	done
 }
 
-# Adds vertical borders. Double quotes are required in the sed expression.
+# Adds vertical borders. Prepends a bar to each line, appends a tab, and places
+# a bar after every tab.
 base_prettytable_prettify() {
 	sed "s/^/|/;s/\$/	/;s/	/	|/g"
 }
@@ -1632,8 +1681,9 @@ base_sig_cleanup() {
 	exit $err
 }
 
-# Calculates a separator for time titles based on the number of non-empty
-# parameters. Iterates over the positional parameters with for and no in.
+# Prints the separator that follows a time title. The parameters are the titles
+# after it. Prints nothing when all are empty, ' and ' when one remains, and
+# ', ' otherwise.
 base_time_separator() {
 	[ "$#" -gt 3 ] && {
 		loge Expected at most three arguments, got "$#".
@@ -1651,7 +1701,7 @@ base_time_separator() {
 }
 
 # Formats a time title. The first parameter is a count. The second is the
-# title word.
+# title word. Prints nothing for zero and adds a plural s above one.
 base_time_title() {
 	case "$1" in
 	0) printf '' ;;
@@ -1661,8 +1711,8 @@ base_time_title() {
 }
 
 # Truncates the log file when it exceeds BASE_LOG_CAP. Assumes BASE_LOG is
-# writable. The caller guards that. Does not return from functions called by
-# signal traps.
+# writable. The caller guards that. The log call re-enters this function, which
+# stops there because the file is now empty.
 base_truncate() {
 	[ "$(wc -c <"$BASE_LOG")" -gt "$BASE_LOG_CAP" ] || return 0
 	: >"$BASE_LOG"
@@ -1678,11 +1728,13 @@ base_write_to_file() {
 }
 
 # Entry point. Prints the banner and returns immediately in interactive mode.
-# Enables pipefail only when the shell supports it. The option is not yet in
-# POSIX but is slated for inclusion:
+# Enables pipefail only when the shell supports it. POSIX adds the option only
+# in its 2024 edition:
 #  https://www.austingroupbugs.net/view.php?id=789
 # Loops through command-line arguments of the script. Handles only arguments
-# with set-and-go logic.
+# with set-and-go logic and keeps the rest for the client. skp drops the value
+# of --dir-wip. --quiet and --trace offset each other, and a positive balance
+# turns quiet mode on.
 base_is_interactive && {
 	base_display_banner || :
 	return 0
