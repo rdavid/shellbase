@@ -1,0 +1,22 @@
+#!/bin/sh
+# vi: lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Verifies that tolower renames nested files and directories on any filesystem
+# and leaves hidden entries untouched.
+#
+# File not following:
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
+dir="$BASE_WIP"/low
+mkdir "$dir" || die 1
+cd "$dir" || die 2
+mkdir -p .Hidden Dir/Sub || die 3
+touch .Hidden/Stay Dir/Keep Dir/Sub/File.TXT || die 4
+tolower
+exp="$(printf %s\\n ./.Hidden/Stay ./dir/keep ./dir/sub/file.txt)"
+out="$(find . -type f | LC_ALL=C sort)"
+[ "$out" = "$exp" ] || die Unexpected names: "$out".
+log Nested names became lowercase.

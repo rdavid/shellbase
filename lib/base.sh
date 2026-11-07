@@ -1091,21 +1091,27 @@ tologe() {
 }
 
 # Renames files and directories under the current directory to lowercase,
-# children before parents. Skips hidden entries. Overwrites an existing target
-# without asking and logs a failed rename without stopping.
+# children before parents. Changes only the last path component because the
+# parents still have their old names at that point. Skips hidden entries. Logs
+# an error and keeps both entries when the target already exists. The -ef test
+# tells that apart from one entry that a case-insensitive filesystem reports
+# under both names. Logs a failed rename without stopping.
+# Uses -ef, which most shells support:
+#  shellcheck disable=SC3013
 tolower() {
-	local dst out src
-	find . -not -path . -not -path '*/.*' -depth |
+	local dst nme out src
+	find . -depth -not -path . -not -path '*/.*' |
 		while IFS= read -r src; do
-			dst="$(printf %s "$src" | tr '[:upper:]' '[:lower:]' 2>&1)" || die "$dst"
-			if [ "$src" != "$dst" ]; then
-				if out="$(mv -f "$src" "$dst" 2>&1)"; then
-					log "$src->$dst."
-				else
-					loge "$src->$dst: $out."
-				fi
-			else
+			nme="$(printf %s "${src##*/}" | tr '[:upper:]' '[:lower:]' 2>&1)" || die "$nme"
+			dst="${src%/*}/$nme"
+			if [ "$src" = "$dst" ]; then
 				log "$src"
+			elif { [ -e "$dst" ] || [ -L "$dst" ]; } && [ ! "$src" -ef "$dst" ]; then
+				loge "$src->$dst: Target exists."
+			elif out="$(mv -f "$src" "$dst" 2>&1)"; then
+				log "$src->$dst."
+			else
+				loge "$src->$dst: $out."
 			fi
 		done
 }

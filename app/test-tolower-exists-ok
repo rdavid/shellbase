@@ -1,0 +1,31 @@
+#!/bin/sh
+# vi: lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Verifies that tolower keeps both entries when a lowercase target already
+# exists. Skips quietly on a case-insensitive filesystem, where such a pair
+# cannot exist.
+#
+# File not following:
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
+dir="$BASE_WIP"/low
+mkdir "$dir" || die 1
+cd "$dir" || die 2
+printf upper >File || die 3
+printf lower >file || die 4
+if [ "$(cat File)" != upper ] || [ "$(cat file)" != lower ]; then
+	log Skipped, the filesystem is case-insensitive.
+	exit 0
+fi
+mkdir Dir dir || die 5
+touch Dir/keep || die 6
+out="$(tolower 2>&1)"
+[ "$(cat File)" = upper ] || die File changed: "$out".
+[ "$(cat file)" = lower ] || die File was overwritten: "$out".
+[ -e Dir/keep ] || die Directory moved: "$out".
+[ ! -e dir/Dir ] || die Directory nested: "$out".
+case "$out" in *'Target exists'*) ;; *) die Missing error: "$out". ;; esac
+log Existing targets were kept.
