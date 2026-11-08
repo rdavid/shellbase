@@ -36,7 +36,6 @@
 # The BASE_RC_ variables name these return codes:
 #  - BASE_RC_ARG_NE: the first code for missing items, see cmd_exists.
 #  - BASE_RC_ARG_NO: wrong or missing arguments.
-#  - BASE_RC_ARG_WA: a --dir-wip directory that is not writable.
 #  - BASE_RC_CMD_NF: a command that is not found.
 #  - BASE_RC_CON_NO: a negative answer to should_continue.
 #  - BASE_RC_CON_TO: a timeout in should_continue.
@@ -54,7 +53,6 @@ BASE_LOG_CAP=$((10 * 1024 * 1024))
 BASE_QUIET=false
 BASE_RC_ARG_NE=15
 BASE_RC_ARG_NO=11
-BASE_RC_ARG_WA=12
 BASE_RC_CMD_NF=127
 BASE_RC_CON_NO=14
 BASE_RC_CON_TO=13
@@ -1760,7 +1758,7 @@ for arg; do
 		set -o nounset
 		[ -w "$1" ] || {
 			printf >&2 'Unable to write to %s.\n' "$1"
-			exit $BASE_RC_ARG_WA
+			exit $BASE_RC_ARG_NO
 		}
 		BASE_DIR_WIP="$1"
 		skp=true
@@ -1795,7 +1793,6 @@ readonly \
 	BASE_QUIET \
 	BASE_RC_ARG_NE \
 	BASE_RC_ARG_NO \
-	BASE_RC_ARG_WA \
 	BASE_RC_CMD_NF \
 	BASE_RC_CON_NO \
 	BASE_RC_CON_TO \
