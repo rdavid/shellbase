@@ -8,8 +8,8 @@ name: test-lnx
       - '*.do'
       - .github/workflows/test-lnx.yml
       - app/**
-      - lib/**
       - container/**
+      - lib/**
       - Makefile
   push:
     branches: [master]

@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
-      ver: 1.31.1
+      ver: 1.32.0
     steps:
       - uses: actions/checkout@v7.0.1
         with:

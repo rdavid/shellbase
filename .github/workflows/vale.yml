@@ -5,9 +5,9 @@ name: vale
 'on':
   pull_request:
     paths: &paths
-      - .vale.ini
       - .github/styles/**
       - .github/workflows/vale.yml
+      - .vale.ini
       - AGENTS.md
       - README.adoc
   push:

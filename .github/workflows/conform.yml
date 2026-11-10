@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
-
+#
 # Enforces the Conventional Commits format required by AGENTS.md. On a pull
 # request every commit ahead of the base branch is checked. conform's
 # --base-branch flag needs the base ref present locally, which fetch-depth 0
@@ -10,7 +10,7 @@
 # master only the last commit is checked. GITHUB_EVENT_NAME and GITHUB_BASE_REF
 # are plain runner environment variables here, not template-expanded strings,
 # so the branching stays free of template injection. conform has no stable
-# release yet, so the pin below tracks the latest alpha.
+# release yet, so the pin below tracks a recent alpha.
 ---
 name: conform
 'on':
@@ -35,8 +35,8 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - run: |
           srv=https://github.com/siderolabs/conform
-          sum=344dd5fad42c61bf739491b490d453943d06f9aaed5488a738c0bbd4588b6914
-          ver=0.1.0-alpha.31
+          sum=b1fb68219577f49216170cc6f56ef9c8286a9a4f4a6a1e02cc5881319be683a4
+          ver=0.1.0-alpha.32
           url=$srv/releases/download/v$ver/conform-linux-amd64
           curl \
             --fail \

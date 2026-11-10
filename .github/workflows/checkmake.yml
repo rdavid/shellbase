@@ -40,8 +40,8 @@ jobs:
             --location \
             --output ./checkmake \
             --retry 3 \
-            --silent \
             --show-error \
+            --silent \
             "$srv/v$ver/checkmake-v$ver.linux.amd64"
           printf '%s  %s\n' "$sum" ./checkmake | sha256sum --check --status
           chmod +x ./checkmake
