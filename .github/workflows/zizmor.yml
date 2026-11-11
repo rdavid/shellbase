@@ -1,5 +1,9 @@
 # SPDX-FileCopyrightText: 2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
+# The release tarball is fetched and verified against a pinned checksum,
+# rather than resolved from PyPI on each run, so the binary is checked before
+# it runs and the cache holds the tool itself.
 ---
 name: zizmor
 'on':
@@ -25,10 +29,26 @@ jobs:
       - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/cache@v6.1.0
+      - id: cache
+        uses: actions/cache@v6.1.0
         with:
-          path: ~/.cache/pip
-          key: pip-zizmor-${{ env.ver }}
-      - run: pipx run "zizmor==$ver" .
+          path: ./zizmor
+          key: zizmor-${{ env.ver }}-${{ runner.os }}
+      - if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          srv=https://github.com/zizmorcore/zizmor/releases/download
+          sum=bb110cc765eca9cd7efb2e284a956be5974c60027b0970f16397d86208a9957b
+          tgz=zizmor-x86_64-unknown-linux-gnu.tar.gz
+          curl \
+            --fail \
+            --location \
+            --output "$tgz" \
+            --retry 3 \
+            --show-error \
+            --silent \
+            "$srv/v$ver/$tgz"
+          printf '%s  %s\n' "$sum" "$tgz" | sha256sum --check --status
+          tar --extract --file "$tgz" zizmor
+      - run: ./zizmor .
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

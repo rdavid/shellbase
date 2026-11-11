@@ -46,9 +46,6 @@ jobs:
       - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - run: |
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends --yes podman
       - id: build
         env:
           img: ${{ matrix.img }}
