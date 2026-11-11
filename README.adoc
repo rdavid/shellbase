@@ -201,7 +201,7 @@ Some operating systems require administrative rights to write to
 
 [,sh]
 ----
-REL=0.9.20261010
+REL=0.9.20261111
 SRC=https://github.com/rdavid/shellbase/archive/refs/tags/v$REL.tar.gz
 curl --location --silent $SRC |
   tar \
@@ -240,7 +240,7 @@ To try `shellbase` without installing it, source it straight from a release:
 [,sh]
 ----
 #!/bin/sh
-REL=0.9.20261010
+REL=0.9.20261111
 SRC=https://github.com/rdavid/shellbase/archive/refs/tags/v$REL.tar.gz
 eval "$(
   curl --location --silent $SRC |
