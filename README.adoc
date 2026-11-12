@@ -19,7 +19,7 @@
 :url-gitleaks: https://gitleaks.io/
 :url-goredo: http://www.goredo.stargrave.org/INSTALL.html
 :url-goredoer: https://rdavid.github.io/goredoer/
-:url-hadolint: https://hadolint.com/
+:url-hadolint: https://hadolint.github.io/hadolint/
 :url-hoc: https://hitsofcode.com/view/github/rdavid/shellbase?branch=master
 :url-homebrew: https://brew.sh
 :url-license: https://github.com/rdavid/shellbase/blob/master/LICENSES/0BSD.txt
