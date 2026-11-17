@@ -1,0 +1,40 @@
+#!/bin/sh
+# vi: lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Verifies that beuser reports the error of id, not a message with an empty
+# name, when id fails to name the current user. A shim makes id -nu fail
+# once, after the flag file appears, so the calls of base.sh at startup and
+# exit still succeed. Skips when running as root, since beuser root then
+# succeeds.
+#
+# File not following:
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
+isroot && {
+	logw test-beuser-name-ok: Skipped, running as root.
+	cya
+}
+FLG="$BASE_WIP"/flag
+IDC="$(command -v id)" || die id is not found.
+mkdir "$BASE_WIP"/bin || die
+cat >"$BASE_WIP"/bin/id <<-EOM || die
+	#!/bin/sh
+	[ "\${1-}" = -nu ] && [ -f "$FLG" ] || exec "$IDC" "\$@"
+	rm -f "$FLG"
+	printf >&2 'id: n0_wh0\n'
+	exit 1
+EOM
+chmod +x "$BASE_WIP"/bin/id || die
+ret=0
+out="$(PATH="$BASE_WIP/bin:$PATH" sh -c \
+	'. "$1" && : >"$2" && beuser root' /n0t/ex1sted "$BSH" "$FLG" 2>&1)" ||
+	ret=$?
+[ "$ret" -ne 0 ] || die Expected beuser to fail.
+msg="$(printf %s\\n "$out" | grep --count 'n0_wh0')" || :
+[ "$msg" -eq 1 ] || die Expected the id error once: "$out".
+msg="$(printf %s\\n "$out" | grep --count 'You are')" || :
+[ "$msg" -eq 0 ] || die Expected no message with an empty name: "$out".
+log The id error was reported once.

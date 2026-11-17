@@ -59,7 +59,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_MAXVAL=127
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20261111
+BASE_VERSION=0.9.20261117
 
 # Removes every file other than mp3, m4a, and flac under the current directory,
 # then removes empty directories. Asks for confirmation first, and declining is
@@ -106,19 +106,22 @@ beroot() {
 	beuser root
 }
 
-# Calls die unless the script runs as the given user. Without a single argument
-# it fails with BASE_RC_ARG_NO. Relies on the id command, which exists on any
-# POSIX system.
+# Logs the user when the script runs as the given one and calls die otherwise,
+# naming both users with their IDs. Fails with BASE_RC_ARG_NO without a single
+# argument. The id command it relies on exists on every POSIX system.
 beuser() {
 	[ $# -eq 1 ] || {
 		loge Expected a single argument, got "$#".
 		return $BASE_RC_ARG_NO
 	}
-	local ask cur usr="$1"
+	local ask cur usr="$1" who
 	user_exists -q "$usr" || die "$usr": No such user.
 	cur="$(id -u 2>&1)" || die "$cur"
 	ask="$(id -u -- "$usr" 2>&1)" || die "$ask"
-	[ "$ask" -eq "$cur" ] || die "You are $(id -un) ($cur), be $usr ($ask)."
+	[ "$ask" -eq "$cur" ] || {
+		who="$(id -nu 2>&1)" || die "$who"
+		die "You are $who ($cur), be $usr ($ask)."
+	}
 	log "You are $usr ($cur)."
 }
 
