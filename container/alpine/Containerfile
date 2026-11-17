@@ -30,7 +30,7 @@ RUN \
 		yamllint~=1.38 \
 		yash~=2.60 \
 		zsh~=5.9 \
-	&& rm -rf /var/cache/apk/* \
+	&& rm -fr /var/cache/apk/* \
 	&& adduser -D -u 1001 "$USER" "$USER" \
 	&& cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime \
 	&& printf %s "$TIME_ZONE" > /etc/timezone \

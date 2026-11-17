@@ -29,7 +29,7 @@ RUN \
 		yamllint \
 		zsh \
 	&& apt-get clean \
-	&& rm -rf /var/lib/apt/lists/* \
+	&& rm -fr /var/lib/apt/lists/* \
 	&& groupadd --gid 1001 "$USER" \
 	&& useradd --create-home --gid 1001 --uid 1001 "$USER" \
 	&& cp /usr/share/zoneinfo/"$TIME_ZONE" /etc/localtime \

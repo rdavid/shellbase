@@ -458,9 +458,6 @@ gitlog() {
 		fzf \
 			--ansi \
 			--bind=ctrl-s:toggle-sort \
-			--no-sort \
-			--reverse \
-			--tiebreak=index \
 			--bind "ctrl-m:execute:
 			(
 				grep -o '[a-f0-9]\{7\}' |
@@ -468,7 +465,10 @@ gitlog() {
 				xargs -I % sh -c 'git show --color=always % | less -R'
 			) << FZF-EOF
 			{}
-FZF-EOF"
+FZF-EOF" \
+			--no-sort \
+			--reverse \
+			--tiebreak=index
 }
 
 # Ignores exit code 141 (128 + SIGPIPE) from command pipes and returns any
@@ -853,7 +853,7 @@ prettytable() {
 		printf %s\\n "$bdy" | base_prettytable_prettify
 		base_prettytable_separator "$col"
 	} |
-		column -ts '	' |
+		column -s '	' -t |
 		sed "1s/ /-/g;3s/ /-/g;\$s/ /-/g"
 }
 
