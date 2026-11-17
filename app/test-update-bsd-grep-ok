@@ -1,0 +1,26 @@
+#!/bin/sh
+# vi: lbr noet sw=2 ts=2 tw=79 wrap
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Verifies that update exits 0 quietly when grep lacks GNU options. A shim
+# mimics BSD grep, which rejects --help with a usage message.
+#
+# File not following:
+#  shellcheck disable=SC1090
+BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
+. "$BSH"
+GRP="$(command -v grep)" || die grep is not found.
+mkdir "$BASE_WIP"/bin || die
+cat >"$BASE_WIP"/bin/grep <<-EOM || die
+	#!/bin/sh
+	[ "\${1-}" = --help ] || exec "$GRP" "\$@"
+	printf >&2 'usage: grep [-abc]\n'
+	exit 2
+EOM
+chmod +x "$BASE_WIP"/bin/grep || die
+ret=0
+out="$(PATH="$BASE_WIP/bin:$PATH" "${BSH%/*}"/../app/update 2>&1)" || ret=$?
+[ "$ret" -eq 0 ] || die Expected update to exit 0, got "$ret": "$out".
+[ -z "$out" ] || die Expected no output: "$out".
+log Update skipped BSD grep quietly.

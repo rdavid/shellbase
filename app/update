@@ -26,7 +26,7 @@ BASE_APP_USAGE="$(
 }
 readonly \
 	BASE_APP_USAGE \
-	BASE_APP_VERSION=0.9.20261108 \
+	BASE_APP_VERSION=0.9.20261117 \
 	BASE_MIN_VERSION=0.9.20260718 \
 	BSH \
 	TGT=README.adoc
@@ -89,11 +89,12 @@ update() {
 	log "$TGT" has been updated.
 }
 
-# Checks the environment. The colon resets the failed GNU grep probe's
-# status, so cya leaves gracefully with 0.
+# Checks the environment. Probes for GNU grep quietly, so BSD grep prints no
+# usage text. The colon resets the failed probe's status, so cya leaves
+# gracefully with 0.
 validate() {
 	isreadable "$BSH" "$TGT" || die
-	cmd_run grep --help && return
+	cmd_run -q grep --help && return
 	:
 	cya GNU grep is required.
 }
