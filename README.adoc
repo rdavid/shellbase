@@ -263,12 +263,6 @@ log I\'m using the shellbase.
   printf '123456789\tJohn Foo\tDirector\n'
   printf '12\tMike Bar\tEngineer\n'
 } | prettytable
-----
-
-Output:
-
-[,sh]
-----
 +-----------+----------+----------+
 |ID         |NAME      |TITLE     |
 +-----------+----------+----------+
