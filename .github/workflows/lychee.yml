@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+---
+name: lychee
+'on':
+  pull_request:
+  push:
+    branches: [master]
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: sh
+jobs:
+  lychee:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: lycheeverse/lychee-action@v2.9.0
+        with:
+          args: >-
+            --no-progress
+            '*.do'
+            '.github/**/*.yml'
+            '.github/pages/*.html'
+            AGENTS.md
+            'app/*'
+            'container/*/Containerfile'
+            lib/base.sh
+            README.adoc

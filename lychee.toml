@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+#
+# Configures the lychee link checker. Excludes URLs that shell variables
+# complete at run time, the file URL that a failure test expects to miss, and
+# Stack Exchange sites, which reject automated requests with 403.
+exclude = [
+	'/releases/download$',
+	'\$',
+	'^file:///definitely-not-here$',
+	'^https://stackoverflow\.com/',
+	'^https://unix\.stackexchange\.com/',
+]

@@ -16,6 +16,7 @@
 redo-ifchange \
 	./.conform.yaml \
 	./.github/*.yml \
+	./.github/pages/*.html \
 	./.github/workflows/*.yml \
 	./app/* \
 	./container/*/Containerfile \
@@ -23,7 +24,8 @@ redo-ifchange \
 	./*.do \
 	./AGENTS.md \
 	./Makefile \
-	./README.adoc
+	./README.adoc \
+	./lychee.toml
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
 )"/lib/base.sh || {
@@ -32,7 +34,7 @@ BSH="$(
 	exit $err
 }
 readonly \
-	BASE_APP_VERSION=0.9.20261103 \
+	BASE_APP_VERSION=0.9.20261118 \
 	BASE_MIN_VERSION=0.9.20260707 \
 	BSH
 . "$BSH"
@@ -46,6 +48,16 @@ for f in ./*.do ./app/* ./lib/*; do
 done
 cmd_runif gitleaks detect --no-banner --redact
 cmd_runif hadolint ./container/*/Containerfile
+cmd_runif lychee --no-progress \
+	./*.do \
+	./.github/*.yml \
+	./.github/pages/*.html \
+	./.github/workflows/*.yml \
+	./AGENTS.md \
+	./README.adoc \
+	./app/* \
+	./container/*/Containerfile \
+	./lib/base.sh
 cmd_runif reuse lint
 cmd_runif shellcheck \
 	./*.do \
