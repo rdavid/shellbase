@@ -24,8 +24,8 @@ redo-ifchange \
 	./*.do \
 	./AGENTS.md \
 	./Makefile \
-	./README.adoc \
-	./lychee.toml
+	./*.toml \
+	./README.adoc
 BSH="$(
 	CDPATH='' cd -- "$(dirname -- "$0" 2>&1)" 2>&1 && pwd -P 2>&1
 )"/lib/base.sh || {
@@ -63,10 +63,12 @@ cmd_runif shellcheck \
 	./*.do \
 	./app/* \
 	./lib/*
-cmd_runif shfmt -d \
+cmd_runif shfmt --diff \
 	./*.do \
 	./app/* \
 	./lib/*
+cmd_runif tombi lint --error-on-warnings \
+	./*.toml
 cmd_runif typos
 cmd_runif vale sync
 cmd_runif vale \

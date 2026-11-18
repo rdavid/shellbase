@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: 2026 David Rabkin
+# SPDX-License-Identifier: 0BSD
+---
+name: tombi
+'on':
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: sh
+jobs:
+  tombi:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: tombi-toml/setup-tombi@v1.11.3
+        with:
+          enable-cache: false
+      - run: |
+          tombi lint --error-on-warnings \
+            ./*.toml

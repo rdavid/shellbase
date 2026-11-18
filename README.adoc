@@ -39,6 +39,7 @@
 :url-test-bsd: https://github.com/rdavid/shellbase/actions/workflows/test-bsd.yml
 :url-test-lnx: https://github.com/rdavid/shellbase/actions/workflows/test-lnx.yml
 :url-test-mac: https://github.com/rdavid/shellbase/actions/workflows/test-mac.yml
+:url-tombi: https://tombi-toml.github.io/tombi/
 :url-toolbox: https://rdavid.github.io/toolbox/
 :url-typos: https://github.com/crate-ci/typos
 :url-vale: https://vale.sh
@@ -287,6 +288,7 @@ You can install Sergey Matveev's {url-goredo}[`goredo`] implementation.
 {url-reuse}[`reuse`],
 {url-shellcheck}[`shellcheck`],
 {url-shfmt}[`shfmt`],
+{url-tombi}[`tombi`],
 {url-typos}[`typos`],
 {url-vale}[`vale`],
 {url-yamllint}[`yamllint`],
