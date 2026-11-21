@@ -15,7 +15,8 @@ fle1="$BASE_WIP/1"
 fle2="$BASE_WIP/2"
 touch "$fle1" "$fle2"
 chmod -w "$fle1"
-iswritable "$fle1" "$fle2" "$BASE_WIP/3" && ret=0 || ret=1
+ret=0
+iswritable "$fle1" "$fle2" "$BASE_WIP/3" || ret=$?
 chmod +w "$fle1"
 rm "$fle1" "$fle2"
 exit "$ret"
