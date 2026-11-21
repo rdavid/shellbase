@@ -372,7 +372,7 @@ ifdef::pages-build[]
       </li>
       <li>
         <span class="num">5</span>
-        <p>The only line on stdout. redo reads it as the target's content; every line above it went to stderr.</p>
+        <p>The only line on stdout. redo reads it as the target's content. Every line above it went to stderr.</p>
       </li>
     </ol>
   </div>

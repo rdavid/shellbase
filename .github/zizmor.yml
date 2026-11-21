@@ -1,5 +1,6 @@
 # SPDX-FileCopyrightText: 2026 David Rabkin
 # SPDX-License-Identifier: 0BSD
+#
 # Actions are pinned to release tags, not commit hashes, by convention.
 ---
 rules:
