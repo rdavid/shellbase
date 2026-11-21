@@ -20,7 +20,6 @@ Targets live in `*.do` files, which `redo` executes directly.
 Treat `.redo/` as build metadata for the `redo` workflow, not hand-edited
 source.
 The version variable in `lib/base.sh` is `BASE_VERSION`.
-Run `redo lint` and `redo test` before committing.
 
 ## Build
 
@@ -47,17 +46,9 @@ This project uses `redo` (or `goredo`) as the primary task runner.
 
 ## Style
 
-Scripts follow the shared header layout, omit the shebang in `*.do` files,
-and source `lib/base.sh` right after the header.
-Use 2-space indentation and no tabs.
+Scripts source `lib/base.sh` right after the header.
 Public functions in `lib/base.sh` are unprefixed.
 Internal helpers use `base_`, and global variables use the `BASE_` prefix.
-Limit local variable names in functions to three letters, for example `cnt`,
-`dly`, or `err`.
-Keep script-level variables in `*.do` files capitalized, for example `STP`
-or `EXE`.
-Keep new test files aligned with the current pattern, for example
-`app/test-realpath-ok`.
 In `lib/base.sh`, list public functions alphabetically, then `base_` helpers
 alphabetically, with no `main`.
 `README.adoc` links every public function to its exact line in
@@ -69,7 +60,6 @@ The `log`, `loge`, `logw`, and `prettytable` prose links elsewhere in
 
 ## Testing
 
-Add or update an executable script in `app/` for every behavior change.
 Use `*-ok` for success cases and `*-no` for failure paths.
 Run `redo test-container` when changing portability-sensitive shell logic,
 container files, or CI behavior.
