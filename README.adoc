@@ -364,15 +364,19 @@ ifdef::pages-build[]
       </li>
       <li>
         <span class="num">3</span>
-        <p><code>cmd_runif</code> skips missing tools without a warning. Silence is the signal that a linter isn't installed, not a yellow line asking you to fix it.</p>
+        <p><code>cmd_runif</code> skips missing tools without a warning.
+        Silence is the signal that a linter isn't installed, not a yellow line asking you to fix it.</p>
       </li>
       <li>
         <span class="num">4</span>
-        <p>A genuine failure, printed in red by <code>loge</code>. One bad linter doesn't stop the rest &mdash; <code>lint.do</code> keeps going.</p>
+        <p>A genuine failure, printed in red by <code>loge</code>.
+        One bad linter doesn't stop the rest &mdash; <code>lint.do</code> keeps going.</p>
       </li>
       <li>
         <span class="num">5</span>
-        <p>The only line on stdout. redo reads it as the target's content. Every line above it went to stderr.</p>
+        <p>The only line on stdout.
+        redo reads it as the target's content.
+        Every line above it went to stderr.</p>
       </li>
     </ol>
   </div>

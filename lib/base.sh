@@ -59,7 +59,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_MAXVAL=127
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20261117
+BASE_VERSION=0.9.20261122
 
 # Removes every file other than mp3, m4a, and flac under the current directory,
 # then removes empty directories. Asks for confirmation first, and declining is
@@ -336,8 +336,8 @@ dng2jpg() {
 	base_img2jpg '*.[dD][nN][gG]'
 }
 
-# Portable echo that handles -n, -e, and -ne consistently, unlike the built-in
-# whose flag handling varies between shells. See:
+# Prints its arguments, handling -n, -e, and -ne the same in every shell,
+# unlike the built-in, whose flag handling varies. See:
 #  http://www.etalabs.net/sh_tricks.html
 # Uses variables in the printf format string:
 #  shellcheck disable=SC2059
@@ -1336,9 +1336,6 @@ ytda() {
 	cmd_runif renamr --act
 }
 
-# All functions below are private and have the base_ prefix. Clients shouldn't
-# call them.
-
 # Logs the program name, process ID, user name, and lifespan before exit.
 # Avoids calling die() because this function runs during exit handling.
 # Note that A && B || C is not if-then-else:
@@ -1394,7 +1391,7 @@ base_check_version() {
 	fi
 }
 
-# General exit handler. Called on EXIT. Any first parameter suppresses the exit
+# Handles exit and runs on EXIT. Any first parameter suppresses the exit
 # call. With --keep-wip, moves the WIP directory to a per-user path, replacing
 # the one of the last finished instance. Otherwise deletes it. Calls base_bye
 # just before moving or deleting the WIP directory. The (exit $err) subshell

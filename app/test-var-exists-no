@@ -5,30 +5,24 @@
 #
 # Verifies that var_exists fails and returns the correct error code for a
 # missing argument, an unset variable, an invalid name, and a mix of set,
-# unset, and invalid names. The || keeps errexit from ending the script
-# before each returned code is compared.
+# unset, and invalid names. A single unset variable is the first failed
+# check. An invalid name and an unset variable are two failed checks. Set
+# variables do not add to that count. The || keeps errexit from ending the
+# script before each returned code is compared. An unexpected zero, or an
+# unexpected code, exits with zero. The harness expects a -no script to fail
+# and flags that success.
 #
 # File not following:
 #  shellcheck disable=SC1090
 BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 . "$BSH"
-
-# A call without arguments has to fail. An unexpected zero exit here falls
-# through to the harness, which expects a -no script to fail and flags the
-# unexpected success.
 var_exists -q && exit 0
-
-# A single unset variable is the first failed check.
 ret=0
 var_exists -q UNDEFINED_VAR1ABLE || ret=$?
 [ "$ret" -eq "$BASE_RC_ARG_NE" ] || exit 0
-
-# An invalid name and an unset variable are two failed checks.
 ret=0
 var_exists -q 1nvalid UNDEFINED_VAR1ABLE || ret=$?
 [ "$ret" -eq $((BASE_RC_ARG_NE + 1)) ] || exit 0
-
-# Set variables do not add to the count of two failed checks.
 ret=0
 var_exists -q 1nvalid HOME UNDEFINED_VAR1ABLE USER || ret=$?
 [ "$ret" -eq $((BASE_RC_ARG_NE + 1)) ] || exit 0

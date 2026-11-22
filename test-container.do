@@ -8,9 +8,14 @@
 # and should stop it on exit. Exit code 125 from podman machine start means
 # the VM is already running or is still starting up. The script closes the
 # redo jobserver descriptors 3 and 4 for podman machine start, so the VM
-# daemon does not inherit them and stall redo. Command output streams to the
-# console through the shellbase loggers, and the script prints OK to stdout
-# for the redo target.
+# daemon does not inherit them and stall redo. If tests run in shell-tracing
+# mode, the script passes the tracing flag to the container. It builds each
+# image silently and captures the container hash. Then it runs the container
+# and removes it automatically on exit. A failing image logs the error and
+# moves on to the next one instead of aborting the whole run. ERR counts how
+# many images failed so the script can report it at the end. Command output
+# streams to the console through the shellbase loggers, and the script prints
+# OK to stdout for the redo target.
 #
 # Variable appears unused and file not following:
 #  shellcheck disable=SC2034,SC1090
@@ -26,7 +31,7 @@ BSH="$(
 	exit $err
 }
 readonly \
-	BASE_APP_VERSION=0.9.20261009 \
+	BASE_APP_VERSION=0.9.20261122 \
 	BASE_MIN_VERSION=0.9.20260707 \
 	BSH
 . "$BSH"
@@ -36,15 +41,8 @@ cmd_run sh -c 'podman machine start 3>&- 4>&-' || {
 	log Podman VM is already running.
 	STP=false
 }
-
-# If tests run in shell-tracing mode, passes the tracing flag to the container.
 inside "$-" x && EXE=-xx || EXE=''
 inside "$(uname -m)" arm64 && ARM=true || ARM=false
-
-# Builds the image silently and captures the container hash. Then runs the
-# container and removes it automatically on exit. A failing image logs the
-# error and moves on to the next one instead of aborting the whole run. ERR
-# counts how many images failed so the script can report it at the end.
 ERR=0
 for f in ./container/*/Containerfile; do
 	[ "$ARM" = true ] && inside "$f" archlinux && {

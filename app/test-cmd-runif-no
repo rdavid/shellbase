@@ -4,26 +4,21 @@
 # SPDX-License-Identifier: 0BSD
 #
 # Verifies that cmd_runif fails when the given command exists but itself
-# fails, and when called without a command to check.
+# fails, and when called without a command to check. An ordinary failure
+# propagates with its own code. A command that exists but exits
+# BASE_RC_CMD_NF also propagates as a failure. With no command to check, the
+# underlying cmd_exists argument error propagates instead of being treated as
+# a skip. An unexpected zero, or an unexpected code, exits with zero. The
+# harness expects a -no script to fail and flags that success.
 #
 # File not following:
 #  shellcheck disable=SC1090
 BSH="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"/../lib/base.sh
 . "$BSH"
-
-# An ordinary failure propagates. An unexpected zero, or a code other than
-# 1, here falls through to the harness, which expects a -no script to fail
-# and flags the unexpected success.
 ret=0
 cmd_runif -q false || ret=$?
 [ "$ret" -eq 1 ] || exit 0
-
-# A command that exists but exits BASE_RC_CMD_NF also propagates as a
-# failure.
 ret=0
 cmd_runif -q sh -c "exit $BASE_RC_CMD_NF" || ret=$?
 [ "$ret" -eq "$BASE_RC_CMD_NF" ] || exit 0
-
-# With no command to check, the underlying cmd_exists argument error
-# propagates instead of being treated as a skip.
 cmd_runif -q
