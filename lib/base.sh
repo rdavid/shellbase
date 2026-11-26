@@ -460,8 +460,7 @@ gitlog() {
 			--bind=ctrl-s:toggle-sort \
 			--bind "ctrl-m:execute:
 			(
-				grep -o '[a-f0-9]\{7\}' |
-				head -n 1 |
+				sed -n 's/^[^0-9a-f]*\([0-9a-f]\{7,\}\).*/\1/p' |
 				xargs -I % sh -c 'git show --color=always % | less -R'
 			) << FZF-EOF
 			{}
