@@ -27,4 +27,10 @@ jobs:
         with:
           persist-credentials: false
       - uses: mfinelli/setup-shfmt@v4.0.1
-      - run: shfmt -d ./*.do ./app/* ./lib/*
+      - run: |
+          shfmt \
+            --diff \
+            --language-dialect posix \
+            ./*.do \
+            ./app/* \
+            ./lib/*

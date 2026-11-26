@@ -34,7 +34,7 @@ BSH="$(
 	exit $err
 }
 readonly \
-	BASE_APP_VERSION=0.9.20261118 \
+	BASE_APP_VERSION=0.9.20261126 \
 	BASE_MIN_VERSION=0.9.20260707 \
 	BSH
 . "$BSH"
@@ -63,7 +63,9 @@ cmd_runif shellcheck \
 	./*.do \
 	./app/* \
 	./lib/*
-cmd_runif shfmt --diff \
+cmd_runif shfmt \
+	--diff \
+	--language-dialect posix \
 	./*.do \
 	./app/* \
 	./lib/*
