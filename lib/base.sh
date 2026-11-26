@@ -1101,7 +1101,10 @@ tolower() {
 	local dst nme out src
 	find . -depth -not -path . -not -path '*/.*' |
 		while IFS= read -r src; do
-			nme="$(printf %s "${src##*/}" | tr '[:upper:]' '[:lower:]' 2>&1)" || die "$nme"
+			nme="$(
+				printf %s "${src##*/}" |
+					tr '[:upper:]' '[:lower:]' 2>&1
+			)" || die "$nme"
 			dst="${src%/*}/$nme"
 			if [ "$src" = "$dst" ]; then
 				log "$src"

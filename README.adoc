@@ -154,14 +154,14 @@ The public functions are, in alphabetical order:
 {url-base}#L1081[`tolog`],
 {url-base}#L1087[`tologe`],
 {url-base}#L1100[`tolower`],
-{url-base}#L1119[`totsout`],
-{url-base}#L1125[`tsout`],
-{url-base}#L1134[`url_exists`],
-{url-base}#L1162[`user_exists`],
-{url-base}#L1200[`var_exists`],
-{url-base}#L1240[`ver_ge`],
-{url-base}#L1264[`vid2aud`],
-{url-base}#L1327[`ytda`].
+{url-base}#L1122[`totsout`],
+{url-base}#L1128[`tsout`],
+{url-base}#L1137[`url_exists`],
+{url-base}#L1165[`user_exists`],
+{url-base}#L1203[`var_exists`],
+{url-base}#L1243[`ver_ge`],
+{url-base}#L1267[`vid2aud`],
+{url-base}#L1330[`ytda`].
 
 Global variables carry the `BASE_` prefix.
 Clients may use them and should place temporary files under `$BASE_WIP`.
