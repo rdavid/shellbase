@@ -59,7 +59,7 @@ BASE_RC_CON_TO=13
 BASE_RC_DIE_NO=10
 BASE_RC_MAXVAL=127
 BASE_SHOULD_CON=false
-BASE_VERSION=0.9.20261122
+BASE_VERSION=0.9.20261126
 
 # Removes every file other than mp3, m4a, and flac under the current directory,
 # then removes empty directories. Asks for confirmation first, and declining is
@@ -461,7 +461,7 @@ gitlog() {
 			--bind "ctrl-m:execute:
 			(
 				grep -o '[a-f0-9]\{7\}' |
-				head -1 |
+				head -n 1 |
 				xargs -I % sh -c 'git show --color=always % | less -R'
 			) << FZF-EOF
 			{}
@@ -637,7 +637,7 @@ issolid() {
 		return $err
 	}
 	hsh="$(
-		printf %s "$lne" | head -1 | awk -F = '{print $2}'
+		printf %s "$lne" | head -n 1 | awk -F = '{print $2}'
 	)" || {
 		err=$?
 		loge File "$fle" has hash with unknown format: "$lne".
@@ -843,8 +843,8 @@ prettytable() {
 	cmd_exists -q column || return
 	local bdy col hdr inp
 	inp="$(cat)"
-	hdr="$(printf %s "$inp" | head -n1)" || handle_pipefails $?
-	bdy="$(printf %s "$inp" | tail -n+2)" || handle_pipefails $?
+	hdr="$(printf %s "$inp" | head -n 1)" || handle_pipefails $?
+	bdy="$(printf %s "$inp" | tail -n +2)" || handle_pipefails $?
 	col="$(printf %s "$hdr" | awk -F\\t '{print NF}')"
 	{
 		base_prettytable_separator "$col"
