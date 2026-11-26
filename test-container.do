@@ -31,7 +31,7 @@ BSH="$(
 	exit $err
 }
 readonly \
-	BASE_APP_VERSION=0.9.20261122 \
+	BASE_APP_VERSION=0.9.20261126 \
 	BASE_MIN_VERSION=0.9.20260707 \
 	BSH
 . "$BSH"
@@ -66,7 +66,11 @@ for f in ./container/*/Containerfile; do
 		continue
 	}
 	err=0
-	cmd_run podman run --rm --rmi "$hsh" "$EXE" lint test || {
+	cmd_run podman run \
+		--rm \
+		--rmi \
+		"$hsh" \
+		"$EXE" lint test || {
 		err=$?
 		ERR=$((ERR + 1))
 	}

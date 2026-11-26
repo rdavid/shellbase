@@ -39,16 +39,22 @@ readonly \
 	BSH
 . "$BSH"
 cmd_runif actionlint
-cmd_runif agent-rules-lint --warnings-as-errors .
+cmd_runif agent-rules-lint \
+	--warnings-as-errors \
+	.
 cmd_runif checkmake ./Makefile
-cmd_runif conform enforce --commit-ref HEAD
+cmd_runif conform enforce \
+	--commit-ref HEAD
 for f in ./*.do ./app/* ./lib/*; do
 	cmd_runif dash -n "$f"
 	cmd_runif mksh -n "$f"
 done
-cmd_runif gitleaks detect --no-banner --redact
+cmd_runif gitleaks detect \
+	--no-banner \
+	--redact
 cmd_runif hadolint ./container/*/Containerfile
-cmd_runif lychee --no-progress \
+cmd_runif lychee \
+	--no-progress \
 	./*.do \
 	./.github/*.yml \
 	./.github/pages/*.html \
@@ -69,7 +75,8 @@ cmd_runif shfmt \
 	./*.do \
 	./app/* \
 	./lib/*
-cmd_runif tombi lint --error-on-warnings \
+cmd_runif tombi lint \
+	--error-on-warnings \
 	./*.toml
 cmd_runif typos
 cmd_runif vale sync
@@ -79,6 +86,8 @@ cmd_runif vale \
 cmd_runif yamllint \
 	./.github/*.yml \
 	./.github/workflows/*.yml
-cmd_runif zizmor --offline ./.github/
+cmd_runif zizmor \
+	--offline \
+	./.github/
 ./app/update
 printf OK

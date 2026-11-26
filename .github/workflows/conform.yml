@@ -46,7 +46,10 @@ jobs:
             --show-error \
             --silent \
             "$url"
-          printf '%s  %s\n' "$sum" conform | sha256sum --check --status
+          printf '%s  %s\n' "$sum" conform |
+            sha256sum \
+              --check \
+              --status
           chmod +x conform
           if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
             ./conform enforce --base-branch "origin/$GITHUB_BASE_REF"

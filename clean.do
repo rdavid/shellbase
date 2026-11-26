@@ -9,6 +9,10 @@
 # A && B || C:
 #  shellcheck disable=SC2015
 command -v podman >/dev/null &&
-	podman system prune --all --force >&2 &&
-	podman rmi --all --force >&2 || :
+	podman system prune \
+		--all \
+		--force >&2 &&
+	podman rmi \
+		--all \
+		--force >&2 || :
 rm -f ./1 ./clean ./lint ./test ./test-container

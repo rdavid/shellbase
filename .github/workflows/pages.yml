@@ -32,7 +32,10 @@ jobs:
           persist-credentials: false
       - run: |
           sudo apt-get update
-          sudo apt-get install --no-install-recommends --yes asciidoctor
+          sudo apt-get install \
+            --no-install-recommends \
+            --yes \
+            asciidoctor
       - run: |
           mkdir _site
           cp .github/pages/favicon.svg _site/favicon.svg

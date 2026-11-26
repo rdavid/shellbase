@@ -43,6 +43,9 @@ jobs:
             --show-error \
             --silent \
             "$srv/v$ver/checkmake-v$ver.linux.amd64"
-          printf '%s  %s\n' "$sum" ./checkmake | sha256sum --check --status
+          printf '%s  %s\n' "$sum" ./checkmake |
+            sha256sum \
+              --check \
+              --status
           chmod +x ./checkmake
       - run: ./checkmake ./Makefile

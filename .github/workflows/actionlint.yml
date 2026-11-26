@@ -47,6 +47,12 @@ jobs:
             --show-error \
             --silent \
             "$srv/v$ver/$tgz"
-          printf '%s  %s\n' "$sum" "$tgz" | sha256sum --check --status
-          tar --extract --file "$tgz" actionlint
+          printf '%s  %s\n' "$sum" "$tgz" |
+            sha256sum \
+              --check \
+              --status
+          tar \
+            --extract \
+            --file "$tgz" \
+            actionlint
       - run: ./actionlint

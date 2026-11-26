@@ -47,8 +47,14 @@ jobs:
             --show-error \
             --silent \
             "$srv/v$ver/$tgz"
-          printf '%s  %s\n' "$sum" "$tgz" | sha256sum --check --status
-          tar --extract --file "$tgz" zizmor
+          printf '%s  %s\n' "$sum" "$tgz" |
+            sha256sum \
+              --check \
+              --status
+          tar \
+            --extract \
+            --file "$tgz" \
+            zizmor
       - run: ./zizmor .
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
